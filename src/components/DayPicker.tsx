@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { DAYS } from "@/data/days";
 import { pad } from "@/lib/time";
 
@@ -20,17 +20,44 @@ export function DayPicker({ activeDate, onSelect, sticky = false }: DayPickerPro
   const dragging = useRef(false);
   const lastX = useRef(0);
   const frame = useRef<number | null>(null);
-  const [renderPosition, setRenderPosition] = useState(activeIndex);
+  const itemRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   useEffect(() => {
     target.current = activeIndex;
   }, [activeIndex]);
 
   useEffect(() => {
+    function paint() {
+      itemRefs.current.forEach((item, index) => {
+        if (!item) return;
+
+        const distance = index - position.current;
+        const absoluteDistance = Math.abs(distance);
+        const focus = Math.max(0, 1 - absoluteDistance / 2);
+        const scale = 0.64 + 0.68 * focus;
+        const glass = item.firstElementChild as HTMLElement | null;
+
+        item.style.left = `${distance * ITEM_SPACING}px`;
+        item.style.transform = `translateX(-50%) scale(${scale})`;
+        item.style.opacity = `${Math.max(0.2, 1 - absoluteDistance * 0.3)}`;
+        item.style.filter = `blur(${Math.min(2.4, absoluteDistance * 1.2)}px)`;
+        item.style.zIndex = `${Math.round((DAYS.length - absoluteDistance) * 10)}`;
+
+        if (glass) {
+          const isFocused = absoluteDistance < 0.5;
+          glass.style.background = isFocused ? "rgba(250, 248, 243, 0.56)" : "transparent";
+          glass.style.borderColor = isFocused ? "rgba(255,255,255,0.35)" : "transparent";
+          glass.style.boxShadow = isFocused ? "0 8px 22px rgba(24,50,59,0.10)" : "none";
+          glass.style.backdropFilter = isFocused ? "blur(10px)" : "none";
+          glass.style.setProperty("-webkit-backdrop-filter", isFocused ? "blur(10px)" : "none");
+        }
+      });
+    }
+
     function render() {
       if (!dragging.current) {
-        const force = (target.current - position.current) * 0.12;
-        velocity.current = (velocity.current + force) * 0.82;
+        const force = (target.current - position.current) * 0.08;
+        velocity.current = (velocity.current + force) * 0.84;
         position.current += velocity.current;
 
         if (Math.abs(target.current - position.current) < 0.001 && Math.abs(velocity.current) < 0.001) {
@@ -39,7 +66,7 @@ export function DayPicker({ activeDate, onSelect, sticky = false }: DayPickerPro
         }
       }
 
-      setRenderPosition(position.current);
+      paint();
       frame.current = requestAnimationFrame(render);
     }
 
@@ -92,17 +119,13 @@ export function DayPicker({ activeDate, onSelect, sticky = false }: DayPickerPro
         <div className="absolute left-1/2 top-0 h-[116px] w-0">
           {DAYS.map((day, index) => {
             const date = new Date(day.date + "T12:00:00");
-            const distance = index - renderPosition;
-            const absoluteDistance = Math.abs(distance);
-            const focus = Math.max(0, 1 - absoluteDistance / 2);
-            const scale = 0.72 + 0.78 * focus;
-            const opacity = Math.max(0.2, 1 - absoluteDistance * 0.3);
-            const blur = Math.min(3, absoluteDistance * 1.5);
-            const isFocused = absoluteDistance < 0.5;
 
             return (
               <button
                 key={day.date}
+                ref={(element) => {
+                  itemRefs.current[index] = element;
+                }}
                 type="button"
                 aria-current={day.date === activeDate ? "date" : undefined}
                 aria-label={`${pad(date.getDate())}. szeptember, ${day.title}`}
@@ -110,31 +133,17 @@ export function DayPicker({ activeDate, onSelect, sticky = false }: DayPickerPro
                   event.stopPropagation();
                   selectDate(index);
                 }}
-                className="absolute top-5 w-[72px] text-center transition-none"
+                className="absolute top-6 w-[58px] text-center transition-none [will-change:transform,opacity,filter]"
                 style={{
-                  left: distance * ITEM_SPACING,
-                  transform: `translateX(-50%) scale(${scale})`,
-                  opacity,
-                  filter: `blur(${blur}px)`,
-                  zIndex: Math.round((DAYS.length - absoluteDistance) * 10),
+                  left: (index - activeIndex) * ITEM_SPACING,
+                  transform: "translateX(-50%) scale(0.64)",
                 }}
               >
                 <span
-                  className="flex flex-col items-center rounded-full px-0 py-3 transition-[background-color,box-shadow,border-color] duration-150"
-                  style={
-                    isFocused
-                      ? {
-                          background: "rgba(250, 248, 243, 0.58)",
-                          border: "1px solid rgba(255,255,255,0.35)",
-                          boxShadow: "0 12px 30px rgba(24,50,59,0.12)",
-                          backdropFilter: "blur(10px)",
-                          WebkitBackdropFilter: "blur(10px)",
-                        }
-                      : { border: "1px solid transparent" }
-                  }
+                  className="flex flex-col items-center rounded-full border border-transparent px-0 py-2.5 [will-change:background,box-shadow]"
                 >
-                  <span className="text-[28px] font-bold leading-none tracking-[-0.04em] text-deep-sea">{date.getDate()}</span>
-                  <span className="mt-1 text-[12px] font-medium leading-none text-deep-sea/60">
+                  <span className="text-[22px] font-bold leading-none tracking-[-0.04em] text-deep-sea">{date.getDate()}</span>
+                  <span className="mt-1 text-[10px] font-medium leading-none text-deep-sea/60">
                     {date.toLocaleDateString("hu-HU", { weekday: "short" }).replace(".", "")}
                   </span>
                 </span>
