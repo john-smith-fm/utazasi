@@ -3,13 +3,6 @@
 import { useEffect, useRef } from "react";
 import { DAYS } from "@/data/days";
 import { pad } from "@/lib/time";
-import { typeClass } from "@/lib/day-helpers";
-
-const DOT_COLOR: Record<string, string> = {
-  strand: "#4CB8C4",
-  apartman: "#708A64",
-  utazas: "#F18C79",
-};
 
 interface DayPickerProps {
   activeDate: string;
@@ -28,14 +21,15 @@ export function DayPicker({ activeDate, onSelect, sticky = false }: DayPickerPro
     <div
       className={
         sticky
-          ? "sticky top-0 z-10 border-b bg-quartz px-5 pb-3.5 pt-2.5"
-          : "px-0.5 pb-1 pt-1.5"
+          ? "sticky top-0 z-10 border-b bg-quartz pb-3 pt-2"
+          : "pb-1 pt-1"
       }
       style={sticky ? { borderColor: "rgba(24,50,59,0.10)" } : undefined}
     >
       <div
-        className="flex gap-3.5 overflow-x-auto pb-1 pt-1.5"
-        style={{ scrollSnapType: "x mandatory", scrollbarWidth: "none" }}
+        aria-label="Utazás napjai"
+        className="no-scrollbar flex h-[88px] snap-x snap-mandatory items-center gap-3 overflow-x-auto px-[calc(50%-32px)]"
+        style={{ scrollPaddingInline: "50%" }}
       >
         {DAYS.map((day) => {
           const d = new Date(day.date + "T12:00:00");
@@ -45,43 +39,30 @@ export function DayPicker({ activeDate, onSelect, sticky = false }: DayPickerPro
               key={day.date}
               ref={isActive ? activeRef : undefined}
               onClick={() => onSelect(day.date)}
-              className="flex flex-shrink-0 flex-col items-center gap-1.5 transition-transform"
-              style={{ scrollSnapAlign: "center", transform: isActive ? "scale(1.05)" : undefined }}
+              aria-current={isActive ? "date" : undefined}
+              aria-label={`${pad(d.getDate())}. szeptember, ${day.title}`}
+              className="flex h-16 w-16 shrink-0 snap-center flex-col items-center justify-center rounded-full transition-[transform,opacity,filter,background-color,box-shadow] duration-200 ease-out"
+              style={
+                isActive
+                  ? {
+                      transform: "scale(1)",
+                      background: "rgba(250, 248, 243, 0.62)",
+                      border: "1px solid rgba(255,255,255,0.5)",
+                      boxShadow: "0 12px 30px rgba(24,50,59,0.13)",
+                      backdropFilter: "blur(10px)",
+                      WebkitBackdropFilter: "blur(10px)",
+                    }
+                  : {
+                      transform: "scale(0.78)",
+                      opacity: 0.52,
+                      filter: "blur(0.4px)",
+                    }
+              }
             >
-              <span
-                className="flex items-center justify-center rounded-full border font-mono transition-all"
-                style={
-                  isActive
-                    ? {
-                        width: 54,
-                        height: 54,
-                        fontSize: 18,
-                        fontWeight: 700,
-                        backgroundColor: "rgba(255,255,255,0.65)",
-                        borderColor: "#4CB8C4",
-                        borderWidth: 1.5,
-                        color: "#2E8A93",
-                        boxShadow: "0 8px 20px rgba(24,50,59,0.08)",
-                        backdropFilter: "blur(16px)",
-                        WebkitBackdropFilter: "blur(16px)",
-                      }
-                    : {
-                        width: 42,
-                        height: 42,
-                        fontSize: 14,
-                        backgroundColor: "#FFFFFF",
-                        borderColor: "rgba(24,50,59,0.10)",
-                        borderWidth: 1.5,
-                        color: "#18323B",
-                      }
-                }
-              >
-                {pad(d.getDate())}
+              <span className="text-[23px] font-semibold leading-none tracking-[-0.04em] text-deep-sea">{d.getDate()}</span>
+              <span className="mt-1 text-[11px] font-medium leading-none text-deep-sea/60">
+                {d.toLocaleDateString("hu-HU", { weekday: "short" }).replace(".", "")}
               </span>
-              <span
-                className="block h-[5px] w-[5px] rounded-full"
-                style={{ backgroundColor: DOT_COLOR[typeClass(day.type)] }}
-              />
             </button>
           );
         })}

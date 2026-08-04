@@ -13,25 +13,25 @@ interface TimelineCardProps {
 
 export function TimelineCard({ day, onSelect }: TimelineCardProps) {
   return (
-    <div className="mb-4 rounded-m bg-white p-5 shadow-card">
-      <div className="mb-4 flex items-start justify-between">
+    <section className="mb-7">
+      <div className="mb-2 flex items-start justify-between px-1">
         <div>
-          <p className="mb-0.5 font-mono text-xs uppercase tracking-wide text-neutral-700">
-            Trip timeline
+          <p className="mb-1 text-[11px] font-medium tracking-[0.02em] text-deep-sea/55">
+            Journey
           </p>
-          <p className="mt-0.5 font-display text-[19px] font-semibold text-deep-sea">
+          <p className="font-display text-[22px] font-semibold tracking-[-0.03em] text-deep-sea">
             {dayIndexLabel(day)} · {day.title}
           </p>
         </div>
         <Link
           href="/days"
           aria-label="Napok megnyitása"
-          className="flex h-[38px] w-[38px] flex-shrink-0 items-center justify-center rounded-full bg-sand"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/70 text-deep-sea shadow-card transition-transform duration-200 active:scale-95"
         >
-          <Icon name="arrow-up-right" size={18} />
+          <Icon name="arrow-up-right" size={17} strokeWidth={1.8} />
         </Link>
       </div>
       <DayPicker activeDate={day.date} onSelect={onSelect} />
-    </div>
+    </section>
   );
 }
