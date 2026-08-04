@@ -1,0 +1,22 @@
+# DESIGN SYSTEM
+
+## Colors
+Background: #F8F7F3
+Primary: #4CB8C4
+Accent: #F18C79
+Text: #18323B
+Sand: #EFE7DA
+
+## Typography
+Fraunces
+Inter
+
+## Icons
+Lucide only.
+No emoji.
+
+## Glass
+Use only on:
+- Weather
+- Bottom navigation
+- Active timeline card

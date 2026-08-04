@@ -1,0 +1,61 @@
+import type { RhythmBlock, RhythmKey } from "@/types";
+
+export const RHYTHMS: Record<RhythmKey, RhythmBlock[]> = {
+  apartman: [
+    { key: "ebredes", label: "Ébredés", icon: "sunrise", time: "06:45", text: "Közös ébredés, lassú indulás." },
+    { key: "reggeli", label: "Reggeli", icon: "coffee", time: "07:00–07:45", text: "Reggeli az apartmanban vagy a teraszon." },
+    { key: "keszulodes", label: "Készülődés", icon: "backpack", time: "07:45–08:00", text: "Strandtáska, naptej, víz, kalap." },
+    { key: "indulas", label: "Indulás", icon: "car", time: "08:00", text: "Indulás a napi strandra, amíg még nincs meleg és nincs tömeg." },
+    { key: "strand", label: "Strand", icon: "umbrella", time: "08:30–12:00", text: "Délelőtti strandolás, fürdés, árnyékkeresés a nagyobb hőségben." },
+    { key: "ebed", label: "Ebéd", icon: "utensils", time: "12:00", text: "Ebéd — étteremben vagy hazafelé útba ejtve valamit." },
+    { key: "alvas", label: "Enikő alszik", icon: "moon", time: "13:00–15:00", text: "Délutáni alvás az apartmanban — csendes idő mindenkinek." },
+    { key: "delutan", label: "Apartman / pihenő", icon: "home", time: "15:00–16:00", text: "Játék, rajzolás, mese, olvasás a teraszon, kávé." },
+    { key: "keszulodes2", label: "Készülődés", icon: "shirt", time: "16:00–16:20", text: "Átöltözés, indulás a játszótérre." },
+    { key: "jatszoter", label: "Játszótér", icon: "footprints", time: "16:30", text: "Esti játszótéri kör, amíg enyhül a hőség." },
+    { key: "vacsora", label: "Vacsora", icon: "utensils", time: "19:00", text: "Vacsora — étteremben vagy otthon, a nap tempójától függően." },
+    { key: "furdes", label: "Zuhany", icon: "droplet", time: "20:35", text: "Lezuhanyozás, pizsama." },
+    { key: "mese", label: "Mese", icon: "book-open", time: "20:50", text: "Esti mese." },
+    { key: "altatas", label: "Altatás", icon: "moon-star", time: "21:00–21:30", text: "Altatás, lámpaoltás." },
+    { key: "bor", label: "Este", icon: "wine", time: "21:30", text: "Bor a teraszon, csend, tengerillat." },
+  ],
+
+  egeszNapos: [
+    { key: "ebredes", label: "Ébredés", icon: "sunrise", time: "06:45", text: "Közös ébredés, lassú indulás." },
+    { key: "reggeli", label: "Reggeli", icon: "coffee", time: "07:00–07:45", text: "Reggeli az apartmanban." },
+    { key: "keszulodes", label: "Készülődés", icon: "backpack", time: "07:45–08:00", text: "Nagy strandtáska: napernyő, ágynemű az alváshoz, uzsonna, sok víz." },
+    { key: "indulas", label: "Indulás", icon: "car", time: "08:00", text: "Indulás egy távolabbi, egész napra érdemes strandra." },
+    { key: "strand-delelott", label: "Strand — délelőtt", icon: "umbrella", time: "08:30–12:00", text: "Fürdés, homokozás, árnyékkeresés." },
+    { key: "ebed", label: "Ebéd", icon: "utensils", time: "12:00–13:00", text: "Könnyű ebéd a strandon vagy a közeli chiringuitóban." },
+    { key: "alvas", label: "Enikő alszik", icon: "moon", time: "13:00–15:00", text: "Alvás a strandon, árnyékos helyen — ilyenkor csendesebb tempó." },
+    { key: "strand-delutan", label: "Strand — délután", icon: "waves", time: "15:00–17:30", text: "Késő délutáni fürdés, amikor már langyosabb a víz és enyhébb a nap." },
+    { key: "fagyi", label: "Fagyi", icon: "ice-cream-cone", time: "17:30", text: "Fagyizás hazafelé — a nap fénypontja." },
+    { key: "hazaut", label: "Hazaút", icon: "car", time: "18:00", text: "Vissza az apartmanba, zuhany, átöltözés." },
+    { key: "vacsora", label: "Vacsora", icon: "utensils", time: "19:30", text: "Vacsora." },
+    { key: "furdes", label: "Zuhany", icon: "droplet", time: "20:35", text: "Lezuhanyozás, pizsama." },
+    { key: "mese", label: "Mese", icon: "book-open", time: "20:50", text: "Esti mese." },
+    { key: "altatas", label: "Altatás", icon: "moon-star", time: "21:00–21:30", text: "Altatás, lámpaoltás." },
+    { key: "bor", label: "Este", icon: "wine", time: "21:30", text: "Bor a teraszon." },
+  ],
+
+  erkezes: [
+    { key: "repulo", label: "Repülés", icon: "plane", time: "10:35–12:45", text: "Budapest → Cagliari, FR5248." },
+    { key: "auto", label: "Autó átvétele", icon: "car", time: "13:00", text: "Citroen C3 (automata, gyereküléssel) átvétele a cagliari reptéren." },
+    { key: "atutazas", label: "Átutazás Villasimiusba", icon: "route", time: "13:15–14:15", text: "Kb. 50 perces út Cagliariból Villasimiusba." },
+    { key: "bevasarlas", label: "Bevásárlás", icon: "shopping-cart", time: "14:15–15:00", text: "Első bevásárlás — víz, reggelihez való, alapok." },
+    { key: "beszokas", label: "Bejelentkezés", icon: "key", time: "15:00", text: "Bejelentkezés az Ollastu Apartmentsbe, kipakolás, beszokás." },
+    { key: "esti-strand", label: "Esti strandséta", icon: "waves", time: "17:30", text: "Rövid, laza séta a legközelebbi strandon — csak hangolódás, nincs program." },
+    { key: "vacsora", label: "Vacsora", icon: "utensils", time: "19:30", text: "Első vacsora — valami közeli, egyszerű hely." },
+    { key: "altatas", label: "Altatás", icon: "moon-star", time: "21:00", text: "Korai altatás — hosszú nap volt." },
+  ],
+
+  hazautazas: [
+    { key: "ebredes", label: "Ébredés", icon: "sunrise", time: "07:00", text: "Utolsó reggel — nincs rohanás, a délutáni gép miatt." },
+    { key: "reggeli", label: "Reggeli", icon: "coffee", time: "07:30", text: "Nyugodt reggeli, maradék alapanyagokból." },
+    { key: "csomagolas", label: "Csomagolás", icon: "luggage", time: "08:00–09:30", text: "Csomagolás, apartman rendbetétele." },
+    { key: "utolso-strand", label: "Utolsó strandolás", icon: "umbrella", time: "09:30–12:00", text: "Rövid utolsó fürdés valamelyik kedvenc strandon." },
+    { key: "kijelentkezes", label: "Kijelentkezés", icon: "key", time: "10:00-ig", text: "Kijelentkezés az apartmanból (kulcsleadás)." },
+    { key: "ebed", label: "Ebéd", icon: "utensils", time: "12:30", text: "Búcsúebéd Villasimiusban." },
+    { key: "auto-vissza", label: "Autó leadása", icon: "car", time: "16:00", text: "Autó leadása a cagliari reptéren." },
+    { key: "repulo", label: "Hazarepülés", icon: "plane", time: "17:30–19:35", text: "Cagliari → Budapest, FR5249." },
+  ],
+};
