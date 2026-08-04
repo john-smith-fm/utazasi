@@ -12,10 +12,44 @@ interface DayPickerProps {
 
 export function DayPicker({ activeDate, onSelect, sticky = false }: DayPickerProps) {
   const activeRef = useRef<HTMLButtonElement>(null);
+  const pickerRef = useRef<HTMLDivElement>(null);
+  const scrollTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     activeRef.current?.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
   }, [activeDate]);
+
+  useEffect(() => {
+    return () => {
+      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+    };
+  }, []);
+
+  function selectCenteredDay() {
+    const picker = pickerRef.current;
+    if (!picker) return;
+
+    const center = picker.getBoundingClientRect().left + picker.clientWidth / 2;
+    const closest = DAYS.reduce<(typeof DAYS)[number] | null>((candidate, day) => {
+      const button = picker.querySelector<HTMLButtonElement>(`[data-date="${day.date}"]`);
+      if (!button) return candidate;
+      if (!candidate) return day;
+
+      const candidateButton = picker.querySelector<HTMLButtonElement>(`[data-date="${candidate.date}"]`);
+      const distance = Math.abs(button.getBoundingClientRect().left + button.clientWidth / 2 - center);
+      const candidateDistance = candidateButton
+        ? Math.abs(candidateButton.getBoundingClientRect().left + candidateButton.clientWidth / 2 - center)
+        : Infinity;
+      return distance < candidateDistance ? day : candidate;
+    }, null);
+
+    if (closest && closest.date !== activeDate) onSelect(closest.date);
+  }
+
+  function handleScroll() {
+    if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+    scrollTimeout.current = setTimeout(selectCenteredDay, 90);
+  }
 
   return (
     <div
@@ -27,8 +61,10 @@ export function DayPicker({ activeDate, onSelect, sticky = false }: DayPickerPro
       style={sticky ? { borderColor: "rgba(24,50,59,0.10)" } : undefined}
     >
       <div
+        ref={pickerRef}
         aria-label="Utazás napjai"
-        className="no-scrollbar flex h-[88px] snap-x snap-mandatory items-center gap-3 overflow-x-auto px-[calc(50%-32px)]"
+        onScroll={handleScroll}
+        className="no-scrollbar flex h-[88px] snap-x snap-mandatory items-center overflow-x-auto px-[40%]"
         style={{ scrollPaddingInline: "50%" }}
       >
         {DAYS.map((day) => {
@@ -41,7 +77,8 @@ export function DayPicker({ activeDate, onSelect, sticky = false }: DayPickerPro
               onClick={() => onSelect(day.date)}
               aria-current={isActive ? "date" : undefined}
               aria-label={`${pad(d.getDate())}. szeptember, ${day.title}`}
-              className="flex h-16 w-16 shrink-0 snap-center flex-col items-center justify-center rounded-full transition-[transform,opacity,filter,background-color,box-shadow] duration-200 ease-out"
+              data-date={day.date}
+              className="flex h-16 basis-1/5 shrink-0 snap-center flex-col items-center justify-center rounded-full transition-[transform,opacity,filter,background-color,box-shadow] duration-200 ease-out"
               style={
                 isActive
                   ? {
