@@ -1,7 +1,7 @@
 "use client";
 
 export function Hero() {
-  return <header className="relative h-[204px] overflow-hidden bg-[#2f6970] pt-[env(safe-area-inset-top)] text-white">
+  return <header className="relative overflow-hidden bg-[#2f6970] pt-[env(safe-area-inset-top)] text-white" style={{ height: "calc(204px + env(safe-area-inset-top))", marginTop: "calc(-1 * env(safe-area-inset-top))" }}>
     <div aria-hidden="true" className="absolute inset-0 scale-[1.02] bg-cover" style={{ backgroundImage: 'linear-gradient(135deg,rgba(29,93,101,.08),rgba(255,138,91,.04)),url("/images/hero.jpg")', backgroundPosition: "58% 52%" }} />
     <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,42,47,.06)_0%,rgba(11,42,47,.12)_45%,rgba(11,42,47,.64)_100%)]" />
     <div className="relative flex h-full items-center justify-between gap-6 px-5">
