@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     title: "Utazási",
   },
   icons: {
-    apple: "/icons/icon-180.png",
+    apple: "/icons/utazasi-180.png",
   },
 };
 
