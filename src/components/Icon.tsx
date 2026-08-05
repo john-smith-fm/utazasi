@@ -1,24 +1,59 @@
 "use client";
 
-import { lazy, Suspense, type ComponentPropsWithoutRef } from "react";
-import dynamicIconImports from "lucide-react/dynamicIconImports";
+import {
+  Baby,
+  Bath,
+  Bed,
+  CalendarDays,
+  ChevronRight,
+  CloudSun,
+  Droplet,
+  Droplets,
+  Home,
+  MapPin,
+  Plus,
+  Sun,
+  Sunrise,
+  Sunset,
+  Umbrella,
+  Utensils,
+  Wallet,
+  Waves,
+  Wind,
+  X,
+  type LucideIcon,
+  type LucideProps,
+} from "lucide-react";
 
-type LucideProps = ComponentPropsWithoutRef<"svg"> & { size?: number | string; strokeWidth?: number };
+const icons: Record<string, LucideIcon> = {
+  baby: Baby,
+  bed: Bed,
+  "calendar-days": CalendarDays,
+  "chevron-right": ChevronRight,
+  "cloud-sun": CloudSun,
+  droplet: Droplet,
+  droplets: Droplets,
+  home: Home,
+  "map-pin": MapPin,
+  plus: Plus,
+  sun: Sun,
+  sunrise: Sunrise,
+  sunset: Sunset,
+  toilet: Bath,
+  umbrella: Umbrella,
+  utensils: Utensils,
+  wallet: Wallet,
+  waves: Waves,
+  wind: Wind,
+  x: X,
+};
 
 interface IconProps extends LucideProps {
-  name: string;
-  className?: string;
+  name: keyof typeof icons | string;
 }
 
-export function Icon({ name, size = 18, strokeWidth = 2, className, ...rest }: IconProps) {
-  const importFn = dynamicIconImports[name as keyof typeof dynamicIconImports];
-  if (!importFn) return null;
-
-  const LucideIcon = lazy(importFn);
-
-  return (
-    <Suspense fallback={<span style={{ display: "inline-block", width: size, height: size }} />}>
-      <LucideIcon size={size} strokeWidth={strokeWidth} className={className} {...rest} />
-    </Suspense>
-  );
+/** Statikus importok: PWA offline induláskor nincs külön ikon-chunk. */
+export function Icon({ name, size = 18, strokeWidth = 2, ...props }: IconProps) {
+  const LucideIcon = icons[name];
+  return LucideIcon ? <LucideIcon size={size} strokeWidth={strokeWidth} {...props} /> : null;
 }
