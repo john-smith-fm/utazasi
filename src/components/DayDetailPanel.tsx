@@ -1,7 +1,6 @@
 import type { Day } from "@/types";
 import { fmtDate, dayOfWeekLong } from "@/lib/time";
 import { typeClass, typeLabel } from "@/lib/day-helpers";
-import { PlanList } from "./PlanList";
 
 const TAG_COLOR: Record<string, string> = {
   strand: "#4CB8C4",
@@ -27,7 +26,7 @@ export function DayDetailPanel({ day }: { day: Day }) {
         <p className="mb-1 mt-2 text-[15px] leading-relaxed text-neutral-700">{day.mood}</p>
       </div>
       <div className="rounded-m bg-white p-5 shadow-card">
-        <PlanList day={day} highlightNow />
+        <p className="text-sm leading-relaxed text-deep-sea/65">A részletes napi tervet a kezdőképernyő idővonalán tudod kiválasztani és szerkeszteni.</p>
       </div>
     </div>
   );

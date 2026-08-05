@@ -1,51 +1,12 @@
 "use client";
 
-import { TRIP } from "@/data/trip";
-import { daysBetween } from "@/lib/time";
-import { useLiveClock } from "@/hooks/useLiveClock";
-
 export function Hero() {
-  const now = useLiveClock();
-
-  const toStart = daysBetween(now.dateStr, TRIP.startDate);
-  const toEnd = daysBetween(now.dateStr, TRIP.endDate);
-
-  let countdown: string;
-  if (toStart > 0) {
-    countdown = toStart === 1 ? "Holnap indul a nyaralás" : `${toStart} nap az indulásig`;
-  } else if (toEnd >= 0) {
-    const dayNum = daysBetween(TRIP.startDate, now.dateStr) + 1;
-    const totalDays = daysBetween(TRIP.startDate, TRIP.endDate) + 1;
-    countdown = `${dayNum}. nap / ${totalDays} — itt vagytok Villasimiusban`;
-  } else {
-    countdown = "Hazaértetek — jó volt Villasimiusban";
-  }
-
-  return (
-    <header className="relative flex h-[62vh] min-h-[420px] items-end overflow-hidden pt-[env(safe-area-inset-top)]">
-      <div className="absolute inset-0">
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 scale-[1.02] bg-cover"
-          style={{ backgroundImage: 'url("/images/hero.jpg?v=6802d92")', backgroundPosition: "58% center" }}
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(24,50,59,0.05) 0%, rgba(24,50,59,0.15) 40%, rgba(24,50,59,0.92) 100%)",
-          }}
-        />
-      </div>
-      <div className="relative w-full px-6 pb-7 text-quartz">
-        <p className="mb-1.5 font-mono text-xs uppercase tracking-wider text-turquoise/80">
-          Villasimius · Szardínia
-        </p>
-        <h1 className="mb-2.5 font-display text-[44px] font-semibold leading-[0.98] text-quartz">
-          Utazási
-        </h1>
-        <p className="font-mono text-sm text-quartz/85">{countdown}</p>
-      </div>
-    </header>
-  );
+  return <header className="relative h-[204px] overflow-hidden bg-[#2f6970] pt-[env(safe-area-inset-top)] text-white">
+    <div aria-hidden="true" className="absolute inset-0 scale-[1.02] bg-cover" style={{ backgroundImage: 'linear-gradient(135deg,rgba(29,93,101,.08),rgba(255,138,91,.04)),url("/images/hero.jpg")', backgroundPosition: "58% 52%" }} />
+    <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,42,47,.06)_0%,rgba(11,42,47,.12)_45%,rgba(11,42,47,.64)_100%)]" />
+    <div className="relative flex h-full items-center justify-between gap-6 px-5">
+      <img src="/images/utazasi-logo-white.svg" alt="Utazási" className="h-[116px] w-[116px] shrink-0 object-contain" />
+      <div className="min-w-0"><p className="text-sm font-bold leading-[19px] text-white/95">Szardínia</p><p className="text-sm font-medium leading-[19px] text-white/95">2026. szept. 2–11.</p></div>
+    </div>
+  </header>;
 }

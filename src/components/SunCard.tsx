@@ -1,24 +1,4 @@
 "use client";
-
 import { useLiveData } from "@/hooks/useLiveData";
 import { Icon } from "./Icon";
-
-export function SunCard() {
-  const { weather } = useLiveData();
-
-  return (
-    <div className="mb-4 rounded-m bg-white p-5 shadow-card">
-      <p className="mb-2.5 font-mono text-xs uppercase tracking-wide text-neutral-700">Nap</p>
-      <div className="flex gap-6">
-        <div className="flex items-center gap-2 font-mono text-[15px] text-deep-sea">
-          <Icon name="sunrise" size={18} className="text-turquoise" />
-          <span>{weather?.sunrise ?? "—"}</span>
-        </div>
-        <div className="flex items-center gap-2 font-mono text-[15px] text-deep-sea">
-          <Icon name="sunset" size={18} className="text-turquoise" />
-          <span>{weather?.sunset ?? "—"}</span>
-        </div>
-      </div>
-    </div>
-  );
-}
+export function SunCard() { const { weather } = useLiveData(); return <section aria-label="Napkelte és napnyugta Villasimiusban" className="mx-5 grid grid-cols-[1fr_auto_1fr] items-center gap-3 border-b border-deep-sea/10 px-[3px] pb-2.5 pt-3"><div className="flex items-center gap-2 text-sm font-semibold"><Icon name="sunrise" size={19} className="text-coral" /><span>{weather?.sunrise ?? "—"}</span></div><p className="text-[11px] font-semibold tracking-[.02em] text-deep-sea/55">Villasimius</p><div className="flex items-center justify-end gap-2 text-sm font-semibold"><Icon name="sunset" size={19} className="text-coral" /><span>{weather?.sunset ?? "—"}</span></div></section>; }
