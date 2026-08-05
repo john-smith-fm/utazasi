@@ -24,11 +24,10 @@ export function Hero() {
   return (
     <header className="relative flex h-[62vh] min-h-[420px] items-end overflow-hidden pt-[env(safe-area-inset-top)]">
       <div className="absolute inset-0">
-        <img
-          src="/images/hero.jpg"
-          alt="Villasimius"
-          className="h-full w-full scale-[1.02] object-cover"
-          style={{ objectPosition: "58% center" }}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 scale-[1.02] bg-cover"
+          style={{ backgroundImage: 'url("/images/hero.jpg?v=6802d92")', backgroundPosition: "58% center" }}
         />
         <div
           className="absolute inset-0"
