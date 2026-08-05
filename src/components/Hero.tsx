@@ -1,14 +1,11 @@
 "use client";
 
-import Image from "next/image";
-import { useState } from "react";
 import { TRIP } from "@/data/trip";
 import { daysBetween } from "@/lib/time";
 import { useLiveClock } from "@/hooks/useLiveClock";
 
 export function Hero() {
   const now = useLiveClock();
-  const [imgError, setImgError] = useState(false);
 
   const toStart = daysBetween(now.dateStr, TRIP.startDate);
   const toEnd = daysBetween(now.dateStr, TRIP.endDate);
@@ -27,19 +24,12 @@ export function Hero() {
   return (
     <header className="relative flex h-[62vh] min-h-[420px] items-end overflow-hidden pt-[env(safe-area-inset-top)]">
       <div className="absolute inset-0">
-        {!imgError ? (
-          <Image
-            src="/images/hero.jpg"
-            alt="Villasimius"
-            fill
-            priority
-            sizes="100vw"
-            className="scale-[1.02] object-cover"
-            onError={() => setImgError(true)}
-          />
-        ) : (
-          <div className="h-full w-full bg-gradient-to-br from-turquoise to-deep-sea" />
-        )}
+        <img
+          src="/images/hero.jpg"
+          alt="Villasimius"
+          className="h-full w-full scale-[1.02] object-cover"
+          style={{ objectPosition: "58% center" }}
+        />
         <div
           className="absolute inset-0"
           style={{
