@@ -1,0 +1,22 @@
+{
+  "trip": {
+    "slug": "sardinia-family-2026",
+    "name": "Szardínia családi nyaralás",
+    "destination": "Villasimius",
+    "start_date": null,
+    "end_date": null
+  },
+  "day": {
+    "date": "2026-09-03",
+    "title": "Első strandnap",
+    "subtitle": "Tenger, pihenés, családi ritmus"
+  },
+  "timeline_activities": [
+    { "seed_key": "2026-09-03-wake", "start_time": "06:45", "duration_minutes": 30, "title": "Ébredés", "description": null, "location_name": null, "kind": "plan", "is_system_generated": false },
+    { "seed_key": "2026-09-03-beach", "start_time": "08:30", "duration_minutes": 180, "title": "Strand", "description": "Családi strandolás.", "location_name": "Porto Giunco", "kind": "plan", "is_system_generated": false },
+    { "seed_key": "2026-09-03-lunch", "start_time": "12:30", "duration_minutes": 60, "title": "Ebéd", "description": null, "location_name": null, "kind": "plan", "is_system_generated": false },
+    { "seed_key": "2026-09-03-nap", "start_time": "13:30", "duration_minutes": 150, "title": "Enikő alszik", "description": "Délutáni pihenés.", "location_name": null, "kind": "plan", "is_system_generated": false },
+    { "seed_key": "2026-09-03-gelato", "start_time": "16:00", "duration_minutes": 60, "title": "Fagyi / séta", "description": null, "location_name": null, "kind": "plan", "is_system_generated": false },
+    { "seed_key": "2026-09-03-dinner", "start_time": "19:00", "duration_minutes": 90, "title": "Vacsora", "description": null, "location_name": null, "kind": "plan", "is_system_generated": false }
+  ]
+}
