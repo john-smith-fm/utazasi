@@ -28,6 +28,12 @@ The importer is idempotent: it upserts the trip by `slug`, the day by `(trip_id,
 
 RLS is enabled and no permissive policies exist yet. This intentionally prevents public browser reads and writes while the family access/auth mechanism is unresolved. The seed script is server-side and bypasses RLS through a Supabase secret key (or the legacy service-role key).
 
+## Home Timeline read integration
+
+Home now performs read-only browser queries in this order: `trips` (by the seeded `sardinia-family-2026` slug), `days` (by the selected date), then `timeline_activities` (ordered by start time and creation time). The seeded 2026-09-03 day is the initial selection. Dates that have not been seeded continue to display their existing local content.
+
+The read integration requires `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in the Vercel environment. It also requires an explicitly approved RLS `SELECT` policy. The current versioned migrations do not include one, so the browser will retain its local fallback until the family access policy is decided. No browser write is performed.
+
 Before connecting the Home UI, choose and implement one of:
 
 - Supabase Auth; or

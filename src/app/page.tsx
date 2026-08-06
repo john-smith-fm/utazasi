@@ -9,14 +9,16 @@ import { PlanList } from "@/components/PlanList";
 import { Icon } from "@/components/Icon";
 import { HOME_DAYS, type HomeActivity } from "@/data/home-days";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useTimelineDay } from "@/hooks/useTimelineDay";
 
 const alternatives: Record<string, string[]> = { Strandolás: ["Campus", "Porto Giunco", "Simius", "Cala Pira"], "Könnyű vacsora": ["Sa Tankitta", "Le Pavoncelle", "Villasimius központ"] };
 
 export default function HomePage() {
-  const [selectedDate, setSelectedDate] = useState(HOME_DAYS[2].date);
+  const [selectedDate, setSelectedDate] = useState(HOME_DAYS[1].date);
   const [editing, setEditing] = useState<HomeActivity | null>(null);
   const { value: choices, setValue: setChoices } = useLocalStorage<Record<string, string>>("home-v8-choices", {});
-  const day = HOME_DAYS.find((item) => item.date === selectedDate) ?? HOME_DAYS[0];
+  const fallbackDay = HOME_DAYS.find((item) => item.date === selectedDate) ?? HOME_DAYS[0];
+  const day = useTimelineDay(selectedDate, fallbackDay);
   const activities = day.activities.map((item) => ({ ...item, place: choices[`${day.date}-${item.time}-${item.title}`] ?? item.place }));
   const saveChoice = (place: string) => { if (!editing) return; setChoices((old) => ({ ...old, [`${day.date}-${editing.time}-${editing.title}`]: place })); setEditing(null); };
   return <><Hero /><main className="relative z-10 -mt-7 mx-auto max-w-[430px] pb-[126px]"><div className="px-5"><StatRow /></div><SunCard /><div className="px-5"><TimelineCard day={day} onSelect={setSelectedDate} /><section className="mt-8"><PlanList activities={activities} onEdit={setEditing} /></section></div></main><button type="button" aria-label="Program hozzáadása" onClick={() => setEditing({ time: "", title: "Új programpont", place: "" })} className="fixed bottom-[calc(88px+env(safe-area-inset-bottom))] right-5 z-[55] grid h-[54px] w-[54px] place-items-center rounded-full bg-coral text-deep-sea shadow-[0_12px_28px_rgba(217,99,57,.28)] transition-transform active:scale-95"><Icon name="plus" size={24} strokeWidth={2} /></button>
