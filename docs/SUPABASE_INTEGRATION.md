@@ -13,12 +13,12 @@ NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
 ```
 
-The browser client uses only these values. Never expose `SUPABASE_SERVICE_ROLE_KEY` to the browser, Git, or Vercel client environment.
+The browser client uses only these values. Never expose `SUPABASE_SECRET_KEY` or `SUPABASE_SERVICE_ROLE_KEY` to the browser, Git, or Vercel client environment.
 
 ## Apply and seed
 
 1. Run `supabase/migrations/001_initial_schema.sql` in the Supabase SQL Editor, or apply it with the Supabase CLI.
-2. Set `SUPABASE_SERVICE_ROLE_KEY` locally for the seed process only.
+2. Set `SUPABASE_SECRET_KEY` locally for the seed process only. The importer also accepts the legacy `SUPABASE_SERVICE_ROLE_KEY` as a temporary compatibility fallback.
 3. Run `node scripts/seed-supabase.mjs`.
 4. Run `supabase/queries/verify_test_day.sql` in the SQL Editor. It must return six rows in time order.
 
@@ -26,7 +26,7 @@ The importer is idempotent: it upserts the trip by `slug`, the day by `(trip_id,
 
 ## RLS and auth status
 
-RLS is enabled and no permissive policies exist yet. This intentionally prevents public browser reads and writes while the family access/auth mechanism is unresolved. The seed script is server-side and bypasses RLS through the service-role key.
+RLS is enabled and no permissive policies exist yet. This intentionally prevents public browser reads and writes while the family access/auth mechanism is unresolved. The seed script is server-side and bypasses RLS through a Supabase secret key (or the legacy service-role key).
 
 Before connecting the Home UI, choose and implement one of:
 
