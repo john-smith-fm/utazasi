@@ -1,62 +1,104 @@
-# Supabase integration — Sprint 1
+# Supabase integration — Sprint 1C
 
-## Scope
+## Purpose
 
-This change is infrastructure only. The existing Home UI continues to use local data until a separately approved data-read integration.
+Supabase is the private runtime data store for Utazási. Git/JSON remains the canonical knowledge source. Browser clients may read only the itinerary of trips for which they have a family membership.
+
+Sprint 1C adds two things:
+
+- `trip_members`: owner/member membership records and membership-based RLS;
+- e-mail OTP authentication completed inside the installed PWA, rather than a Safari magic-link callback.
 
 ## Environment
 
-Copy `.env.local.example` to `.env.local` and set:
+Copy `.env.local.example` to `.env.local` locally. Do not commit this file.
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+SUPABASE_SECRET_KEY=
+SUPABASE_FAMILY_MEMBERS=owner@example.com:owner,member@example.com:member
+SUPABASE_TRIP_SLUG=sardinia-family-2026
 ```
 
-The browser client uses only these values. Never expose `SUPABASE_SECRET_KEY` or `SUPABASE_SERVICE_ROLE_KEY` to the browser, Git, or Vercel client environment.
+Only the two `NEXT_PUBLIC_*` values belong in Vercel. `SUPABASE_SECRET_KEY`, legacy `SUPABASE_SERVICE_ROLE_KEY`, and `SUPABASE_FAMILY_MEMBERS` remain local-only values. Never expose them in browser code, Git, or Vercel client variables.
 
-## Apply and seed
+## Apply the migration
 
-1. Run migrations in order in the Supabase SQL Editor (or apply them with the Supabase CLI): `001_initial_schema.sql`, `002_fix_seed_permissions_and_conflict.sql`, then `003_add_trip_ownership_and_read_policies.sql`.
-2. Set `SUPABASE_SECRET_KEY` locally for the seed process only. The importer also accepts the legacy `SUPABASE_SERVICE_ROLE_KEY` as a temporary compatibility fallback.
-3. Run `npm run seed:supabase`. This command loads the local `.env.local` file; it does not expose its values to the browser.
-4. Run `supabase/queries/verify_test_day.sql` in the SQL Editor. It must return six rows in time order.
+Run migrations in order in the Supabase SQL Editor or with the Supabase CLI:
 
-The importer is idempotent: it upserts the trip by `slug`, the day by `(trip_id, date)`, and canonical activities by `seed_key`.
+1. `001_initial_schema.sql`
+2. `002_fix_seed_permissions_and_conflict.sql`
+3. `003_add_trip_ownership_and_read_policies.sql`
+4. `004_add_family_members_and_otp_access.sql`
 
-## RLS and magic-link access
+Migration `004` preserves any existing `trips.user_id` owner as an `owner` membership, then replaces the read policies with membership-based policies. It does not grant browser writes.
 
-Sprint 1B uses Supabase Auth magic links with PKCE. `003_add_trip_ownership_and_read_policies.sql` adds nullable `trips.user_id`, revokes authenticated writes, and creates `SELECT` policies that require `auth.uid()` to own the trip. The `days` and `timeline_activities` policies inherit access through their parent trip. There are no public `anon` policies, roles, sharing rules, or browser writes.
+## Seed and provision family members
 
-The browser client explicitly persists the Auth session in local storage, refreshes a valid session token, and restores it when the PWA opens. After the first successful magic-link login, the installed iPhone PWA reopens without another login for as long as the Supabase session remains valid. The small sign-out control in the Home Hero calls local-scope `supabase.auth.signOut()` and clears that persisted session even when offline.
+First project data, then provision the invite-only family identities:
 
-The nullable column is a controlled migration path for the existing seed. Rows with no owner are invisible to all browser users. After creating the first family user, rerun the seed with the user's UUID:
-
-```env
-SUPABASE_SEED_USER_ID=<UUID from Supabase Auth > Users>
+```bash
+npm run seed:supabase
+npm run provision:family
 ```
 
-The server-side seed importer assigns this UUID to the seeded trip during its idempotent upsert. Only the service/secret key can perform this assignment.
+`provision:family` is idempotent. It reads the local `SUPABASE_FAMILY_MEMBERS` value, creates confirmed Supabase Auth users when they do not already exist, then upserts their `trip_members` rows. Exactly one `owner` is required by the script. This is deliberately a private admin/seed operation; there is no invitation-management UI in Sprint 1C.
 
-## Home Timeline read integration
+## Configure e-mail OTP in Supabase
 
-Home now performs read-only browser queries in this order: `trips` (by the seeded `sardinia-family-2026` slug), `days` (by the selected date), then `timeline_activities` (ordered by start time and creation time). The seeded 2026-09-03 day is the initial selection. Dates that have not been seeded continue to display their existing local content after the owner check succeeds.
+The code-entry UI requires an OTP e-mail template.
 
-The app is gated before any Home or fallback data renders. A signed-in user must first pass the trip ownership check. The successful owner check is cached on the device so an already-authorized installed PWA can continue to use its local fallback while offline.
+The default Supabase mail sender does not permit editing this template. Configure a custom SMTP provider first, then:
 
-For iPhone PWA testing:
+1. In **Supabase Dashboard → Authentication → Email Templates**, open **Magic link or OTP**.
+2. Change the message body to use `{{ .Token }}` rather than `{{ .ConfirmationURL }}`.
+3. Keep a short expiration period and save the template.
+4. Do not use the old `/auth/callback` URL as an OTP redirect target. It remains only as a human-readable fallback for old e-mails.
 
-1. In Supabase Auth URL Configuration, set the Site URL to the production Vercel URL and add both `https://utazasi-sable.vercel.app/auth/callback` and `http://localhost:3000/auth/callback` as redirect URLs.
-2. Add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in Vercel for Production (and locally in `.env.local`). Never add secret/service-role values to Vercel client variables.
-3. Deploy, request a magic link from the app, and complete it on the same iPhone/PWA.
-4. Copy the new user's UUID from Supabase Auth > Users into local-only `SUPABASE_SEED_USER_ID`, then rerun `npm run seed:supabase` to assign the trip owner.
-5. Reopen the PWA and verify that the 2026-09-03 Timeline contains six seed records.
-6. Close and reopen the installed PWA: the Timeline should reopen without a new magic link. Then use the Home Hero sign-out control and verify that the magic-link screen returns.
+The PWA calls `signInWithOtp` with `shouldCreateUser: false`, then verifies the entered code with `verifyOtp`. A previously unknown e-mail cannot create a user through the app. The Auth users are instead created by `npm run provision:family`.
 
-After the intended family accounts exist, disable new-user signups in Supabase Auth if no additional users should be able to create accounts. Unknown authenticated users still cannot see any trip because of RLS.
+Do not deploy the OTP UI before this SMTP/template step is complete: the default Magic Link template would otherwise send a link instead of a code.
 
-## Canonical seed data and known uncertainty
+## RLS model
 
-`supabase/seeds/test-day.json` is transcribed only from the supplied Test Day Data package. That package gives the test date but not trip start/end dates; both are deliberately `null` rather than inferred from older prototype data.
+```text
+auth.uid()
+  ↓
+trip_members.user_id
+  ↓
+trip_members.trip_id
+  ↓
+trips / days / timeline_activities
+```
 
-Git JSON remains canonical knowledge. Supabase is the runtime projection. Future `places`, `events`, and `activity_ideas` tables are intentionally not in Sprint 1.
+Authenticated users can read only their own membership and the trip, days, and activities connected to it. `anon` receives no table access. Browser clients have no insert, update, or delete grants.
+
+## iPhone PWA test
+
+1. Install or open Utazási on the iPhone.
+2. Enter a provisioned family e-mail address.
+3. Copy the e-mail OTP into the same PWA; Safari is not part of this flow.
+4. Verify that the 2026-09-03 Timeline has six activities.
+5. Close and reopen the PWA. A valid persisted session should restore automatically.
+6. Turn on airplane mode and reopen while the session remains valid. The last authorized local Home fallback may render.
+7. Use the Home Hero logout button. The Timeline must no longer be available.
+8. Confirm that an e-mail absent from `SUPABASE_FAMILY_MEMBERS` cannot create an Auth user or see the trip.
+
+## Read-only verification query
+
+Run [verify_test_day.sql](../supabase/queries/verify_test_day.sql) after seeding. Then inspect the members without exposing any secret:
+
+```sql
+select
+  trips.slug,
+  trip_members.email,
+  trip_members.role,
+  trip_members.accepted_at
+from public.trip_members
+join public.trips on trips.id = trip_members.trip_id
+where trips.slug = 'sardinia-family-2026'
+order by trip_members.role, trip_members.email;
+```
+
+The SQL Editor runs as an administrative role. RLS validation must be done through the installed PWA, using each provisioned user.

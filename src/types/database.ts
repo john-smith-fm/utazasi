@@ -1,4 +1,5 @@
 export type TimelineActivityKind = "plan" | "travel";
+export type TripMemberRole = "owner" | "member";
 
 export interface Database {
   public: {
@@ -21,10 +22,16 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["timeline_activities"]["Insert"]>;
         Relationships: [{ foreignKeyName: "timeline_activities_day_id_fkey"; columns: ["day_id"]; referencedRelation: "days"; referencedColumns: ["id"] }];
       };
+      trip_members: {
+        Row: { id: string; trip_id: string; email: string; email_normalized: string; user_id: string | null; role: TripMemberRole; invited_at: string; accepted_at: string | null; created_at: string; updated_at: string };
+        Insert: { id?: string; trip_id: string; email: string; email_normalized?: never; user_id?: string | null; role?: TripMemberRole; invited_at?: string; accepted_at?: string | null; created_at?: string; updated_at?: string };
+        Update: Partial<Database["public"]["Tables"]["trip_members"]["Insert"]>;
+        Relationships: [{ foreignKeyName: "trip_members_trip_id_fkey"; columns: ["trip_id"]; referencedRelation: "trips"; referencedColumns: ["id"] }];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
-    Enums: { timeline_activity_kind: TimelineActivityKind };
+    Enums: { timeline_activity_kind: TimelineActivityKind; trip_member_role: TripMemberRole };
     CompositeTypes: Record<string, never>;
   };
 }
