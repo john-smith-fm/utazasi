@@ -28,6 +28,8 @@ The importer is idempotent: it upserts the trip by `slug`, the day by `(trip_id,
 
 Sprint 1B uses Supabase Auth magic links with PKCE. `003_add_trip_ownership_and_read_policies.sql` adds nullable `trips.user_id`, revokes authenticated writes, and creates `SELECT` policies that require `auth.uid()` to own the trip. The `days` and `timeline_activities` policies inherit access through their parent trip. There are no public `anon` policies, roles, sharing rules, or browser writes.
 
+The browser client explicitly persists the Auth session in local storage, refreshes a valid session token, and restores it when the PWA opens. After the first successful magic-link login, the installed iPhone PWA reopens without another login for as long as the Supabase session remains valid. The small sign-out control in the Home Hero calls local-scope `supabase.auth.signOut()` and clears that persisted session even when offline.
+
 The nullable column is a controlled migration path for the existing seed. Rows with no owner are invisible to all browser users. After creating the first family user, rerun the seed with the user's UUID:
 
 ```env
@@ -49,6 +51,7 @@ For iPhone PWA testing:
 3. Deploy, request a magic link from the app, and complete it on the same iPhone/PWA.
 4. Copy the new user's UUID from Supabase Auth > Users into local-only `SUPABASE_SEED_USER_ID`, then rerun `npm run seed:supabase` to assign the trip owner.
 5. Reopen the PWA and verify that the 2026-09-03 Timeline contains six seed records.
+6. Close and reopen the installed PWA: the Timeline should reopen without a new magic link. Then use the Home Hero sign-out control and verify that the magic-link screen returns.
 
 After the intended family accounts exist, disable new-user signups in Supabase Auth if no additional users should be able to create accounts. Unknown authenticated users still cannot see any trip because of RLS.
 
