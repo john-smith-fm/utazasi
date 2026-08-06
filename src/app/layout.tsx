@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Inter, IBM_Plex_Mono } from "next/font/google";
-import { TabBar } from "@/components/TabBar";
+import { AppAccessGate } from "@/components/AppAccessGate";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import "./globals.css";
 
@@ -51,8 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="hu" className={`${fraunces.variable} ${inter.variable} ${plexMono.variable}`}>
       <body className="bg-quartz font-sans text-deep-sea pb-[calc(64px+env(safe-area-inset-bottom))]">
-        {children}
-        <TabBar />
+        <AppAccessGate>{children}</AppAccessGate>
         <ServiceWorkerRegister />
       </body>
     </html>

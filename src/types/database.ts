@@ -4,8 +4,8 @@ export interface Database {
   public: {
     Tables: {
       trips: {
-        Row: { id: string; slug: string; name: string; destination: string; start_date: string | null; end_date: string | null; created_at: string };
-        Insert: { id?: string; slug: string; name: string; destination: string; start_date?: string | null; end_date?: string | null; created_at?: string };
+        Row: { id: string; user_id: string | null; slug: string; name: string; destination: string; start_date: string | null; end_date: string | null; created_at: string };
+        Insert: { id?: string; user_id?: string | null; slug: string; name: string; destination: string; start_date?: string | null; end_date?: string | null; created_at?: string };
         Update: Partial<Database["public"]["Tables"]["trips"]["Insert"]>;
         Relationships: [];
       };
@@ -28,4 +28,3 @@ export interface Database {
     CompositeTypes: Record<string, never>;
   };
 }
-

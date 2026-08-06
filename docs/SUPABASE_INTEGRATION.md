@@ -17,29 +17,40 @@ The browser client uses only these values. Never expose `SUPABASE_SECRET_KEY` or
 
 ## Apply and seed
 
-1. Run migrations in order in the Supabase SQL Editor (or apply them with the Supabase CLI): first `001_initial_schema.sql`, then `002_fix_seed_permissions_and_conflict.sql`.
+1. Run migrations in order in the Supabase SQL Editor (or apply them with the Supabase CLI): `001_initial_schema.sql`, `002_fix_seed_permissions_and_conflict.sql`, then `003_add_trip_ownership_and_read_policies.sql`.
 2. Set `SUPABASE_SECRET_KEY` locally for the seed process only. The importer also accepts the legacy `SUPABASE_SERVICE_ROLE_KEY` as a temporary compatibility fallback.
 3. Run `npm run seed:supabase`. This command loads the local `.env.local` file; it does not expose its values to the browser.
 4. Run `supabase/queries/verify_test_day.sql` in the SQL Editor. It must return six rows in time order.
 
 The importer is idempotent: it upserts the trip by `slug`, the day by `(trip_id, date)`, and canonical activities by `seed_key`.
 
-## RLS and auth status
+## RLS and magic-link access
 
-RLS is enabled and no permissive policies exist yet. This intentionally prevents public browser reads and writes while the family access/auth mechanism is unresolved. The seed script is server-side and bypasses RLS through a Supabase secret key (or the legacy service-role key).
+Sprint 1B uses Supabase Auth magic links with PKCE. `003_add_trip_ownership_and_read_policies.sql` adds nullable `trips.user_id`, revokes authenticated writes, and creates `SELECT` policies that require `auth.uid()` to own the trip. The `days` and `timeline_activities` policies inherit access through their parent trip. There are no public `anon` policies, roles, sharing rules, or browser writes.
+
+The nullable column is a controlled migration path for the existing seed. Rows with no owner are invisible to all browser users. After creating the first family user, rerun the seed with the user's UUID:
+
+```env
+SUPABASE_SEED_USER_ID=<UUID from Supabase Auth > Users>
+```
+
+The server-side seed importer assigns this UUID to the seeded trip during its idempotent upsert. Only the service/secret key can perform this assignment.
 
 ## Home Timeline read integration
 
-Home now performs read-only browser queries in this order: `trips` (by the seeded `sardinia-family-2026` slug), `days` (by the selected date), then `timeline_activities` (ordered by start time and creation time). The seeded 2026-09-03 day is the initial selection. Dates that have not been seeded continue to display their existing local content.
+Home now performs read-only browser queries in this order: `trips` (by the seeded `sardinia-family-2026` slug), `days` (by the selected date), then `timeline_activities` (ordered by start time and creation time). The seeded 2026-09-03 day is the initial selection. Dates that have not been seeded continue to display their existing local content after the owner check succeeds.
 
-The read integration requires `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in the Vercel environment. It also requires an explicitly approved RLS `SELECT` policy. The current versioned migrations do not include one, so the browser will retain its local fallback until the family access policy is decided. No browser write is performed.
+The app is gated before any Home or fallback data renders. A signed-in user must first pass the trip ownership check. The successful owner check is cached on the device so an already-authorized installed PWA can continue to use its local fallback while offline.
 
-Before connecting the Home UI, choose and implement one of:
+For iPhone PWA testing:
 
-- Supabase Auth; or
-- a server-verified family PIN that issues a restricted session.
+1. In Supabase Auth URL Configuration, set the Site URL to the production Vercel URL and add both `https://utazasi-sable.vercel.app/auth/callback` and `http://localhost:3000/auth/callback` as redirect URLs.
+2. Add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in Vercel for Production (and locally in `.env.local`). Never add secret/service-role values to Vercel client variables.
+3. Deploy, request a magic link from the app, and complete it on the same iPhone/PWA.
+4. Copy the new user's UUID from Supabase Auth > Users into local-only `SUPABASE_SEED_USER_ID`, then rerun `npm run seed:supabase` to assign the trip owner.
+5. Reopen the PWA and verify that the 2026-09-03 Timeline contains six seed records.
 
-Do not add open `anon` policies for a private family itinerary.
+After the intended family accounts exist, disable new-user signups in Supabase Auth if no additional users should be able to create accounts. Unknown authenticated users still cannot see any trip because of RLS.
 
 ## Canonical seed data and known uncertainty
 

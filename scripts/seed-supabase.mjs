@@ -5,10 +5,11 @@ const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 // New Supabase projects use sb_secret_ keys. Keep the legacy variable as a
 // local-only fallback so existing setups do not break during the transition.
 const secretKey = process.env.SUPABASE_SECRET_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY;
+const seedUserId = process.env.SUPABASE_SEED_USER_ID;
 
-if (!url || !secretKey) {
+if (!url || !secretKey || !seedUserId) {
   throw new Error(
-    "Seed requires NEXT_PUBLIC_SUPABASE_URL and server-only SUPABASE_SECRET_KEY (or legacy SUPABASE_SERVICE_ROLE_KEY).",
+    "Seed requires NEXT_PUBLIC_SUPABASE_URL, server-only SUPABASE_SECRET_KEY (or legacy SUPABASE_SERVICE_ROLE_KEY), and SUPABASE_SEED_USER_ID.",
   );
 }
 
@@ -17,7 +18,7 @@ const supabase = createClient(url, secretKey, { auth: { autoRefreshToken: false,
 
 const { data: trip, error: tripError } = await supabase
   .from("trips")
-  .upsert(seed.trip, { onConflict: "slug" })
+  .upsert({ ...seed.trip, user_id: seedUserId }, { onConflict: "slug" })
   .select("id")
   .single();
 if (tripError) throw tripError;
