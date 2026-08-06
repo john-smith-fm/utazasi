@@ -17,9 +17,9 @@ The browser client uses only these values. Never expose `SUPABASE_SECRET_KEY` or
 
 ## Apply and seed
 
-1. Run `supabase/migrations/001_initial_schema.sql` in the Supabase SQL Editor, or apply it with the Supabase CLI.
+1. Run migrations in order in the Supabase SQL Editor (or apply them with the Supabase CLI): first `001_initial_schema.sql`, then `002_fix_seed_permissions_and_conflict.sql`.
 2. Set `SUPABASE_SECRET_KEY` locally for the seed process only. The importer also accepts the legacy `SUPABASE_SERVICE_ROLE_KEY` as a temporary compatibility fallback.
-3. Run `node scripts/seed-supabase.mjs`.
+3. Run `npm run seed:supabase`. This command loads the local `.env.local` file; it does not expose its values to the browser.
 4. Run `supabase/queries/verify_test_day.sql` in the SQL Editor. It must return six rows in time order.
 
 The importer is idempotent: it upserts the trip by `slug`, the day by `(trip_id, date)`, and canonical activities by `seed_key`.
