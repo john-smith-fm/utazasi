@@ -41,7 +41,7 @@ function TimelineContent({ activity, conflict }: { activity: HomeActivity; confl
     {activity.description && <p className="mt-1 text-sm leading-[21px] text-deep-sea/60">{activity.description}</p>}
     {activity.recommendation && <p className="mt-2 text-[13px] leading-[18px] text-turquoise-dark">Ajánlott · {activity.recommendation}</p>}
     {activity.localEvent && activity.eventNote && <p className="mt-1 text-xs leading-[18px] text-deep-sea/60">{activity.eventNote}</p>}
-    {conflict && <p className="mt-2 text-[13px] leading-[18px] text-coral" role="status">Időütközés · Ez a program átfed egy korábbival.</p>}
+    {conflict && <p className="mt-1 text-[12px] font-medium leading-[18px] text-coral/85" role="status">Időütközés · Átfed egy korábbi programmal.</p>}
   </article>;
 }
 

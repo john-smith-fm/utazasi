@@ -14,6 +14,7 @@ Cél: a napi Timeline a meglévő `trips → days → timeline_activities` read 
 - loading, empty, error és cache-elt offline állapot;
 - per-nap localStorage cache sikeres read után;
 - safe-area és a Bottom Navigation/FAB melletti megfelelő alsó tér.
+- dinamikus Timeline end spacer: minimum 96 px, rövid listánál kitölti a rendelkezésre álló viewport-teret, hosszú listánál korlátlanul a tartalom után marad; az események közötti térközt nem módosítja.
 
 ### Nincs benne
 

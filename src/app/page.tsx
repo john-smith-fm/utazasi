@@ -11,7 +11,7 @@ import { TimelineCard } from "@/components/TimelineCard";
 import { HOME_DAYS, type HomeActivity } from "@/data/home-days";
 import { useTimelineDay } from "@/hooks/useTimelineDay";
 import { createTimelineActivity, deleteTimelineActivity, updateTimelineActivity } from "@/lib/timeline-client";
-import type { TimelineActivityInput } from "@/lib/timeline-types";
+import type { TimelineActivityInput, TimelineActivityRecord } from "@/lib/timeline-types";
 
 type EditorState = { activity?: HomeActivity } | null;
 type ToastState = { message: string; undo?: boolean } | null;
@@ -24,6 +24,19 @@ function toInput(activity: HomeActivity): TimelineActivityInput {
     durationMinutes: activity.durationMinutes ?? 60,
     locationName: activity.place,
     description: activity.description ?? "",
+  };
+}
+
+function toHomeActivity(activity: TimelineActivityRecord): HomeActivity {
+  return {
+    id: activity.id,
+    time: activity.start_time.slice(0, 5),
+    title: activity.title,
+    place: activity.location_name ?? "",
+    description: activity.description ?? undefined,
+    durationMinutes: activity.duration_minutes,
+    kind: activity.kind,
+    isSystemGenerated: activity.is_system_generated,
   };
 }
 
@@ -76,10 +89,10 @@ export default function HomePage() {
   async function remove(activity: HomeActivity) {
     if (!activity.id) return;
     if (!canMutate) throw new Error(status === "offline" ? "Offline módban nem lehet törölni." : "A napi terv még nem szerkeszthető.");
-    await deleteTimelineActivity(activity.id);
+    const deleted = await deleteTimelineActivity(activity.id);
     setEditor(null);
     retry();
-    startUndo(activity);
+    startUndo(toHomeActivity(deleted));
   }
 
   async function undo() {
@@ -100,12 +113,13 @@ export default function HomePage() {
 
   return <>
     <Hero />
-    <main className="relative z-10 mx-auto -mt-7 max-w-[430px] pb-[126px]">
+    <main className="relative z-10 mx-auto -mt-7 flex min-h-[calc(100dvh-176px)] max-w-[430px] flex-col pb-[126px]">
       <div className="px-5"><StatRow /></div>
       <SunCard />
-      <div className="px-5">
+      <div className="flex flex-1 flex-col px-5">
         <TimelineCard day={day} onSelect={setSelectedDate} />
         <section className="mt-8"><PlanList activities={day.activities} status={status} onRetry={retry} onSelect={(activity) => setEditor({ activity })} onDelete={(activity) => { void remove(activity).catch((caught) => showToast(caught instanceof Error ? caught.message : "A törlés nem sikerült.")); }} /></section>
+        <div aria-hidden="true" className="min-h-24 flex-1" />
       </div>
     </main>
     <button type="button" disabled={!canMutate} onClick={() => setEditor({})} aria-label="Új program hozzáadása" className="fixed bottom-[calc(88px+env(safe-area-inset-bottom))] right-5 z-40 grid h-[54px] w-[54px] place-items-center rounded-full bg-coral text-deep-sea shadow-[0_12px_28px_rgba(217,99,57,.28)] transition-transform active:scale-95 disabled:opacity-50"><Icon name="plus" size={24} strokeWidth={2} /></button>
