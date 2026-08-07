@@ -1,8 +1,9 @@
-# Utazási — Design System & Build Specification
+# Utazási — Design Reference Index
 
-**Verzió:** 3.0  
-**Állapot:** elsődleges vizuális specifikáció  
-**Cél:** az alkalmazás teljes vizuális és interakciós referenciája.
+**Állapot:** történeti v3 összefoglaló
+**Elsődleges vizuális és komponensspecifikáció:** [COMPONENT_SPECIFICATION.md](./COMPONENT_SPECIFICATION.md), v4.0.
+
+> A v4.0 a projekt kötelező érvényű, teljes build-specifikációja. Ez a v3-as összefoglaló megmarad a döntések előzményeként, de nem használható új felület implementálásának forrásaként.
 
 Ez a dokumentum önmagában elegendő egy új vagy módosított felület megépítéséhez. Nem szükséges hozzá korábbi beszélgetés, képernyőkép, prototípus vagy git-előzmény. Ahol nincs kifejezett szabály, a rendszerrel összhangban lévő legegyszerűbb megoldást kell választani.
 
@@ -20,7 +21,7 @@ Kerülendő a sok kártya, a zsúfolt információs panel, a technikai/admin fel
 
 ## 2. Elsőbbségi szabály
 
-Ez a fájl a projekt egyetlen elsődleges vizuális referenciája. Ha egy korábbi dokumentum, képernyőkép vagy kódrészlet eltér tőle, ez a specifikáció érvényes. Egy későbbi, kifejezetten elfogadott termékdöntés felülírhatja; ezt ebben a dokumentumban is rögzíteni kell.
+Ez a v3-as fájl már nem elsődleges vizuális referencia. Ha egy korábbi dokumentum, képernyőkép vagy kódrészlet eltér a v4.0 specifikációtól, a v4.0 érvényes. Egy későbbi, kifejezetten elfogadott termékdöntés felülírhatja; ezt a v4.0 specifikációban is rögzíteni kell.
 
 Kiegészítő, nem normatív anyagok:
 
@@ -217,4 +218,3 @@ Egy képernyő csak akkor tekinthető elfogadhatónak, ha:
 - kezeli a safe area-t;
 - rendelkezik loading, error és empty állapottal;
 - egyértelműen ugyanahhoz az Utazási alkalmazáshoz tartozik.
-

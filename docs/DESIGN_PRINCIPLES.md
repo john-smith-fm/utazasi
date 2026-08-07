@@ -1,6 +1,6 @@
 # DESIGN PRINCIPLES
 
-> **Elsődleges referencia:** a teljes, kötelező érvényű specifikáció a [DESIGN.md](./DESIGN.md). Ez a fájl csak rövid elv-összefoglaló.
+> **Elsődleges referencia:** a teljes, kötelező érvényű specifikáció a [COMPONENT_SPECIFICATION.md](./COMPONENT_SPECIFICATION.md). Ez a fájl csak rövid elv-összefoglaló.
 
 - Information first
 - Warm minimalism

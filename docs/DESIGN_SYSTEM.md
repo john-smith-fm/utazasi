@@ -1,6 +1,6 @@
 # DESIGN SYSTEM
 
-> **Elsődleges referencia:** a teljes, kötelező érvényű specifikáció a [DESIGN.md](./DESIGN.md). Ez a fájl csak rövid token-összefoglaló.
+> **Elsődleges referencia:** a teljes, kötelező érvényű specifikáció a [COMPONENT_SPECIFICATION.md](./COMPONENT_SPECIFICATION.md). Ez a fájl csak rövid token-összefoglaló.
 
 ## Colors
 Background: #F8F7F3
