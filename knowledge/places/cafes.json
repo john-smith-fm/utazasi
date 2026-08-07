@@ -1,0 +1,80 @@
+{
+  "version": "1.0",
+  "category": "cafes",
+  "source_dataset": "utazasi_v2f_research_2026-08-07",
+  "updated_at": "2026-08-07",
+  "change_log": [
+    "Első kanonikus cafe/gelateria-javaslatcsomag 3 rekorddal."
+  ],
+  "places": [
+    {
+      "id": "place_cafe_il_gelatone_villasimius",
+      "slug": "il-gelatone-villasimius",
+      "name": "Il Gelatone VillaSimius",
+      "category": "cafe",
+      "subcategory": "gelateria",
+      "location": {
+        "city": "Villasimius"
+      },
+      "contact": {
+        "website": "https://ilgelatonevillasimius.it/"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://ilgelatonevillasimius.it/"
+        ],
+        "source_refs": [
+          "C01"
+        ]
+      }
+    },
+    {
+      "id": "place_cafe_4_passion",
+      "slug": "4-passion-cafe",
+      "name": "4 Passion Cafè",
+      "category": "cafe",
+      "subcategory": "cafe_gelateria",
+      "location": {
+        "city": "Costa Rei"
+      },
+      "verification": {
+        "status": "verified_local_business_network",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.ccncostarei.com/associati/"
+        ],
+        "source_refs": [
+          "C02"
+        ]
+      }
+    },
+    {
+      "id": "place_cafe_via_nazion_ale",
+      "slug": "via-nazionale-villaputzu",
+      "name": "Via Nazion Ale",
+      "category": "cafe",
+      "subcategory": "cafe_gelateria",
+      "location": {
+        "city": "Villaputzu",
+        "address": "Via Nazionale 57"
+      },
+      "contact": {
+        "phone": [
+          "+39 349 5854055"
+        ]
+      },
+      "verification": {
+        "status": "verified_municipal_directory",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.comune.villaputzu.ca.it/modules.php?cid=57&name=Pagine&pa=showpage&pid=41"
+        ],
+        "source_refs": [
+          "C03"
+        ]
+      }
+    }
+  ]
+}

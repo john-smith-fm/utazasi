@@ -1,0 +1,31 @@
+{
+  "version": "1.0",
+  "category": "playgrounds",
+  "source_dataset": "utazasi_v2f_research_2026-08-07",
+  "updated_at": "2026-08-07",
+  "change_log": [
+    "Első kanonikus playground-javaslat: 1 erős, friss rekord."
+  ],
+  "places": [
+    {
+      "id": "place_playground_piazza_galilei_villaputzu",
+      "slug": "parco-giochi-piazza-galilei",
+      "name": "Parco giochi di Piazza Galileo Galilei",
+      "category": "playground",
+      "location": {
+        "city": "Villaputzu",
+        "address": "Piazza Galileo Galilei"
+      },
+      "verification": {
+        "status": "verified_recent",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.unionesarda.it/news-sardegna/provincia-cagliari/villaputzu-inaugurato-il-parco-giochi-in-piazza-galilei-f0vx5jb3"
+        ],
+        "source_refs": [
+          "P01"
+        ]
+      }
+    }
+  ]
+}

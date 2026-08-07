@@ -1,5 +1,9 @@
 import beachesJson from "../../knowledge/places/beaches.json";
 import restaurantsJson from "../../knowledge/places/restaurants.json";
+import sightsJson from "../../knowledge/places/sights.json";
+import playgroundsJson from "../../knowledge/places/playgrounds.json";
+import cafesJson from "../../knowledge/places/cafes.json";
+import shopsJson from "../../knowledge/places/shops.json";
 import type { BeachPlace, Place, PlaceType, RestaurantPlace } from "@/types/places";
 
 type UnknownRecord = Record<string, unknown>;
@@ -101,6 +105,47 @@ function validateRestaurants(source: unknown): RestaurantPlace[] {
   });
 }
 
+type GenericPlaceType = Exclude<PlaceType, "beach" | "restaurant">;
+
+function validateGenericPlaces(source: unknown, type: GenericPlaceType, category: string, label: string): Place[] {
+  if (!isRecord(source) || !Array.isArray(source.places)) throw new Error(`Érvénytelen kanonikus ${label} adatfájl.`);
+  const slugs = new Set<string>();
+
+  return source.places.map((raw, index) => {
+    if (!isRecord(raw)) throw new Error(`Érvénytelen kanonikus ${label} rekord: ${index + 1}.`);
+    const sourceId = requiredString(raw.id, `places[${index}].id`);
+    const slug = requiredString(raw.slug, `places[${index}].slug`);
+    const name = requiredString(raw.name, `places[${index}].name`);
+    if (raw.category !== category) throw new Error(`Érvénytelen ${label} kategória: ${slug}.`);
+    if (slugs.has(slug)) throw new Error(`Duplikált ${label} slug: ${slug}.`);
+    slugs.add(slug);
+
+    const rawLocation = isRecord(raw.location) ? raw.location : undefined;
+    const location = rawLocation ? {
+      locality: optionalString(rawLocation.city),
+      address: optionalString(rawLocation.address),
+      latitude: optionalNumber(rawLocation.latitude),
+      longitude: optionalNumber(rawLocation.longitude),
+    } : undefined;
+    const verification = isRecord(raw.verification) ? raw.verification : undefined;
+
+    return {
+      sourceId,
+      slug,
+      name,
+      type,
+      location,
+      provenance: verification ? {
+        sourceUrls: optionalStringArray(verification.sources),
+        reviewedAt: optionalString(verification.last_checked),
+        reviewStatus: optionalString(verification.status),
+        uncertaintyNote: optionalString(verification.uncertainty_note),
+      } : undefined,
+      details: { kind: type },
+    };
+  });
+}
+
 function assertUniqueSlugs(records: readonly Place[]) {
   const slugs = new Set<string>();
   records.forEach((place) => {
@@ -109,7 +154,14 @@ function assertUniqueSlugs(records: readonly Place[]) {
   });
 }
 
-const loadedPlaces = [...validateBeaches(beachesJson), ...validateRestaurants(restaurantsJson)];
+const loadedPlaces = [
+  ...validateBeaches(beachesJson),
+  ...validateRestaurants(restaurantsJson),
+  ...validateGenericPlaces(sightsJson, "sight", "sight", "sight"),
+  ...validateGenericPlaces(playgroundsJson, "playground", "playground", "playground"),
+  ...validateGenericPlaces(cafesJson, "cafe", "cafe", "cafe"),
+  ...validateGenericPlaces(shopsJson, "shop", "shop", "shop"),
+];
 assertUniqueSlugs(loadedPlaces);
 const places = Object.freeze(loadedPlaces);
 

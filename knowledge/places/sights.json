@@ -1,0 +1,259 @@
+{
+  "version": "1.0",
+  "category": "sights",
+  "source_dataset": "utazasi_v2f_research_2026-08-07",
+  "updated_at": "2026-08-07",
+  "change_log": [
+    "Első kanonikus sight-javaslatcsomag 12 rekorddal."
+  ],
+  "places": [
+    {
+      "id": "place_sight_fortezza_vecchia",
+      "slug": "fortezza-vecchia",
+      "name": "Fortezza Vecchia",
+      "category": "sight",
+      "subcategory": "historic_building",
+      "location": {
+        "city": "Villasimius"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.sardegnaturismo.it/it/esplora/fortezza-vecchia"
+        ],
+        "source_refs": [
+          "S01"
+        ]
+      }
+    },
+    {
+      "id": "place_sight_museo_archeologico_villasimius",
+      "slug": "museo-archeologico-villasimius",
+      "name": "Museo Archeologico Comunale",
+      "category": "sight",
+      "subcategory": "museum",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via A. Frau 3"
+      },
+      "verification": {
+        "status": "verified_municipal",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.comune.villasimius.ca.it/vivere-il-comune/luoghi/museo-archeologico/"
+        ],
+        "source_refs": [
+          "S02"
+        ]
+      }
+    },
+    {
+      "id": "place_sight_museo_mare_casa_todde",
+      "slug": "museo-del-mare-casa-todde",
+      "name": "Museo del Mare presso Casa Todde",
+      "category": "sight",
+      "subcategory": "museum",
+      "location": {
+        "city": "Villasimius"
+      },
+      "verification": {
+        "status": "verified_local_tourism",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.villasimiusturismo.it/luoghi-della-cultura/"
+        ],
+        "source_refs": [
+          "S03"
+        ]
+      }
+    },
+    {
+      "id": "place_sight_capo_carbonara",
+      "slug": "area-marina-protetta-capo-carbonara",
+      "name": "Area Marina Protetta Capo Carbonara",
+      "category": "sight",
+      "subcategory": "protected_nature",
+      "location": {
+        "city": "Villasimius"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.sardegnaturismo.it/it/esplora/capo-carbonara-villasimius"
+        ],
+        "source_refs": [
+          "S04"
+        ]
+      }
+    },
+    {
+      "id": "place_sight_stagno_notteri",
+      "slug": "stagno-di-notteri",
+      "name": "Stagno di Notteri",
+      "category": "sight",
+      "subcategory": "wetland",
+      "location": {
+        "city": "Villasimius"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.sardegnaturismo.it/it/esplora/stagno-di-notteri"
+        ],
+        "source_refs": [
+          "S05"
+        ]
+      }
+    },
+    {
+      "id": "place_sight_ex_carceri_castiadas",
+      "slug": "museo-ex-carceri-castiadas",
+      "name": "Spazio espositivo Museo delle Ex Carceri",
+      "category": "sight",
+      "subcategory": "museum",
+      "location": {
+        "city": "Castiadas",
+        "address": "Via Centrale 3"
+      },
+      "verification": {
+        "status": "verified_municipal",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.comune.castiadas.su.it/it/vivere/museo-del-territorio-complesso-ex-carcere"
+        ],
+        "source_refs": [
+          "S06"
+        ]
+      }
+    },
+    {
+      "id": "place_sight_cuili_piras",
+      "slug": "cuili-piras",
+      "name": "Complesso megalitico di Cuili Piras",
+      "category": "sight",
+      "subcategory": "archaeology",
+      "location": {
+        "city": "Castiadas"
+      },
+      "verification": {
+        "status": "verified_cultural_ministry",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://museinazionalicagliari.cultura.gov.it/musei/esplora-la-collezione/luogo/castiadas/"
+        ],
+        "source_refs": [
+          "S07"
+        ]
+      }
+    },
+    {
+      "id": "place_sight_mif_muravera",
+      "slug": "mif-muravera",
+      "name": "MIF – Museo dell’Imprenditoria Femminile",
+      "category": "sight",
+      "subcategory": "museum",
+      "location": {
+        "city": "Muravera"
+      },
+      "verification": {
+        "status": "verified_local_tourism",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://muraveraturismo.com/mif/"
+        ],
+        "source_refs": [
+          "S08"
+        ]
+      }
+    },
+    {
+      "id": "place_sight_torre_dieci_cavalli",
+      "slug": "torre-dei-dieci-cavalli",
+      "name": "Torre dei Dieci Cavalli",
+      "category": "sight",
+      "subcategory": "historic_building",
+      "location": {
+        "city": "Muravera"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://sardegnaturismo.it/en/explore/torre-dei-dieci-cavalli"
+        ],
+        "source_refs": [
+          "S09"
+        ]
+      }
+    },
+    {
+      "id": "place_sight_capo_ferrato",
+      "slug": "capo-ferrato",
+      "name": "Capo Ferrato",
+      "category": "sight",
+      "subcategory": "nature",
+      "location": {
+        "city": "Muravera"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.sardegnaturismo.it/it/esplora/capo-ferrato"
+        ],
+        "source_refs": [
+          "S10"
+        ]
+      },
+      "access": {
+        "notes": "Könnyű trekkingútvonalak és gyalogosan elérhető panorámapontok."
+      }
+    },
+    {
+      "id": "place_sight_castello_quirra",
+      "slug": "castello-di-quirra",
+      "name": "Castello di Quirra",
+      "category": "sight",
+      "subcategory": "castle",
+      "location": {
+        "city": "Villaputzu"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://sardegnaturismo.it/en/explore/castle-quirra"
+        ],
+        "source_refs": [
+          "S11"
+        ]
+      },
+      "access": {
+        "notes": "Kb. 20 perc gyaloglás egy nehéz, meredek ösvényen."
+      }
+    },
+    {
+      "id": "place_sight_san_nicola_quirra",
+      "slug": "san-nicola-di-quirra",
+      "name": "Chiesa di San Nicola di Quirra",
+      "category": "sight",
+      "subcategory": "historic_church",
+      "location": {
+        "city": "Villaputzu"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.sardegnaturismo.it/it/esplora/san-nicola-di-quirra"
+        ],
+        "source_refs": [
+          "S12"
+        ]
+      }
+    }
+  ]
+}

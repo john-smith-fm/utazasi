@@ -1,7 +1,13 @@
 {
-  "version": "1.1",
+  "version": "1.2",
   "category": "restaurants",
-  "source_dataset": "utazasi_data_codex_v1.1",
+  "source_dataset": "utazasi_data_codex_v1.1 + v2f_research_2026-08-07",
+  "updated_at": "2026-08-07",
+  "change_log": [
+    "5 új, forrással ellenőrzött étterem rekord.",
+    "Sa Tankitta és Su Giganti enrichment.",
+    "Bizonytalan/gyorsan avuló nyitvatartási adatokat nem egészítettünk ki."
+  ],
   "places": [
     {
       "id": "place_villasimius_il_giardino",
@@ -9,10 +15,33 @@
       "name": "Il Giardino",
       "category": "food",
       "subcategory": "restaurant",
-      "location": { "country": "Olaszország", "region": "Szardínia", "city": "Villasimius", "postal_code": "09049", "address": "Via Filippo Brunelleschi 4", "latitude": null, "longitude": null },
-      "google_maps": { "place_id": null, "maps_url": "https://www.google.com/maps/search/?api=1&query=Il+Giardino%2C+Via+Filippo+Brunelleschi+4%2C+09049+Villasimius+SU%2C+Italy", "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Il+Giardino%2C+Via+Filippo+Brunelleschi+4%2C+09049+Villasimius+SU%2C+Italy", "match_status": "search_query_link" },
-      "opening_hours": { "timezone": "Europe/Rome", "weekly": null, "seasonal_or_exception_note": "A cím ellenőrzött; a teljes heti nyitvatartás még nem elég biztos a rögzítéshez." },
-      "verification": { "status": "address_verified_hours_pending", "last_checked": "2026-08-06", "sources": ["https://www.thefork.co.uk/restaurant/il-giardino-r395043"] }
+      "location": {
+        "country": "Olaszország",
+        "region": "Szardínia",
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via Filippo Brunelleschi 4",
+        "latitude": null,
+        "longitude": null
+      },
+      "google_maps": {
+        "place_id": null,
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Il+Giardino%2C+Via+Filippo+Brunelleschi+4%2C+09049+Villasimius+SU%2C+Italy",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Il+Giardino%2C+Via+Filippo+Brunelleschi+4%2C+09049+Villasimius+SU%2C+Italy",
+        "match_status": "search_query_link"
+      },
+      "opening_hours": {
+        "timezone": "Europe/Rome",
+        "weekly": null,
+        "seasonal_or_exception_note": "A cím ellenőrzött; a teljes heti nyitvatartás még nem elég biztos a rögzítéshez."
+      },
+      "verification": {
+        "status": "address_verified_hours_pending",
+        "last_checked": "2026-08-06",
+        "sources": [
+          "https://www.thefork.co.uk/restaurant/il-giardino-r395043"
+        ]
+      }
     },
     {
       "id": "place_villasimius_santa_maria",
@@ -20,16 +49,308 @@
       "name": "Ristorante Pizzeria Santa Maria",
       "category": "food",
       "subcategory": "restaurant_pizzeria",
-      "location": { "country": "Olaszország", "region": "Szardínia", "city": "Villasimius", "postal_code": "09049", "address": "Via Cagliari 31", "latitude": null, "longitude": null },
-      "google_maps": { "place_id": null, "maps_url": "https://www.google.com/maps/search/?api=1&query=Ristorante+Pizzeria+Santa+Maria%2C+Via+Cagliari+31%2C+09049+Villasimius+CA%2C+Italy", "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Ristorante+Pizzeria+Santa+Maria%2C+Via+Cagliari+31%2C+09049+Villasimius+CA%2C+Italy", "match_status": "search_query_link" },
-      "opening_hours": { "timezone": "Europe/Rome", "weekly": { "monday": [{ "open": "19:00", "close": null }], "tuesday": [{ "open": "19:00", "close": null }], "wednesday": [{ "open": "19:00", "close": null }], "thursday": [{ "open": "19:00", "close": null }], "friday": [{ "open": "19:00", "close": null }], "saturday": [{ "open": "19:00", "close": null }], "sunday": [{ "open": "19:00", "close": null }] }, "seasonal_or_exception_note": "A hivatalos oldal szerint minden este 19:00-tól nyitva; zárási idő nincs megadva, telefonos megerősítés javasolt." },
-      "contact": { "phone": ["+39 070 790205", "+39 333 6555647"], "website": "https://www.santamariavillasimius.it/" },
-      "verification": { "status": "verified_official", "last_checked": "2026-08-06", "sources": ["https://www.santamariavillasimius.it/"] }
+      "location": {
+        "country": "Olaszország",
+        "region": "Szardínia",
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via Cagliari 31",
+        "latitude": null,
+        "longitude": null
+      },
+      "google_maps": {
+        "place_id": null,
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Ristorante+Pizzeria+Santa+Maria%2C+Via+Cagliari+31%2C+09049+Villasimius+CA%2C+Italy",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Ristorante+Pizzeria+Santa+Maria%2C+Via+Cagliari+31%2C+09049+Villasimius+CA%2C+Italy",
+        "match_status": "search_query_link"
+      },
+      "opening_hours": {
+        "timezone": "Europe/Rome",
+        "weekly": {
+          "monday": [
+            {
+              "open": "19:00",
+              "close": null
+            }
+          ],
+          "tuesday": [
+            {
+              "open": "19:00",
+              "close": null
+            }
+          ],
+          "wednesday": [
+            {
+              "open": "19:00",
+              "close": null
+            }
+          ],
+          "thursday": [
+            {
+              "open": "19:00",
+              "close": null
+            }
+          ],
+          "friday": [
+            {
+              "open": "19:00",
+              "close": null
+            }
+          ],
+          "saturday": [
+            {
+              "open": "19:00",
+              "close": null
+            }
+          ],
+          "sunday": [
+            {
+              "open": "19:00",
+              "close": null
+            }
+          ]
+        },
+        "seasonal_or_exception_note": "A hivatalos oldal szerint minden este 19:00-tól nyitva; zárási idő nincs megadva, telefonos megerősítés javasolt."
+      },
+      "contact": {
+        "phone": [
+          "+39 070 790205",
+          "+39 333 6555647"
+        ],
+        "website": "https://www.santamariavillasimius.it/"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-06",
+        "sources": [
+          "https://www.santamariavillasimius.it/"
+        ]
+      }
     },
-    { "id": "place_rest_sa_tankitta", "slug": "sa-tankitta", "name": "Sa Tankitta", "category": "food", "subcategory": "restaurant", "location": { "city": "Villasimius" }, "verification": { "status": "planned_enrichment" } },
-    { "id": "place_rest_su_giganti", "slug": "su-giganti", "name": "Su Giganti", "category": "food", "subcategory": "restaurant", "location": { "city": "Villasimius" }, "verification": { "status": "planned_enrichment" } },
-    { "id": "place_rest_da_barbara", "slug": "da-barbara", "name": "Da Barbara", "category": "food", "subcategory": "restaurant", "location": { "city": "Costa Rei" }, "verification": { "status": "planned_enrichment" } },
-    { "id": "place_rest_chiosco_colostrai", "slug": "chiosco-colostrai", "name": "Chiosco Colostrai", "category": "food", "subcategory": "restaurant", "location": { "city": "Muravera" }, "verification": { "status": "planned_enrichment" } },
-    { "id": "place_rest_sa_pardula", "slug": "sa-pardula", "name": "Sa Pardula", "category": "food", "subcategory": "restaurant", "location": { "city": "Muravera" }, "verification": { "status": "planned_enrichment" } }
+    {
+      "id": "place_rest_sa_tankitta",
+      "slug": "sa-tankitta",
+      "name": "Sa Tankitta",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via Umberto I 240"
+      },
+      "verification": {
+        "status": "verified_local_tourism",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.villasimiusturismo.it/dove-mangiare/"
+        ],
+        "source_refs": [
+          "R07"
+        ]
+      },
+      "contact": {
+        "phone": [
+          "+39 070 791338"
+        ]
+      }
+    },
+    {
+      "id": "place_rest_su_giganti",
+      "slug": "su-giganti",
+      "name": "Su Giganti",
+      "category": "food",
+      "subcategory": "restaurant_pizzeria",
+      "location": {
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via Cagliari 30, Campus"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.hotelsugiganti.com/en/the-restaurant/"
+        ],
+        "source_refs": [
+          "R06"
+        ]
+      },
+      "contact": {
+        "phone": [
+          "+39 070 7989006"
+        ],
+        "website": "https://www.hotelsugiganti.com/en/the-restaurant/"
+      }
+    },
+    {
+      "id": "place_rest_da_barbara",
+      "slug": "da-barbara",
+      "name": "Da Barbara",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Costa Rei"
+      },
+      "verification": {
+        "status": "planned_enrichment"
+      }
+    },
+    {
+      "id": "place_rest_chiosco_colostrai",
+      "slug": "chiosco-colostrai",
+      "name": "Chiosco Colostrai",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Muravera"
+      },
+      "verification": {
+        "status": "planned_enrichment"
+      }
+    },
+    {
+      "id": "place_rest_sa_pardula",
+      "slug": "sa-pardula",
+      "name": "Sa Pardula",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Muravera"
+      },
+      "verification": {
+        "status": "planned_enrichment"
+      }
+    },
+    {
+      "id": "place_rest_la_vela",
+      "slug": "la-vela",
+      "name": "La Vela",
+      "category": "food",
+      "subcategory": "restaurant_pizzeria",
+      "location": {
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via degli Oleandri 12"
+      },
+      "contact": {
+        "phone": [
+          "+39 392 8780232"
+        ],
+        "website": "https://www.ristorantelavelavillasimius.it/"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.ristorantelavelavillasimius.it/"
+        ],
+        "source_refs": [
+          "R01"
+        ]
+      }
+    },
+    {
+      "id": "place_rest_le_anfore",
+      "slug": "le-anfore",
+      "name": "Le Anfore",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Villasimius"
+      },
+      "contact": {
+        "website": "https://www.ristorantevillasimius.it/en/"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.ristorantevillasimius.it/en/"
+        ],
+        "source_refs": [
+          "R02"
+        ]
+      }
+    },
+    {
+      "id": "place_rest_aria",
+      "slug": "aria-restaurant",
+      "name": "Aria Restaurant",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via del Mare 56"
+      },
+      "contact": {
+        "phone": [
+          "+39 334 357 6688"
+        ],
+        "website": "https://www.ariavillasimius.com/en"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.ariavillasimius.com/en"
+        ],
+        "source_refs": [
+          "R03"
+        ]
+      }
+    },
+    {
+      "id": "place_rest_il_miraggio",
+      "slug": "il-miraggio",
+      "name": "Il Miraggio",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Villasimius",
+        "address": "Località Campus"
+      },
+      "contact": {
+        "phone": [
+          "+39 070 798021",
+          "+39 333 3568927"
+        ],
+        "website": "https://www.ristoranteilmiraggio.com/"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.ristoranteilmiraggio.com/"
+        ],
+        "source_refs": [
+          "R04"
+        ]
+      }
+    },
+    {
+      "id": "place_rest_sandalyon",
+      "slug": "sandalyon",
+      "name": "Sandalyon Villasimius Restaurant",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via Giotto 1"
+      },
+      "contact": {
+        "website": "https://www.sandalyonrestaurant.it/"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.sandalyonrestaurant.it/"
+        ],
+        "source_refs": [
+          "R05"
+        ],
+        "uncertainty_note": "A nyitvatartás forrásoldalakon eltérhet; ebben a csomagban nem kanonizáltuk."
+      }
+    }
   ]
 }

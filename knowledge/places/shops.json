@@ -1,0 +1,219 @@
+{
+  "version": "1.0",
+  "category": "shops",
+  "source_dataset": "utazasi_v2f_research_2026-08-07",
+  "updated_at": "2026-08-07",
+  "change_log": [
+    "Első kanonikus shop-javaslatcsomag: supermarket és pharmacy fókusz, 9 rekord."
+  ],
+  "places": [
+    {
+      "id": "place_shop_conad_city_villasimius",
+      "slug": "conad-city-villasimius",
+      "name": "Conad City",
+      "category": "shop",
+      "subcategory": "supermarket",
+      "location": {
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via Raffaello snc"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.conad.it/ricerca-negozi/conad-city-via-raffaello-snc-09049-villasimius--008952"
+        ],
+        "source_refs": [
+          "SH01"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_eurospin_villasimius",
+      "slug": "eurospin-villasimius",
+      "name": "Eurospin",
+      "category": "shop",
+      "subcategory": "supermarket",
+      "location": {
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via Carducci snc"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.eurospin.it/punti-vendita/villasimius-via-carducci/"
+        ],
+        "source_refs": [
+          "SH02"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_ard_costa_rei",
+      "slug": "ard-discount-costa-rei",
+      "name": "ARD Discount",
+      "category": "shop",
+      "subcategory": "supermarket",
+      "location": {
+        "city": "Costa Rei",
+        "postal_code": "09043",
+        "address": "Via Cristoforo Colombo 24"
+      },
+      "verification": {
+        "status": "verified_government_list",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.masaf.gov.it/flex/cm/pages/ServeAttachment.php/L/IT/D/1%252F7%252F1%252FD.e25bcf4d90eea09b9c20/P/BLOB%3AID%3D23493/E/pdf?mode=download"
+        ],
+        "source_refs": [
+          "SH03"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_conad_muravera",
+      "slug": "conad-muravera",
+      "name": "Conad",
+      "category": "shop",
+      "subcategory": "supermarket",
+      "location": {
+        "city": "Muravera",
+        "postal_code": "09043",
+        "address": "Viale Rinascita snc"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.conad.it/ricerca-negozi/conad-viale-rinascita-snc-09043-muravera--010310"
+        ],
+        "source_refs": [
+          "SH04"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_sigma_villaputzu",
+      "slug": "sigma-villaputzu",
+      "name": "SIGMA",
+      "category": "shop",
+      "subcategory": "supermarket",
+      "location": {
+        "city": "Villaputzu",
+        "address": "Piazza Leonardo Da Vinci snc"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.csssardegna.it/index.php/puntivendita/sigma-villaputzu-piazza-leonardo-davinci/"
+        ],
+        "source_refs": [
+          "SH05"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_farmacia_simius",
+      "slug": "farmacia-simius",
+      "name": "Farmacia Simius",
+      "category": "shop",
+      "subcategory": "pharmacy",
+      "location": {
+        "city": "Villasimius"
+      },
+      "verification": {
+        "status": "verified_official_identity",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.farmaciasimius.com/"
+        ],
+        "source_refs": [
+          "SH06"
+        ],
+        "uncertainty_note": "Pontos cím/nyitvatartás nincs kanonizálva a korábbi forrásütközés miatt."
+      }
+    },
+    {
+      "id": "place_shop_farmacia_san_giovanni_castiadas",
+      "slug": "farmacia-san-giovanni-castiadas",
+      "name": "Farmacia San Giovanni di Tranza e Faa",
+      "category": "shop",
+      "subcategory": "pharmacy",
+      "location": {
+        "city": "Castiadas",
+        "address": "Località Olia Speciosa"
+      },
+      "contact": {
+        "phone": [
+          "+39 070 9949200"
+        ]
+      },
+      "verification": {
+        "status": "verified_municipal",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.comune.castiadas.su.it/it/vivere/farmacia-san-giovanni-di-tranza-e-faa"
+        ],
+        "source_refs": [
+          "SH07"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_farmacia_costa_rei",
+      "slug": "farmacia-costa-rei",
+      "name": "Farmacia Costa Rei",
+      "category": "shop",
+      "subcategory": "pharmacy",
+      "location": {
+        "city": "Costa Rei",
+        "address": "Piazza Italia 2"
+      },
+      "contact": {
+        "phone": [
+          "+39 375 5712727"
+        ]
+      },
+      "verification": {
+        "status": "verified_local_business_network",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.ccncostarei.com/"
+        ],
+        "source_refs": [
+          "SH08"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_farmacia_melis_villaputzu",
+      "slug": "farmacia-melis-villaputzu",
+      "name": "Farmacia Dott.ssa Melis Romina",
+      "category": "shop",
+      "subcategory": "pharmacy",
+      "location": {
+        "city": "Villaputzu"
+      },
+      "contact": {
+        "phone": [
+          "+39 070 997052"
+        ]
+      },
+      "verification": {
+        "status": "verified_municipal_identity",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.comune.villaputzu.ca.it/modules.php?cid=61&name=Pagine&pa=list_pages_categories"
+        ],
+        "source_refs": [
+          "SH09"
+        ],
+        "uncertainty_note": "A pontos házszám források között eltér; ezért ebben a csomagban nincs rögzítve."
+      }
+    }
+  ]
+}

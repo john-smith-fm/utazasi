@@ -1,19 +1,328 @@
 {
-  "version": "1.1",
+  "version": "1.2",
   "category": "beaches",
-  "source_dataset": "utazasi_data_codex_v1.1",
+  "source_dataset": "utazasi_data_codex_v1.1 + v2f_research_2026-08-07",
+  "updated_at": "2026-08-07",
+  "change_log": [
+    "7 új, hivatalos turisztikai forrással ellenőrzött strand rekord.",
+    "Murtas hozzáférési korlátozás explicit rögzítve.",
+    "Koordinátát nem adtunk hozzá ellenőrzés nélkül."
+  ],
   "places": [
-    { "id": "place_beach_porto_giunco", "slug": "porto-giunco", "name": "Spiaggia di Porto Giunco", "category": "beach", "location": { "city": "Villasimius" }, "coverage_area": "Solanas-Villaputzu", "verification": { "status": "planned" } },
-    { "id": "place_beach_simius", "slug": "simius", "name": "Spiaggia di Simius", "category": "beach", "location": { "city": "Villasimius" }, "coverage_area": "Solanas-Villaputzu", "verification": { "status": "planned" } },
-    { "id": "place_beach_campulongu", "slug": "campulongu", "name": "Spiaggia di Campulongu", "category": "beach", "location": { "city": "Villasimius" }, "coverage_area": "Solanas-Villaputzu", "verification": { "status": "planned" } },
-    { "id": "place_beach_punta_molentis", "slug": "punta-molentis", "name": "Spiaggia di Punta Molentis", "category": "beach", "location": { "city": "Villasimius" }, "coverage_area": "Solanas-Villaputzu", "verification": { "status": "planned" } },
-    { "id": "place_beach_cala_pira", "slug": "cala-pira", "name": "Spiaggia di Cala Pira", "category": "beach", "location": { "city": "Castiadas" }, "coverage_area": "Solanas-Villaputzu", "verification": { "status": "planned" } },
-    { "id": "place_beach_monte_turno", "slug": "monte-turno", "name": "Spiaggia di Monte Turno", "category": "beach", "location": { "city": "Castiadas" }, "coverage_area": "Solanas-Villaputzu", "verification": { "status": "planned" } },
-    { "id": "place_beach_san_pietro", "slug": "san-pietro", "name": "Spiaggia di San Pietro", "category": "beach", "location": { "city": "Castiadas" }, "coverage_area": "Solanas-Villaputzu", "verification": { "status": "planned" } },
-    { "id": "place_beach_costa_rei", "slug": "costa-rei", "name": "Spiaggia di Costa Rei", "category": "beach", "location": { "city": "Costa Rei" }, "coverage_area": "Solanas-Villaputzu", "verification": { "status": "planned" } },
-    { "id": "place_beach_scoglio_peppino", "slug": "scoglio-di-peppino", "name": "Spiaggia di Scoglio di Peppino", "category": "beach", "location": { "city": "Costa Rei" }, "coverage_area": "Solanas-Villaputzu", "verification": { "status": "planned" } },
-    { "id": "place_beach_colostrai", "slug": "colostrai", "name": "Spiaggia di Colostrai", "category": "beach", "location": { "city": "Muravera" }, "coverage_area": "Solanas-Villaputzu", "verification": { "status": "planned" } },
-    { "id": "place_beach_feraxi", "slug": "feraxi", "name": "Spiaggia di Feraxi", "category": "beach", "location": { "city": "Muravera" }, "coverage_area": "Solanas-Villaputzu", "verification": { "status": "planned" } },
-    { "id": "place_beach_porto_tramatzu", "slug": "porto-tramatzu", "name": "Spiaggia di Porto Tramatzu", "category": "beach", "location": { "city": "Villaputzu" }, "coverage_area": "Solanas-Villaputzu", "verification": { "status": "planned" } }
+    {
+      "id": "place_beach_porto_giunco",
+      "slug": "porto-giunco",
+      "name": "Spiaggia di Porto Giunco",
+      "category": "beach",
+      "location": {
+        "city": "Villasimius"
+      },
+      "coverage_area": "Solanas-Villaputzu",
+      "verification": {
+        "status": "planned"
+      }
+    },
+    {
+      "id": "place_beach_simius",
+      "slug": "simius",
+      "name": "Spiaggia di Simius",
+      "category": "beach",
+      "location": {
+        "city": "Villasimius"
+      },
+      "coverage_area": "Solanas-Villaputzu",
+      "verification": {
+        "status": "planned"
+      }
+    },
+    {
+      "id": "place_beach_campulongu",
+      "slug": "campulongu",
+      "name": "Spiaggia di Campulongu",
+      "category": "beach",
+      "location": {
+        "city": "Villasimius"
+      },
+      "coverage_area": "Solanas-Villaputzu",
+      "verification": {
+        "status": "planned"
+      }
+    },
+    {
+      "id": "place_beach_punta_molentis",
+      "slug": "punta-molentis",
+      "name": "Spiaggia di Punta Molentis",
+      "category": "beach",
+      "location": {
+        "city": "Villasimius"
+      },
+      "coverage_area": "Solanas-Villaputzu",
+      "verification": {
+        "status": "planned"
+      }
+    },
+    {
+      "id": "place_beach_cala_pira",
+      "slug": "cala-pira",
+      "name": "Spiaggia di Cala Pira",
+      "category": "beach",
+      "location": {
+        "city": "Castiadas"
+      },
+      "coverage_area": "Solanas-Villaputzu",
+      "verification": {
+        "status": "planned"
+      }
+    },
+    {
+      "id": "place_beach_monte_turno",
+      "slug": "monte-turno",
+      "name": "Spiaggia di Monte Turno",
+      "category": "beach",
+      "location": {
+        "city": "Castiadas"
+      },
+      "coverage_area": "Solanas-Villaputzu",
+      "verification": {
+        "status": "planned"
+      }
+    },
+    {
+      "id": "place_beach_san_pietro",
+      "slug": "san-pietro",
+      "name": "Spiaggia di San Pietro",
+      "category": "beach",
+      "location": {
+        "city": "Castiadas"
+      },
+      "coverage_area": "Solanas-Villaputzu",
+      "verification": {
+        "status": "planned"
+      }
+    },
+    {
+      "id": "place_beach_costa_rei",
+      "slug": "costa-rei",
+      "name": "Spiaggia di Costa Rei",
+      "category": "beach",
+      "location": {
+        "city": "Costa Rei"
+      },
+      "coverage_area": "Solanas-Villaputzu",
+      "verification": {
+        "status": "planned"
+      }
+    },
+    {
+      "id": "place_beach_scoglio_peppino",
+      "slug": "scoglio-di-peppino",
+      "name": "Spiaggia di Scoglio di Peppino",
+      "category": "beach",
+      "location": {
+        "city": "Costa Rei"
+      },
+      "coverage_area": "Solanas-Villaputzu",
+      "verification": {
+        "status": "planned"
+      }
+    },
+    {
+      "id": "place_beach_colostrai",
+      "slug": "colostrai",
+      "name": "Spiaggia di Colostrai",
+      "category": "beach",
+      "location": {
+        "city": "Muravera"
+      },
+      "coverage_area": "Solanas-Villaputzu",
+      "verification": {
+        "status": "planned"
+      }
+    },
+    {
+      "id": "place_beach_feraxi",
+      "slug": "feraxi",
+      "name": "Spiaggia di Feraxi",
+      "category": "beach",
+      "location": {
+        "city": "Muravera"
+      },
+      "coverage_area": "Solanas-Villaputzu",
+      "verification": {
+        "status": "planned"
+      }
+    },
+    {
+      "id": "place_beach_porto_tramatzu",
+      "slug": "porto-tramatzu",
+      "name": "Spiaggia di Porto Tramatzu",
+      "category": "beach",
+      "location": {
+        "city": "Villaputzu"
+      },
+      "coverage_area": "Solanas-Villaputzu",
+      "verification": {
+        "status": "planned"
+      }
+    },
+    {
+      "id": "place_beach_solanas",
+      "slug": "solanas",
+      "name": "Spiaggia di Solanas",
+      "category": "beach",
+      "location": {
+        "city": "Solanas"
+      },
+      "coverage_area": "Solanas-Villaputzu",
+      "access": {
+        "parkingNotes": "Parkoló és strand-szolgáltatások elérhetők a hivatalos turisztikai leírás szerint."
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.sardegnaturismo.it/it/esplora/solanas"
+        ],
+        "source_refs": [
+          "B01"
+        ]
+      }
+    },
+    {
+      "id": "place_beach_porto_sa_ruxi",
+      "slug": "porto-sa-ruxi",
+      "name": "Spiaggia di Porto Sa Ruxi",
+      "category": "beach",
+      "location": {
+        "city": "Villasimius"
+      },
+      "coverage_area": "Solanas-Villaputzu",
+      "access": {
+        "dirtRoad": true,
+        "parkingNotes": "Parkoló a strand közelében; rövid földutas bekötőszakasz."
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.sardegnaturismo.it/en/explore/porto-sa-ruxi"
+        ],
+        "source_refs": [
+          "B02"
+        ]
+      }
+    },
+    {
+      "id": "place_beach_cala_sinzias",
+      "slug": "cala-sinzias",
+      "name": "Spiaggia di Cala Sinzias",
+      "category": "beach",
+      "location": {
+        "city": "Castiadas"
+      },
+      "coverage_area": "Solanas-Villaputzu",
+      "access": {
+        "parkingNotes": "Parkoló és strand-szolgáltatások elérhetők."
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.sardegnaturismo.it/it/esplora/cala-sinzias"
+        ],
+        "source_refs": [
+          "B03"
+        ]
+      }
+    },
+    {
+      "id": "place_beach_piscina_rei",
+      "slug": "piscina-rei",
+      "name": "Spiaggia di Piscina Rei",
+      "category": "beach",
+      "location": {
+        "city": "Costa Rei"
+      },
+      "coverage_area": "Solanas-Villaputzu",
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.sardegnaturismo.it/it/esplora/piscina-rei"
+        ],
+        "source_refs": [
+          "B04"
+        ]
+      }
+    },
+    {
+      "id": "place_beach_torre_salinas",
+      "slug": "torre-salinas",
+      "name": "Spiaggia di Torre Salinas",
+      "category": "beach",
+      "location": {
+        "city": "Muravera"
+      },
+      "coverage_area": "Solanas-Villaputzu",
+      "access": {
+        "parkingNotes": "Parkoló és strand-szolgáltatások elérhetők."
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.sardegnaturismo.it/it/esplora/torre-salinas"
+        ],
+        "source_refs": [
+          "B05"
+        ]
+      }
+    },
+    {
+      "id": "place_beach_porto_corallo",
+      "slug": "porto-corallo",
+      "name": "Spiaggia di Porto Corallo",
+      "category": "beach",
+      "location": {
+        "city": "Villaputzu"
+      },
+      "coverage_area": "Solanas-Villaputzu",
+      "access": {
+        "notes": "SS125 felől a SP99-en közelíthető meg."
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.sardegnaturismo.it/it/esplora/porto-corallo"
+        ],
+        "source_refs": [
+          "B06"
+        ]
+      }
+    },
+    {
+      "id": "place_beach_murtas",
+      "slug": "murtas",
+      "name": "Spiaggia di Murtas",
+      "category": "beach",
+      "location": {
+        "city": "Villaputzu"
+      },
+      "coverage_area": "Solanas-Villaputzu",
+      "access": {
+        "notes": "Katonai területen található; a civil hozzáférés szezonális és korlátozott."
+      },
+      "verification": {
+        "status": "verified_official_access_restriction",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.sardegnaturismo.it/en/explore/murtas"
+        ],
+        "source_refs": [
+          "B07"
+        ]
+      }
+    }
   ]
 }
