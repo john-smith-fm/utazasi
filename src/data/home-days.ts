@@ -1,4 +1,16 @@
-export interface HomeActivity { time: string; title: string; place: string; recommendation?: string; localEvent?: boolean; eventNote?: string; editable?: boolean; }
+export interface HomeActivity {
+  time: string;
+  title: string;
+  place: string;
+  description?: string;
+  durationMinutes?: number;
+  kind?: "plan" | "travel";
+  isSystemGenerated?: boolean;
+  recommendation?: string;
+  localEvent?: boolean;
+  eventNote?: string;
+  editable?: boolean;
+}
 export interface HomeDay { date: string; day: number; weekday: "Hét" | "Kedd" | "Sze" | "Csü" | "Pén" | "Szo" | "Vas"; title: string; summary: string; activities: HomeActivity[]; }
 export const HOME_DAYS: HomeDay[] = [
   { date:"2026-09-02", day:2, weekday:"Sze", title:"Érkezés és ráhangolódás", summary:"Délutáni érkezés és bevásárlás. Könnyű vacsora Villasimiusban. Nyugodt ráhangolódás az első estére.", activities:[{time:"16:00",title:"Megérkezés",place:"Szállás elfoglalása",editable:false},{time:"18:00",title:"Bevásárlás",place:"Conad Superstore"},{time:"20:00",title:"Könnyű vacsora",place:"Villasimius központ"}] },

@@ -29,7 +29,12 @@ export async function GET(request: NextRequest) {
     if (dayError) throw dayError;
     if (!day) return NextResponse.json({ day: null }, { headers: { "Cache-Control": "no-store" } });
 
-    const { data: activities, error: activitiesError } = await supabase.from("timeline_activities").select("start_time, title, location_name").eq("day_id", day.id).order("start_time", { ascending: true }).order("created_at", { ascending: true });
+    const { data: activities, error: activitiesError } = await supabase
+      .from("timeline_activities")
+      .select("start_time, duration_minutes, title, description, location_name, kind, is_system_generated, created_at")
+      .eq("day_id", day.id)
+      .order("start_time", { ascending: true })
+      .order("created_at", { ascending: true });
     if (activitiesError) throw activitiesError;
     return NextResponse.json({ day: { ...day, activities: activities ?? [] } }, { headers: { "Cache-Control": "no-store" } });
   } catch {
