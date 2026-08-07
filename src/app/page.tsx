@@ -93,6 +93,13 @@ export default function HomePage() {
     startUndo(toHomeActivity(deleted));
   }
 
+  async function changeStartTime(activity: HomeActivity, startTime: string) {
+    if (!activity.id) return;
+    await updateTimelineActivity(activity.id, { ...toInput(activity), startTime });
+    retry();
+    showToast("Időpont módosítva");
+  }
+
   async function undo() {
     const record = undoActivity.current;
     if (!record) return;
@@ -116,7 +123,7 @@ export default function HomePage() {
       <SunCard />
       <div className="px-5">
         <TimelineCard day={day} onSelect={setSelectedDate} />
-        <section className="mt-8"><PlanList activities={day.activities} status={status} canEdit={canMutate} onRetry={retry} onSelect={(activity) => setEditor({ activity })} onDelete={(activity) => { void remove(activity).catch((caught) => showToast(caught instanceof Error ? caught.message : "A törlés nem sikerült.")); }} /></section>
+        <section className="mt-8"><PlanList activities={day.activities} status={status} canEdit={canMutate} onRetry={retry} onSelect={(activity) => setEditor({ activity })} onDelete={(activity) => { void remove(activity).catch((caught) => showToast(caught instanceof Error ? caught.message : "A törlés nem sikerült.")); }} onTimeChange={changeStartTime} onError={showToast} /></section>
         <div aria-hidden="true" className="h-12" />
       </div>
     </main>

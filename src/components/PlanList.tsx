@@ -6,10 +6,24 @@ import type { TimelineLoadState } from "@/hooks/useTimelineDay";
 
 const DELETE_THRESHOLD = 72;
 const MAX_SWIPE = 92;
+const DRAG_SNAP_MINUTES = 15;
+const PIXELS_PER_SNAP = 36;
 
 function timeToMinutes(time: string) {
   const match = /^(\d{1,2}):(\d{2})$/.exec(time);
   return match ? Number(match[1]) * 60 + Number(match[2]) : null;
+}
+
+function minutesToTime(minutes: number) {
+  const clamped = Math.max(0, Math.min(23 * 60 + 45, minutes));
+  return `${String(Math.floor(clamped / 60)).padStart(2, "0")}:${String(clamped % 60).padStart(2, "0")}`;
+}
+
+function snappedTime(time: string, deltaY: number) {
+  const original = timeToMinutes(time);
+  if (original === null) return time;
+  const slots = Math.round(deltaY / PIXELS_PER_SNAP);
+  return minutesToTime(original + slots * DRAG_SNAP_MINUTES);
 }
 
 function hasConflict(activities: HomeActivity[], index: number) {
@@ -45,7 +59,63 @@ function TimelineContent({ activity, conflict }: { activity: HomeActivity; confl
   </article>;
 }
 
-function EditableTimelineItem({ activity, conflict, onSelect, onDelete }: { activity: HomeActivity; conflict: boolean; onSelect: (activity: HomeActivity) => void; onDelete: (activity: HomeActivity) => void }) {
+function DragHandle({ activity, onPreview, onCommit, onError }: { activity: HomeActivity; onPreview: (time: string | null) => void; onCommit: (time: string) => Promise<void>; onError: (message: string) => void }) {
+  const startY = useRef<number | null>(null);
+  const proposedTime = useRef(activity.time);
+  const [dragging, setDragging] = useState(false);
+
+  function pointerDown(event: PointerEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    startY.current = event.clientY;
+    proposedTime.current = activity.time;
+    setDragging(true);
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function pointerMove(event: PointerEvent<HTMLButtonElement>) {
+    if (startY.current === null) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const nextTime = snappedTime(activity.time, event.clientY - startY.current);
+    proposedTime.current = nextTime;
+    onPreview(nextTime);
+  }
+
+  async function finish(event: PointerEvent<HTMLButtonElement>, cancelled = false) {
+    if (startY.current === null) return;
+    event.preventDefault();
+    event.stopPropagation();
+    startY.current = null;
+    setDragging(false);
+    onPreview(null);
+    if (cancelled || proposedTime.current === activity.time) return;
+    try {
+      await onCommit(proposedTime.current);
+    } catch (caught) {
+      onError(caught instanceof Error ? caught.message : "Az időpont módosítása nem sikerült.");
+    }
+  }
+
+  return <button
+    type="button"
+    aria-label="Időpont módosítása"
+    onPointerDown={pointerDown}
+    onPointerMove={pointerMove}
+    onPointerUp={(event) => { void finish(event); }}
+    onPointerCancel={(event) => { void finish(event, true); }}
+    onClick={(event) => { event.preventDefault(); event.stopPropagation(); }}
+    className={`absolute -right-2 -top-2 grid h-11 w-11 touch-none place-items-center text-deep-sea/30 outline-none transition-opacity focus-visible:ring-2 focus-visible:ring-turquoise-dark ${dragging ? "opacity-100" : "opacity-60"}`}
+  >
+    <span aria-hidden="true" className="grid gap-1">
+      <span className="h-px w-3 rounded-full bg-current" />
+      <span className="h-px w-3 rounded-full bg-current" />
+      <span className="h-px w-3 rounded-full bg-current" />
+    </span>
+  </button>;
+}
+
+function EditableTimelineItem({ activity, conflict, onSelect, onDelete, onPreview, onTimeChange, onError }: { activity: HomeActivity; conflict: boolean; onSelect: (activity: HomeActivity) => void; onDelete: (activity: HomeActivity) => void; onPreview: (time: string | null) => void; onTimeChange: (activity: HomeActivity, time: string) => Promise<void>; onError: (message: string) => void }) {
   const [offset, setOffset] = useState(0);
   const offsetRef = useRef(0);
   const start = useRef<{ x: number; y: number } | null>(null);
@@ -91,14 +161,18 @@ function EditableTimelineItem({ activity, conflict, onSelect, onDelete }: { acti
   return <div className="relative overflow-hidden">
     <button type="button" onClick={() => onDelete(activity)} className="absolute inset-y-0 right-0 grid w-[84px] place-items-center bg-error/15 text-[13px] font-semibold text-error" aria-label={`${activity.title} törlése`}>Törlés</button>
     <div role="button" tabIndex={0} aria-label={`${activity.title} szerkesztése`} onKeyDown={keyDown} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd} onClick={() => { if (suppressClick.current) { suppressClick.current = false; return; } onSelect(activity); }} className="relative cursor-pointer touch-pan-y bg-quartz outline-none transition-transform duration-200 focus-visible:ring-2 focus-visible:ring-turquoise-dark" style={{ transform: `translateX(${offset}px)`, transitionDuration: start.current ? "0ms" : undefined }}>
-      <TimelineContent activity={activity} conflict={conflict} />
+      <div className="relative pr-11">
+        <TimelineContent activity={activity} conflict={conflict} />
+        <DragHandle activity={activity} onPreview={onPreview} onCommit={(time) => onTimeChange(activity, time)} onError={onError} />
+      </div>
     </div>
   </div>;
 }
 
-export function PlanList({ activities, status, canEdit, onRetry, onSelect, onDelete }: { activities: HomeActivity[]; status: TimelineLoadState; canEdit: boolean; onRetry: () => void; onSelect: (activity: HomeActivity) => void; onDelete: (activity: HomeActivity) => void }) {
+export function PlanList({ activities, status, canEdit, onRetry, onSelect, onDelete, onTimeChange, onError }: { activities: HomeActivity[]; status: TimelineLoadState; canEdit: boolean; onRetry: () => void; onSelect: (activity: HomeActivity) => void; onDelete: (activity: HomeActivity) => void; onTimeChange: (activity: HomeActivity, time: string) => Promise<void>; onError: (message: string) => void }) {
   const showSkeleton = status === "loading" && activities.length === 0;
   const showEmpty = status === "empty" && activities.length === 0;
+  const [previewTimes, setPreviewTimes] = useState<Record<string, string>>({});
 
   return <section aria-label="Napi idővonal" aria-busy={status === "loading"}>
     <TimelineMessage status={status} onRetry={onRetry} />
@@ -108,9 +182,9 @@ export function PlanList({ activities, status, canEdit, onRetry, onSelect, onDel
         const editable = canEdit && Boolean(activity.id) && !travel && !activity.isSystemGenerated && !activity.localEvent;
         const conflict = hasConflict(activities, index);
         return <li key={activity.id ?? `${activity.time}-${activity.title}-${index}`} className="relative mb-7 grid grid-cols-[44px_1fr] gap-x-6">
-          <time className={`pt-0.5 text-[13px] leading-[21px] ${travel || activity.isSystemGenerated ? "text-deep-sea/35" : "text-deep-sea/55"}`}>{activity.time}</time>
+          <time className={`pt-0.5 text-[13px] leading-[21px] ${activity.id && previewTimes[activity.id] ? "font-semibold text-turquoise-dark" : travel || activity.isSystemGenerated ? "text-deep-sea/35" : "text-deep-sea/55"}`}>{activity.id && previewTimes[activity.id] ? previewTimes[activity.id] : activity.time}</time>
           <span aria-hidden="true" className={`absolute left-[51px] top-2 h-[9px] w-[9px] rounded-full border-2 border-quartz ${activity.localEvent ? "bg-coral shadow-[0_0_0_4px_rgba(241,140,121,.14)]" : travel ? "bg-deep-sea/30" : "bg-turquoise shadow-[0_0_0_1px_rgba(20,127,145,.25)]"}`} />
-          {editable ? <EditableTimelineItem activity={activity} conflict={conflict} onSelect={onSelect} onDelete={onDelete} /> : <TimelineContent activity={activity} conflict={conflict} />}
+          {editable ? <EditableTimelineItem activity={activity} conflict={conflict} onSelect={onSelect} onDelete={onDelete} onPreview={(time) => { if (!activity.id) return; setPreviewTimes((current) => { const next = { ...current }; if (time) next[activity.id!] = time; else delete next[activity.id!]; return next; }); }} onTimeChange={onTimeChange} onError={onError} /> : <TimelineContent activity={activity} conflict={conflict} />}
         </li>;
       })}
     </ol>}
