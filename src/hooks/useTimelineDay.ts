@@ -2,9 +2,6 @@
 
 import { useEffect, useState } from "react";
 import type { HomeActivity, HomeDay } from "@/data/home-days";
-import { createSupabaseBrowserClient } from "@/lib/supabase/client";
-
-const TRIP_SLUG = "sardinia-family-2026";
 
 type TimelineDayResult = {
   date: string;
@@ -33,8 +30,9 @@ function toHomeDay(remote: TimelineDayResult, fallback: HomeDay): HomeDay {
 }
 
 /**
- * Reads the selected day from Supabase without mutating it. A static fallback
- * keeps the existing Picker days usable until each day has been seeded.
+ * Reads the selected day through the PIN-protected server API. A static fallback
+ * keeps the existing Picker days usable until each day has been seeded or when
+ * the installed PWA is offline.
  */
 export function useTimelineDay(selectedDate: string, fallback: HomeDay) {
   const [remoteDay, setRemoteDay] = useState<HomeDay | null>(null);
@@ -44,42 +42,15 @@ export function useTimelineDay(selectedDate: string, fallback: HomeDay) {
 
     async function load() {
       try {
-        const supabase = createSupabaseBrowserClient();
-        const { data: trip, error: tripError } = await supabase
-          .from("trips")
-          .select("id")
-          .eq("slug", TRIP_SLUG)
-          .maybeSingle();
-
-        if (tripError) throw tripError;
-        if (!trip) {
-          if (active) setRemoteDay(null);
-          return;
-        }
-
-        const { data: day, error: dayError } = await supabase
-          .from("days")
-          .select("id, date, title, subtitle")
-          .eq("trip_id", trip.id)
-          .eq("date", selectedDate)
-          .maybeSingle();
-
-        if (dayError) throw dayError;
+        const response = await fetch(`/api/timeline?date=${encodeURIComponent(selectedDate)}`, { cache: "no-store" });
+        if (!response.ok) throw new Error("Timeline request failed.");
+        const { day } = await response.json() as { day: TimelineDayResult | null };
         if (!day) {
           if (active) setRemoteDay(null);
           return;
         }
-
-        const { data: activities, error: activitiesError } = await supabase
-          .from("timeline_activities")
-          .select("start_time, title, location_name")
-          .eq("day_id", day.id)
-          .order("start_time", { ascending: true })
-          .order("created_at", { ascending: true });
-
-        if (activitiesError) throw activitiesError;
         if (active) {
-          setRemoteDay(toHomeDay({ ...day, activities: activities ?? [] }, fallback));
+          setRemoteDay(toHomeDay(day, fallback));
         }
       } catch (error) {
         // RLS/configuration failures must not break the existing Home surface.

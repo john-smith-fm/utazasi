@@ -8,8 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed:supabase": "node --env-file=.env.local scripts/seed-supabase.mjs",
-    "provision:family": "node --env-file=.env.local scripts/provision-family-members.mjs"
+    "seed:supabase": "node --env-file=.env.local scripts/seed-supabase.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.2",

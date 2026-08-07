@@ -6,7 +6,7 @@
      azokat a kliens (useLiveData / lib/weather.ts) localStorage-ben cache-eli
    ============================================================ */
 
-const CACHE_NAME = "utazasi-v3";
+const CACHE_NAME = "utazasi-v4";
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
