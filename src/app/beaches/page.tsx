@@ -14,7 +14,7 @@ export default function BeachesPage() {
       </header>
       <div className="mt-4">
         {beaches.map((place) => (
-          <PlaceListItem key={place.slug} place={place} />
+          <PlaceListItem key={place.slug} place={place} href={`/places/${place.slug}`} />
         ))}
       </div>
     </div>
