@@ -7,6 +7,7 @@ import { storageGet, storageSet } from "@/lib/storage";
 export type TimelineLoadState = "loading" | "success" | "empty" | "offline" | "error";
 
 type TimelineActivityResult = {
+  id: string;
   start_time: string;
   duration_minutes: number;
   title: string;
@@ -33,6 +34,7 @@ function toHomeDay(remote: TimelineDayResult, fallback: HomeDay): HomeDay {
   const activities: HomeActivity[] = [...remote.activities]
     .sort((left, right) => left.start_time.localeCompare(right.start_time) || left.created_at.localeCompare(right.created_at))
     .map((activity) => ({
+      id: activity.id,
       time: activity.start_time.slice(0, 5),
       title: activity.title,
       place: activity.location_name ?? "",

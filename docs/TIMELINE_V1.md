@@ -26,11 +26,17 @@ Cél: a napi Timeline a meglévő `trips → days → timeline_activities` read 
 
 A `timeline_activities` Sprint 1 sémában csak `plan` és `travel` `kind` szerepel; nincs még `source_event_id` vagy helyi-esemény jelölő. A local-event komponensminta ezért támogatott a kliensoldali adatban, de Supabase-ből akkor kap majd valódi jelet, amikor az adatmodellben külön eseménykapcsolat lesz. A v1A ezt nem találja ki és nem módosítja.
 
-## v1B — külön CRUD-sprint
+## v1B — PIN-védett CRUD-sprint
 
-Előfeltétel: membership-alapú, biztonságos írási réteg és megfelelő RLS-policy.
+A projekt elfogadott hozzáférési modellje közös, tartós családi PIN-session, nem egyénenkénti Supabase Auth. Ezért az írási réteg a PIN-sessiont ellenőrző Next.js API-kban fut:
 
-Csak utána készülhet el:
+```text
+PIN-session → szerveroldali validáció → engedélyezett trip/day ellenőrzése → Supabase
+```
+
+A böngésző nem kap Supabase secret vagy service-role kulcsot. A `trip_members` tábla és a korábbi Auth/RLS-migrációk nem a v1B write-engedély forrásai; minden PIN-birtokos azonos, családi szerkesztői jogosultságot kap az egyetlen engedélyezett utazáshoz.
+
+v1B-ben készül el:
 
 - Activity Bottom Sheet;
 - Full Screen Editor;

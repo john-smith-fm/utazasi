@@ -1,4 +1,5 @@
 export interface HomeActivity {
+  id?: string;
   time: string;
   title: string;
   place: string;

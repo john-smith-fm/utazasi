@@ -1,18 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 import { ACCESS_COOKIE_NAME, hasValidAccessSession } from "@/lib/access";
-import type { Database } from "@/types/database";
+import { createTimelineActivity, timelineServerClient, TIMELINE_TRIP_SLUG } from "@/lib/timeline-service";
 
 export const dynamic = "force-dynamic";
-
-const TRIP_SLUG = "sardinia-family-2026";
-
-function serverClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SECRET_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) throw new Error("Timeline data is not configured.");
-  return createClient<Database>(url, key, { auth: { autoRefreshToken: false, persistSession: false } });
-}
 
 export async function GET(request: NextRequest) {
   if (!hasValidAccessSession(request.cookies.get(ACCESS_COOKIE_NAME)?.value)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -20,8 +10,8 @@ export async function GET(request: NextRequest) {
   if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return NextResponse.json({ error: "Invalid date" }, { status: 400 });
 
   try {
-    const supabase = serverClient();
-    const { data: trip, error: tripError } = await supabase.from("trips").select("id").eq("slug", TRIP_SLUG).maybeSingle();
+    const supabase = timelineServerClient();
+    const { data: trip, error: tripError } = await supabase.from("trips").select("id").eq("slug", TIMELINE_TRIP_SLUG).maybeSingle();
     if (tripError) throw tripError;
     if (!trip) return NextResponse.json({ day: null }, { headers: { "Cache-Control": "no-store" } });
 
@@ -31,7 +21,7 @@ export async function GET(request: NextRequest) {
 
     const { data: activities, error: activitiesError } = await supabase
       .from("timeline_activities")
-      .select("start_time, duration_minutes, title, description, location_name, kind, is_system_generated, created_at")
+      .select("id, start_time, duration_minutes, title, description, location_name, kind, is_system_generated, created_at")
       .eq("day_id", day.id)
       .order("start_time", { ascending: true })
       .order("created_at", { ascending: true });
@@ -39,5 +29,20 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ day: { ...day, activities: activities ?? [] } }, { headers: { "Cache-Control": "no-store" } });
   } catch {
     return NextResponse.json({ error: "Timeline unavailable" }, { status: 503 });
+  }
+}
+
+export async function POST(request: NextRequest) {
+  if (!hasValidAccessSession(request.cookies.get(ACCESS_COOKIE_NAME)?.value)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const body = await request.json().catch(() => null) as { date?: unknown; activity?: unknown; requestId?: unknown } | null;
+  const date = typeof body?.date === "string" ? body.date : "";
+
+  try {
+    const result = await createTimelineActivity(date, body?.activity, body?.requestId);
+    if ("error" in result) return NextResponse.json({ error: result.error }, { status: result.status });
+    return NextResponse.json({ activity: result.data }, { status: 201, headers: { "Cache-Control": "no-store" } });
+  } catch {
+    return NextResponse.json({ error: "A programpont mentése nem sikerült." }, { status: 503 });
   }
 }
