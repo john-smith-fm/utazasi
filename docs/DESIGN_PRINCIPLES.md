@@ -1,5 +1,7 @@
 # DESIGN PRINCIPLES
 
+> **Elsődleges referencia:** a teljes, kötelező érvényű specifikáció a [DESIGN.md](./DESIGN.md). Ez a fájl csak rövid elv-összefoglaló.
+
 - Information first
 - Warm minimalism
 - Mediterranean Premium

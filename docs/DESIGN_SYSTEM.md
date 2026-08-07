@@ -1,5 +1,7 @@
 # DESIGN SYSTEM
 
+> **Elsődleges referencia:** a teljes, kötelező érvényű specifikáció a [DESIGN.md](./DESIGN.md). Ez a fájl csak rövid token-összefoglaló.
+
 ## Colors
 Background: #F8F7F3
 Primary: #4CB8C4
