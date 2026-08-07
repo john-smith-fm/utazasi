@@ -48,7 +48,7 @@ export interface Playground {
 export interface QuickLink {
   label: string;
   icon: string;
-  target: string; // route path, e.g. "/days"
+  target: string; // route path, e.g. "/beaches"
 }
 
 export interface Trip {

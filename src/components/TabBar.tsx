@@ -6,7 +6,6 @@ import { Icon } from "./Icon";
 
 const TABS = [
   { href: "/", label: "Home", icon: "home" },
-  { href: "/days", label: "Napok", icon: "calendar-days" },
   { href: "/beaches", label: "Strandok", icon: "umbrella" },
   { href: "/restaurants", label: "Éttermek", icon: "utensils" },
   { href: "/budget", label: "Költségek", icon: "wallet" },
