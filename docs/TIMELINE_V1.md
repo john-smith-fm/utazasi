@@ -45,7 +45,19 @@ v1B-ben készül el:
 - swipe-left delete és 5 másodperces Undo;
 - mentés utáni automatikus időrendi újrarendezés.
 
-A teljes Timeline-sor iPhone-on nem drag target. Közvetlen drag csak később, külön legalább 44 × 44 px-es handle-lel jöhet szóba.
+## v1C — közvetlen időmódosítás
+
+Ez a v1B utáni, külön touch-interakciós sprint. Nem klasszikus listás drag-and-drop, és nem az elemet lehet két másik közé vizuálisan átrendezni.
+
+- csak az `start_time` módosul közvetlen húzással;
+- a sorrend továbbra is kizárólag az időből következik;
+- csak külön, legalább 44 × 44 px-es drag handle használható;
+- a teljes Timeline-sor iPhone-on soha nem drag target, így a függőleges görgetés természetes marad;
+- húzás közben az új időpont látható;
+- elengedéskor a `start_time` mentődik, majd a Timeline időrendben újrarendeződik;
+- ütközés esetén figyelmeztetés jelenik meg, automatikus átszervezés nem történik.
+
+A Journey Picker dragje ettől független, már definiált közvetlen manipulációs interakció.
 
 ## Place rendszer
 
