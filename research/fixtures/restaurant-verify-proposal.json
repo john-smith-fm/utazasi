@@ -1,0 +1,47 @@
+{
+  "proposalVersion": "1.0",
+  "createdAt": "2026-08-07T20:00:00.000Z",
+  "researchJob": {
+    "mode": "verify",
+    "placeTypes": ["restaurant"],
+    "verificationAgeDays": 90,
+    "geographicScope": { "localities": ["Villasimius"] }
+  },
+  "summary": { "total": 2, "ready": 0, "needsReview": 1, "hold": 1 },
+  "sourceCatalog": [
+    {
+      "id": "src_01",
+      "url": "https://www.santamariavillasimius.it/",
+      "title": "Ristorante Pizzeria Santa Maria",
+      "domain": "santamariavillasimius.it",
+      "sourceType": "official_business",
+      "checkedAt": "2026-08-07T20:00:00.000Z"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "verify-santa-maria",
+      "action": "no_change",
+      "status": "needs_review",
+      "canonicalSlug": "santa-maria",
+      "facts": [
+        {
+          "field": "contact.website",
+          "value": "https://www.santamariavillasimius.it/",
+          "sourceRefs": ["src_01"],
+          "checkedAt": "2026-08-07T20:00:00.000Z",
+          "confidenceBasis": "official_business"
+        }
+      ],
+      "uncertaintyNotes": ["A szezonális nyitvatartás külön megerősítést igényel."]
+    },
+    {
+      "id": "possible-closure-example",
+      "action": "hold",
+      "status": "hold",
+      "canonicalSlug": "sa-tankitta",
+      "facts": [],
+      "uncertaintyNotes": ["Egyetlen gyenge jelzés nem igazolja a bezárást."]
+    }
+  ]
+}

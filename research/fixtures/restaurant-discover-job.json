@@ -1,0 +1,8 @@
+{
+  "mode": "discover",
+  "placeTypes": ["restaurant"],
+  "geographicScope": {
+    "localities": ["Villasimius", "Costa Rei"]
+  },
+  "query": "Keress új éttermeket Villasimius és Costa Rei között."
+}
