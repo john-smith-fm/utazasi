@@ -9,7 +9,7 @@ export function QuickGrid() {
         <Link
           key={q.target}
           href={q.target}
-          className="flex flex-col items-center gap-1.5 rounded-s bg-white px-1.5 py-3.5 text-center text-xs text-deep-sea shadow-sm"
+          className="flex flex-col items-center gap-1.5 rounded-ui-s bg-white px-1.5 py-3.5 text-center text-xs text-deep-sea shadow-sm"
         >
           <Icon name={q.icon} size={22} />
           <span>{q.label}</span>

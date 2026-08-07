@@ -38,7 +38,7 @@ function hasConflict(activities: HomeActivity[], index: number) {
 function TimelineMessage({ status, onRetry }: { status: TimelineLoadState; onRetry: () => void }) {
   if (status === "loading") return <p className="mb-4 text-center text-[13px] leading-[21px] text-deep-sea/55" role="status">Napi terv betöltése…</p>;
   if (status === "offline") return <p className="mb-4 text-center text-[13px] leading-[21px] text-deep-sea/55" role="status">Offline · az utolsó ismert napi terv látható.</p>;
-  if (status === "error") return <div className="mb-4 flex items-center justify-between gap-3 rounded-s border border-coral/20 bg-coral/5 px-3 py-2 text-[13px] leading-[18px] text-deep-sea/60" role="alert"><span>A napi terv most nem érhető el.</span><button type="button" onClick={onRetry} className="min-h-11 shrink-0 rounded-s px-2 font-semibold text-deep-sea">Újrapróbálás</button></div>;
+  if (status === "error") return <div className="mb-4 flex items-center justify-between gap-3 rounded-ui-s border border-coral/20 bg-coral/5 px-3 py-2 text-[13px] leading-[18px] text-deep-sea/60" role="alert"><span>A napi terv most nem érhető el.</span><button type="button" onClick={onRetry} className="min-h-11 shrink-0 rounded-ui-s px-2 font-semibold text-deep-sea">Újrapróbálás</button></div>;
   return null;
 }
 

@@ -51,7 +51,7 @@ export function ExpenseTracker() {
           placeholder="Mire?"
           autoComplete="off"
           required
-          className="flex-1 rounded-s border px-3.5 py-3 text-[15px] text-deep-sea"
+          className="flex-1 rounded-ui-s border px-3.5 py-3 text-[15px] text-deep-sea"
           style={{ borderColor: "rgba(24,50,59,0.10)" }}
         />
         <input
@@ -62,13 +62,13 @@ export function ExpenseTracker() {
           inputMode="decimal"
           step="0.01"
           required
-          className="w-[84px] rounded-s border px-2.5 py-3 font-mono text-[15px] text-deep-sea"
+          className="w-[84px] rounded-ui-s border px-2.5 py-3 font-mono text-[15px] text-deep-sea"
           style={{ borderColor: "rgba(24,50,59,0.10)" }}
         />
         <button
           type="submit"
           aria-label="Kiadás hozzáadása"
-          className="w-[46px] rounded-s bg-turquoise text-[22px] font-semibold text-white"
+          className="w-[46px] rounded-ui-s bg-turquoise text-[22px] font-semibold text-white"
         >
           +
         </button>

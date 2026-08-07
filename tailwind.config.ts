@@ -52,7 +52,7 @@ const config: Config = {
       borderRadius: {
         l: "28px",
         m: "20px",
-        s: "14px",
+        "ui-s": "14px",
       },
       backdropBlur: {
         glass: "16px",

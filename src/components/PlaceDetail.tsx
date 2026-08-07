@@ -50,7 +50,7 @@ function RestaurantDetails({ place }: { place: Place }) {
         {contact.phones.map((phone) => <a key={phone} href={`tel:${phone.replace(/\s+/g, "")}`} className="inline-flex min-h-11 items-center text-sm font-semibold text-turquoise-dark">{phone}</a>)}
       </div>
     </div> : null}
-    {contact?.website && <a href={contact.website} target="_blank" rel="noreferrer" className="mt-4 inline-flex min-h-11 items-center rounded-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">Weboldal megnyitása</a>}
+    {contact?.website && <a href={contact.website} target="_blank" rel="noreferrer" className="mt-4 inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">Weboldal megnyitása</a>}
   </section>;
 }
 
@@ -85,7 +85,7 @@ export function PlaceDetail({ place }: { place: Place }) {
     <div className="mt-8 space-y-8">
       <BeachAccessDetails place={place} />
       <RestaurantDetails place={place} />
-      {navigationHref && <a href={navigationHref} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center rounded-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">Navigáció megnyitása</a>}
+      {navigationHref && <a href={navigationHref} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">Navigáció megnyitása</a>}
     </div>
   </article>;
 }

@@ -27,7 +27,7 @@ export function Journal() {
           .slice()
           .reverse()
           .map((en, i) => (
-            <div key={i} className="rounded-s bg-white p-3.5 shadow-sm">
+            <div key={i} className="rounded-ui-s bg-white p-3.5 shadow-sm">
               <p className="mb-1.5 font-mono text-[11px] text-neutral-700">{fmtDate(en.date)}</p>
               <p className="text-[14.5px] leading-relaxed text-deep-sea">{en.note}</p>
               {en.rating > 0 && (

@@ -73,7 +73,7 @@ function PinAccessScreen({ configurationError, onUnlocked }: { configurationErro
       <div className={`mx-auto flex w-full max-w-[365px] gap-2 ${status === "error" ? "motion-safe:animate-[pin-shake_.3s_ease-in-out]" : ""}`} aria-label="Négyjegyű PIN választó">
         {digits.map((digit, index) => <PinColumn key={index} value={digit} index={index} onChange={setDigit} />)}
       </div>
-      <button type="button" onClick={() => void submit()} disabled={status === "submitting" || configurationError} className="mx-auto mt-10 h-[52px] w-full max-w-[365px] rounded-s border border-coral bg-coral/20 text-[15px] font-bold text-deep-sea shadow-card transition-transform active:scale-[.98] disabled:opacity-45">{status === "submitting" ? "…" : "Belépés"}</button>
+      <button type="button" onClick={() => void submit()} disabled={status === "submitting" || configurationError} className="mx-auto mt-10 h-[52px] w-full max-w-[365px] rounded-ui-s border border-coral bg-coral/20 text-[15px] font-bold text-deep-sea shadow-card transition-transform active:scale-[.98] disabled:opacity-45">{status === "submitting" ? "…" : "Belépés"}</button>
       <p className="sr-only" role="status" aria-live="polite">{error}</p>
     </div>
   </main>;
