@@ -64,9 +64,20 @@ rgba(76, 184, 196, .10)
 
 ### Tipográfia
 
-- **Inter:** törzsszöveg, navigáció, gomb, Timeline és címke; 400, 500, 600, 700.
-- **Fraunces:** csak nagy, érzelmi display-pillanatok; 400, 500, 600, 700.
-- **IBM Plex Mono:** kizárólag technikai/numerikus kontextusok.
+Az Utazási minden felületen natív **System UI Typography** rendszert használ:
+
+```css
+font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+```
+
+- Apple eszközön: San Francisco / SF Pro.
+- Androidon: az eszköz natív UI-fontja (jellemzően Roboto).
+- Windowson: Segoe UI.
+- Más platformon: natív `system-ui` / `sans-serif` fallback.
+
+A hierarchiát méret, súly, sorköz, betűköz, szín, opacity és térköz adja; nincs külön display- vagy monospace fontcsalád.
+
+Ne csomagoljunk és ne töltsünk le platformfontot (SF Pro, Roboto, Segoe UI). A `font-sans`, `font-display` és `font-mono` alias is erre az egy stackre mutat.
 
 | Szerep | Méret / sormagasság | Súly |
 | --- | --- | --- |

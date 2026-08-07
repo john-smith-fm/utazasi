@@ -1,5 +1,7 @@
 import type { Config } from "tailwindcss";
 
+const systemUi = ["system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"];
+
 const config: Config = {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   darkMode: "media",
@@ -43,9 +45,9 @@ const config: Config = {
         },
       },
       fontFamily: {
-        display: ["var(--font-fraunces)", "Georgia", "serif"],
-        sans: ["var(--font-inter)", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
-        mono: ["var(--font-plex-mono)", "ui-monospace", "SFMono-Regular", "monospace"],
+        display: systemUi,
+        sans: systemUi,
+        mono: systemUi,
       },
       borderRadius: {
         l: "28px",

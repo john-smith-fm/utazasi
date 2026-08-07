@@ -1,6 +1,6 @@
-# UTAZÁSI DESIGN SYSTEM & BUILD SPECIFICATION v3.0
+# UTAZÁSI DESIGN SYSTEM & BUILD SPECIFICATION v3.1
 
-Version: 3.0  
+Version: 3.1
 Status: Standalone Design System  
 Purpose: Complete visual and interaction specification for rebuilding the interface from zero.
 
@@ -95,42 +95,19 @@ turquoise-10 rgba(76,184,196,.10)
 
 # 3. TYPOGRAPHY
 
-## Primary font
+## System UI Typography
 
-Inter
+```css
+font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+```
 
-Usage:
-- body;
-- navigation;
-- buttons;
-- Timeline;
-- labels.
+Utazási a felhasználó platformjának natív UI-tipográfiáját használja: Apple eszközön San Francisco / SF Pro, Androidon a natív Android UI-fontot, Windowson Segoe UI-t. A hierarchia méretből, súlyból, sorközből, betűközből, színből, opacityből és térközből épül; nincs display- vagy monospace fontcsalád.
 
-Weights:
-- 400 regular
-- 500 medium
-- 600 semibold
-- 700 bold
+Ne csomagoljunk SF Pro, Roboto, Segoe UI vagy más platformfontot. Minden aktív tipográfiai alias ugyanarra a System UI stackre mutat.
 
-## Display font
+## Strict prohibition
 
-Fraunces
-
-Usage:
-- only large emotional display moments.
-
-Weights:
-- 400
-- 500
-- 600
-- 700
-
-## Monospace
-
-IBM Plex Mono
-
-Usage:
-- technical numeric contexts only.
+Do not introduce Inter, Fraunces, IBM Plex Mono, bundled SF Pro, bundled Roboto, bundled Segoe UI, serif display fonts, decorative font families, feature-specific font families or monospace as a separate visual identity.
 
 ---
 

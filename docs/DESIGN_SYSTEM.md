@@ -10,8 +10,14 @@ Text: #18323B
 Sand: #EFE7DA
 
 ## Typography
-Fraunces
-Inter
+
+System UI Typography:
+
+```css
+system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif
+```
+
+Platformnatív betűkép: Apple eszközön San Francisco, Androidon natív rendszerfont, Windowson Segoe UI. Minden tipográfiai alias ugyanarra a stackre mutat; nincs csomagolt vagy külön display/monospace font.
 
 ## Icons
 Lucide only.

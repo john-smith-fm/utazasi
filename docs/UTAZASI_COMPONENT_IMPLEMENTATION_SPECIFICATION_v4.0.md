@@ -1,6 +1,6 @@
-# UTAZÁSI COMPONENT IMPLEMENTATION SPECIFICATION v4.0
+# UTAZÁSI COMPONENT IMPLEMENTATION SPECIFICATION v4.1
 
-Version: 4.0
+Version: 4.1
 Status: SELF-CONTAINED
 
 Purpose: Exact component-level build specification for implementing the Utazási UI.
@@ -48,16 +48,15 @@ Turquoise Dark #2E8A93
 Sand #EFE7DA
 Olive #708A64
 
-Fonts:
+Typography:
 
-Inter:
-primary UI font.
+```css
+font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+```
 
-Fraunces:
-large emotional display only.
+Use native System UI typography on every platform. Apple devices resolve to San Francisco / SF Pro; Android and Windows keep their own native UI font. Do not bundle platform fonts or use a separate display/monospace family.
 
-IBM Plex Mono:
-numeric technical contexts only.
+Strict prohibition: do not introduce Inter, Fraunces, IBM Plex Mono, bundled SF Pro, bundled Roboto, bundled Segoe UI, serif display fonts, decorative font families, feature-specific font families or monospace as a separate visual identity. All active typography aliases must resolve to the canonical System UI stack.
 
 ---
 

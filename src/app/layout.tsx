@@ -1,29 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Inter, IBM_Plex_Mono } from "next/font/google";
 import { AppAccessGate } from "@/components/AppAccessGate";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import "./globals.css";
-
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  variable: "--font-fraunces",
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
-
-const plexMono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  variable: "--font-plex-mono",
-  weight: ["400", "500", "600"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "Utazási — Villasimius Guide",
@@ -49,7 +27,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="hu" className={`${fraunces.variable} ${inter.variable} ${plexMono.variable}`}>
+    <html lang="hu">
       <body className="bg-quartz font-sans text-deep-sea pb-[calc(64px+env(safe-area-inset-bottom))]">
         <AppAccessGate>{children}</AppAccessGate>
         <ServiceWorkerRegister />

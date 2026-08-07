@@ -148,47 +148,24 @@ Info     #4CB8C4
 
 ## 2.1 Font families
 
-Primary UI font:
+System UI Typography:
 
-```text
-Inter
+```css
+font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 ```
 
-Weights:
-- 400 Regular
-- 500 Medium
-- 600 SemiBold
-- 700 Bold
+All active typography aliases resolve to this one native stack. Apple devices use San Francisco / SF Pro; Android and Windows use their native system UI font. Do not bundle platform font files or introduce separate serif, display or monospace families.
 
-Display font:
+### Strict prohibition
 
-```text
-Fraunces
-```
-
-Weights:
-- 400
-- 500
-- 600
-- 700
-
-Monospace font:
-
-```text
-IBM Plex Mono
-```
-
-Weights:
-- 400
-- 500
-- 600
+Do not introduce Inter, Fraunces, IBM Plex Mono, bundled SF Pro, bundled Roboto, bundled Segoe UI, serif display fonts, decorative font families, feature-specific font families or monospace as a separate visual identity.
 
 ## 2.2 Type tokens
 
 ### UI Display Small
 
 ```css
-font-family: Inter;
+font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 font-size: 24px;
 line-height: 30px;
 font-weight: 700;
@@ -198,7 +175,7 @@ letter-spacing: -0.03em;
 ### UI Heading
 
 ```css
-font-family: Inter;
+font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 font-size: 20px;
 line-height: 26px;
 font-weight: 700;
@@ -378,11 +355,7 @@ Text:
 #18323B
 ```
 
-Font:
-
-```text
-Inter
-```
+Font: System UI Typography.
 
 Max content width:
 
@@ -1512,7 +1485,7 @@ Horizontal padding:
 Text:
 
 ```text
-14–16px Inter
+14–16px System UI
 ```
 
 ## 19.2 Focus
@@ -2022,7 +1995,7 @@ These rules must never change without explicit redesign approval:
 2. Deep Sea is the primary text color.
 3. Coral is the strongest brand accent.
 4. Full coral is primarily reserved for FAB.
-5. Inter is the primary UI font.
+5. System UI Typography is the only active font stack.
 6. Page horizontal padding is 20px.
 7. Main mobile max width is 430px.
 8. Journey Picker selected item stays centered.
