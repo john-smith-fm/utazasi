@@ -38,12 +38,21 @@ A böngésző nem kap Supabase secret vagy service-role kulcsot. A `trip_members
 
 v1B-ben készül el:
 
-- Activity Bottom Sheet;
-- Full Screen Editor;
+- egységes Full Screen Editor create és edit módhoz;
 - új program;
 - szerkesztőből történő időmódosítás;
 - swipe-left delete és 5 másodperces Undo;
 - mentés utáni automatikus időrendi újrarendezés.
+
+### v1B szerkesztési útvonal
+
+```text
+Normál, kézzel létrehozott program tap → Full Screen Editor (edit)
+FAB → Full Screen Editor (create)
+Travel / system / local event → nem szerkeszthető
+```
+
+Timeline-szerkesztésben nincs Bottom Sheet. A Bottom Sheet későbbi, valódi gyors döntésekhez marad fenn: helyválasztás, valódi alternatívák vagy AI-javaslat elfogadása.
 
 ## v1C — közvetlen időmódosítás
 
