@@ -10,6 +10,7 @@
     "lint": "next lint",
     "seed:supabase": "node --env-file=.env.local scripts/seed-supabase.mjs",
     "research": "node scripts/research.mjs",
+    "research:live": "node --env-file=.env.local scripts/research.mjs live",
     "research:apply": "node scripts/research.mjs apply",
     "test:research": "node --test scripts/research/*.test.mjs"
   },

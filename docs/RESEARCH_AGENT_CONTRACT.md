@@ -42,7 +42,15 @@ The tool does not research, commit, push or deploy. Changed category JSON files 
 
 ## Security and v2G.2
 
-v2G.1 has no live provider and no credentials. v2G.2 may add a server-only provider with bounded queries, fetch size, redirects and timeouts. It must not expose secrets or become a generic URL proxy.
+v2G.1 has no live provider and no credentials. v2G.2 uses the OpenAI Responses API with its built-in web search tool, server-side only. `OPENAI_API_KEY` is read only by the local research CLI or future server routes; it is never a `NEXT_PUBLIC_` variable and is never committed.
+
+The live command is deliberately narrow:
+
+```bash
+npm run research:live -- research/fixtures/restaurant-discover-job.json --output research/proposals/restaurant-discover.json
+```
+
+It accepts a validated job, makes one bounded web-search request, and writes only a review proposal below `research/proposals/`. It does not fetch arbitrary user URLs, update canonical JSON, write Supabase, commit, push, or deploy. The provider extracts URLs only from the web-search response; a candidate fact referring to any other URL is rejected. Timeouts, an eight-source limit, an eight-candidate limit, source validation, duplicate detection and the existing deterministic apply gate remain in force.
 
 ## Relationship to v3A
 
