@@ -17,8 +17,8 @@ export interface Database {
         Relationships: [{ foreignKeyName: "days_trip_id_fkey"; columns: ["trip_id"]; referencedRelation: "trips"; referencedColumns: ["id"] }];
       };
       timeline_activities: {
-        Row: { id: string; day_id: string; start_time: string; duration_minutes: number; title: string; description: string | null; location_name: string | null; kind: TimelineActivityKind; is_system_generated: boolean; seed_key: string | null; created_at: string; updated_at: string };
-        Insert: { id?: string; day_id: string; start_time: string; duration_minutes: number; title: string; description?: string | null; location_name?: string | null; kind?: TimelineActivityKind; is_system_generated?: boolean; seed_key?: string | null; created_at?: string; updated_at?: string };
+        Row: { id: string; day_id: string; start_time: string; duration_minutes: number; title: string; description: string | null; location_name: string | null; place_slug: string | null; kind: TimelineActivityKind; is_system_generated: boolean; seed_key: string | null; created_at: string; updated_at: string };
+        Insert: { id?: string; day_id: string; start_time: string; duration_minutes: number; title: string; description?: string | null; location_name?: string | null; place_slug?: string | null; kind?: TimelineActivityKind; is_system_generated?: boolean; seed_key?: string | null; created_at?: string; updated_at?: string };
         Update: Partial<Database["public"]["Tables"]["timeline_activities"]["Insert"]>;
         Relationships: [{ foreignKeyName: "timeline_activities_day_id_fkey"; columns: ["day_id"]; referencedRelation: "days"; referencedColumns: ["id"] }];
       };

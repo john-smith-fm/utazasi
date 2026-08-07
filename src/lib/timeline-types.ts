@@ -8,6 +8,7 @@ export type TimelineActivityRecord = {
   title: string;
   description: string | null;
   location_name: string | null;
+  place_slug: string | null;
   kind: TimelineActivityKind;
   is_system_generated: boolean;
   created_at: string;
@@ -19,6 +20,7 @@ export type TimelineActivityInput = {
   startTime: string;
   durationMinutes: number;
   locationName: string;
+  placeSlug: string | null;
   description: string;
 };
 

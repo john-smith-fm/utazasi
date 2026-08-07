@@ -3,6 +3,7 @@ export interface HomeActivity {
   time: string;
   title: string;
   place: string;
+  placeSlug: string | null;
   description?: string;
   durationMinutes?: number;
   kind?: "plan" | "travel";
@@ -13,7 +14,10 @@ export interface HomeActivity {
   editable?: boolean;
 }
 export interface HomeDay { date: string; day: number; weekday: "Hét" | "Kedd" | "Sze" | "Csü" | "Pén" | "Szo" | "Vas"; title: string; summary: string; activities: HomeActivity[]; }
-export const HOME_DAYS: HomeDay[] = [
+type StaticHomeActivity = Omit<HomeActivity, "placeSlug">;
+type StaticHomeDay = Omit<HomeDay, "activities"> & { activities: StaticHomeActivity[] };
+
+const HOME_DAY_DATA: StaticHomeDay[] = [
   { date:"2026-09-02", day:2, weekday:"Sze", title:"Érkezés és ráhangolódás", summary:"Délutáni érkezés és bevásárlás. Könnyű vacsora Villasimiusban. Nyugodt ráhangolódás az első estére.", activities:[{time:"16:00",title:"Megérkezés",place:"Szállás elfoglalása",editable:false},{time:"18:00",title:"Bevásárlás",place:"Conad Superstore"},{time:"20:00",title:"Könnyű vacsora",place:"Villasimius központ"}] },
   { date:"2026-09-03", day:3, weekday:"Csü", title:"Közeli strand és pihenés", summary:"A közeli Simius strand jó első választás. Kevés utazás, egyszerű megközelítés. Nyugodt délutáni program.", activities:[{time:"09:30",title:"Strandolás",place:"Simius",recommendation:"Közel van és egyszerű a megközelítése."},{time:"13:00",title:"Ebéd és pihenés",place:"Szállás"},{time:"17:00",title:"B come bambini",place:"Piazza Gramsci",localEvent:true,eventNote:"Helyi gyerekprogram Villasimiusban."}] },
   { date:"2026-09-04", day:4, weekday:"Pén", title:"Nyugodt tengerparti nap", summary:"Ma a Campus strand ígérkezik a legjobb választásnak. Gyenge szél, kellemes vízhőmérséklet. Ideális egy nyugodt családi strandoláshoz.", activities:[{time:"09:30",title:"Strandolás",place:"Campus",recommendation:"Ma nyugodtabb víz és egyszerűbb parkolás várható."},{time:"13:00",title:"Ebéd és pihenés",place:"Szállás"},{time:"21:30",title:"Festival della Fortezza",place:"Fortezza Vecchia",localEvent:true,eventNote:"Helyi esti esemény; a programok jellemzően 21:30-kor kezdődnek."}] },
@@ -25,3 +29,8 @@ export const HOME_DAYS: HomeDay[] = [
   { date:"2026-09-10", day:10, weekday:"Csü", title:"Kedvenc hely újra", summary:"Visszatérés a hét kedvenc strandjára. Délután pihenés és készülődés. Este búcsúvacsora Villasimiusban.", activities:[{time:"09:30",title:"Strandolás",place:"A hét kedvence"},{time:"13:00",title:"Ebéd és pihenés",place:"Szállás"},{time:"18:30",title:"Búcsúvacsora",place:"Hely még nincs kiválasztva"}] },
   { date:"2026-09-11", day:11, weekday:"Pén", title:"Hazautazás", summary:"Reggeli és pakolás a szálláson. Kényelmes indulás Cagliari felé. A nap fókusza a nyugodt hazautazás.", activities:[{time:"08:00",title:"Reggeli és pakolás",place:"Szállás"},{time:"10:30",title:"Indulás",place:"Cagliari repülőtér",editable:false}] }
 ];
+
+export const HOME_DAYS: HomeDay[] = HOME_DAY_DATA.map((day) => ({
+  ...day,
+  activities: day.activities.map((activity) => ({ ...activity, placeSlug: null })),
+}));

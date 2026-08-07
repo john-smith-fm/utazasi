@@ -23,6 +23,7 @@ function toInput(activity: HomeActivity): TimelineActivityInput {
     startTime: activity.time,
     durationMinutes: activity.durationMinutes ?? 60,
     locationName: activity.place,
+    placeSlug: activity.placeSlug,
     description: activity.description ?? "",
   };
 }
@@ -33,6 +34,7 @@ function toHomeActivity(activity: TimelineActivityRecord): HomeActivity {
     time: activity.start_time.slice(0, 5),
     title: activity.title,
     place: activity.location_name ?? "",
+    placeSlug: activity.place_slug,
     description: activity.description ?? undefined,
     durationMinutes: activity.duration_minutes,
     kind: activity.kind,

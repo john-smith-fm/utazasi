@@ -1,8 +1,10 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import type { HomeActivity } from "@/data/home-days";
 import type { TimelineActivityInput } from "@/lib/timeline-types";
+import { getPlaces } from "@/lib/places";
+import type { Place, PlaceType } from "@/types/places";
 
 type ActionState = "idle" | "saving" | "deleting";
 
@@ -12,8 +14,35 @@ function initialInput(activity?: HomeActivity): TimelineActivityInput {
     startTime: activity?.time || "09:00",
     durationMinutes: activity?.durationMinutes ?? 60,
     locationName: activity?.place ?? "",
+    placeSlug: activity?.placeSlug ?? null,
     description: activity?.description ?? "",
   };
+}
+
+const PLACE_TYPE_LABEL: Record<PlaceType, string> = {
+  beach: "Strand",
+  restaurant: "Étterem",
+  cafe: "Kávézó",
+  playground: "Játszótér",
+  shop: "Bolt",
+  sight: "Látnivaló",
+  parking: "Parkolás",
+  other: "Hely",
+};
+
+function normalizedSearchValue(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("hu");
+}
+
+function matchingPlaces(query: string): readonly Place[] {
+  const normalizedQuery = normalizedSearchValue(query.trim());
+  if (!normalizedQuery) return [];
+  return getPlaces().filter((place) => [place.name, place.slug, place.location?.locality]
+    .filter((value): value is string => Boolean(value))
+    .some((value) => normalizedSearchValue(value).includes(normalizedQuery)));
 }
 
 export function ActivityEditor({ activity, onClose, onSave, onDelete }: {
@@ -25,12 +54,26 @@ export function ActivityEditor({ activity, onClose, onSave, onDelete }: {
   const [input, setInput] = useState(() => initialInput(activity));
   const [action, setAction] = useState<ActionState>("idle");
   const [error, setError] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const editing = Boolean(activity?.id);
   const createRequestId = useRef<string | null>(null);
+  const suggestions = useMemo(() => matchingPlaces(input.locationName), [input.locationName]);
 
   function update<Key extends keyof TimelineActivityInput>(key: Key, value: TimelineActivityInput[Key]) {
     setInput((current) => ({ ...current, [key]: value }));
     setError("");
+  }
+
+  function updateLocationName(locationName: string) {
+    setInput((current) => ({ ...current, locationName, placeSlug: null }));
+    setError("");
+    setShowSuggestions(true);
+  }
+
+  function selectPlace(place: Place) {
+    setInput((current) => ({ ...current, locationName: place.name, placeSlug: place.slug }));
+    setError("");
+    setShowSuggestions(false);
   }
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
@@ -70,7 +113,32 @@ export function ActivityEditor({ activity, onClose, onSave, onDelete }: {
           <Field label="Kezdés"><input required type="time" value={input.startTime} onChange={(event) => update("startTime", event.target.value)} className="h-12 w-full rounded-s border border-deep-sea/10 bg-white px-3 text-[16px] outline-none focus:border-turquoise-dark" /></Field>
           <Field label="Időtartam (perc)"><input required type="number" min="1" max="1440" inputMode="numeric" value={input.durationMinutes} onChange={(event) => update("durationMinutes", Number(event.target.value))} className="h-12 w-full rounded-s border border-deep-sea/10 bg-white px-3 text-[16px] outline-none focus:border-turquoise-dark" /></Field>
         </div>
-        <Field label="Hely"><input maxLength={160} value={input.locationName} onChange={(event) => update("locationName", event.target.value)} className="h-12 w-full rounded-s border border-deep-sea/10 bg-white px-4 text-[16px] outline-none focus:border-turquoise-dark" /></Field>
+        <Field label="Helyszín">
+          <div className="relative">
+            <input
+              maxLength={160}
+              value={input.locationName}
+              onChange={(event) => updateLocationName(event.target.value)}
+              onFocus={() => setShowSuggestions(true)}
+              role="combobox"
+              aria-autocomplete="list"
+              aria-expanded={showSuggestions && suggestions.length > 0}
+              aria-controls="place-suggestions"
+              className="h-12 w-full rounded-s border border-deep-sea/10 bg-white px-4 text-[16px] outline-none focus:border-turquoise-dark"
+            />
+            {showSuggestions && suggestions.length > 0 && <ul id="place-suggestions" role="listbox" className="absolute z-10 mt-2 max-h-56 w-full overflow-y-auto rounded-s border border-deep-sea/10 bg-white py-1 shadow-[0_10px_24px_rgba(24,50,59,.12)]">
+              {suggestions.map((place) => {
+                const meta = [place.location?.locality, PLACE_TYPE_LABEL[place.type]].filter(Boolean).join(" · ");
+                return <li key={place.slug} role="option" aria-selected={input.placeSlug === place.slug}>
+                  <button type="button" onMouseDown={(event) => event.preventDefault()} onClick={() => selectPlace(place)} className="min-h-11 w-full px-4 py-2 text-left outline-none transition-colors hover:bg-sand focus-visible:bg-sand">
+                    <span className="block text-[15px] font-semibold leading-5 text-deep-sea">{place.name}</span>
+                    {meta && <span className="mt-0.5 block text-[13px] leading-[18px] text-deep-sea/60">{meta}</span>}
+                  </button>
+                </li>;
+              })}
+            </ul>}
+          </div>
+        </Field>
         <Field label="Megjegyzés"><textarea maxLength={1000} value={input.description} onChange={(event) => update("description", event.target.value)} className="min-h-28 w-full resize-y rounded-s border border-deep-sea/10 bg-white px-4 py-3 text-[16px] leading-[21px] outline-none focus:border-turquoise-dark" /></Field>
       </div>
       {error && <p className="mt-5 text-sm leading-[21px] text-error" role="alert">{error}</p>}
