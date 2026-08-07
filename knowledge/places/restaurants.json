@@ -1,0 +1,35 @@
+{
+  "version": "1.1",
+  "category": "restaurants",
+  "source_dataset": "utazasi_data_codex_v1.1",
+  "places": [
+    {
+      "id": "place_villasimius_il_giardino",
+      "slug": "il-giardino",
+      "name": "Il Giardino",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": { "country": "Olaszország", "region": "Szardínia", "city": "Villasimius", "postal_code": "09049", "address": "Via Filippo Brunelleschi 4", "latitude": null, "longitude": null },
+      "google_maps": { "place_id": null, "maps_url": "https://www.google.com/maps/search/?api=1&query=Il+Giardino%2C+Via+Filippo+Brunelleschi+4%2C+09049+Villasimius+SU%2C+Italy", "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Il+Giardino%2C+Via+Filippo+Brunelleschi+4%2C+09049+Villasimius+SU%2C+Italy", "match_status": "search_query_link" },
+      "opening_hours": { "timezone": "Europe/Rome", "weekly": null, "seasonal_or_exception_note": "A cím ellenőrzött; a teljes heti nyitvatartás még nem elég biztos a rögzítéshez." },
+      "verification": { "status": "address_verified_hours_pending", "last_checked": "2026-08-06", "sources": ["https://www.thefork.co.uk/restaurant/il-giardino-r395043"] }
+    },
+    {
+      "id": "place_villasimius_santa_maria",
+      "slug": "santa-maria",
+      "name": "Ristorante Pizzeria Santa Maria",
+      "category": "food",
+      "subcategory": "restaurant_pizzeria",
+      "location": { "country": "Olaszország", "region": "Szardínia", "city": "Villasimius", "postal_code": "09049", "address": "Via Cagliari 31", "latitude": null, "longitude": null },
+      "google_maps": { "place_id": null, "maps_url": "https://www.google.com/maps/search/?api=1&query=Ristorante+Pizzeria+Santa+Maria%2C+Via+Cagliari+31%2C+09049+Villasimius+CA%2C+Italy", "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Ristorante+Pizzeria+Santa+Maria%2C+Via+Cagliari+31%2C+09049+Villasimius+CA%2C+Italy", "match_status": "search_query_link" },
+      "opening_hours": { "timezone": "Europe/Rome", "weekly": { "monday": [{ "open": "19:00", "close": null }], "tuesday": [{ "open": "19:00", "close": null }], "wednesday": [{ "open": "19:00", "close": null }], "thursday": [{ "open": "19:00", "close": null }], "friday": [{ "open": "19:00", "close": null }], "saturday": [{ "open": "19:00", "close": null }], "sunday": [{ "open": "19:00", "close": null }] }, "seasonal_or_exception_note": "A hivatalos oldal szerint minden este 19:00-tól nyitva; zárási idő nincs megadva, telefonos megerősítés javasolt." },
+      "contact": { "phone": ["+39 070 790205", "+39 333 6555647"], "website": "https://www.santamariavillasimius.it/" },
+      "verification": { "status": "verified_official", "last_checked": "2026-08-06", "sources": ["https://www.santamariavillasimius.it/"] }
+    },
+    { "id": "place_rest_sa_tankitta", "slug": "sa-tankitta", "name": "Sa Tankitta", "category": "food", "subcategory": "restaurant", "location": { "city": "Villasimius" }, "verification": { "status": "planned_enrichment" } },
+    { "id": "place_rest_su_giganti", "slug": "su-giganti", "name": "Su Giganti", "category": "food", "subcategory": "restaurant", "location": { "city": "Villasimius" }, "verification": { "status": "planned_enrichment" } },
+    { "id": "place_rest_da_barbara", "slug": "da-barbara", "name": "Da Barbara", "category": "food", "subcategory": "restaurant", "location": { "city": "Costa Rei" }, "verification": { "status": "planned_enrichment" } },
+    { "id": "place_rest_chiosco_colostrai", "slug": "chiosco-colostrai", "name": "Chiosco Colostrai", "category": "food", "subcategory": "restaurant", "location": { "city": "Muravera" }, "verification": { "status": "planned_enrichment" } },
+    { "id": "place_rest_sa_pardula", "slug": "sa-pardula", "name": "Sa Pardula", "category": "food", "subcategory": "restaurant", "location": { "city": "Muravera" }, "verification": { "status": "planned_enrichment" } }
+  ]
+}

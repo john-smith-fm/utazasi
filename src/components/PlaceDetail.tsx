@@ -33,6 +33,27 @@ function BeachAccessDetails({ place }: { place: Place }) {
   </section>;
 }
 
+function RestaurantDetails({ place }: { place: Place }) {
+  if (place.details.kind !== "restaurant") return null;
+  const { openingNote, contact } = place.details;
+  if (!openingNote && !contact?.website && !contact?.phones?.length) return null;
+
+  return <section className="border-t border-deep-sea/10 pt-6" aria-labelledby="restaurant-information-heading">
+    <h2 id="restaurant-information-heading" className="text-[17px] font-bold leading-[23px] text-deep-sea">Étterem információk</h2>
+    {openingNote && <div className="mt-3">
+      <h3 className="text-sm font-semibold leading-5 text-deep-sea">Nyitvatartás</h3>
+      <p className="mt-1 text-sm leading-[21px] text-deep-sea/70">{openingNote}</p>
+    </div>}
+    {contact?.phones?.length ? <div className="mt-4">
+      <h3 className="text-sm font-semibold leading-5 text-deep-sea">Telefon</h3>
+      <div className="mt-1 flex flex-col items-start gap-2">
+        {contact.phones.map((phone) => <a key={phone} href={`tel:${phone.replace(/\s+/g, "")}`} className="inline-flex min-h-11 items-center text-sm font-semibold text-turquoise-dark">{phone}</a>)}
+      </div>
+    </div> : null}
+    {contact?.website && <a href={contact.website} target="_blank" rel="noreferrer" className="mt-4 inline-flex min-h-11 items-center rounded-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">Weboldal megnyitása</a>}
+  </section>;
+}
+
 export function PlaceDetail({ place }: { place: Place }) {
   const primaryImage = place.media?.[0];
   const hasCoordinates = place.location?.latitude !== undefined && place.location?.longitude !== undefined;
@@ -56,8 +77,14 @@ export function PlaceDetail({ place }: { place: Place }) {
       {place.description && <p className="mt-3 text-sm leading-[21px] text-deep-sea/70">{place.description}</p>}
     </section>}
 
+    {place.location?.address && <section className="mt-7 border-t border-deep-sea/10 pt-6" aria-labelledby="address-heading">
+      <h2 id="address-heading" className="text-[17px] font-bold leading-[23px] text-deep-sea">Cím</h2>
+      <p className="mt-2 text-sm leading-[21px] text-deep-sea/70">{place.location.address}</p>
+    </section>}
+
     <div className="mt-8 space-y-8">
       <BeachAccessDetails place={place} />
+      <RestaurantDetails place={place} />
       {navigationHref && <a href={navigationHref} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center rounded-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">Navigáció megnyitása</a>}
     </div>
   </article>;

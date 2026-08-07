@@ -29,8 +29,19 @@ export type BeachDetails = {
   access?: BeachAccess;
 };
 
+export type RestaurantContact = {
+  phones?: string[];
+  website?: string;
+};
+
+export type RestaurantDetails = {
+  kind: "restaurant";
+  openingNote?: string;
+  contact?: RestaurantContact;
+};
+
 export type GenericPlaceDetails = {
-  kind: Exclude<PlaceType, "beach">;
+  kind: Exclude<PlaceType, "beach" | "restaurant">;
 };
 
 export type Place = {
@@ -43,7 +54,8 @@ export type Place = {
   description?: string;
   media?: { src: string; attribution?: string }[];
   provenance?: PlaceProvenance;
-  details: BeachDetails | GenericPlaceDetails;
+  details: BeachDetails | RestaurantDetails | GenericPlaceDetails;
 };
 
 export type BeachPlace = Place & { type: "beach"; details: BeachDetails };
+export type RestaurantPlace = Place & { type: "restaurant"; details: RestaurantDetails };
