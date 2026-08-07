@@ -24,25 +24,6 @@ export interface Day {
   beach?: string;
 }
 
-export interface Beach {
-  name: string;
-  photo: string;
-  maps: string;
-  parking: string;
-  price: string;
-  umbrella: boolean;
-  sunbed: boolean;
-  toilet: boolean;
-  shower: boolean;
-  waves: string;
-  sand: string;
-  wind: string;
-  goWhen: string;
-  avoidWhen: string;
-  enikoIndex: string;
-  mateAjanlja: string;
-}
-
 export interface Restaurant {
   name: string;
   photo: string;

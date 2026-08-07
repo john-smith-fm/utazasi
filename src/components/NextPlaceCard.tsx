@@ -1,5 +1,5 @@
 import type { Day } from "@/types";
-import { BEACHES } from "@/data/beaches";
+import { getPlaceBySlug, toPlaceSlug } from "@/lib/places";
 
 interface NextPlaceCardProps {
   day: Day;
@@ -7,7 +7,7 @@ interface NextPlaceCardProps {
 
 export function NextPlaceCard({ day }: NextPlaceCardProps) {
   if (!day.beach) return null;
-  const beach = BEACHES.find((b) => b.name === day.beach);
+  const beach = getPlaceBySlug(toPlaceSlug(day.beach));
   if (!beach) return null;
 
   return (
@@ -17,17 +17,7 @@ export function NextPlaceCard({ day }: NextPlaceCardProps) {
       </p>
       <p className="mb-2 font-display text-[21px] font-semibold text-deep-sea">{beach.name}</p>
       <div className="flex items-center justify-between gap-3">
-        <p className="flex-1 text-sm text-neutral-700">
-          {beach.sand} · {beach.waves}
-        </p>
-        <a
-          href={beach.maps}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex-shrink-0 whitespace-nowrap rounded-full bg-turquoise px-4 py-2.5 font-mono text-xs font-semibold text-white"
-        >
-          Megnyitás
-        </a>
+        {beach.location?.locality && <p className="flex-1 text-sm text-neutral-700">{beach.location.locality}</p>}
       </div>
     </div>
   );

@@ -1,0 +1,19 @@
+{
+  "version": "1.1",
+  "category": "beaches",
+  "source_dataset": "utazasi_data_codex_v1.1",
+  "places": [
+    { "id": "place_beach_porto_giunco", "slug": "porto-giunco", "name": "Spiaggia di Porto Giunco", "category": "beach", "location": { "city": "Villasimius" }, "coverage_area": "Solanas-Villaputzu", "verification": { "status": "planned" } },
+    { "id": "place_beach_simius", "slug": "simius", "name": "Spiaggia di Simius", "category": "beach", "location": { "city": "Villasimius" }, "coverage_area": "Solanas-Villaputzu", "verification": { "status": "planned" } },
+    { "id": "place_beach_campulongu", "slug": "campulongu", "name": "Spiaggia di Campulongu", "category": "beach", "location": { "city": "Villasimius" }, "coverage_area": "Solanas-Villaputzu", "verification": { "status": "planned" } },
+    { "id": "place_beach_punta_molentis", "slug": "punta-molentis", "name": "Spiaggia di Punta Molentis", "category": "beach", "location": { "city": "Villasimius" }, "coverage_area": "Solanas-Villaputzu", "verification": { "status": "planned" } },
+    { "id": "place_beach_cala_pira", "slug": "cala-pira", "name": "Spiaggia di Cala Pira", "category": "beach", "location": { "city": "Castiadas" }, "coverage_area": "Solanas-Villaputzu", "verification": { "status": "planned" } },
+    { "id": "place_beach_monte_turno", "slug": "monte-turno", "name": "Spiaggia di Monte Turno", "category": "beach", "location": { "city": "Castiadas" }, "coverage_area": "Solanas-Villaputzu", "verification": { "status": "planned" } },
+    { "id": "place_beach_san_pietro", "slug": "san-pietro", "name": "Spiaggia di San Pietro", "category": "beach", "location": { "city": "Castiadas" }, "coverage_area": "Solanas-Villaputzu", "verification": { "status": "planned" } },
+    { "id": "place_beach_costa_rei", "slug": "costa-rei", "name": "Spiaggia di Costa Rei", "category": "beach", "location": { "city": "Costa Rei" }, "coverage_area": "Solanas-Villaputzu", "verification": { "status": "planned" } },
+    { "id": "place_beach_scoglio_peppino", "slug": "scoglio-di-peppino", "name": "Spiaggia di Scoglio di Peppino", "category": "beach", "location": { "city": "Costa Rei" }, "coverage_area": "Solanas-Villaputzu", "verification": { "status": "planned" } },
+    { "id": "place_beach_colostrai", "slug": "colostrai", "name": "Spiaggia di Colostrai", "category": "beach", "location": { "city": "Muravera" }, "coverage_area": "Solanas-Villaputzu", "verification": { "status": "planned" } },
+    { "id": "place_beach_feraxi", "slug": "feraxi", "name": "Spiaggia di Feraxi", "category": "beach", "location": { "city": "Muravera" }, "coverage_area": "Solanas-Villaputzu", "verification": { "status": "planned" } },
+    { "id": "place_beach_porto_tramatzu", "slug": "porto-tramatzu", "name": "Spiaggia di Porto Tramatzu", "category": "beach", "location": { "city": "Villaputzu" }, "coverage_area": "Solanas-Villaputzu", "verification": { "status": "planned" } }
+  ]
+}
