@@ -96,7 +96,7 @@ function EditableTimelineItem({ activity, conflict, onSelect, onDelete }: { acti
   </div>;
 }
 
-export function PlanList({ activities, status, onRetry, onSelect, onDelete }: { activities: HomeActivity[]; status: TimelineLoadState; onRetry: () => void; onSelect: (activity: HomeActivity) => void; onDelete: (activity: HomeActivity) => void }) {
+export function PlanList({ activities, status, canEdit, onRetry, onSelect, onDelete }: { activities: HomeActivity[]; status: TimelineLoadState; canEdit: boolean; onRetry: () => void; onSelect: (activity: HomeActivity) => void; onDelete: (activity: HomeActivity) => void }) {
   const showSkeleton = status === "loading" && activities.length === 0;
   const showEmpty = status === "empty" && activities.length === 0;
 
@@ -105,7 +105,7 @@ export function PlanList({ activities, status, onRetry, onSelect, onDelete }: { 
     {showSkeleton ? <TimelineSkeleton /> : showEmpty ? <p className="py-10 text-center text-sm leading-[21px] text-deep-sea/60">Erre a napra még nincs program.</p> : <ol className="relative m-0 list-none p-0 before:absolute before:bottom-6 before:left-[55px] before:top-4 before:w-px before:bg-deep-sea/10">
       {activities.map((activity, index) => {
         const travel = activity.kind === "travel";
-        const editable = Boolean(activity.id) && !travel && !activity.isSystemGenerated && !activity.localEvent;
+        const editable = canEdit && Boolean(activity.id) && !travel && !activity.isSystemGenerated && !activity.localEvent;
         const conflict = hasConflict(activities, index);
         return <li key={activity.id ?? `${activity.time}-${activity.title}-${index}`} className="relative mb-7 grid grid-cols-[44px_1fr] gap-x-6">
           <time className={`pt-0.5 text-[13px] leading-[21px] ${travel || activity.isSystemGenerated ? "text-deep-sea/35" : "text-deep-sea/55"}`}>{activity.time}</time>

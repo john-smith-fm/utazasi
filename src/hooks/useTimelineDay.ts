@@ -28,6 +28,7 @@ type TimelineDayResult = {
 type TimelineDayState = {
   day: HomeDay;
   status: TimelineLoadState;
+  hasRemoteDay: boolean;
 };
 
 function toHomeDay(remote: TimelineDayResult, fallback: HomeDay): HomeDay {
@@ -57,7 +58,7 @@ function emptyDay(fallback: HomeDay): HomeDay {
  * schedule while offline. There is deliberately no mutation path in v1A.
  */
 export function useTimelineDay(selectedDate: string, fallback: HomeDay) {
-  const [state, setState] = useState<TimelineDayState>({ day: emptyDay(fallback), status: "loading" });
+  const [state, setState] = useState<TimelineDayState>({ day: emptyDay(fallback), status: "loading", hasRemoteDay: false });
   const [attempt, setAttempt] = useState(0);
   const retry = useCallback(() => setAttempt((value) => value + 1), []);
 
@@ -66,7 +67,7 @@ export function useTimelineDay(selectedDate: string, fallback: HomeDay) {
     const cacheKey = `utazasi-timeline-v1:${selectedDate}`;
     const cached = storageGet<TimelineDayResult | null>(cacheKey, null);
 
-    setState({ day: cached ? toHomeDay(cached, fallback) : emptyDay(fallback), status: "loading" });
+    setState({ day: cached ? toHomeDay(cached, fallback) : emptyDay(fallback), status: "loading", hasRemoteDay: Boolean(cached) });
 
     async function load() {
       try {
@@ -76,18 +77,18 @@ export function useTimelineDay(selectedDate: string, fallback: HomeDay) {
         if (!active) return;
 
         if (!day) {
-          setState({ day: emptyDay(fallback), status: "empty" });
+          setState({ day: emptyDay(fallback), status: "empty", hasRemoteDay: false });
           return;
         }
 
         storageSet(cacheKey, day);
-        setState({ day: toHomeDay(day, fallback), status: day.activities.length ? "success" : "empty" });
+        setState({ day: toHomeDay(day, fallback), status: day.activities.length ? "success" : "empty", hasRemoteDay: true });
       } catch (error) {
         if (!active) return;
         const offline = typeof navigator !== "undefined" && !navigator.onLine;
         const knownDay = cached ? toHomeDay(cached, fallback) : offline ? fallback : emptyDay(fallback);
         console.error("Unable to load Timeline data from Supabase.", error);
-        setState({ day: knownDay, status: offline ? "offline" : "error" });
+        setState({ day: knownDay, status: offline ? "offline" : "error", hasRemoteDay: Boolean(cached) });
       }
     }
 
@@ -95,5 +96,5 @@ export function useTimelineDay(selectedDate: string, fallback: HomeDay) {
     return () => { active = false; };
   }, [attempt, fallback, selectedDate]);
 
-  return { ...state, retry };
+  return { ...state, canWrite: state.hasRemoteDay && state.status !== "offline" && state.status !== "error", retry };
 }
