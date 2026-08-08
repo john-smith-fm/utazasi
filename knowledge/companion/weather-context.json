@@ -1,0 +1,18 @@
+{
+  "version": "1.0",
+  "purpose": "Időjárásból származó döntési kontextus.",
+  "architecture": [
+    "weather_source",
+    "cache",
+    "rule_engine",
+    "smart_status"
+  ],
+  "ai_required": false,
+  "example_rule": {
+    "if": [
+      "wind_above_threshold",
+      "open_beach"
+    ],
+    "then": "cautious_recommendation"
+  }
+}

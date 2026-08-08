@@ -1,0 +1,16 @@
+{
+  "version": "1.0",
+  "is_chatbot": false,
+  "purpose": "Utazási döntést segítő kérdésmező.",
+  "sources_v1": [
+    "Place",
+    "Timeline",
+    "Weather",
+    "fixture_answers"
+  ],
+  "examples": [
+    "Melyik strandot válasszuk?",
+    "Mi fér még bele délután?",
+    "Hova menjünk gyerekkel?"
+  ]
+}

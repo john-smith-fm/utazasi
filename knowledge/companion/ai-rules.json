@@ -1,0 +1,21 @@
+{
+  "version": "1.2",
+  "product_constraints": {
+    "not_chatbot": true,
+    "research_provider_role": "watch_background_service",
+    "question_ui_role": "decision_support_field",
+    "place_canonical_structure_must_remain": true
+  },
+  "family_priorities": [
+    "child_friendly",
+    "short_drive",
+    "parking_available",
+    "open_now",
+    "high_rating",
+    "shade"
+  ],
+  "event_search": {
+    "save_only_trip_relevant_events": true,
+    "require_source_and_last_checked": true
+  }
+}

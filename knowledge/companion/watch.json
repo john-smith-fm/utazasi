@@ -1,0 +1,27 @@
+{
+  "version": "1.0",
+  "watchable_event": {
+    "eligibility": [
+      "Timeline/Event item",
+      "official source URL exists",
+      "last known state exists"
+    ],
+    "manual_watch_toggle": false,
+    "automatic": true
+  },
+  "change_detection_v1": {
+    "mode": "deterministic",
+    "rules": {
+      "cancelled": "notify",
+      "time_changed": "notify",
+      "venue_changed": "notify",
+      "minor_text_change": "ignore"
+    }
+  },
+  "constraints": [
+    "korlátozott futás",
+    "költséglimit",
+    "nem chatbot",
+    "nem keresőfelület"
+  ]
+}

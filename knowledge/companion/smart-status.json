@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "scope": "selected_day_only",
+  "priority_order": [
+    "critical_event_change",
+    "next_timeline_item",
+    "weather_warning",
+    "neutral_day_summary"
+  ],
+  "rules": [
+    "Never surface another day's status in the currently selected day.",
+    "Smart Status is an interpretation layer on Home, not a separate dashboard.",
+    "A missing input must fall through to the next deterministic rule; it must never be invented."
+  ]
+}
