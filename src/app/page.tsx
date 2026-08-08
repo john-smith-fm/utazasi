@@ -122,8 +122,8 @@ export default function HomePage() {
   return <>
     <Hero />
     <main className="relative z-10 mx-auto -mt-7 max-w-[430px]">
-      <div className="px-5"><StatRow /></div>
-      <SunCard />
+      <div className="px-5"><StatRow date={selectedDate} /></div>
+      <SunCard date={selectedDate} />
       <div className="px-5">
         <TimelineCard day={day} onSelect={setSelectedDate} />
         <section className="mt-8"><PlanList activities={day.activities} status={status} canEdit={canMutate} onRetry={retry} onSelect={(activity) => setEditor({ activity })} onDelete={(activity) => { void remove(activity).catch((caught) => showToast(caught instanceof Error ? caught.message : "A törlés nem sikerült.")); }} onTimeChange={changeStartTime} onError={showToast} /></section>

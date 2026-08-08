@@ -87,4 +87,8 @@ export interface WeatherSnapshot {
   uv: number;
   sunrise: string;
   sunset: string;
+  precipitationState: "dry" | "rain" | "unknown";
+  seaTemperature: number | null;
+  fetchedAt: string;
+  stale: boolean;
 }

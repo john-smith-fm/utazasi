@@ -1,6 +1,16 @@
-import { TRIP } from "@/data/trip";
 import type { WeatherSnapshot } from "@/types";
 import { storageGet, storageSet } from "./storage";
+
+type WeatherResponse = {
+  airTemperature: number;
+  windKmh: number;
+  precipitationState: WeatherSnapshot["precipitationState"];
+  seaTemperature: number | null;
+  sunrise: string | null;
+  sunset: string | null;
+  fetchedAt: string;
+  stale: boolean;
+};
 
 async function fetchJSON<T>(url: string): Promise<T> {
   const res = await fetch(url);
@@ -8,50 +18,28 @@ async function fetchJSON<T>(url: string): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-/** Open-Meteo — időjárás, UV, szél, napkelte/napnyugta. API-kulcs nélkül. */
-export async function fetchWeather(): Promise<WeatherSnapshot> {
-  const { lat, lon } = TRIP.coords;
-  const url =
-    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
-    `&current=temperature_2m,wind_speed_10m,uv_index&daily=sunrise,sunset,uv_index_max` +
-    `&timezone=${encodeURIComponent(TRIP.timezone)}`;
-
+/** Szerveroldali, 15 perces Open-Meteo cache. Offline esetben a kliens a legutóbbi sikeres napot mutatja. */
+export async function fetchWeather(date: string): Promise<WeatherSnapshot> {
+  const cacheKey = `weather-cache:${date}`;
   try {
-    const data = await fetchJSON<{
-      current: { temperature_2m: number; wind_speed_10m: number; uv_index?: number };
-      daily: { sunrise: string[]; sunset: string[]; uv_index_max: number[] };
-    }>(url);
-
+    const data = await fetchJSON<WeatherResponse>(`/api/weather?date=${encodeURIComponent(date)}`);
     const snapshot: WeatherSnapshot = {
-      temp: Math.round(data.current.temperature_2m),
-      wind: Math.round(data.current.wind_speed_10m),
-      uv: Math.round(data.current.uv_index ?? data.daily.uv_index_max[0]),
-      sunrise: data.daily.sunrise[0].slice(11, 16),
-      sunset: data.daily.sunset[0].slice(11, 16),
+      temp: data.airTemperature,
+      wind: data.windKmh,
+      uv: 0,
+      sunrise: data.sunrise ?? "—",
+      sunset: data.sunset ?? "—",
+      precipitationState: data.precipitationState,
+      seaTemperature: data.seaTemperature,
+      fetchedAt: data.fetchedAt,
+      stale: data.stale,
     };
-    storageSet("weather-cache", snapshot);
+    storageSet(cacheKey, snapshot);
     return snapshot;
   } catch {
-    const cached = storageGet<WeatherSnapshot | null>("weather-cache", null);
-    if (cached) return cached;
+    const cached = storageGet<WeatherSnapshot | null>(cacheKey, null);
+    if (cached) return { ...cached, stale: true };
     throw new Error("no weather data available (offline, no cache)");
-  }
-}
-
-/** Open-Meteo Marine API — tenger felszíni hőmérséklet. API-kulcs nélkül. */
-export async function fetchSeaTemp(): Promise<number> {
-  const { lat, lon } = TRIP.coords;
-  const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&current=sea_surface_temperature&timezone=${encodeURIComponent(TRIP.timezone)}`;
-
-  try {
-    const data = await fetchJSON<{ current: { sea_surface_temperature: number } }>(url);
-    const sea = Math.round(data.current.sea_surface_temperature);
-    storageSet("sea-cache", sea);
-    return sea;
-  } catch {
-    const cached = storageGet<number | null>("sea-cache", null);
-    if (cached !== null) return cached;
-    throw new Error("no sea temperature available (offline, no cache)");
   }
 }
 
