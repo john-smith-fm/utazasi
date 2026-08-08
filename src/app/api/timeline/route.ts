@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
 
     const { data: activities, error: activitiesError } = await supabase
       .from("timeline_activities")
-      .select("id, start_time, duration_minutes, title, description, location_name, place_slug, kind, is_system_generated, created_at")
+    .select("id, start_time, duration_minutes, title, description, location_name, place_slug, source_event_id, kind, is_system_generated, created_at")
       .eq("day_id", day.id)
       .order("start_time", { ascending: true })
       .order("created_at", { ascending: true });

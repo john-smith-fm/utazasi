@@ -4,6 +4,7 @@ export interface HomeActivity {
   title: string;
   place: string;
   placeSlug: string | null;
+  sourceEventId?: string | null;
   description?: string;
   durationMinutes?: number;
   kind?: "plan" | "travel";

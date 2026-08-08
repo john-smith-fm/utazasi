@@ -13,6 +13,7 @@ if (!url || !secretKey) {
 }
 
 const seed = JSON.parse(await readFile(new URL("../supabase/seeds/test-day.json", import.meta.url), "utf8"));
+const eventDocument = JSON.parse(await readFile(new URL("../knowledge/events/events.json", import.meta.url), "utf8"));
 const supabase = createClient(url, secretKey, { auth: { autoRefreshToken: false, persistSession: false } });
 
 const { data: trip, error: tripError } = await supabase
@@ -35,4 +36,22 @@ const { error: activityError } = await supabase
   .upsert(rows, { onConflict: "seed_key" });
 if (activityError) throw activityError;
 
-console.log(`Seeded ${seed.day.date}: ${rows.length} timeline activities.`);
+const eventRows = eventDocument.events.map((event) => ({
+  trip_id: trip.id,
+  canonical_key: event.id,
+  title: event.title,
+  starts_at: event.starts_at,
+  ends_at: event.ends_at ?? null,
+  organizer: event.organizer ?? null,
+  source_url: event.source_url,
+  status: event.status === "cancelled" ? "cancelled" : event.status === "changed" ? "changed" : "scheduled",
+  place_slug: event.place_slug ?? null,
+  last_verified_at: event.metadata?.verification?.last_checked ? `${event.metadata.verification.last_checked}T00:00:00+02:00` : null,
+}));
+
+const { error: eventError } = await supabase
+  .from("events")
+  .upsert(eventRows, { onConflict: "trip_id,canonical_key" });
+if (eventError) throw eventError;
+
+console.log(`Seeded ${seed.day.date}: ${rows.length} timeline activities and ${eventRows.length} event(s).`);

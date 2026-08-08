@@ -14,6 +14,7 @@ type TimelineActivityResult = {
   description: string | null;
   location_name: string | null;
   place_slug: string | null;
+  source_event_id: string | null;
   kind: "plan" | "travel";
   is_system_generated: boolean;
   created_at: string;
@@ -41,6 +42,7 @@ function toHomeDay(remote: TimelineDayResult, fallback: HomeDay): HomeDay {
       title: activity.title,
       place: activity.location_name ?? "",
       placeSlug: activity.place_slug,
+      sourceEventId: activity.source_event_id,
       description: activity.description ?? undefined,
       durationMinutes: activity.duration_minutes,
       kind: activity.kind,

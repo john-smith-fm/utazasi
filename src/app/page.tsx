@@ -35,6 +35,7 @@ function toHomeActivity(activity: TimelineActivityRecord): HomeActivity {
     title: activity.title,
     place: activity.location_name ?? "",
     placeSlug: activity.place_slug,
+    sourceEventId: activity.source_event_id,
     description: activity.description ?? undefined,
     durationMinutes: activity.duration_minutes,
     kind: activity.kind,

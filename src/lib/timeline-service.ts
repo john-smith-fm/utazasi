@@ -56,7 +56,7 @@ async function editableActivity(id: string): Promise<ServiceResult<TimelineActiv
   const supabase = timelineServerClient();
   const { data, error } = await supabase
     .from("timeline_activities")
-    .select("id, day_id, start_time, duration_minutes, title, description, location_name, place_slug, kind, is_system_generated, created_at, updated_at, days!inner(trip_id, trips!inner(slug))")
+    .select("id, day_id, start_time, duration_minutes, title, description, location_name, place_slug, source_event_id, kind, is_system_generated, created_at, updated_at, days!inner(trip_id, trips!inner(slug))")
     .eq("id", id)
     .eq("days.trips.slug", TIMELINE_TRIP_SLUG)
     .maybeSingle();
@@ -74,7 +74,7 @@ async function activityForTrip(id: string): Promise<ServiceResult<TimelineActivi
   const supabase = timelineServerClient();
   const { data, error } = await supabase
     .from("timeline_activities")
-    .select("id, day_id, start_time, duration_minutes, title, description, location_name, place_slug, kind, is_system_generated, created_at, updated_at, days!inner(trip_id, trips!inner(slug))")
+    .select("id, day_id, start_time, duration_minutes, title, description, location_name, place_slug, source_event_id, kind, is_system_generated, created_at, updated_at, days!inner(trip_id, trips!inner(slug))")
     .eq("id", id)
     .eq("days.trips.slug", TIMELINE_TRIP_SLUG)
     .maybeSingle();
@@ -106,7 +106,7 @@ export async function createTimelineActivity(date: string, rawInput: unknown, ra
       kind: "plan",
       is_system_generated: false,
     })
-    .select("id, day_id, start_time, duration_minutes, title, description, location_name, place_slug, kind, is_system_generated, created_at, updated_at")
+    .select("id, day_id, start_time, duration_minutes, title, description, location_name, place_slug, source_event_id, kind, is_system_generated, created_at, updated_at")
     .single();
   if (error) {
     if (requestId && error.code === "23505") {
@@ -135,7 +135,7 @@ export async function updateTimelineActivity(id: string, rawInput: unknown): Pro
       description: input.data.description || null,
     })
     .eq("id", current.data.id)
-    .select("id, day_id, start_time, duration_minutes, title, description, location_name, place_slug, kind, is_system_generated, created_at, updated_at")
+    .select("id, day_id, start_time, duration_minutes, title, description, location_name, place_slug, source_event_id, kind, is_system_generated, created_at, updated_at")
     .single();
   if (error) throw error;
   return { data };

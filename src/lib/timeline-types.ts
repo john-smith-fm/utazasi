@@ -9,6 +9,7 @@ export type TimelineActivityRecord = {
   description: string | null;
   location_name: string | null;
   place_slug: string | null;
+  source_event_id: string | null;
   kind: TimelineActivityKind;
   is_system_generated: boolean;
   created_at: string;

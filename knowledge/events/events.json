@@ -1,0 +1,48 @@
+{
+  "version": "1.0",
+  "updated_at": "2026-08-08",
+  "source_dataset": "utazasi_data_codex_v1.4",
+  "rules": [
+    "Az Event külön entitás a Place-től.",
+    "Csak a 2026-09-02 és 2026-09-13 közötti utazáshoz releváns, ténylegesen meghirdetett 2026-os esemény lehet itt.",
+    "A place_slug csak ismert helyazonosság esetén tölthető ki."
+  ],
+  "events": [
+    {
+      "id": "event_invaso_festival_muravera_2026",
+      "title": "InVaso Festival 2026",
+      "starts_at": "2026-08-31T00:00:00+02:00",
+      "ends_at": "2026-09-06T23:59:59+02:00",
+      "source_url": "https://www.invasofestival.com/",
+      "organizer": null,
+      "status": "confirmed",
+      "place_slug": null,
+      "metadata": {
+        "category": "cultural_festival",
+        "location": {
+          "city": "Muravera",
+          "area": "városi terek és szabadtéri helyszínek"
+        },
+        "family": {
+          "suitable_for_toddler": null,
+          "crowd_warning": true,
+          "notes": "A napi részletes program és az egyes előadások korhatára még nincs közzétéve; indulás előtt újra ellenőrzendő."
+        },
+        "admission": {
+          "status": "not_yet_verified_for_2026",
+          "price": null
+        },
+        "verification": {
+          "status": "confirmed_2026",
+          "last_checked": "2026-08-08",
+          "sources": [
+            "https://www.invasofestival.com/",
+            "https://www.invasofestival.com/about/",
+            "https://www.invasofestival.com/call-for-artists/",
+            "https://www.unionesarda.it/news-sardegna/provincia-cagliari/muravera-ad-agosto-ritorna-l-isola-pedonale-lungo-la-via-roma-rn2bwc7p"
+          ]
+        }
+      }
+    }
+  ]
+}
