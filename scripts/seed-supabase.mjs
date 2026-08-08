@@ -17,6 +17,81 @@ const eventDocument = JSON.parse(await readFile(new URL("../knowledge/events/eve
 const tripCore = JSON.parse(await readFile(new URL("../knowledge/trip/trip.public.json", import.meta.url), "utf8"));
 const supabase = createClient(url, secretKey, { auth: { autoRefreshToken: false, persistSession: false } });
 
+function localDateTimeParts(value) {
+  const match = /^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})$/.exec(value);
+  if (!match) throw new Error(`Expected a local ISO date and time, received: ${value}`);
+  return { date: match[1], time: match[2] };
+}
+
+function durationBetween(start, end) {
+  const startTime = Date.parse(`${start}:00+02:00`);
+  const endTime = Date.parse(`${end}:00+02:00`);
+  const duration = Math.round((endTime - startTime) / 60_000);
+  if (duration < 1) throw new Error(`Invalid transport duration: ${start} → ${end}`);
+  return duration;
+}
+
+function tripCoreActivities() {
+  const outbound = tripCore.transport.outbound_flight;
+  const inbound = tripCore.transport.return_flight;
+  const checkIn = tripCore.accommodation.check_in;
+  const checkOut = tripCore.accommodation.check_out;
+  const outboundDeparture = localDateTimeParts(outbound.departure);
+  const inboundDeparture = localDateTimeParts(inbound.departure);
+  const checkInTime = localDateTimeParts(checkIn);
+  const checkOutTime = localDateTimeParts(checkOut);
+
+  return [
+    {
+      date: outboundDeparture.date,
+      seed_key: "trip-core-outbound-flight",
+      start_time: outboundDeparture.time,
+      duration_minutes: durationBetween(outbound.departure, outbound.arrival),
+      title: "Repülőút Cagliariba",
+      description: `${outbound.provider} · ${outbound.from} → ${outbound.to}`,
+      location_name: "Cagliari repülőtér",
+      kind: "travel",
+      is_system_generated: true,
+    },
+    {
+      date: checkInTime.date,
+      seed_key: "trip-core-accommodation-check-in",
+      start_time: checkInTime.time,
+      // The source records a check-in start time, but not its duration. Keep
+      // this as a one-minute timeline marker rather than inventing a stay.
+      duration_minutes: 1,
+      title: "Szállás elfoglalása",
+      description: "Check-in kezdete",
+      location_name: tripCore.accommodation.name,
+      kind: "plan",
+      is_system_generated: true,
+    },
+    {
+      date: checkOutTime.date,
+      seed_key: "trip-core-accommodation-check-out",
+      start_time: checkOutTime.time,
+      // The source records a check-out start time, but not its duration.
+      duration_minutes: 1,
+      title: "Kijelentkezés a szállásról",
+      description: "Check-out kezdete",
+      location_name: tripCore.accommodation.name,
+      kind: "plan",
+      is_system_generated: true,
+    },
+    {
+      date: inboundDeparture.date,
+      seed_key: "trip-core-return-flight",
+      start_time: inboundDeparture.time,
+      duration_minutes: durationBetween(inbound.departure, inbound.arrival),
+      title: "Hazarepülés Budapestre",
+      description: `${inbound.provider} · ${inbound.from} → ${inbound.to}`,
+      location_name: "Cagliari repülőtér",
+      kind: "travel",
+      is_system_generated: true,
+    },
+  ];
+}
+
 const { data: trip, error: tripError } = await supabase
   .from("trips")
   .upsert({
@@ -48,6 +123,24 @@ const { error: activityError } = await supabase
   .upsert(rows, { onConflict: "seed_key" });
 if (activityError) throw activityError;
 
+const { data: coreDays, error: coreDaysLookupError } = await supabase
+  .from("days")
+  .select("id, date")
+  .eq("trip_id", trip.id)
+  .in("date", [...new Set(tripCoreActivities().map((activity) => activity.date))]);
+if (coreDaysLookupError) throw coreDaysLookupError;
+
+const dayIds = new Map(coreDays.map((coreDay) => [coreDay.date, coreDay.id]));
+const coreActivityRows = tripCoreActivities().map(({ date, ...activity }) => {
+  const dayId = dayIds.get(date);
+  if (!dayId) throw new Error(`Trip Core day was not found for ${date}`);
+  return { ...activity, day_id: dayId };
+});
+const { error: coreActivityError } = await supabase
+  .from("timeline_activities")
+  .upsert(coreActivityRows, { onConflict: "seed_key" });
+if (coreActivityError) throw coreActivityError;
+
 const eventRows = eventDocument.events.map((event) => ({
   trip_id: trip.id,
   canonical_key: event.id,
@@ -66,4 +159,4 @@ const { error: eventError } = await supabase
   .upsert(eventRows, { onConflict: "trip_id,canonical_key" });
 if (eventError) throw eventError;
 
-console.log(`Seeded ${seed.day.date}: ${rows.length} timeline activities and ${eventRows.length} event(s).`);
+console.log(`Seeded ${seed.day.date}: ${rows.length} daily activities, ${coreActivityRows.length} Trip Core markers and ${eventRows.length} event(s).`);
