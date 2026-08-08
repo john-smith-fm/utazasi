@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { HOME_DAYS } from "@/data/home-days";
+import type { HomeDay } from "@/data/home-days";
 const SPACING = 64;
-export function DayPicker({ activeDate, onSelect }: { activeDate: string; onSelect: (date: string) => void }) {
-  const source = HOME_DAYS;
+export function DayPicker({ activeDate, days, onSelect }: { activeDate: string; days: HomeDay[]; onSelect: (date: string) => void }) {
+  const source = days;
   const index = Math.max(0, source.findIndex((day) => day.date === activeDate));
   const position = useRef(index), target = useRef(index), velocity = useRef(0), dragging = useRef(false), lastX = useRef(0), frame = useRef<number>(), refs = useRef<Array<HTMLButtonElement | null>>([]);
   useEffect(() => { target.current = index; }, [index]);

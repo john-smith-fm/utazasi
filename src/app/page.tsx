@@ -9,6 +9,7 @@ import { StatRow } from "@/components/StatRow";
 import { SunCard } from "@/components/SunCard";
 import { TimelineCard } from "@/components/TimelineCard";
 import { HOME_DAYS, type HomeActivity } from "@/data/home-days";
+import { TRIP_CORE_DAYS } from "@/data/trip-core";
 import { useTimelineDay } from "@/hooks/useTimelineDay";
 import { useLiveData } from "@/hooks/useLiveData";
 import { createTimelineActivity, deleteTimelineActivity, updateTimelineActivity } from "@/lib/timeline-client";
@@ -46,13 +47,13 @@ function toHomeActivity(activity: TimelineActivityRecord): HomeActivity {
 }
 
 export default function HomePage() {
-  const [selectedDate, setSelectedDate] = useState(HOME_DAYS[1].date);
+  const [selectedDate, setSelectedDate] = useState(TRIP_CORE_DAYS[1].date);
   const [editor, setEditor] = useState<EditorState>(null);
   const [toast, setToast] = useState<ToastState>(null);
   const undoActivity = useRef<UndoRecord | null>(null);
   const undoTimer = useRef<number | null>(null);
   const feedbackTimer = useRef<number | null>(null);
-  const fallbackDay = HOME_DAYS.find((item) => item.date === selectedDate) ?? HOME_DAYS[0];
+  const fallbackDay = HOME_DAYS.find((item) => item.date === selectedDate) ?? TRIP_CORE_DAYS.find((item) => item.date === selectedDate) ?? TRIP_CORE_DAYS[0];
   const { day, status, canWrite, retry } = useTimelineDay(selectedDate, fallbackDay);
   const { weather, sea } = useLiveData(selectedDate);
   const canMutate = canWrite;
@@ -129,7 +130,7 @@ export default function HomePage() {
       <div className="px-5"><StatRow weather={weather} sea={sea} /></div>
       <SunCard weather={weather} />
       <div className="px-5">
-        <TimelineCard day={day} summary={statusSummary} onSelect={setSelectedDate} />
+        <TimelineCard day={day} days={TRIP_CORE_DAYS} summary={statusSummary} onSelect={setSelectedDate} />
         <section className="mt-8"><PlanList activities={day.activities} status={status} canEdit={canMutate} onRetry={retry} onSelect={(activity) => setEditor({ activity })} onDelete={(activity) => { void remove(activity).catch((caught) => showToast(caught instanceof Error ? caught.message : "A törlés nem sikerült.")); }} onTimeChange={changeStartTime} onError={showToast} /></section>
         <div aria-hidden="true" className="h-12" />
       </div>

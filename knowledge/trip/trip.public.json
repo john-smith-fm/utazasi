@@ -1,0 +1,29 @@
+{
+  "version": "1.0",
+  "slug": "sardinia-family-2026",
+  "name": "Szardínia 2026",
+  "destination": { "name": "Villasimius", "country": "Olaszország", "region": "Szardínia", "latitude": 39.1372, "longitude": 9.5313 },
+  "dates": { "start": "2026-09-02", "end": "2026-09-13", "timezone": "Europe/Rome" },
+  "family_planning": { "travelling_with_child": true, "quiet_window": { "start": "13:00", "end": "15:00", "purpose": "délutáni pihenés" } },
+  "transport": {
+    "outbound_flight": { "provider": "Ryanair", "from": "BUD", "to": "CAG", "departure": "2026-09-02T10:35", "arrival": "2026-09-02T12:45" },
+    "return_flight": { "provider": "Ryanair", "from": "CAG", "to": "BUD", "departure": "2026-09-13T17:30", "arrival": "2026-09-13T19:35" },
+    "car": { "provider": "Kiricar", "vehicle": "Citroen C3 vagy hasonló", "transmission": "Automata", "extras": ["Gyerekülés"] }
+  },
+  "accommodation": { "name": "Ollastu Apartments Villasimius", "check_in": "2026-09-02T15:00", "check_out": "2026-09-13T10:00" },
+  "days": [
+    { "date": "2026-09-02", "day": 2, "weekday": "Sze", "title": "Érkezés és ráhangolódás", "subtitle": "Utazás, szállás és nyugodt első este." },
+    { "date": "2026-09-03", "day": 3, "weekday": "Csü", "title": "Első strandnap", "subtitle": "Tenger, pihenés, családi ritmus." },
+    { "date": "2026-09-04", "day": 4, "weekday": "Pén", "title": "Nyugodt tengerparti nap", "subtitle": "Rugalmas, családi tempójú nap." },
+    { "date": "2026-09-05", "day": 5, "weekday": "Szo", "title": "Strandnap", "subtitle": "Korai indulással kényelmesebb." },
+    { "date": "2026-09-06", "day": 6, "weekday": "Vas", "title": "Lassú vasárnap", "subtitle": "Közeli programok és hosszabb pihenő." },
+    { "date": "2026-09-07", "day": 7, "weekday": "Hét", "title": "Szabad program", "subtitle": "A nap rugalmasan alakítható." },
+    { "date": "2026-09-08", "day": 8, "weekday": "Kedd", "title": "Kirándulás vagy pihenés", "subtitle": "A napi tervhez igazítható." },
+    { "date": "2026-09-09", "day": 9, "weekday": "Sze", "title": "Hajózás vagy tartaléknap", "subtitle": "Időjárástól függő, rugalmas nap." },
+    { "date": "2026-09-10", "day": 10, "weekday": "Csü", "title": "Kedvenc hely újra", "subtitle": "Visszatérés a hét kedvenc programjához." },
+    { "date": "2026-09-11", "day": 11, "weekday": "Pén", "title": "Pihenőnap", "subtitle": "Könnyű, szabadon alakítható nap." },
+    { "date": "2026-09-12", "day": 12, "weekday": "Szo", "title": "Utolsó teljes nap", "subtitle": "Kedvenc helyek és búcsúvacsora." },
+    { "date": "2026-09-13", "day": 13, "weekday": "Vas", "title": "Hazautazás", "subtitle": "Pakolás és indulás Cagliari felé." }
+  ],
+  "redaction": ["Nincs foglalási azonosító, voucher, cím vagy fizetési adat."]
+}

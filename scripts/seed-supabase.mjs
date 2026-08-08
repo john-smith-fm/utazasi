@@ -14,14 +14,26 @@ if (!url || !secretKey) {
 
 const seed = JSON.parse(await readFile(new URL("../supabase/seeds/test-day.json", import.meta.url), "utf8"));
 const eventDocument = JSON.parse(await readFile(new URL("../knowledge/events/events.json", import.meta.url), "utf8"));
+const tripCore = JSON.parse(await readFile(new URL("../knowledge/trip/trip.public.json", import.meta.url), "utf8"));
 const supabase = createClient(url, secretKey, { auth: { autoRefreshToken: false, persistSession: false } });
 
 const { data: trip, error: tripError } = await supabase
   .from("trips")
-  .upsert(seed.trip, { onConflict: "slug" })
+  .upsert({
+    slug: tripCore.slug,
+    name: tripCore.name,
+    destination: tripCore.destination.name,
+    start_date: tripCore.dates.start,
+    end_date: tripCore.dates.end,
+  }, { onConflict: "slug" })
   .select("id")
   .single();
 if (tripError) throw tripError;
+
+const { error: coreDaysError } = await supabase
+  .from("days")
+  .upsert(tripCore.days.map((day) => ({ trip_id: trip.id, date: day.date, title: day.title, subtitle: day.subtitle })), { onConflict: "trip_id,date" });
+if (coreDaysError) throw coreDaysError;
 
 const { data: day, error: dayError } = await supabase
   .from("days")
