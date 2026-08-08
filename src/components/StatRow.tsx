@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { useLiveData } from "@/hooks/useLiveData";
+import type { WeatherSnapshot } from "@/types";
 import { Icon } from "./Icon";
 
 const glass = { background: "rgba(255,255,255,.78)", borderColor: "rgba(255,255,255,.82)", boxShadow: "0 18px 44px rgba(43,41,38,.12),0 2px 8px rgba(43,41,38,.05)", backdropFilter: "blur(20px) saturate(1.08)", WebkitBackdropFilter: "blur(20px) saturate(1.08)" };
 function Metric({ icon, value, bordered = false }: { icon: string; value: string; bordered?: boolean }) { return <span className={`flex min-w-0 items-center justify-center gap-1.5 py-2 ${bordered ? "border-l border-deep-sea/10" : ""}`}><Icon name={icon} size={18} strokeWidth={1.8} className="shrink-0 text-turquoise-dark" /><strong className="whitespace-nowrap text-sm tracking-[-.02em]">{value}</strong></span>; }
-export function StatRow({ date }: { date: string }) {
-  const { weather, sea } = useLiveData(date); const [open, setOpen] = useState(false);
+export function StatRow({ weather, sea }: { weather: WeatherSnapshot | null; sea: number | null }) {
+  const [open, setOpen] = useState(false);
   const condition = weather?.precipitationState === "rain" ? "Esős" : weather ? "Napos" : "—";
   return <><button type="button" aria-label="Időjárás Villasimiusban" onClick={() => setOpen(true)} className="relative z-[2] grid w-full grid-cols-4 rounded-[22px] border px-1.5 py-2 text-left" style={glass}><Metric icon="sun" value={weather ? `${weather.temp}°` : "—"} /><Metric icon="waves" value={sea !== null ? `${sea}°` : "—"} bordered /><Metric icon="wind" value={weather ? `${weather.wind} km/h` : "—"} bordered /><Metric icon="cloud-sun" value={condition} bordered /></button>
     {open && <div className="fixed inset-0 z-[70] flex items-end bg-deep-sea/35 p-4" onClick={() => setOpen(false)}><section role="dialog" aria-modal="true" aria-label="Időjárás részletei" onClick={(e) => e.stopPropagation()} className="mx-auto w-full max-w-[430px] rounded-[28px] bg-quartz p-5 pb-[calc(20px+env(safe-area-inset-bottom))] shadow-2xl"><div className="mx-auto mb-4 h-1.5 w-10 rounded-full bg-deep-sea/15" /><div className="flex items-start justify-between"><div><p className="text-xs font-semibold text-deep-sea/55">Villasimius{weather?.stale ? " · korábbi adat" : ""}</p><h2 className="mt-1 text-xl font-bold">Időjárás</h2></div><button type="button" onClick={() => setOpen(false)} className="rounded-full p-2 text-deep-sea/60"><Icon name="x" /></button></div><dl className="mt-5 divide-y divide-deep-sea/10 text-sm"><div className="flex justify-between py-3"><dt>Levegő</dt><dd className="font-semibold">{weather ? `${weather.temp}°` : "—"}</dd></div><div className="flex justify-between py-3"><dt>Tenger</dt><dd className="font-semibold">{sea !== null ? `${sea}°` : "—"}</dd></div><div className="flex justify-between py-3"><dt>Szél</dt><dd className="font-semibold">{weather ? `${weather.wind} km/h` : "—"}</dd></div><div className="flex justify-between py-3"><dt>Csapadék</dt><dd className="font-semibold">{condition}</dd></div></dl><p className="mt-4 text-[11px] text-deep-sea/45">Időjárási adat: Open-Meteo</p></section></div>}</>;

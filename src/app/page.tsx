@@ -10,8 +10,10 @@ import { SunCard } from "@/components/SunCard";
 import { TimelineCard } from "@/components/TimelineCard";
 import { HOME_DAYS, type HomeActivity } from "@/data/home-days";
 import { useTimelineDay } from "@/hooks/useTimelineDay";
+import { useLiveData } from "@/hooks/useLiveData";
 import { createTimelineActivity, deleteTimelineActivity, updateTimelineActivity } from "@/lib/timeline-client";
 import type { TimelineActivityInput, TimelineActivityRecord } from "@/lib/timeline-types";
+import { smartStatusSummary } from "@/lib/smart-status";
 
 type EditorState = { activity?: HomeActivity } | null;
 type ToastState = { message: string; undo?: boolean } | null;
@@ -52,7 +54,9 @@ export default function HomePage() {
   const feedbackTimer = useRef<number | null>(null);
   const fallbackDay = HOME_DAYS.find((item) => item.date === selectedDate) ?? HOME_DAYS[0];
   const { day, status, canWrite, retry } = useTimelineDay(selectedDate, fallbackDay);
+  const { weather, sea } = useLiveData(selectedDate);
   const canMutate = canWrite;
+  const statusSummary = smartStatusSummary(day, weather);
 
   useEffect(() => () => {
     if (undoTimer.current) window.clearTimeout(undoTimer.current);
@@ -122,10 +126,10 @@ export default function HomePage() {
   return <>
     <Hero />
     <main className="relative z-10 mx-auto -mt-7 max-w-[430px]">
-      <div className="px-5"><StatRow date={selectedDate} /></div>
-      <SunCard date={selectedDate} />
+      <div className="px-5"><StatRow weather={weather} sea={sea} /></div>
+      <SunCard weather={weather} />
       <div className="px-5">
-        <TimelineCard day={day} onSelect={setSelectedDate} />
+        <TimelineCard day={day} summary={statusSummary} onSelect={setSelectedDate} />
         <section className="mt-8"><PlanList activities={day.activities} status={status} canEdit={canMutate} onRetry={retry} onSelect={(activity) => setEditor({ activity })} onDelete={(activity) => { void remove(activity).catch((caught) => showToast(caught instanceof Error ? caught.message : "A törlés nem sikerült.")); }} onTimeChange={changeStartTime} onError={showToast} /></section>
         <div aria-hidden="true" className="h-12" />
       </div>
