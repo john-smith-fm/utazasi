@@ -40,7 +40,9 @@ function AccessLoadingScreen() {
 
 function PinAccessScreen({ configurationError, onUnlocked }: { configurationError: boolean; onUnlocked: () => void }) {
   const [digits, setDigits] = useState([0, 0, 0, 0]);
-  const [typedPin, setTypedPin] = useState("0000");
+  // The picker starts visually at 0000, but the native numeric field stays
+  // empty so the first typed digit always replaces it on iPhone.
+  const [typedPin, setTypedPin] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "error">("idle");
   const [error, setError] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -95,8 +97,8 @@ function PinAccessScreen({ configurationError, onUnlocked }: { configurationErro
       <div className={`mx-auto flex w-full max-w-[365px] gap-2 ${status === "error" ? "motion-safe:animate-[pin-shake_.3s_ease-in-out]" : ""}`} aria-label="Négyjegyű PIN választó">
         {digits.map((digit, index) => <PinColumn key={index} value={digit} index={index} onChange={setDigit} />)}
       </div>
-      <button type="button" onClick={() => void submit()} disabled={status === "submitting" || configurationError} className="mx-auto mt-10 h-[52px] w-full max-w-[365px] rounded-ui-s border border-coral bg-coral/20 text-[15px] font-bold text-deep-sea shadow-card transition-transform active:scale-[.98] disabled:opacity-45">{status === "submitting" ? "…" : "Belépés"}</button>
-      <p className="sr-only" role="status" aria-live="polite">{error}</p>
+      <button type="button" onClick={() => void submit()} disabled={status === "submitting" || configurationError} className="mx-auto mt-10 h-[52px] w-full max-w-[365px] rounded-ui-s border border-coral bg-coral/20 text-[15px] font-bold text-deep-sea shadow-card transition-transform active:scale-[.98] disabled:opacity-45">{status === "submitting" ? "…" : "Megnyitás"}</button>
+      <p className="mx-auto mt-3 min-h-5 max-w-[365px] text-center text-sm leading-5 text-coral" role="status" aria-live="polite">{configurationError ? "A PIN hozzáférés még nincs beállítva." : error}</p>
     </div>
   </main>;
 }
