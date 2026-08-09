@@ -1,12 +1,207 @@
 {
-  "version": "1.0",
+  "version": "1.5",
   "places": [
     {
       "id": "place_cagliari_airport",
       "slug": "cagliari-airport",
-      "name": "Cagliari Airport",
+      "name": "Cagliari Elmas Airport (CAG)",
       "category": "other",
-      "location": { "city": "Cagliari" }
+      "location": {
+        "country": "Olaszország",
+        "region": "Szardínia",
+        "city": "Elmas",
+        "address": "Via dei Trasvolatori snc, 09067 Elmas CA, Italy",
+        "latitude": 39.2515,
+        "longitude": 9.0543
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": "2026-08-10",
+        "sources": [
+          "https://www.sogaer.it/it/contatti",
+          "https://www.sogaer.it/it/parcheggi",
+          "https://www.routebook.io/airport/CAG"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "official_operator",
+          "url": "https://www.sogaer.it/it/contatti",
+          "supports": [
+            "address",
+            "phone",
+            "website"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "official_operator",
+          "url": "https://www.sogaer.it/it/parcheggi",
+          "supports": [
+            "parking"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "google_maps",
+          "place_id": "ChIJ42n2lwc35xIR8SFejyxQ7xA",
+          "supports": [
+            "identity",
+            "address"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "secondary_geo",
+          "url": "https://www.routebook.io/airport/CAG",
+          "supports": [
+            "coordinates"
+          ],
+          "checked_at": "2026-08-10"
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "complete",
+        "mobility": "partial",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Legally reusable cover image missing.",
+        "Private trip-base ↔ airport route still requires private origin resolution."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-10",
+      "destination_intelligence": {
+        "google_maps": {
+          "place_id": "ChIJ42n2lwc35xIR8SFejyxQ7xA",
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Cagliari+Elmas+Airport",
+          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Cagliari+Elmas+Airport&travelmode=driving"
+        },
+        "services": {
+          "parking": true,
+          "prm_assistance": true,
+          "rail_station": true
+        },
+        "contact": {
+          "phone": "+39 070 211 211",
+          "website": "https://www.sogaer.it/"
+        }
+      },
+      "google_maps": {
+        "place_id": "ChIJ42n2lwc35xIR8SFejyxQ7xA",
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Cagliari+Elmas+Airport",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Cagliari+Elmas+Airport&travelmode=driving"
+      }
+    },
+    {
+      "id": "place_other_biblioteca_comunale_efisio_melis",
+      "slug": "biblioteca-comunale-efisio-melis",
+      "name": "Biblioteca Comunale Efisio Melis",
+      "category": "other",
+      "location": {
+        "country": "Olaszország",
+        "region": "Szardínia",
+        "city": "Villaputzu",
+        "postal_code": "09040",
+        "address": "Piazza Marconi 1",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": "2026-08-10",
+        "sources": [
+          "https://www.comune.villaputzu.ca.it/modules.php?name=Pagine&pa=showpage&pid=82",
+          "https://www.sardegnabiblioteche.it/index.php?c=5670&codice=IT-CA0150&s=2&v=9&xsl=839",
+          "https://www.instagram.com/p/DTh_nTfjFCj/"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "official_municipality",
+          "url": "https://www.comune.villaputzu.ca.it/modules.php?name=Pagine&pa=showpage&pid=82",
+          "supports": [
+            "address",
+            "contact",
+            "opening_hours"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "regional_library_registry",
+          "url": "https://www.sardegnabiblioteche.it/index.php?c=5670&codice=IT-CA0150&s=2&v=9&xsl=839",
+          "supports": [
+            "identity",
+            "address",
+            "contact"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "official_social",
+          "url": "https://www.instagram.com/p/DTh_nTfjFCj/",
+          "supports": [
+            "family_programming_insight"
+          ],
+          "checked_at": "2026-08-10"
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "2026-09-08 (Tuesday) exceptional opening/closure due to local festivities must be checked close to the date.",
+        "Exact coordinates, parking and stroller access not yet verified.",
+        "Legally reusable cover image missing.",
+        "trip-base/Villaputzu mobility route missing."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-10",
+      "destination_intelligence": {
+        "google_maps": {
+          "place_id": null,
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Biblioteca+Comunale+Efisio+Melis%2C+Piazza+Marconi+1%2C+Villaputzu",
+          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Biblioteca+Comunale+Efisio+Melis%2C+Piazza+Marconi+1%2C+Villaputzu&travelmode=driving",
+          "match_status": "search_query_link"
+        },
+        "family": {
+          "toddler_friendly": null,
+          "insight": "A könyvtár gyerekes/olvasásos programokat is szervez; a 2,5 éves korosztályhoz és 2026.09.08-hoz illeszkedő konkrét program nincs megerősítve.",
+          "confidence": "medium"
+        },
+        "opening_hours": {
+          "monday": "15:30-19:00",
+          "tuesday": "08:00-14:00",
+          "wednesday": "08:00-14:00",
+          "thursday": [
+            "08:00-14:00",
+            "15:30-19:00"
+          ],
+          "friday": "15:30-18:30",
+          "saturday": null,
+          "sunday": null,
+          "special_date_2026-09-08": "not_confirmed"
+        },
+        "contact": {
+          "phone": "+39 070 997287",
+          "email": "biblioteca@comune.villaputzu.ca.it",
+          "website": "https://www.comune.villaputzu.su.it/it/sezione/cultura-e-turismo/page/biblioteca-comunale-efisio-melis"
+        }
+      },
+      "google_maps": {
+        "place_id": null,
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Biblioteca+Comunale+Efisio+Melis%2C+Piazza+Marconi+1%2C+Villaputzu",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Biblioteca+Comunale+Efisio+Melis%2C+Piazza+Marconi+1%2C+Villaputzu&travelmode=driving",
+        "match_status": "search_query_link"
+      }
     }
   ]
 }

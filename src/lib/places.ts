@@ -53,6 +53,12 @@ function navigationFor(raw: UnknownRecord, name: string, location?: { locality?:
 }
 
 function provenanceFor(value: unknown) {
+  if (Array.isArray(value)) {
+    const entries = value.filter(isRecord);
+    const sourceUrls = entries.map((entry) => optionalString(entry.url)).filter((url): url is string => Boolean(url));
+    const reviewedAt = entries.map((entry) => optionalString(entry.checked_at)).find(Boolean);
+    return sourceUrls.length || reviewedAt ? { sourceUrls, reviewedAt } : undefined;
+  }
   if (!isRecord(value)) return undefined;
   const sourceUrls = optionalStringArray(value.sources);
   const reviewedAt = optionalString(value.last_checked);
@@ -60,6 +66,36 @@ function provenanceFor(value: unknown) {
   const uncertaintyNote = optionalString(value.uncertainty_note);
   return sourceUrls || reviewedAt || reviewStatus || uncertaintyNote
     ? { sourceUrls, reviewedAt, reviewStatus, uncertaintyNote }
+    : undefined;
+}
+
+function intelligenceFor(raw: UnknownRecord) {
+  const coverage = isRecord(raw.coverage)
+    ? Object.fromEntries(Object.entries(raw.coverage).filter((entry): entry is [string, string] => typeof entry[1] === "string"))
+    : undefined;
+  const openQuestions = optionalStringArray(raw.open_questions);
+  const cover = isRecord(raw.cover_image) ? raw.cover_image : undefined;
+  const evidence = Array.isArray(raw.provenance)
+    ? raw.provenance.filter(isRecord).map((entry) => ({
+      sourceType: optionalString(entry.source_type),
+      url: optionalString(entry.url),
+      supports: optionalStringArray(entry.supports),
+      checkedAt: optionalString(entry.checked_at),
+    }))
+    : undefined;
+  const details = isRecord(raw.destination_intelligence) ? raw.destination_intelligence : undefined;
+  const coverImage = cover ? {
+    assetUrl: optionalString(cover.asset_url),
+    sourceUrl: optionalString(cover.source_url),
+    sourceType: optionalString(cover.source_type),
+    license: optionalString(cover.license),
+    attribution: optionalString(cover.attribution),
+    checkedAt: optionalString(cover.checked_at),
+  } : undefined;
+  const checkedAt = optionalString(raw.checked_at);
+
+  return coverage || openQuestions || coverImage || evidence || details || checkedAt
+    ? { coverage, openQuestions, coverImage, evidence, details, checkedAt }
     : undefined;
 }
 
@@ -101,7 +137,8 @@ function validateBeaches(source: unknown): BeachPlace[] {
       type: "beach",
       location,
       navigation: navigationFor(raw, name, location),
-      provenance: provenanceFor(raw.verification),
+      provenance: provenanceFor(raw.provenance ?? raw.verification),
+      intelligence: intelligenceFor(raw),
       details: { kind: "beach", access },
     };
   });
@@ -141,7 +178,8 @@ function validateRestaurants(source: unknown): RestaurantPlace[] {
       type: "restaurant",
       location,
       navigation: navigationFor(raw, name, location),
-      provenance: provenanceFor(raw.verification),
+      provenance: provenanceFor(raw.provenance ?? raw.verification),
+      intelligence: intelligenceFor(raw),
       details: {
         kind: "restaurant",
         openingNote,
@@ -181,7 +219,8 @@ function validateGenericPlaces(source: unknown, type: GenericPlaceType, category
       type,
       location,
       navigation: navigationFor(raw, name, location),
-      provenance: provenanceFor(raw.verification),
+      provenance: provenanceFor(raw.provenance ?? raw.verification),
+      intelligence: intelligenceFor(raw),
       details: { kind: type },
     };
   });

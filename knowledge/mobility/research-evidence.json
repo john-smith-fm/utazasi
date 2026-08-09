@@ -1,0 +1,46 @@
+{
+  "version": "1.0",
+  "source_dataset": "utazasi_data_codex_v1.5",
+  "purpose": "Route research evidence that is not yet runtime-displayable.",
+  "routes": [
+    {
+      "id": "route-poetto-area-cagliari-airport",
+      "origin": "poetto-area",
+      "destination": "cagliari-airport",
+      "mode": "car",
+      "distance_km": 13,
+      "duration_minutes": 16,
+      "status": "reference_only_not_sam_beach_exact",
+      "source_url": "https://www.rome2rio.com/s/Cagliari-Airport-CAG/Poetto",
+      "google_maps_deep_link": "https://www.google.com/maps/dir/?api=1&origin=Poetto%2C+Cagliari&destination=Cagliari+Elmas+Airport&travelmode=driving",
+      "checked_at": "2026-08-10",
+      "notes": "Poetto-area reference only; do not treat as canonical Sam Beach route."
+    },
+    {
+      "id": "route-fortezza-vecchia-marina-di-villasimius",
+      "origin": "fortezza-vecchia",
+      "destination": "marina-di-villasimius",
+      "mode": "walk",
+      "distance_km": 0.49,
+      "duration_minutes": null,
+      "status": "partial",
+      "source_url": "https://mapcarta.com/36303204",
+      "google_maps_deep_link": "https://www.google.com/maps/dir/?api=1&origin=Fortezza+Vecchia%2C+Villasimius&destination=Marina+di+Villasimius&travelmode=walking",
+      "checked_at": "2026-08-10",
+      "notes": "Proximity verified; walking duration still requires a route source."
+    }
+  ],
+  "pending_p0_routes": [
+    "cagliari-airport → trip-base",
+    "trip-base → porto-sa-ruxi",
+    "trip-base → cala-pira",
+    "trip-base → scoglio-di-peppino",
+    "trip-base → porto-giunco",
+    "porto-giunco → trip-base",
+    "trip-base → solanas",
+    "trip-base → fortezza-vecchia",
+    "trip-base → sam-beach-poetto",
+    "sam-beach-poetto → cagliari-airport (exact)",
+    "trip-base → biblioteca-comunale-efisio-melis"
+  ]
+}

@@ -55,7 +55,13 @@ function RestaurantDetails({ place }: { place: Place }) {
 }
 
 export function PlaceDetail({ place }: { place: Place }) {
-  const primaryImage = place.media?.[0];
+  const coverImage = place.intelligence?.coverImage;
+  const primaryImage = place.media?.[0] ?? (coverImage?.assetUrl
+    ? {
+      src: coverImage.assetUrl,
+      attribution: [coverImage.attribution, coverImage.license].filter(Boolean).join(" · ") || undefined,
+    }
+    : undefined);
   const hasCoordinates = place.location?.latitude !== undefined && place.location?.longitude !== undefined;
   const directionsHref = place.navigation?.directionsUrl
     ?? (hasCoordinates ? `https://www.google.com/maps/dir/?api=1&destination=${place.location!.latitude},${place.location!.longitude}` : undefined);

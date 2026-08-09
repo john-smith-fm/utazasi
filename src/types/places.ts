@@ -19,6 +19,29 @@ export type PlaceNavigation = {
   directionsUrl?: string;
 };
 
+/** Source-backed enrichment kept with the canonical Place, even when the
+ * current screen does not yet render every field. */
+export type PlaceIntelligence = {
+  checkedAt?: string;
+  coverage?: Record<string, string>;
+  openQuestions?: string[];
+  coverImage?: {
+    assetUrl?: string;
+    sourceUrl?: string;
+    sourceType?: string;
+    license?: string;
+    attribution?: string;
+    checkedAt?: string;
+  };
+  evidence?: Array<{
+    sourceType?: string;
+    url?: string;
+    supports?: string[];
+    checkedAt?: string;
+  }>;
+  details?: Record<string, unknown>;
+};
+
 export type BeachAccess = {
   characteristics?: string[];
   serpentineRoad?: boolean;
@@ -59,6 +82,7 @@ export type Place = {
   description?: string;
   media?: { src: string; attribution?: string }[];
   provenance?: PlaceProvenance;
+  intelligence?: PlaceIntelligence;
   navigation?: PlaceNavigation;
   details: BeachDetails | RestaurantDetails | GenericPlaceDetails;
 };

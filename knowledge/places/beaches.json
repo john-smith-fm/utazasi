@@ -1,5 +1,5 @@
 {
-  "version": "1.2",
+  "version": "1.5",
   "category": "beaches",
   "source_dataset": "utazasi_data_codex_v1.1 + v2f_research_2026-08-07",
   "updated_at": "2026-08-07",
@@ -15,11 +15,121 @@
       "name": "Spiaggia di Porto Giunco",
       "category": "beach",
       "location": {
-        "city": "Villasimius"
+        "country": "Olaszország",
+        "region": "Szardínia",
+        "city": "Villasimius",
+        "address": "Spiaggia di Porto Giunco, 09049 Villasimius CA, Italy",
+        "latitude": 39.111419,
+        "longitude": 9.519927
       },
       "coverage_area": "Solanas-Villaputzu",
       "verification": {
-        "status": "planned"
+        "status": "planned",
+        "last_checked": "2026-08-10",
+        "sources": [
+          "https://www.villasimiusturismo.it/la-spiaggia-di-porto-giunco/",
+          "https://commons.wikimedia.org/wiki/File:Beach_of_the_Tower_of_Porto_Giunco_(Spiaggia_di_Porto_Giunco)_in_Sardinia,_Italy_(48402631107).jpg"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.villasimiusturismo.it/la-spiaggia-di-porto-giunco/",
+          "supports": [
+            "beach",
+            "services",
+            "family",
+            "access"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "google_maps",
+          "place_id": "ChIJc2LHVcDC4BIR8OjRnB3Iyj8",
+          "supports": [
+            "identity",
+            "address"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "wikimedia_commons",
+          "url": "https://commons.wikimedia.org/wiki/File:Beach_of_the_Tower_of_Porto_Giunco_(Spiaggia_di_Porto_Giunco)_in_Sardinia,_Italy_(48402631107).jpg",
+          "supports": [
+            "coordinates",
+            "cover_image"
+          ],
+          "checked_at": "2026-08-10"
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "complete",
+        "mobility": "missing",
+        "family": "complete",
+        "evidence": "complete",
+        "photos": "complete"
+      },
+      "open_questions": [
+        "trip-base → Porto Giunco route must be verified using the private trip-base resolver."
+      ],
+      "cover_image": {
+        "asset_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Beach_of_the_Tower_of_Porto_Giunco_(Spiaggia_di_Porto_Giunco)_in_Sardinia,_Italy_(48402631107).jpg",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Beach_of_the_Tower_of_Porto_Giunco_(Spiaggia_di_Porto_Giunco)_in_Sardinia,_Italy_(48402631107).jpg",
+        "source_type": "wikimedia_commons",
+        "license": "CC BY 2.0",
+        "attribution": "dronepicr",
+        "checked_at": "2026-08-10"
+      },
+      "checked_at": "2026-08-10",
+      "destination_intelligence": {
+        "google_maps": {
+          "place_id": "ChIJc2LHVcDC4BIR8OjRnB3Iyj8",
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia+di+Porto+Giunco%2C+Villasimius",
+          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Spiaggia+di+Porto+Giunco%2C+Villasimius&travelmode=driving"
+        },
+        "services": {
+          "wc": true,
+          "shower": null,
+          "changing_room": null,
+          "bar": true,
+          "restaurant_nearby": true,
+          "sunbed_rental": true,
+          "umbrella_rental": true,
+          "pedalo": true,
+          "canoe": true,
+          "lifeguard": null
+        },
+        "family": {
+          "toddler_friendly": true,
+          "stroller": "possible",
+          "insight": "A nagyon sekély víz miatt erős kisgyerekes választás.",
+          "confidence": "high"
+        },
+        "access": {
+          "car": true,
+          "road_notes": "A parkolóhoz rövid földút vezet; a parkolótól kényelmes gyalogos megközelítés.",
+          "stroller": "possible",
+          "accessible": true
+        },
+        "parking": {
+          "available": true,
+          "paid": true,
+          "seasonal": true,
+          "notes": "A hivatalos villasimiusi tájékoztatás 2026-ban fizetős tengerparti parkolást jelez."
+        },
+        "beach": {
+          "shore": "finom fehér homok",
+          "water_entry": "sekély",
+          "shallow_water": true,
+          "wind_exposure": null,
+          "natural_shade": null
+        }
+      },
+      "google_maps": {
+        "place_id": "ChIJc2LHVcDC4BIR8OjRnB3Iyj8",
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia+di+Porto+Giunco%2C+Villasimius",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Spiaggia+di+Porto+Giunco%2C+Villasimius&travelmode=driving"
       }
     },
     {
@@ -67,11 +177,121 @@
       "name": "Spiaggia di Cala Pira",
       "category": "beach",
       "location": {
-        "city": "Castiadas"
+        "country": "Olaszország",
+        "region": "Szardínia",
+        "city": "Castiadas",
+        "address": "Cala Pira, 09040 Castiadas CA, Italy",
+        "latitude": 39.172338,
+        "longitude": 9.570556
       },
       "coverage_area": "Solanas-Villaputzu",
       "verification": {
-        "status": "planned"
+        "status": "planned",
+        "last_checked": "2026-08-10",
+        "sources": [
+          "https://comune.castiadas.su.it/it/page/il-mare",
+          "https://www.sardiniamagazine.com/en/cala-pira/",
+          "https://www.sardegnatoujours.com/cala-pira/"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "official_municipality",
+          "url": "https://comune.castiadas.su.it/it/page/il-mare",
+          "supports": [
+            "beach_character"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "google_maps",
+          "place_id": "ChIJ0y94qovp4BIR_yLDpJGvK_g",
+          "supports": [
+            "identity",
+            "address"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "secondary_geo",
+          "url": "https://www.sardiniamagazine.com/en/cala-pira/",
+          "supports": [
+            "coordinates"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "secondary",
+          "url": "https://www.sardegnatoujours.com/cala-pira/",
+          "supports": [
+            "parking",
+            "access"
+          ],
+          "checked_at": "2026-08-10"
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "WC/shower not confirmed.",
+        "Stroller/accessibility not confirmed.",
+        "2026 September parking tariff not confirmed.",
+        "Legally reusable cover image missing.",
+        "trip-base route missing."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-10",
+      "destination_intelligence": {
+        "google_maps": {
+          "place_id": "ChIJ0y94qovp4BIR_yLDpJGvK_g",
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Cala+Pira%2C+Castiadas",
+          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Cala+Pira%2C+Castiadas&travelmode=driving"
+        },
+        "services": {
+          "wc": null,
+          "shower": null,
+          "changing_room": null,
+          "bar": null,
+          "restaurant_nearby": null,
+          "sunbed_rental": null,
+          "umbrella_rental": null
+        },
+        "family": {
+          "toddler_friendly": null,
+          "stroller": null,
+          "insight": "Homokos, lapos völgyben fekvő öböl; a családi használhatósághoz szükséges szolgáltatásokat még tovább kell kutatni.",
+          "confidence": "low"
+        },
+        "access": {
+          "car": true,
+          "road_notes": "A Villasimius–Costa Rei panorámaút felől közelíthető meg.",
+          "stroller": null,
+          "accessible": null
+        },
+        "parking": {
+          "available": true,
+          "paid": true,
+          "seasonal": true,
+          "notes": "Nyári fizetős parkolót jeleznek a strand közelében; a 2026. szeptemberi díjat még ellenőrizni kell."
+        },
+        "beach": {
+          "shore": "fehér homok",
+          "water_entry": null,
+          "shallow_water": null,
+          "wind_exposure": null,
+          "natural_shade": null
+        }
+      },
+      "google_maps": {
+        "place_id": "ChIJ0y94qovp4BIR_yLDpJGvK_g",
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Cala+Pira%2C+Castiadas",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Cala+Pira%2C+Castiadas&travelmode=driving"
       }
     },
     {
@@ -119,11 +339,112 @@
       "name": "Spiaggia di Scoglio di Peppino",
       "category": "beach",
       "location": {
-        "city": "Costa Rei"
+        "country": "Olaszország",
+        "region": "Szardínia",
+        "city": "Costa Rei / Castiadas",
+        "address": "Santa Giusta, Costa Rei, Sardinia, Italy",
+        "latitude": 39.23674,
+        "longitude": 9.570754
       },
       "coverage_area": "Solanas-Villaputzu",
       "verification": {
-        "status": "planned"
+        "status": "planned",
+        "last_checked": "2026-08-10",
+        "sources": [
+          "https://www.sardiniamagazine.com/en/santa-giusta-scoglio-di-peppino/",
+          "https://www.tripadvisor.co.uk/Attraction_Review-g670904-d6956718-Reviews-Scoglio_di_Peppino-Costa_Rei_Muravera_Province_of_Cagliari_Sardinia.html"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "google_maps",
+          "place_id": "ChIJC-k_Cerq4BIRFvRfs0Ft4iY",
+          "supports": [
+            "identity"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "secondary_geo",
+          "url": "https://www.sardiniamagazine.com/en/santa-giusta-scoglio-di-peppino/",
+          "supports": [
+            "coordinates",
+            "services",
+            "access",
+            "family"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "visitor_reports",
+          "url": "https://www.tripadvisor.co.uk/Attraction_Review-g670904-d6956718-Reviews-Scoglio_di_Peppino-Costa_Rei_Muravera_Province_of_Cagliari_Sardinia.html",
+          "supports": [
+            "parking_insight",
+            "walk_insight"
+          ],
+          "checked_at": "2026-08-10"
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "complete",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Exact September 2026 parking fee not confirmed.",
+        "Stroller path not confirmed.",
+        "Legally reusable cover image missing.",
+        "trip-base route missing."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-10",
+      "destination_intelligence": {
+        "google_maps": {
+          "place_id": "ChIJC-k_Cerq4BIRFvRfs0Ft4iY",
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Scoglio+di+Peppino%2C+Costa+Rei",
+          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Scoglio+di+Peppino%2C+Costa+Rei&travelmode=driving"
+        },
+        "services": {
+          "wc": true,
+          "shower": null,
+          "changing_room": null,
+          "bar": true,
+          "restaurant_nearby": true,
+          "water_sports": true
+        },
+        "family": {
+          "toddler_friendly": true,
+          "stroller": null,
+          "insight": "A sekély, enyhén lejtő homokos víz kedvező családi használatra; főszezonban a parkolás és a zsúfoltság kockázat.",
+          "confidence": "medium"
+        },
+        "access": {
+          "car": true,
+          "road_notes": null,
+          "stroller": null,
+          "accessible": true
+        },
+        "parking": {
+          "available": true,
+          "paid": null,
+          "seasonal": true,
+          "notes": "Parkolás megerősítve; az aktuális díj és kapacitás szezonálisan változhat."
+        },
+        "beach": {
+          "shore": "finom világos homok, sziklás elemekkel",
+          "water_entry": "enyhén lejtő",
+          "shallow_water": true,
+          "wind_exposure": null,
+          "natural_shade": null
+        }
+      },
+      "google_maps": {
+        "place_id": "ChIJC-k_Cerq4BIRFvRfs0Ft4iY",
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Scoglio+di+Peppino%2C+Costa+Rei",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Scoglio+di+Peppino%2C+Costa+Rei&travelmode=driving"
       }
     },
     {
@@ -171,7 +492,12 @@
       "name": "Spiaggia di Solanas",
       "category": "beach",
       "location": {
-        "city": "Solanas"
+        "country": "Olaszország",
+        "region": "Szardínia",
+        "city": "Solanas (Sinnai)",
+        "address": "Spiaggia di Solanas, 09048 Solanas CA, Italy",
+        "latitude": 39.134853,
+        "longitude": 9.429187
       },
       "coverage_area": "Solanas-Villaputzu",
       "access": {
@@ -179,13 +505,113 @@
       },
       "verification": {
         "status": "verified_official",
-        "last_checked": "2026-08-07",
+        "last_checked": "2026-08-10",
         "sources": [
-          "https://www.sardegnaturismo.it/it/esplora/solanas"
+          "https://www.sardegnaturismo.it/it/esplora/solanas",
+          "https://commons.wikimedia.org/wiki/File:Solanas_beach_in_Sardinia_-_Flickr_-_david.orban.jpg",
+          "https://www.tripadvisor.co.uk/Attraction_Review-g1509101-d4832768-Reviews-Spiaggia_di_Solanas-Sinnai_Province_of_Cagliari_Sardinia.html"
         ],
         "source_refs": [
           "B01"
         ]
+      },
+      "provenance": [
+        {
+          "source_type": "google_maps",
+          "place_id": "ChIJJYaNCQDF4BIRXEjtV4IjX5U",
+          "supports": [
+            "identity",
+            "address"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "wikimedia_commons",
+          "url": "https://commons.wikimedia.org/wiki/File:Solanas_beach_in_Sardinia_-_Flickr_-_david.orban.jpg",
+          "supports": [
+            "coordinates",
+            "cover_image"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "visitor_reports",
+          "url": "https://www.tripadvisor.co.uk/Attraction_Review-g1509101-d4832768-Reviews-Spiaggia_di_Solanas-Sinnai_Province_of_Cagliari_Sardinia.html",
+          "supports": [
+            "parking_insight",
+            "services_insight",
+            "family_insight"
+          ],
+          "checked_at": "2026-08-10"
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "complete"
+      },
+      "open_questions": [
+        "Official WC/parking details should be rechecked near travel date.",
+        "Stroller/accessibility not confirmed.",
+        "trip-base route missing."
+      ],
+      "cover_image": {
+        "asset_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Solanas_beach_in_Sardinia_-_Flickr_-_david.orban.jpg",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Solanas_beach_in_Sardinia_-_Flickr_-_david.orban.jpg",
+        "source_type": "wikimedia_commons",
+        "license": "CC BY 2.0",
+        "attribution": "David Orban",
+        "checked_at": "2026-08-10"
+      },
+      "checked_at": "2026-08-10",
+      "destination_intelligence": {
+        "google_maps": {
+          "place_id": "ChIJJYaNCQDF4BIRXEjtV4IjX5U",
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia+di+Solanas%2C+Sardinia",
+          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Spiaggia+di+Solanas%2C+Sardinia&travelmode=driving"
+        },
+        "services": {
+          "wc": true,
+          "shower": null,
+          "changing_room": null,
+          "bar": true,
+          "restaurant_nearby": null,
+          "sunbed_rental": true,
+          "umbrella_rental": true
+        },
+        "family": {
+          "toddler_friendly": true,
+          "stroller": null,
+          "insight": "Széles homokos part és sekély víz miatt erős családi alternatíva; a parkolás főszezonban korán telhet.",
+          "confidence": "medium"
+        },
+        "access": {
+          "car": true,
+          "road_notes": "Villasimius felől panorámás tengerparti úton érhető el.",
+          "stroller": null,
+          "accessible": null
+        },
+        "parking": {
+          "available": true,
+          "paid": null,
+          "seasonal": true,
+          "notes": "Látogatói beszámolók szerint közvetlen parti parkolás van; díjazása és szezonális kapacitása még nem kanonikus tény."
+        },
+        "beach": {
+          "shore": "széles homokos partszakasz",
+          "water_entry": "enyhén lejtő",
+          "shallow_water": true,
+          "wind_exposure": null,
+          "natural_shade": null
+        }
+      },
+      "google_maps": {
+        "place_id": "ChIJJYaNCQDF4BIRXEjtV4IjX5U",
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia+di+Solanas%2C+Sardinia",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Spiaggia+di+Solanas%2C+Sardinia&travelmode=driving"
       }
     },
     {
@@ -194,7 +620,12 @@
       "name": "Spiaggia di Porto Sa Ruxi",
       "category": "beach",
       "location": {
-        "city": "Villasimius"
+        "country": "Olaszország",
+        "region": "Szardínia",
+        "city": "Villasimius",
+        "address": "Via Abruzzo Spiaggia, 09049 Villasimius CA, Italy",
+        "latitude": 39.130346,
+        "longitude": 9.456364
       },
       "coverage_area": "Solanas-Villaputzu",
       "access": {
@@ -203,13 +634,116 @@
       },
       "verification": {
         "status": "verified_official",
-        "last_checked": "2026-08-07",
+        "last_checked": "2026-08-10",
         "sources": [
-          "https://www.sardegnaturismo.it/en/explore/porto-sa-ruxi"
+          "https://www.sardegnaturismo.it/en/explore/porto-sa-ruxi",
+          "https://www.villasimiusturismo.it/la-spiaggia-di-porto-sa-ruxi/",
+          "https://www.villasimiusturismo.it/come-muoversi/",
+          "https://www.sardiniamagazine.com/en/porto-sa-ruxi/"
         ],
         "source_refs": [
           "B02"
         ]
+      },
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.villasimiusturismo.it/la-spiaggia-di-porto-sa-ruxi/",
+          "supports": [
+            "beach",
+            "services",
+            "family"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.villasimiusturismo.it/come-muoversi/",
+          "supports": [
+            "parking"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "google_maps",
+          "place_id": "ChIJg7einJ3E4BIRO8Ly51l-MrE",
+          "supports": [
+            "identity",
+            "address"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "secondary_geo",
+          "url": "https://www.sardiniamagazine.com/en/porto-sa-ruxi/",
+          "supports": [
+            "coordinates",
+            "access"
+          ],
+          "checked_at": "2026-08-10"
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "WC/shower not confirmed.",
+        "Stroller/accessibility not confirmed.",
+        "Legally reusable cover image missing.",
+        "trip-base route missing."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-10",
+      "destination_intelligence": {
+        "google_maps": {
+          "place_id": "ChIJg7einJ3E4BIRO8Ly51l-MrE",
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia+di+Porto+Sa+Ruxi%2C+Villasimius",
+          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Spiaggia+di+Porto+Sa+Ruxi%2C+Villasimius&travelmode=driving"
+        },
+        "services": {
+          "wc": null,
+          "shower": null,
+          "changing_room": null,
+          "bar": true,
+          "restaurant_nearby": null,
+          "sunbed_rental": true,
+          "umbrella_rental": true
+        },
+        "family": {
+          "toddler_friendly": true,
+          "stroller": null,
+          "insight": "A sekély víz és a maestralétól védett fekvés miatt erős családi jelölt; a babakocsis hozzáférés még nincs megerősítve.",
+          "confidence": "medium"
+        },
+        "access": {
+          "car": true,
+          "road_notes": "A letérés után kb. 300 m földút vezet a földes parkolóig.",
+          "stroller": null,
+          "accessible": null
+        },
+        "parking": {
+          "available": true,
+          "paid": true,
+          "seasonal": true,
+          "notes": "A Villasimius Turismo 2026-os tájékoztatója fizetős parkolást jelez Porto Sa Ruxinál."
+        },
+        "beach": {
+          "shore": "finom fehér homok",
+          "water_entry": "sekély",
+          "shallow_water": true,
+          "wind_exposure": "maestralétól védett",
+          "natural_shade": null
+        }
+      },
+      "google_maps": {
+        "place_id": "ChIJg7einJ3E4BIRO8Ly51l-MrE",
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia+di+Porto+Sa+Ruxi%2C+Villasimius",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Spiaggia+di+Porto+Sa+Ruxi%2C+Villasimius&travelmode=driving"
       }
     },
     {
@@ -322,6 +856,148 @@
         "source_refs": [
           "B07"
         ]
+      }
+    },
+    {
+      "id": "place_beach_sam_beach_poetto",
+      "slug": "sam-beach-poetto",
+      "name": "Sam Beach — Poetto",
+      "category": "beach",
+      "location": {
+        "country": "Olaszország",
+        "region": "Szardínia",
+        "city": "Cagliari",
+        "address": "Fronte Aias, Viale Lungomare Poetto, 09126 Cagliari CA, Italy",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": "2026-08-10",
+        "sources": [
+          "https://sambeach.it/stabilimento/",
+          "https://sambeach.it/",
+          "https://www.rome2rio.com/s/Cagliari-Airport-CAG/Poetto"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "official_business",
+          "url": "https://sambeach.it/stabilimento/",
+          "supports": [
+            "services",
+            "parking",
+            "accessibility",
+            "family"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "official_business",
+          "url": "https://sambeach.it/",
+          "supports": [
+            "identity",
+            "contact"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "google_maps",
+          "place_id": "27539321",
+          "supports": [
+            "address",
+            "opening_hours",
+            "phone"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "route_reference",
+          "url": "https://www.rome2rio.com/s/Cagliari-Airport-CAG/Poetto",
+          "supports": [
+            "poetto_airport_route_context"
+          ],
+          "checked_at": "2026-08-10"
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "complete",
+        "mobility": "partial",
+        "family": "complete",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Exact canonical coordinates for the establishment still need a reliable source.",
+        "2026-09-13 exact opening/lunch service should be rechecked shortly before travel.",
+        "Legally reusable cover image specific to Sam Beach is missing.",
+        "trip-base → Sam Beach route cannot be canonicalized without private trip-base resolution."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-10",
+      "destination_intelligence": {
+        "google_maps": {
+          "place_id": "27539321",
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Sam+Beach+Poetto+Cagliari",
+          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Sam+Beach+Poetto+Cagliari&travelmode=driving"
+        },
+        "services": {
+          "wc": true,
+          "shower": true,
+          "changing_room": true,
+          "nursery": true,
+          "bar": true,
+          "restaurant_nearby": true,
+          "sunbed_rental": true,
+          "umbrella_rental": true,
+          "lifeguard": true,
+          "water_sports": true
+        },
+        "family": {
+          "toddler_friendly": true,
+          "stroller": "possible",
+          "insight": "A WC + zuhany + öltöző + nursery + 50 m-es ingyenes parkoló kombinációja miatt jelenleg ez a legerősebb szeptember 13-i Poetto-jelölt.",
+          "confidence": "high"
+        },
+        "access": {
+          "car": true,
+          "road_notes": null,
+          "stroller": "possible",
+          "accessible": true
+        },
+        "parking": {
+          "available": true,
+          "paid": false,
+          "seasonal": false,
+          "walk_distance_m": 50,
+          "notes": "Official Sam Beach site states free parking 50 m away."
+        },
+        "opening_hours": {
+          "monday": "07:30-20:30",
+          "tuesday": "07:30-20:15",
+          "wednesday": "07:30-20:30",
+          "thursday": "08:00-20:30",
+          "friday": "08:00-20:00",
+          "saturday": "07:30-20:30",
+          "sunday": "07:30-20:30",
+          "notes": "Google Business hours; recheck close to 2026-09-13."
+        },
+        "contact": {
+          "phone": "+39 338 450 8972",
+          "website": "https://sambeach.it/"
+        },
+        "food": {
+          "breakfast": true,
+          "lunch": true,
+          "aperitivo": true,
+          "notes": "Bar/restoro is advertised; exact September lunch service should be rechecked."
+        }
+      },
+      "google_maps": {
+        "place_id": "27539321",
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Sam+Beach+Poetto+Cagliari",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Sam+Beach+Poetto+Cagliari&travelmode=driving"
       }
     }
   ]

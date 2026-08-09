@@ -1,5 +1,5 @@
 {
-  "version": "1.0",
+  "version": "1.5",
   "category": "sights",
   "source_dataset": "utazasi_v2f_research_2026-08-07",
   "updated_at": "2026-08-07",
@@ -14,17 +14,142 @@
       "category": "sight",
       "subcategory": "historic_building",
       "location": {
-        "city": "Villasimius"
+        "country": "Olaszország",
+        "region": "Szardínia",
+        "city": "Villasimius",
+        "address": "Località Fortezza Vecchia, 09049 Villasimius CA, Italy",
+        "latitude": 39.116278,
+        "longitude": 9.503944
       },
       "verification": {
         "status": "verified_official",
-        "last_checked": "2026-08-07",
+        "last_checked": "2026-08-10",
         "sources": [
-          "https://www.sardegnaturismo.it/it/esplora/fortezza-vecchia"
+          "https://www.sardegnaturismo.it/it/esplora/fortezza-vecchia",
+          "https://www.villasimiusturismo.it/la-spiaggia-fortezza-vecchia/",
+          "https://commons.wikimedia.org/wiki/File:Villasimius_Fortezza_Vecchia_01.jpg"
         ],
         "source_refs": [
           "S01"
         ]
+      },
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.villasimiusturismo.it/la-spiaggia-fortezza-vecchia/",
+          "supports": [
+            "history",
+            "location_context",
+            "access"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "google_maps",
+          "place_id": "ChIJubfD_t7C4BIRTTyLs_A3uS8",
+          "supports": [
+            "address",
+            "opening_hours",
+            "phone"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "wikimedia_commons",
+          "url": "https://commons.wikimedia.org/wiki/File:Villasimius_Fortezza_Vecchia_01.jpg",
+          "supports": [
+            "coordinates",
+            "cover_image"
+          ],
+          "checked_at": "2026-08-10"
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "partial",
+        "mobility": "partial",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "complete"
+      },
+      "open_questions": [
+        "Dedicated parking not confirmed.",
+        "Current ticket price not confirmed.",
+        "Fortezza → Marina walking duration still needs a route source."
+      ],
+      "cover_image": {
+        "asset_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Villasimius_Fortezza_Vecchia_01.jpg",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Villasimius_Fortezza_Vecchia_01.jpg",
+        "source_type": "wikimedia_commons",
+        "license": "CC BY 3.0",
+        "attribution": "Olaf Tausch",
+        "checked_at": "2026-08-10"
+      },
+      "checked_at": "2026-08-10",
+      "destination_intelligence": {
+        "google_maps": {
+          "place_id": "ChIJubfD_t7C4BIRTTyLs_A3uS8",
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Fortezza+Vecchia+Villasimius",
+          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Fortezza+Vecchia+Villasimius&travelmode=driving"
+        },
+        "services": {
+          "wc": null,
+          "shade": "limited",
+          "indoor": true
+        },
+        "family": {
+          "toddler_friendly": "short_visit_possible",
+          "insight": "Rövid kulturális megállónak jó; a lépcsők miatt babakocsival korlátozott.",
+          "confidence": "medium"
+        },
+        "access": {
+          "car": true,
+          "steps": true,
+          "stroller": "limited",
+          "accessible": null
+        },
+        "parking": {
+          "available": null,
+          "paid": null,
+          "notes": "Dedicated visitor parking not yet verified."
+        },
+        "opening_hours": {
+          "monday": null,
+          "tuesday": [
+            "09:00-13:00",
+            "18:00-20:00"
+          ],
+          "wednesday": [
+            "09:00-13:00",
+            "18:00-20:00"
+          ],
+          "thursday": [
+            "09:00-13:00",
+            "18:00-20:00"
+          ],
+          "friday": [
+            "09:00-13:00",
+            "18:00-20:00"
+          ],
+          "saturday": [
+            "09:00-13:00",
+            "18:00-20:00"
+          ],
+          "sunday": [
+            "09:00-13:00",
+            "18:00-20:00"
+          ],
+          "notes": "Google Business hours; recheck before visit."
+        },
+        "contact": {
+          "phone": "+39 070 792076",
+          "website": "https://www.villasimiusturismo.it/la-spiaggia-fortezza-vecchia/"
+        }
+      },
+      "google_maps": {
+        "place_id": "ChIJubfD_t7C4BIRTTyLs_A3uS8",
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Fortezza+Vecchia+Villasimius",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Fortezza+Vecchia+Villasimius&travelmode=driving"
       }
     },
     {
@@ -253,6 +378,122 @@
         "source_refs": [
           "S12"
         ]
+      }
+    },
+    {
+      "id": "place_sight_marina_di_villasimius",
+      "slug": "marina-di-villasimius",
+      "name": "Marina di Villasimius",
+      "category": "sight",
+      "location": {
+        "country": "Olaszország",
+        "region": "Szardínia",
+        "city": "Villasimius",
+        "address": "Via Degli Oleandri 10, 09049 Villasimius CA, Italy",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": "2026-08-10",
+        "sources": [
+          "https://marinedi.com/marina-di-villasimius/",
+          "https://www.villasimiusturismo.it/il-porto-turistico/",
+          "https://mapcarta.com/36303204"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "official_business",
+          "url": "https://marinedi.com/marina-di-villasimius/",
+          "supports": [
+            "identity",
+            "services",
+            "contact",
+            "location_context"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.villasimiusturismo.it/il-porto-turistico/",
+          "supports": [
+            "address",
+            "contact",
+            "services",
+            "fortezza_proximity"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "google_maps",
+          "place_id": "ChIJMytuut3C4BIRmVCnMEb0fcE",
+          "supports": [
+            "address",
+            "opening_hours",
+            "phone"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "secondary_geo",
+          "url": "https://mapcarta.com/36303204",
+          "supports": [
+            "fortezza_proximity"
+          ],
+          "checked_at": "2026-08-10"
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "partial",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Canonical coordinates not yet sourced reliably.",
+        "Visitor parking cost/location and public WC not yet verified.",
+        "Legally reusable cover image missing.",
+        "Fortezza → Marina walking duration not yet canonicalized."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-10",
+      "destination_intelligence": {
+        "google_maps": {
+          "place_id": "ChIJMytuut3C4BIRmVCnMEb0fcE",
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Marina+di+Villasimius",
+          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Marina+di+Villasimius&travelmode=driving"
+        },
+        "services": {
+          "wifi": true,
+          "fuel": true,
+          "commercial_area": true,
+          "shipyard": true,
+          "bar": null,
+          "restaurant": null,
+          "wc": null
+        },
+        "family": {
+          "toddler_friendly": true,
+          "insight": "Fortezza Vecchia után rövid kikötői sétára jól illeszthető; vízparton folyamatos felnőtt felügyelet szükséges.",
+          "confidence": "medium"
+        },
+        "opening_hours": {
+          "daily": "08:30-19:30",
+          "notes": "Google Business hours; office/service hours may differ from promenade access."
+        },
+        "contact": {
+          "phone": "+39 070 7978006",
+          "email": "info@marinadivillasimius.it",
+          "website": "https://marinedi.com/marina-di-villasimius/"
+        }
+      },
+      "google_maps": {
+        "place_id": "ChIJMytuut3C4BIRmVCnMEb0fcE",
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Marina+di+Villasimius",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Marina+di+Villasimius&travelmode=driving"
       }
     }
   ]
