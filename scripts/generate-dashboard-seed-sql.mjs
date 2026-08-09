@@ -9,7 +9,7 @@ const [trip, timeline, events] = await Promise.all([
 const payload = JSON.stringify({ trip, timeline, events });
 const sql = `-- Utazási 1.0 — one-time Dashboard seed
 -- Generated from canonical Git JSON. Run in Supabase SQL Editor as postgres.
--- Requires migrations 001–008. It is safe to rerun after the first run:
+-- Requires migrations 001–006 and 008. It is safe to rerun after the first run:
 -- later family edits are never overwritten. The old Sep 3 test day is deleted
 -- only while its known legacy seed rows still exist.
 
@@ -158,20 +158,6 @@ on conflict (trip_id, canonical_key) do update set
   status = excluded.status,
   place_slug = excluded.place_slug,
   last_verified_at = excluded.last_verified_at;
-
-insert into public.event_watch_states (
-  event_id, enabled, baseline_status, baseline_starts_at, baseline_place_slug,
-  last_checked_at, last_success_at
-)
-select
-  events.id, true, events.status, events.starts_at, events.place_slug,
-  events.last_verified_at, events.last_verified_at
-from public.events
-join public.trips on trips.id = events.trip_id
-where trips.slug = 'sardinia-family-2026'
-  and events.source_url is not null
-  and events.last_verified_at is not null
-on conflict (event_id) do nothing;
 
 -- Verification result: exactly 12 days, with their current activity totals.
 select days.date, days.title, count(timeline_activities.id) as timeline_activity_count
