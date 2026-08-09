@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "seed:supabase": "node --env-file=.env.local scripts/seed-supabase.mjs",
+    "seed:supabase:replace-test-day": "node --env-file=.env.local scripts/seed-supabase.mjs --replace-test-day",
     "research": "node scripts/research.mjs",
     "research:live": "node --env-file=.env.local scripts/research.mjs live",
     "research:apply": "node scripts/research.mjs apply",

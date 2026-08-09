@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database";
 import type { TimelineActivityInput, TimelineActivityRecord, TimelinePeriod, TimelineTimePrecision } from "@/lib/timeline-types";
 import { getPlaceBySlug } from "@/lib/places";
+import { isTripBaseSlug } from "@/lib/trip-base";
 
 export const TIMELINE_TRIP_SLUG = "sardinia-family-2026";
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -47,7 +48,7 @@ function normalizeInput(value: unknown): ServiceResult<TimelineActivityInput> {
   if (!Number.isInteger(durationMinutes) || durationMinutes < 1 || durationMinutes > 1440) return { error: "Az időtartam 1 és 1440 perc között lehet.", status: 400 };
   if (locationName.length > 160) return { error: "A hely neve legfeljebb 160 karakter lehet.", status: 400 };
   if (placeSlug === undefined) return { error: "Érvénytelen helyazonosító.", status: 400 };
-  if (placeSlug && !getPlaceBySlug(placeSlug)) return { error: "A kiválasztott hely nem található.", status: 400 };
+  if (placeSlug && !isTripBaseSlug(placeSlug) && !getPlaceBySlug(placeSlug)) return { error: "A kiválasztott hely nem található.", status: 400 };
   if (description.length > 1000) return { error: "A megjegyzés legfeljebb 1000 karakter lehet.", status: 400 };
 
   return {

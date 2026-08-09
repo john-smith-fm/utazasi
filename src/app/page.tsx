@@ -8,7 +8,7 @@ import { PlanList } from "@/components/PlanList";
 import { StatRow } from "@/components/StatRow";
 import { SunCard } from "@/components/SunCard";
 import { TimelineCard } from "@/components/TimelineCard";
-import { HOME_DAYS, type HomeActivity } from "@/data/home-days";
+import { type HomeActivity } from "@/data/home-days";
 import { TRIP_CORE_DAYS } from "@/data/trip-core";
 import { useTimelineDay } from "@/hooks/useTimelineDay";
 import { useLiveData } from "@/hooks/useLiveData";
@@ -60,7 +60,9 @@ export default function HomePage() {
   const undoActivity = useRef<UndoRecord | null>(null);
   const undoTimer = useRef<number | null>(null);
   const feedbackTimer = useRef<number | null>(null);
-  const fallbackDay = HOME_DAYS.find((item) => item.date === selectedDate) ?? TRIP_CORE_DAYS.find((item) => item.date === selectedDate) ?? TRIP_CORE_DAYS[0];
+  // The canonical Timeline lives in Supabase. Trip-core can provide a safe
+  // offline day shell, but legacy prototype activities must never reappear.
+  const fallbackDay = TRIP_CORE_DAYS.find((item) => item.date === selectedDate) ?? TRIP_CORE_DAYS[0];
   const { day, status, canWrite, retry } = useTimelineDay(selectedDate, fallbackDay);
   const currentLocation = useCurrentLocationContext();
   const { weather, sea } = useLiveData(currentLocation);

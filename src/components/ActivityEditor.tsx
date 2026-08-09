@@ -4,6 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import type { HomeActivity } from "@/data/home-days";
 import type { TimelineActivityInput, TimelinePeriod, TimelineTimePrecision } from "@/lib/timeline-types";
 import { getPlaces } from "@/lib/places";
+import { TRIP_BASE_NAME, TRIP_BASE_SLUG } from "@/lib/trip-base";
 import type { Place, PlaceType } from "@/types/places";
 import { FORM_CONTROL, FORM_TEXTAREA } from "@/components/formStyles";
 
@@ -55,6 +56,25 @@ function matchingPlaces(query: string): readonly Place[] {
     .some((value) => normalizedSearchValue(value).includes(normalizedQuery)));
 }
 
+type LocationSuggestion = { slug: string; name: string; meta: string };
+
+function matchingLocations(query: string): readonly LocationSuggestion[] {
+  const normalizedQuery = normalizedSearchValue(query.trim());
+  if (!normalizedQuery) return [];
+  const tripBase: LocationSuggestion[] = [TRIP_BASE_NAME, "szállás", "apartman"]
+    .some((value) => normalizedSearchValue(value).includes(normalizedQuery))
+    ? [{ slug: TRIP_BASE_SLUG, name: TRIP_BASE_NAME, meta: "Szállás" }]
+    : [];
+  return [
+    ...tripBase,
+    ...matchingPlaces(query).map((place) => ({
+      slug: place.slug,
+      name: place.name,
+      meta: [place.location?.locality, PLACE_TYPE_LABEL[place.type]].filter(Boolean).join(" · "),
+    })),
+  ];
+}
+
 export function ActivityEditor({ activity, onClose, onSave, onDelete }: {
   activity?: HomeActivity;
   onClose: () => void;
@@ -67,7 +87,7 @@ export function ActivityEditor({ activity, onClose, onSave, onDelete }: {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const editing = Boolean(activity?.id);
   const createRequestId = useRef<string | null>(null);
-  const suggestions = useMemo(() => matchingPlaces(input.locationName), [input.locationName]);
+  const suggestions = useMemo(() => matchingLocations(input.locationName), [input.locationName]);
 
   function update<Key extends keyof TimelineActivityInput>(key: Key, value: TimelineActivityInput[Key]) {
     setInput((current) => ({ ...current, [key]: value }));
@@ -80,7 +100,7 @@ export function ActivityEditor({ activity, onClose, onSave, onDelete }: {
     setShowSuggestions(true);
   }
 
-  function selectPlace(place: Place) {
+  function selectPlace(place: LocationSuggestion) {
     setInput((current) => ({ ...current, locationName: place.name, placeSlug: place.slug }));
     setError("");
     setShowSuggestions(false);
@@ -156,11 +176,10 @@ export function ActivityEditor({ activity, onClose, onSave, onDelete }: {
             />
             {showSuggestions && suggestions.length > 0 && <ul id="place-suggestions" role="listbox" className="absolute z-10 mt-2 max-h-56 w-full overflow-y-auto rounded-ui-s border border-deep-sea/10 bg-white py-1 shadow-[0_10px_24px_rgba(24,50,59,.12)]">
               {suggestions.map((place) => {
-                const meta = [place.location?.locality, PLACE_TYPE_LABEL[place.type]].filter(Boolean).join(" · ");
                 return <li key={place.slug} role="option" aria-selected={input.placeSlug === place.slug}>
                   <button type="button" onMouseDown={(event) => event.preventDefault()} onClick={() => selectPlace(place)} className="min-h-11 w-full px-4 py-2 text-left outline-none transition-colors hover:bg-sand focus-visible:bg-sand">
                     <span className="block text-[15px] font-semibold leading-5 text-deep-sea">{place.name}</span>
-                    {meta && <span className="mt-0.5 block text-[13px] leading-[18px] text-deep-sea/60">{meta}</span>}
+                    {place.meta && <span className="mt-0.5 block text-[13px] leading-[18px] text-deep-sea/60">{place.meta}</span>}
                   </button>
                 </li>;
               })}

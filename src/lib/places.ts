@@ -4,6 +4,7 @@ import sightsJson from "../../knowledge/places/sights.json";
 import playgroundsJson from "../../knowledge/places/playgrounds.json";
 import cafesJson from "../../knowledge/places/cafes.json";
 import shopsJson from "../../knowledge/places/shops.json";
+import otherJson from "../../knowledge/places/other.json";
 import type { BeachPlace, Place, PlaceType, RestaurantPlace } from "@/types/places";
 
 type UnknownRecord = Record<string, unknown>;
@@ -201,6 +202,7 @@ const loadedPlaces = [
   ...validateGenericPlaces(playgroundsJson, "playground", "playground", "playground"),
   ...validateGenericPlaces(cafesJson, "cafe", "cafe", "cafe"),
   ...validateGenericPlaces(shopsJson, "shop", "shop", "shop"),
+  ...validateGenericPlaces(otherJson, "other", "other", "other"),
 ];
 assertUniqueSlugs(loadedPlaces);
 const places = Object.freeze(loadedPlaces);

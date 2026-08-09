@@ -1,10 +1,11 @@
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { createClient } from "@supabase/supabase-js";
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 // New Supabase projects use sb_secret_ keys. Keep the legacy variable as a
 // local-only fallback so existing setups do not break during the transition.
 const secretKey = process.env.SUPABASE_SECRET_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY;
+const replaceLegacyTestDay = process.argv.includes("--replace-test-day");
 
 if (!url || !secretKey) {
   throw new Error(
@@ -12,85 +13,71 @@ if (!url || !secretKey) {
   );
 }
 
-const seed = JSON.parse(await readFile(new URL("../supabase/seeds/test-day.json", import.meta.url), "utf8"));
+const initialTimeline = JSON.parse(await readFile(new URL("../knowledge/trip/timeline.initial.json", import.meta.url), "utf8"));
 const eventDocument = JSON.parse(await readFile(new URL("../knowledge/events/events.json", import.meta.url), "utf8"));
 const tripCore = JSON.parse(await readFile(new URL("../knowledge/trip/trip.public.json", import.meta.url), "utf8"));
 const supabase = createClient(url, secretKey, { auth: { autoRefreshToken: false, persistSession: false } });
 
-function localDateTimeParts(value) {
-  const match = /^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})$/.exec(value);
-  if (!match) throw new Error(`Expected a local ISO date and time, received: ${value}`);
-  return { date: match[1], time: match[2] };
+const PERIOD_LABELS = new Set(["Reggel", "Délelőtt", "Délután", "Este"]);
+const PRECISIONS = new Set(["exact", "approximate", "period"]);
+const LEGACY_TEST_SEED_KEYS = [
+  "2026-09-03-wake",
+  "2026-09-03-beach",
+  "2026-09-03-lunch",
+  "2026-09-03-nap",
+  "2026-09-03-gelato",
+  "2026-09-03-dinner",
+];
+const LEGACY_TRIP_CORE_SEED_KEYS = [
+  "trip-core-outbound-flight",
+  "trip-core-accommodation-check-in",
+  "trip-core-accommodation-check-out",
+  "trip-core-return-flight",
+];
+
+async function loadCanonicalPlaceSlugs() {
+  const directory = new URL("../knowledge/places/", import.meta.url);
+  const files = (await readdir(directory)).filter((file) => file.endsWith(".json"));
+  const documents = await Promise.all(files.map(async (file) => JSON.parse(await readFile(new URL(file, directory), "utf8"))));
+  return new Set(documents.flatMap((document) => document.places ?? []).map((place) => place.slug));
 }
 
-function durationBetween(start, end) {
-  const startTime = Date.parse(`${start}:00+02:00`);
-  const endTime = Date.parse(`${end}:00+02:00`);
-  const duration = Math.round((endTime - startTime) / 60_000);
-  if (duration < 1) throw new Error(`Invalid transport duration: ${start} → ${end}`);
-  return duration;
+function isTime(value) {
+  return typeof value === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(value);
 }
 
-function tripCoreActivities() {
-  const outbound = tripCore.transport.outbound_flight;
-  const inbound = tripCore.transport.return_flight;
-  const checkIn = tripCore.accommodation.check_in;
-  const checkOut = tripCore.accommodation.check_out;
-  const outboundDeparture = localDateTimeParts(outbound.departure);
-  const inboundDeparture = localDateTimeParts(inbound.departure);
-  const checkInTime = localDateTimeParts(checkIn);
-  const checkOutTime = localDateTimeParts(checkOut);
+function validateInitialTimeline(document, tripDays, canonicalPlaceSlugs) {
+  if (!Array.isArray(document.days)) throw new Error("Initial Timeline must contain a days array.");
 
-  return [
-    {
-      date: outboundDeparture.date,
-      seed_key: "trip-core-outbound-flight",
-      start_time: outboundDeparture.time,
-      duration_minutes: durationBetween(outbound.departure, outbound.arrival),
-      title: "Repülőút Cagliariba",
-      description: `${outbound.provider} · ${outbound.from} → ${outbound.to}`,
-      location_name: "Cagliari repülőtér",
-      kind: "travel",
-      is_system_generated: true,
-    },
-    {
-      date: checkInTime.date,
-      seed_key: "trip-core-accommodation-check-in",
-      start_time: checkInTime.time,
-      // The source records a check-in start time, but not its duration. Keep
-      // this as a one-minute timeline marker rather than inventing a stay.
-      duration_minutes: 1,
-      title: "Szállás elfoglalása",
-      description: "Check-in kezdete",
-      location_name: tripCore.accommodation.name,
-      kind: "plan",
-      is_system_generated: true,
-    },
-    {
-      date: checkOutTime.date,
-      seed_key: "trip-core-accommodation-check-out",
-      start_time: checkOutTime.time,
-      // The source records a check-out start time, but not its duration.
-      duration_minutes: 1,
-      title: "Kijelentkezés a szállásról",
-      description: "Check-out kezdete",
-      location_name: tripCore.accommodation.name,
-      kind: "plan",
-      is_system_generated: true,
-    },
-    {
-      date: inboundDeparture.date,
-      seed_key: "trip-core-return-flight",
-      start_time: inboundDeparture.time,
-      duration_minutes: durationBetween(inbound.departure, inbound.arrival),
-      title: "Hazarepülés Budapestre",
-      description: `${inbound.provider} · ${inbound.from} → ${inbound.to}`,
-      location_name: "Cagliari repülőtér",
-      kind: "travel",
-      is_system_generated: true,
-    },
-  ];
+  const expectedDates = new Set(tripDays.map((day) => day.date));
+  const suppliedDates = new Set(document.days.map((day) => day.date));
+  if (expectedDates.size !== 12 || suppliedDates.size !== expectedDates.size || [...expectedDates].some((date) => !suppliedDates.has(date))) {
+    throw new Error("Initial Timeline must define exactly the canonical 12 Trip days.");
+  }
+
+  const seenSeedKeys = new Set();
+  for (const day of document.days) {
+    if (!expectedDates.has(day.date) || !Array.isArray(day.activities)) throw new Error(`Invalid initial Timeline day: ${day.date}`);
+    for (const activity of day.activities) {
+      if (!activity.seed_key || seenSeedKeys.has(activity.seed_key)) throw new Error(`Missing or duplicate initial seed_key: ${activity.seed_key ?? "(missing)"}`);
+      seenSeedKeys.add(activity.seed_key);
+      if (!isTime(activity.start_time)) throw new Error(`Invalid start_time for ${activity.seed_key}`);
+      if (!Number.isInteger(activity.duration_minutes) || activity.duration_minutes < 1) throw new Error(`Invalid duration for ${activity.seed_key}`);
+      if (!PRECISIONS.has(activity.time_precision)) throw new Error(`Invalid time_precision for ${activity.seed_key}`);
+      if (activity.time_precision === "period") {
+        if (!PERIOD_LABELS.has(activity.time_label)) throw new Error(`A period item needs a valid time_label: ${activity.seed_key}`);
+      } else if (activity.time_label !== null) {
+        throw new Error(`Only period items may define time_label: ${activity.seed_key}`);
+      }
+      if (activity.place_slug && activity.place_slug !== "trip-base" && !canonicalPlaceSlugs.has(activity.place_slug)) {
+        throw new Error(`Unknown canonical place_slug for ${activity.seed_key}: ${activity.place_slug}`);
+      }
+    }
+  }
 }
+
+const canonicalPlaceSlugs = await loadCanonicalPlaceSlugs();
+validateInitialTimeline(initialTimeline, tripCore.days, canonicalPlaceSlugs);
 
 const { data: trip, error: tripError } = await supabase
   .from("trips")
@@ -110,36 +97,65 @@ const { error: coreDaysError } = await supabase
   .upsert(tripCore.days.map((day) => ({ trip_id: trip.id, date: day.date, title: day.title, subtitle: day.subtitle })), { onConflict: "trip_id,date" });
 if (coreDaysError) throw coreDaysError;
 
-const { data: day, error: dayError } = await supabase
-  .from("days")
-  .upsert({ ...seed.day, trip_id: trip.id }, { onConflict: "trip_id,date" })
-  .select("id")
-  .single();
-if (dayError) throw dayError;
-
-const rows = seed.timeline_activities.map((activity) => ({ ...activity, day_id: day.id }));
-const { error: activityError } = await supabase
-  .from("timeline_activities")
-  .upsert(rows, { onConflict: "seed_key" });
-if (activityError) throw activityError;
-
-const { data: coreDays, error: coreDaysLookupError } = await supabase
+const { data: days, error: daysLookupError } = await supabase
   .from("days")
   .select("id, date")
   .eq("trip_id", trip.id)
-  .in("date", [...new Set(tripCoreActivities().map((activity) => activity.date))]);
-if (coreDaysLookupError) throw coreDaysLookupError;
+  .in("date", tripCore.days.map((day) => day.date));
+if (daysLookupError) throw daysLookupError;
 
-const dayIds = new Map(coreDays.map((coreDay) => [coreDay.date, coreDay.id]));
-const coreActivityRows = tripCoreActivities().map(({ date, ...activity }) => {
-  const dayId = dayIds.get(date);
-  if (!dayId) throw new Error(`Trip Core day was not found for ${date}`);
-  return { ...activity, day_id: dayId };
-});
-const { error: coreActivityError } = await supabase
+const dayIds = new Map((days ?? []).map((day) => [day.date, day.id]));
+if (dayIds.size !== 12) throw new Error("Could not resolve all canonical Trip days after seed.");
+
+if (replaceLegacyTestDay) {
+  const testDayId = dayIds.get("2026-09-03");
+  const { data: removedTestRows, error: removeTestError } = await supabase
+    .from("timeline_activities")
+    .delete()
+    .eq("day_id", testDayId)
+    .select("id");
+  if (removeTestError) throw removeTestError;
+
+  const { data: removedCoreRows, error: removeCoreError } = await supabase
+    .from("timeline_activities")
+    .delete()
+    .in("seed_key", LEGACY_TRIP_CORE_SEED_KEYS)
+    .select("id");
+  if (removeCoreError) throw removeCoreError;
+
+  console.log(`Replaced the Sep 3 test day: removed ${removedTestRows?.length ?? 0} existing activity record(s) and ${removedCoreRows?.length ?? 0} legacy Trip Core marker(s).`);
+} else {
+  const { data: legacyRows, error: legacyLookupError } = await supabase
+    .from("timeline_activities")
+    .select("seed_key")
+    .in("seed_key", [...LEGACY_TEST_SEED_KEYS, ...LEGACY_TRIP_CORE_SEED_KEYS]);
+  if (legacyLookupError) throw legacyLookupError;
+  if ((legacyRows?.length ?? 0) > 0) {
+    throw new Error("Legacy test Timeline data is present. Run `npm run seed:supabase:replace-test-day` once to replace it explicitly; ordinary seed runs never delete or overwrite runtime Timeline data.");
+  }
+}
+
+const initialRows = initialTimeline.days.flatMap((day) => day.activities.map((activity) => ({
+  day_id: dayIds.get(day.date),
+  seed_key: activity.seed_key,
+  start_time: activity.start_time,
+  start_time_precision: activity.time_precision,
+  time_label: activity.time_label,
+  duration_minutes: activity.duration_minutes,
+  title: activity.title,
+  description: activity.description,
+  location_name: activity.location_name,
+  place_slug: activity.place_slug,
+  kind: "plan",
+  is_system_generated: false,
+})));
+
+// Initial canonical content is insert-only. Once the family edits an item in
+// the app, a later seed run must never reset it from Git.
+const { error: activityError } = await supabase
   .from("timeline_activities")
-  .upsert(coreActivityRows, { onConflict: "seed_key" });
-if (coreActivityError) throw coreActivityError;
+  .upsert(initialRows, { onConflict: "seed_key", ignoreDuplicates: true });
+if (activityError) throw activityError;
 
 const eventRows = eventDocument.events.map((event) => ({
   trip_id: trip.id,
@@ -182,4 +198,4 @@ if (watchBaselines.length > 0) {
   if (watchError) throw watchError;
 }
 
-console.log(`Seeded ${seed.day.date}: ${rows.length} daily activities, ${coreActivityRows.length} Trip Core markers, ${eventRows.length} event(s) and ${watchBaselines.length} Watch baseline(s).`);
+console.log(`Initialized ${initialRows.length} canonical Timeline activity record(s) across 12 days, plus ${eventRows.length} event(s) and ${watchBaselines.length} Watch baseline(s). Existing Timeline rows were never overwritten.`);

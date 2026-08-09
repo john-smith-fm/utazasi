@@ -1,0 +1,12 @@
+{
+  "version": "1.0",
+  "places": [
+    {
+      "id": "place_cagliari_airport",
+      "slug": "cagliari-airport",
+      "name": "Cagliari Airport",
+      "category": "other",
+      "location": { "city": "Cagliari" }
+    }
+  ]
+}

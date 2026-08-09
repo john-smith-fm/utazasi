@@ -1,9 +1,9 @@
 import routesJson from "../../knowledge/mobility/routes.json";
 import { getPlaceBySlug } from "@/lib/places";
+import { TRIP_BASE_SLUG } from "@/lib/trip-base";
 import type { MobilityMode, RouteEstimate } from "@/types/mobility";
 
 type UnknownRecord = Record<string, unknown>;
-const TRIP_BASE_SLUG = "trip-base";
 
 function isRecord(value: unknown): value is UnknownRecord {
   return typeof value === "object" && value !== null && !Array.isArray(value);
