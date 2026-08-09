@@ -36,7 +36,7 @@ export function QuestionSheet({ day, weather }: { day: HomeDay; weather: Weather
   const [question, setQuestion] = useState<(typeof EXAMPLES)[number] | null>(null);
   const answer = useMemo(() => question ? answerFor(question, day, weather) : null, [day, question, weather]);
 
-  return <section className="mt-5 border-t border-deep-sea/10 pt-5" aria-label="Kérdezési">
+  return <section className="px-5 pb-5 pt-2" aria-label="Kérdezési">
     <h2 className="text-[17px] font-bold leading-[23px] text-deep-sea">Miben segíthetek?</h2>
     <div className="mt-3 flex flex-col gap-2">
       {EXAMPLES.map((example) => <button key={example} type="button" onClick={() => setQuestion(example)} className={`min-h-11 rounded-ui-s border px-3 text-left text-sm font-medium transition-colors ${question === example ? "border-turquoise bg-turquoise/10 text-deep-sea" : "border-deep-sea/10 bg-white/45 text-deep-sea/75"}`}>{example}</button>)}
