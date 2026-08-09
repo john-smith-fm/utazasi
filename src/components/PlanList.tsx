@@ -3,6 +3,7 @@
 import { useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import type { HomeActivity } from "@/data/home-days";
 import type { TimelineLoadState } from "@/hooks/useTimelineDay";
+import { getPlaceBySlug } from "@/lib/places";
 
 const DELETE_THRESHOLD = 72;
 const MAX_SWIPE = 92;
@@ -46,12 +47,26 @@ function TimelineSkeleton() {
   return <ol className="relative m-0 list-none space-y-7 p-0 before:absolute before:bottom-6 before:left-[55px] before:top-4 before:w-px before:bg-deep-sea/10" aria-hidden="true">{[0, 1, 2].map((item) => <li key={item} className="grid grid-cols-[44px_1fr] gap-x-6"><span className="mt-1 h-4 w-9 rounded bg-deep-sea/10" /><span className="space-y-2"><span className="block h-5 w-32 rounded bg-deep-sea/10" /><span className="block h-4 w-44 rounded bg-deep-sea/10" /></span></li>)}</ol>;
 }
 
+function navigationHref(activity: HomeActivity) {
+  if (!activity.placeSlug) return undefined;
+  const place = getPlaceBySlug(activity.placeSlug);
+  if (!place) return undefined;
+  return place.navigation?.directionsUrl
+    ?? place.navigation?.mapsUrl
+    ?? (place.location?.latitude !== undefined && place.location?.longitude !== undefined
+      ? `https://www.google.com/maps/dir/?api=1&destination=${place.location.latitude},${place.location.longitude}`
+      : undefined);
+}
+
 function TimelineContent({ activity, conflict }: { activity: HomeActivity; conflict: boolean }) {
   const travel = activity.kind === "travel";
+  const mapsHref = navigationHref(activity);
   return <article className={`min-w-0 ${activity.localEvent ? "-mt-2 rounded-[16px] bg-coral/10 p-3" : travel || activity.isSystemGenerated ? "opacity-65" : ""}`}>
     {activity.localEvent && <span className="mb-2 inline-flex rounded-full bg-coral/15 px-2 py-1 text-[11px] font-bold text-coral">Helyi esemény</span>}
     <h2 className={`text-[17px] font-bold leading-[23px] ${activity.localEvent ? "text-coral" : "text-deep-sea"}`}>{activity.title}</h2>
-    {activity.place && <p className="mt-1 text-sm leading-5 text-deep-sea/60">{activity.place}</p>}
+    {activity.place && (mapsHref
+      ? <a href={mapsHref} target="_blank" rel="noreferrer" onClick={(event) => event.stopPropagation()} onPointerDown={(event) => event.stopPropagation()} className="mt-1 inline-flex min-h-6 items-center text-sm leading-5 text-turquoise-dark underline decoration-turquoise/40 underline-offset-2">{activity.place}<span className="sr-only"> navigáció megnyitása</span></a>
+      : <p className="mt-1 text-sm leading-5 text-deep-sea/60">{activity.place}</p>)}
     {activity.description && <p className="mt-1 text-sm leading-[21px] text-deep-sea/60">{activity.description}</p>}
     {activity.recommendation && <p className="mt-2 text-[13px] leading-[18px] text-turquoise-dark">Ajánlott · {activity.recommendation}</p>}
     {activity.localEvent && activity.eventNote && <p className="mt-1 text-xs leading-[18px] text-deep-sea/60">{activity.eventNote}</p>}
