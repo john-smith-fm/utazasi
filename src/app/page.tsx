@@ -127,7 +127,7 @@ export default function HomePage() {
   return <>
     <Hero />
     <main className="relative z-10 mx-auto -mt-7 max-w-[430px]">
-      <div className="px-5"><StatRow weather={weather} sea={sea} /></div>
+      <div className="px-5"><StatRow weather={weather} sea={sea} day={day} /></div>
       <SunCard weather={weather} />
       <div className="px-5">
         <TimelineCard day={day} days={TRIP_CORE_DAYS} summary={statusSummary} onSelect={setSelectedDate} />
