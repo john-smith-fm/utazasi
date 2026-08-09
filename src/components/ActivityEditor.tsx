@@ -5,6 +5,7 @@ import type { HomeActivity } from "@/data/home-days";
 import type { TimelineActivityInput } from "@/lib/timeline-types";
 import { getPlaces } from "@/lib/places";
 import type { Place, PlaceType } from "@/types/places";
+import { FORM_CONTROL, FORM_TEXTAREA } from "@/components/formStyles";
 
 type ActionState = "idle" | "saving" | "deleting";
 
@@ -108,10 +109,10 @@ export function ActivityEditor({ activity, onClose, onSave, onDelete }: {
         <button type="submit" disabled={action !== "idle"} className="min-h-11 min-w-11 rounded-ui-s px-2 text-right text-[15px] font-semibold text-turquoise-dark disabled:opacity-45">{action === "saving" ? "…" : "Mentés"}</button>
       </header>
       <div className="mt-8 space-y-5">
-        <Field label="Program"><input autoFocus required maxLength={120} value={input.title} onChange={(event) => update("title", event.target.value)} className="h-12 w-full rounded-ui-s border border-deep-sea/10 bg-white px-4 text-[16px] outline-none focus:border-turquoise-dark" /></Field>
+        <Field label="Program"><input autoFocus required maxLength={120} value={input.title} onChange={(event) => update("title", event.target.value)} className={`${FORM_CONTROL} w-full px-4`} /></Field>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Kezdés"><input required type="time" value={input.startTime} onChange={(event) => update("startTime", event.target.value)} className="h-12 w-full rounded-ui-s border border-deep-sea/10 bg-white px-3 text-[16px] outline-none focus:border-turquoise-dark" /></Field>
-          <Field label="Időtartam (perc)"><input required type="number" min="1" max="1440" inputMode="numeric" value={input.durationMinutes} onChange={(event) => update("durationMinutes", Number(event.target.value))} className="h-12 w-full rounded-ui-s border border-deep-sea/10 bg-white px-3 text-[16px] outline-none focus:border-turquoise-dark" /></Field>
+          <Field label="Kezdés"><input required type="time" value={input.startTime} onChange={(event) => update("startTime", event.target.value)} className={`${FORM_CONTROL} w-full px-3`} /></Field>
+          <Field label="Időtartam (perc)"><input required type="number" min="1" max="1440" inputMode="numeric" value={input.durationMinutes} onChange={(event) => update("durationMinutes", Number(event.target.value))} className={`${FORM_CONTROL} w-full px-3`} /></Field>
         </div>
         <Field label="Helyszín">
           <div className="relative">
@@ -124,7 +125,7 @@ export function ActivityEditor({ activity, onClose, onSave, onDelete }: {
               aria-autocomplete="list"
               aria-expanded={showSuggestions && suggestions.length > 0}
               aria-controls="place-suggestions"
-              className="h-12 w-full rounded-ui-s border border-deep-sea/10 bg-white px-4 text-[16px] outline-none focus:border-turquoise-dark"
+              className={`${FORM_CONTROL} w-full px-4`}
             />
             {showSuggestions && suggestions.length > 0 && <ul id="place-suggestions" role="listbox" className="absolute z-10 mt-2 max-h-56 w-full overflow-y-auto rounded-ui-s border border-deep-sea/10 bg-white py-1 shadow-[0_10px_24px_rgba(24,50,59,.12)]">
               {suggestions.map((place) => {
@@ -139,7 +140,7 @@ export function ActivityEditor({ activity, onClose, onSave, onDelete }: {
             </ul>}
           </div>
         </Field>
-        <Field label="Megjegyzés"><textarea maxLength={1000} value={input.description} onChange={(event) => update("description", event.target.value)} className="min-h-28 w-full resize-y rounded-ui-s border border-deep-sea/10 bg-white px-4 py-3 text-[16px] leading-[21px] outline-none focus:border-turquoise-dark" /></Field>
+        <Field label="Megjegyzés"><textarea maxLength={1000} value={input.description} onChange={(event) => update("description", event.target.value)} className={`${FORM_TEXTAREA} w-full px-4 py-3`} /></Field>
       </div>
       {error && <p className="mt-5 text-sm leading-[21px] text-error" role="alert">{error}</p>}
       {editing && <div className="mt-auto pt-10"><button type="button" onClick={() => void remove()} disabled={action !== "idle"} className="min-h-11 w-full rounded-ui-s border border-error/30 bg-error/10 px-4 text-[15px] font-semibold text-error disabled:opacity-45">{action === "deleting" ? "…" : "Program törlése"}</button></div>}
