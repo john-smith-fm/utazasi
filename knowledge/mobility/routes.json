@@ -1,0 +1,10 @@
+{
+  "version": "1.0",
+  "purpose": "Jóváhagyott, forrásolt útvonal-becslések az Utazási 1.0 döntéstámogatásához.",
+  "rules": [
+    "Minden rekord konkrét irányt ír le: from_slug → to_slug.",
+    "Távolság és menetidő csak ellenőrizhető forrással kerülhet be.",
+    "Hiányzó rekordnál az alkalmazás nem becsül és nem jelenít meg értéket."
+  ],
+  "routes": []
+}

@@ -13,6 +13,14 @@ emberileg olvasható, stabil kapcsolókulcsa.
 
 A Supabase későbbi runtime-adatbázis; nem helyettesíti ezt a kanonikus forrást.
 
+## Útvonalbecslések
+
+A `mobility/routes.json` csak ember által jóváhagyott, ellenőrizhető forrású
+útvonalakat tartalmazhat. Egy rekord irányhoz kötött (`from_slug` →
+`to_slug`), ezért az alkalmazás nem vezet le visszautat, időt vagy távolságot
+hiányzó adatból. A `trip-base` a jóváhagyott utazási bázist jelöli; a többi
+végpontnak ismert Place slugnak kell lennie.
+
 ## Companion irányelvek
 
 A `companion/` könyvtár a jóváhagyott, kanonikus viselkedési szabályokat tartja:

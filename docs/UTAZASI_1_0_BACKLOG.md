@@ -70,6 +70,11 @@ Never commit secrets, booking references, vouchers or API keys. The `utazasi_dat
 
 **Acceptance:** a route estimate is never invented; Google Maps links open correctly on iPhone; missing routes remain explicitly unavailable.
 
+**Current foundation:** the canonical `knowledge/mobility/routes.json` and its
+validated read layer are in place. The file intentionally contains no route
+records until their distance, duration, direction, source and checked date are
+approved. This does not add a routing API or display placeholder estimates.
+
 ## Epic 4 — Smart Status v1
 
 **Goal:** make Home explain the current selected day through deterministic priority rules.
