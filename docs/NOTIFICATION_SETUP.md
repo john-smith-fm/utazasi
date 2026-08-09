@@ -6,12 +6,15 @@ notification until all of the following are deliberately configured.
 
 1. Run `supabase/migrations/007_add_event_watch_and_push_foundation.sql` in the
    Supabase SQL Editor.
-2. Generate VAPID keys and place the private key only in the server environment.
+2. Run `npm run seed:supabase`. A canonical Event with an official source URL
+   and `last_checked` value receives an initial Watch baseline automatically.
+   Re-running the seed never overwrites an existing Watch state.
+3. Generate VAPID keys and place the private key only in the server environment.
    Set `VAPID_SUBJECT` to a `mailto:` contact. The public key may use
    `NEXT_PUBLIC_VAPID_PUBLIC_KEY`; the private key is `VAPID_PRIVATE_KEY`.
-3. Add a user-triggered notification permission action. Never prompt on page
+4. Add a user-triggered notification permission action. Never prompt on page
    load, and treat unsupported or denied permission as a harmless in-app state.
-4. Add the scheduled Event checker only after the small eligible Event set has
+5. Add the scheduled Event checker only after the small eligible Event set has
    an official source and an initial baseline.
 
 ## Scheduled Watch setup
@@ -26,6 +29,9 @@ It writes material time, venue or status changes to `event_change_log` and
 updates the Watch baseline. It never edits the Timeline, Event, Place JSON or
 canonical data automatically. Connect this endpoint to the planned Supabase
 scheduled worker only after a manual, cost-capped smoke test.
+
+Use `supabase/queries/verify_event_watch_foundation.sql` as the read-only
+database check after migration and seed.
 
 The current `/api/watch` route is PIN-session-protected. Its `POST` endpoint
 accepts an already-created browser Push subscription and stores it idempotently

@@ -154,9 +154,32 @@ const eventRows = eventDocument.events.map((event) => ({
   last_verified_at: event.metadata?.verification?.last_checked ? `${event.metadata.verification.last_checked}T00:00:00+02:00` : null,
 }));
 
-const { error: eventError } = await supabase
+const { data: seededEvents, error: eventError } = await supabase
   .from("events")
-  .upsert(eventRows, { onConflict: "trip_id,canonical_key" });
+  .upsert(eventRows, { onConflict: "trip_id,canonical_key" })
+  .select("id, source_url, status, starts_at, place_slug, last_verified_at");
 if (eventError) throw eventError;
 
-console.log(`Seeded ${seed.day.date}: ${rows.length} daily activities, ${coreActivityRows.length} Trip Core markers and ${eventRows.length} event(s).`);
+// The first verified canonical Event state is the Watch baseline. Existing
+// Watch rows are deliberately never reset by a later seed run: once a Watch
+// has observed a change, its runtime baseline belongs to the Watch service.
+const watchBaselines = (seededEvents ?? [])
+  .filter((event) => event.source_url && event.last_verified_at)
+  .map((event) => ({
+    event_id: event.id,
+    enabled: true,
+    baseline_status: event.status,
+    baseline_starts_at: event.starts_at,
+    baseline_place_slug: event.place_slug,
+    last_checked_at: event.last_verified_at,
+    last_success_at: event.last_verified_at,
+  }));
+
+if (watchBaselines.length > 0) {
+  const { error: watchError } = await supabase
+    .from("event_watch_states")
+    .upsert(watchBaselines, { onConflict: "event_id", ignoreDuplicates: true });
+  if (watchError) throw watchError;
+}
+
+console.log(`Seeded ${seed.day.date}: ${rows.length} daily activities, ${coreActivityRows.length} Trip Core markers, ${eventRows.length} event(s) and ${watchBaselines.length} Watch baseline(s).`);
