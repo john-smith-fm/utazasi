@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  ArrowUp,
   Baby,
   Bath,
   Bed,
@@ -29,6 +30,7 @@ import {
 } from "lucide-react";
 
 const icons: Record<string, LucideIcon> = {
+  "arrow-up": ArrowUp,
   baby: Baby,
   bed: Bed,
   "calendar-days": CalendarDays,

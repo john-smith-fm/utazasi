@@ -3,6 +3,7 @@
 import { useMemo, useState, type FormEvent } from "react";
 import type { HomeDay } from "@/data/home-days";
 import type { WeatherSnapshot } from "@/types";
+import { Icon } from "./Icon";
 
 const EXAMPLES = ["Melyik strandot válasszuk?", "Mi fér még bele délután?", "Hova menjünk gyerekkel?"] as const;
 type Answer = { title: string; body: string; sources: string[] };
@@ -48,10 +49,10 @@ export function QuestionSheet({ day, weather }: { day: HomeDay; weather: Weather
     <div className="flex flex-col gap-2">
       {EXAMPLES.map((example) => <button key={example} type="button" onClick={() => setQuestion(example)} className={`min-h-11 rounded-ui-s border px-3 text-left text-sm font-medium transition-colors ${question === example ? "border-turquoise bg-turquoise/10 text-deep-sea" : "border-deep-sea/10 bg-white/45 text-deep-sea/75"}`}>{example}</button>)}
     </div>
-    <form className="mt-5 border-t border-deep-sea/10 pt-5" onSubmit={submitCustomQuestion}>
+    <form className="relative mt-5 border-t border-deep-sea/10 pt-5" onSubmit={submitCustomQuestion}>
       <label className="sr-only" htmlFor="custom-trip-question">Utazási kérdés</label>
-      <input id="custom-trip-question" value={customQuestion} onChange={(event) => setCustomQuestion(event.target.value)} placeholder="Saját kérdés…" className="min-h-11 w-full rounded-ui-s border border-deep-sea/15 bg-white/55 px-3 text-sm text-deep-sea outline-none placeholder:text-deep-sea/45 focus:border-turquoise-dark" />
-      <div className="mt-2 flex justify-end"><button type="submit" disabled={!customQuestion.trim()} className="min-h-11 rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea disabled:opacity-40">Küldés</button></div>
+      <input id="custom-trip-question" value={customQuestion} onChange={(event) => setCustomQuestion(event.target.value)} placeholder="Saját kérdés…" className="min-h-11 w-full rounded-ui-s border border-deep-sea/15 bg-white/55 py-2 pl-3 pr-12 text-sm text-deep-sea outline-none placeholder:text-deep-sea/45 focus:border-turquoise-dark" />
+      <button type="submit" disabled={!customQuestion.trim()} aria-label="Kérdés elküldése" className="absolute bottom-1 right-1 grid h-9 w-9 place-items-center rounded-full bg-turquoise/15 text-turquoise-dark transition-colors disabled:bg-transparent disabled:text-deep-sea/25"><Icon name="arrow-up" size={17} strokeWidth={2} /></button>
     </form>
     {answer && <section className="mt-5 border-t border-deep-sea/10 pt-5" aria-live="polite"><h3 className="text-[17px] font-bold leading-[23px] text-deep-sea">{answer.title}</h3><p className="mt-2 text-sm leading-[21px] text-deep-sea/70">{answer.body}</p><p className="mt-4 text-[11px] font-semibold tracking-[.02em] text-deep-sea/45">Adatforrás · {answer.sources.join(" · ")}</p></section>}
   </section>;
