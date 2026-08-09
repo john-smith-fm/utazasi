@@ -12,6 +12,7 @@ import { HOME_DAYS, type HomeActivity } from "@/data/home-days";
 import { TRIP_CORE_DAYS } from "@/data/trip-core";
 import { useTimelineDay } from "@/hooks/useTimelineDay";
 import { useLiveData } from "@/hooks/useLiveData";
+import { useEventWatch } from "@/hooks/useEventWatch";
 import { createTimelineActivity, deleteTimelineActivity, updateTimelineActivity } from "@/lib/timeline-client";
 import type { TimelineActivityInput, TimelineActivityRecord } from "@/lib/timeline-types";
 import { smartStatusSummary } from "@/lib/smart-status";
@@ -56,8 +57,9 @@ export default function HomePage() {
   const fallbackDay = HOME_DAYS.find((item) => item.date === selectedDate) ?? TRIP_CORE_DAYS.find((item) => item.date === selectedDate) ?? TRIP_CORE_DAYS[0];
   const { day, status, canWrite, retry } = useTimelineDay(selectedDate, fallbackDay);
   const { weather, sea } = useLiveData(selectedDate);
+  const watchChange = useEventWatch();
   const canMutate = canWrite;
-  const statusSummary = smartStatusSummary(day, weather);
+  const statusSummary = smartStatusSummary(day, weather, watchChange);
 
   useEffect(() => () => {
     if (undoTimer.current) window.clearTimeout(undoTimer.current);

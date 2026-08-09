@@ -1,5 +1,6 @@
 import type { HomeActivity, HomeDay } from "@/data/home-days";
 import type { WeatherSnapshot } from "@/types";
+import type { WatchChange } from "@/lib/event-watch-service";
 
 function todayInTripTimezone(): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Rome", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
@@ -14,7 +15,14 @@ function nextActivity(activities: HomeActivity[]): HomeActivity | undefined {
   return activities.find((activity) => /^\d{2}:\d{2}$/.test(activity.time) && activity.time >= now);
 }
 
-export function smartStatusSummary(day: HomeDay, weather: WeatherSnapshot | null): string {
+function watchChangeSummary(change: WatchChange): string {
+  if (change.kind === "status_changed") return `Fontos változás: ${change.eventTitle} állapota megváltozott.`;
+  if (change.kind === "start_time_changed") return `Fontos változás: ${change.eventTitle} időpontja módosult.`;
+  return `Fontos változás: ${change.eventTitle} helyszíne módosult.`;
+}
+
+export function smartStatusSummary(day: HomeDay, weather: WeatherSnapshot | null, watchChange: WatchChange | null = null): string {
+  if (watchChange) return watchChangeSummary(watchChange);
   if (day.date === todayInTripTimezone()) {
     const next = nextActivity(day.activities);
     if (next) return `Következő: ${next.title}${next.place ? ` · ${next.place}` : ""}.`;
