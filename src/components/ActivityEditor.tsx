@@ -130,11 +130,11 @@ export function ActivityEditor({ activity, onClose, onSave, onDelete }: {
       </header>
       <div className="mt-8 space-y-5">
         <Field label="Program"><input autoFocus required maxLength={120} value={input.title} onChange={(event) => update("title", event.target.value)} className={`${FORM_CONTROL} w-full px-4`} /></Field>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-3">
           <Field label="Kezdés">
-            <input required type="time" value={input.startTime} onChange={(event) => update("startTime", event.target.value)} className={`${FORM_CONTROL} w-full px-3`} aria-label="Kezdés" />
+            <input required type="time" value={input.startTime} onChange={(event) => update("startTime", event.target.value)} className={`${FORM_CONTROL} h-12 min-h-0 w-full px-3`} aria-label="Kezdés" />
           </Field>
-          <Field label="Időtartam (perc)"><input required type="number" min="1" max="1440" inputMode="numeric" value={input.durationMinutes} onChange={(event) => update("durationMinutes", Number(event.target.value))} className={`${FORM_CONTROL} w-full px-3`} /></Field>
+          <Field label="Időtartam (perc)"><input required type="number" min="1" max="1440" inputMode="numeric" value={input.durationMinutes} onChange={(event) => update("durationMinutes", Number(event.target.value))} className={`${FORM_CONTROL} h-12 min-h-0 w-full px-3`} /></Field>
         </div>
         <Field label="Helyszín">
           <div className="relative">
