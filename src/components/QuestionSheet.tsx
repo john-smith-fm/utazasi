@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import type { HomeDay } from "@/data/home-days";
 import type { WeatherSnapshot } from "@/types";
 
@@ -28,19 +28,31 @@ function answerFor(question: string, day: HomeDay, weather: WeatherSnapshot | nu
     return { title: `${next.time} · ${next.title}`, body: `Ez a következő délutáni programpont${next.place ? `: ${next.place}` : ""}. A többi lehetőséget a Timeline-ban, időrendben látod.`, sources: ["Timeline"] };
   }
 
-  return { title: "Még nem elég biztos az ajánláshoz", body: "A jelenlegi Place-adatok nem tartalmaznak minden helyhez ellenőrzött gyerekes alkalmassági információt. Ezt a rendszer nem találgatja meg; a következő kutatási kör ezt fogja bővíteni.", sources: ["Place"] };
+  if (normalized.includes("gyerek")) return { title: "Még nem elég biztos az ajánláshoz", body: "A jelenlegi Place-adatok nem tartalmaznak minden helyhez ellenőrzött gyerekes alkalmassági információt. Ezt a rendszer nem találgatja meg; a következő kutatási kör ezt fogja bővíteni.", sources: ["Place"] };
+  return { title: "Erre még nincs biztos válasz", body: "A Kérdezési jelenlegi verziója a napi tervhez, a helyekhez és az időjáráshoz kapcsolódó, ellenőrzött kérdésekre tud válaszolni. Külső információt csak ellenőrzött kutatási forrásból fog használni.", sources: ["Timeline", "Place", "Weather"] };
 }
 
 /** Inline content for the Weather Bar's Kérdezési state — never a modal or sheet. */
 export function QuestionSheet({ day, weather }: { day: HomeDay; weather: WeatherSnapshot | null }) {
-  const [question, setQuestion] = useState<(typeof EXAMPLES)[number] | null>(null);
+  const [question, setQuestion] = useState<string | null>(null);
+  const [customQuestion, setCustomQuestion] = useState("");
   const answer = useMemo(() => question ? answerFor(question, day, weather) : null, [day, question, weather]);
 
+  function submitCustomQuestion(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const value = customQuestion.trim();
+    if (value) setQuestion(value);
+  }
+
   return <section className="px-5 pb-5 pt-2" aria-label="Kérdezési">
-    <h2 className="text-[17px] font-bold leading-[23px] text-deep-sea">Miben segíthetek?</h2>
-    <div className="mt-3 flex flex-col gap-2">
+    <div className="flex flex-col gap-2">
       {EXAMPLES.map((example) => <button key={example} type="button" onClick={() => setQuestion(example)} className={`min-h-11 rounded-ui-s border px-3 text-left text-sm font-medium transition-colors ${question === example ? "border-turquoise bg-turquoise/10 text-deep-sea" : "border-deep-sea/10 bg-white/45 text-deep-sea/75"}`}>{example}</button>)}
     </div>
+    <form className="mt-5 border-t border-deep-sea/10 pt-5" onSubmit={submitCustomQuestion}>
+      <label className="sr-only" htmlFor="custom-trip-question">Utazási kérdés</label>
+      <input id="custom-trip-question" value={customQuestion} onChange={(event) => setCustomQuestion(event.target.value)} placeholder="Saját kérdés…" className="min-h-11 w-full rounded-ui-s border border-deep-sea/15 bg-white/55 px-3 text-sm text-deep-sea outline-none placeholder:text-deep-sea/45 focus:border-turquoise-dark" />
+      <div className="mt-2 flex justify-end"><button type="submit" disabled={!customQuestion.trim()} className="min-h-11 rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea disabled:opacity-40">Küldés</button></div>
+    </form>
     {answer && <section className="mt-5 border-t border-deep-sea/10 pt-5" aria-live="polite"><h3 className="text-[17px] font-bold leading-[23px] text-deep-sea">{answer.title}</h3><p className="mt-2 text-sm leading-[21px] text-deep-sea/70">{answer.body}</p><p className="mt-4 text-[11px] font-semibold tracking-[.02em] text-deep-sea/45">Adatforrás · {answer.sources.join(" · ")}</p></section>}
   </section>;
 }
