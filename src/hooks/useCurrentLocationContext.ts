@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { TRIP } from "@/data/trip";
+import { storageGet, storageSet } from "@/lib/storage";
 
 export type CurrentLocationContext = {
   latitude: number;
@@ -24,6 +25,22 @@ const knownLocations = [
   { label: "Cagliari", latitude: 39.2238, longitude: 9.1217, radiusKm: 18, seaRelevant: true },
   { label: "Budapest", latitude: 47.4979, longitude: 19.0402, radiusKm: 35, seaRelevant: false },
 ] as const;
+
+const LOCATION_CACHE_KEY = "current-location-context";
+const LOCATION_CACHE_MAX_AGE_MS = 12 * 60 * 60 * 1000;
+
+type CachedLocation = { context: CurrentLocationContext; cachedAt: string };
+
+function cachedDeviceContext(): CurrentLocationContext | null {
+  const cached = storageGet<CachedLocation | null>(LOCATION_CACHE_KEY, null);
+  if (!cached || cached.context.source !== "device" || !Number.isFinite(cached.context.latitude) || !Number.isFinite(cached.context.longitude)) return null;
+  const cachedAt = Date.parse(cached.cachedAt);
+  return Number.isFinite(cachedAt) && Date.now() - cachedAt <= LOCATION_CACHE_MAX_AGE_MS ? cached.context : null;
+}
+
+function cacheDeviceContext(context: CurrentLocationContext) {
+  storageSet<CachedLocation>(LOCATION_CACHE_KEY, { context, cachedAt: new Date().toISOString() });
+}
 
 function distanceKm(a: Pick<CurrentLocationContext, "latitude" | "longitude">, b: Pick<CurrentLocationContext, "latitude" | "longitude">) {
   const radians = (value: number) => value * Math.PI / 180;
@@ -50,19 +67,27 @@ function contextForDevicePosition(latitude: number, longitude: number): CurrentL
  * The Home header means “where we are now”, never the day currently browsed.
  * On the first Home visit it requests the native location permission once.
  * An already denied permission is respected; the approved Trip base location
- * remains the fallback whenever a device position is unavailable.
+ * remains the fallback whenever a device position is unavailable. The last
+ * granted device context stays only on this device for up to twelve hours,
+ * so an offline PWA cold start keeps a coherent header context.
  */
 export function useCurrentLocationContext() {
   const [context, setContext] = useState<CurrentLocationContext>(fallback);
 
   useEffect(() => {
     let cancelled = false;
+    const cached = cachedDeviceContext();
+    if (cached) setContext(cached);
     if (!("geolocation" in navigator)) return;
 
     const requestPosition = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          if (!cancelled) setContext(contextForDevicePosition(position.coords.latitude, position.coords.longitude));
+          if (!cancelled) {
+            const next = contextForDevicePosition(position.coords.latitude, position.coords.longitude);
+            cacheDeviceContext(next);
+            setContext(next);
+          }
         },
         () => undefined,
         { enableHighAccuracy: false, maximumAge: 10 * 60 * 1000, timeout: 8000 },
