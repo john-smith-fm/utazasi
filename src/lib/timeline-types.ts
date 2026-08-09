@@ -1,9 +1,13 @@
 export type TimelineActivityKind = "plan" | "travel";
+export type TimelineTimePrecision = "exact" | "approximate" | "period";
+export type TimelinePeriod = "Reggel" | "Délelőtt" | "Délután" | "Este";
 
 export type TimelineActivityRecord = {
   id: string;
   day_id: string;
   start_time: string;
+  start_time_precision: TimelineTimePrecision;
+  time_label: TimelinePeriod | null;
   duration_minutes: number;
   title: string;
   description: string | null;
@@ -19,6 +23,8 @@ export type TimelineActivityRecord = {
 export type TimelineActivityInput = {
   title: string;
   startTime: string;
+  startTimePrecision: TimelineTimePrecision;
+  timeLabel: TimelinePeriod | null;
   durationMinutes: number;
   locationName: string;
   placeSlug: string | null;

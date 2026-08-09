@@ -28,12 +28,19 @@ function snappedTime(time: string, deltaY: number) {
 }
 
 function hasConflict(activities: HomeActivity[], index: number) {
+  if (activities[index].timePrecision === "period") return false;
   const currentStart = timeToMinutes(activities[index].time);
   if (currentStart === null) return false;
   return activities.slice(0, index).some((activity) => {
+    if (activity.timePrecision === "period") return false;
     const start = timeToMinutes(activity.time);
     return start !== null && activity.durationMinutes !== undefined && start + activity.durationMinutes > currentStart;
   });
+}
+
+function displayTime(activity: HomeActivity) {
+  if (activity.timePrecision === "period") return activity.timeLabel ?? "Napszak";
+  return activity.timePrecision === "approximate" ? `~${activity.time}` : activity.time;
 }
 
 function TimelineMessage({ status, onRetry }: { status: TimelineLoadState; onRetry: () => void }) {
@@ -178,7 +185,7 @@ function EditableTimelineItem({ activity, conflict, onSelect, onDelete, onPrevie
     <div role="button" tabIndex={0} aria-label={`${activity.title} szerkesztése`} onKeyDown={keyDown} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd} onClick={() => { if (suppressClick.current) { suppressClick.current = false; return; } onSelect(activity); }} className="relative cursor-pointer touch-pan-y bg-quartz outline-none transition-transform duration-200 focus-visible:ring-2 focus-visible:ring-turquoise-dark" style={{ transform: `translateX(${offset}px)`, transitionDuration: start.current ? "0ms" : undefined }}>
       <div className="relative pr-11">
         <TimelineContent activity={activity} conflict={conflict} />
-        <DragHandle activity={activity} onPreview={onPreview} onCommit={(time) => onTimeChange(activity, time)} onError={onError} />
+        {(activity.timePrecision ?? "exact") === "exact" && <DragHandle activity={activity} onPreview={onPreview} onCommit={(time) => onTimeChange(activity, time)} onError={onError} />}
       </div>
     </div>
   </div>;
@@ -197,7 +204,7 @@ export function PlanList({ activities, status, canEdit, onRetry, onSelect, onDel
         const editable = canEdit && Boolean(activity.id) && !travel && !activity.isSystemGenerated && !activity.localEvent;
         const conflict = hasConflict(activities, index);
         return <li key={activity.id ?? `${activity.time}-${activity.title}-${index}`} className="relative mb-7 grid grid-cols-[44px_1fr] gap-x-6">
-          <time className={`pt-0.5 text-[13px] leading-[21px] ${activity.id && previewTimes[activity.id] ? "font-semibold text-turquoise-dark" : travel || activity.isSystemGenerated ? "text-deep-sea/35" : "text-deep-sea/55"}`}>{activity.id && previewTimes[activity.id] ? previewTimes[activity.id] : activity.time}</time>
+          <time className={`pt-0.5 text-[13px] leading-[21px] ${activity.id && previewTimes[activity.id] ? "font-semibold text-turquoise-dark" : travel || activity.isSystemGenerated ? "text-deep-sea/35" : "text-deep-sea/55"}`}>{activity.id && previewTimes[activity.id] ? previewTimes[activity.id] : displayTime(activity)}</time>
           <span aria-hidden="true" className={`absolute left-[51px] top-2 h-[9px] w-[9px] rounded-full border-2 border-quartz ${activity.localEvent ? "bg-coral shadow-[0_0_0_4px_rgba(241,140,121,.14)]" : travel ? "bg-deep-sea/30" : "bg-turquoise shadow-[0_0_0_1px_rgba(20,127,145,.25)]"}`} />
           {editable ? <EditableTimelineItem activity={activity} conflict={conflict} onSelect={onSelect} onDelete={onDelete} onPreview={(time) => { if (!activity.id) return; setPreviewTimes((current) => { const next = { ...current }; if (time) next[activity.id!] = time; else delete next[activity.id!]; return next; }); }} onTimeChange={onTimeChange} onError={onError} /> : <TimelineContent activity={activity} conflict={conflict} />}
         </li>;

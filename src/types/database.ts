@@ -1,4 +1,5 @@
 export type TimelineActivityKind = "plan" | "travel";
+export type TimelineTimePrecision = "exact" | "approximate" | "period";
 export type TripMemberRole = "owner" | "member";
 export type EventStatus = "scheduled" | "changed" | "cancelled";
 export type EventChangeKind = "status_changed" | "start_time_changed" | "venue_changed";
@@ -19,8 +20,8 @@ export interface Database {
         Relationships: [{ foreignKeyName: "days_trip_id_fkey"; columns: ["trip_id"]; referencedRelation: "trips"; referencedColumns: ["id"] }];
       };
       timeline_activities: {
-        Row: { id: string; day_id: string; start_time: string; duration_minutes: number; title: string; description: string | null; location_name: string | null; place_slug: string | null; source_event_id: string | null; kind: TimelineActivityKind; is_system_generated: boolean; seed_key: string | null; created_at: string; updated_at: string };
-        Insert: { id?: string; day_id: string; start_time: string; duration_minutes: number; title: string; description?: string | null; location_name?: string | null; place_slug?: string | null; source_event_id?: string | null; kind?: TimelineActivityKind; is_system_generated?: boolean; seed_key?: string | null; created_at?: string; updated_at?: string };
+        Row: { id: string; day_id: string; start_time: string; start_time_precision: TimelineTimePrecision; time_label: "Reggel" | "Délelőtt" | "Délután" | "Este" | null; duration_minutes: number; title: string; description: string | null; location_name: string | null; place_slug: string | null; source_event_id: string | null; kind: TimelineActivityKind; is_system_generated: boolean; seed_key: string | null; created_at: string; updated_at: string };
+        Insert: { id?: string; day_id: string; start_time: string; start_time_precision?: TimelineTimePrecision; time_label?: "Reggel" | "Délelőtt" | "Délután" | "Este" | null; duration_minutes: number; title: string; description?: string | null; location_name?: string | null; place_slug?: string | null; source_event_id?: string | null; kind?: TimelineActivityKind; is_system_generated?: boolean; seed_key?: string | null; created_at?: string; updated_at?: string };
         Update: Partial<Database["public"]["Tables"]["timeline_activities"]["Insert"]>;
         Relationships: [{ foreignKeyName: "timeline_activities_day_id_fkey"; columns: ["day_id"]; referencedRelation: "days"; referencedColumns: ["id"] }, { foreignKeyName: "timeline_activities_source_event_id_fkey"; columns: ["source_event_id"]; referencedRelation: "events"; referencedColumns: ["id"] }];
       };
@@ -57,7 +58,7 @@ export interface Database {
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
-    Enums: { timeline_activity_kind: TimelineActivityKind; trip_member_role: TripMemberRole; event_status: EventStatus; event_change_kind: EventChangeKind };
+    Enums: { timeline_activity_kind: TimelineActivityKind; timeline_time_precision: TimelineTimePrecision; trip_member_role: TripMemberRole; event_status: EventStatus; event_change_kind: EventChangeKind };
     CompositeTypes: Record<string, never>;
   };
 }

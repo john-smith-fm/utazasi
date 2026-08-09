@@ -2,12 +2,20 @@ import "server-only";
 
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database";
-import type { TimelineActivityInput, TimelineActivityRecord } from "@/lib/timeline-types";
+import type { TimelineActivityInput, TimelineActivityRecord, TimelinePeriod, TimelineTimePrecision } from "@/lib/timeline-types";
 import { getPlaceBySlug } from "@/lib/places";
 
 export const TIMELINE_TRIP_SLUG = "sardinia-family-2026";
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const TIME_PATTERN = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
+const PERIOD_ANCHORS: Record<TimelinePeriod, string> = {
+  Reggel: "08:00",
+  Délelőtt: "10:30",
+  Délután: "15:30",
+  Este: "19:00",
+};
+
+export const TIMELINE_PERIOD_ANCHORS = PERIOD_ANCHORS;
 
 type ServiceResult<T> = { data: T } | { error: string; status: number };
 
@@ -23,20 +31,37 @@ function normalizeInput(value: unknown): ServiceResult<TimelineActivityInput> {
   const input = value as Partial<TimelineActivityInput>;
   const title = typeof input.title === "string" ? input.title.trim() : "";
   const startTime = typeof input.startTime === "string" ? input.startTime : "";
+  const startTimePrecision = typeof input.startTimePrecision === "string" ? input.startTimePrecision : "";
+  const timeLabel = input.timeLabel === null ? null : typeof input.timeLabel === "string" ? input.timeLabel.trim() : undefined;
   const durationMinutes = Number(input.durationMinutes);
   const locationName = typeof input.locationName === "string" ? input.locationName.trim() : "";
   const placeSlug = input.placeSlug === null ? null : typeof input.placeSlug === "string" ? input.placeSlug.trim() : undefined;
   const description = typeof input.description === "string" ? input.description.trim() : "";
 
   if (!title || title.length > 120) return { error: "Adj meg legfeljebb 120 karakteres programnevet.", status: 400 };
-  if (!TIME_PATTERN.test(startTime)) return { error: "Adj meg érvényes kezdési időt.", status: 400 };
+  if (startTimePrecision !== "exact" && startTimePrecision !== "approximate" && startTimePrecision !== "period") return { error: "Érvénytelen időpont-pontosság.", status: 400 };
+  if (startTimePrecision === "period") {
+    if (timeLabel !== "Reggel" && timeLabel !== "Délelőtt" && timeLabel !== "Délután" && timeLabel !== "Este") return { error: "Válassz napszakot.", status: 400 };
+  } else if (timeLabel !== null) return { error: "Pontos vagy hozzávetőleges időponthoz nem tartozhat napszak.", status: 400 };
+  if (!TIME_PATTERN.test(startTime) && startTimePrecision !== "period") return { error: "Adj meg érvényes kezdési időt.", status: 400 };
   if (!Number.isInteger(durationMinutes) || durationMinutes < 1 || durationMinutes > 1440) return { error: "Az időtartam 1 és 1440 perc között lehet.", status: 400 };
   if (locationName.length > 160) return { error: "A hely neve legfeljebb 160 karakter lehet.", status: 400 };
   if (placeSlug === undefined) return { error: "Érvénytelen helyazonosító.", status: 400 };
   if (placeSlug && !getPlaceBySlug(placeSlug)) return { error: "A kiválasztott hely nem található.", status: 400 };
   if (description.length > 1000) return { error: "A megjegyzés legfeljebb 1000 karakter lehet.", status: 400 };
 
-  return { data: { title, startTime, durationMinutes, locationName, placeSlug, description } };
+  return {
+    data: {
+      title,
+      startTime: startTimePrecision === "period" ? PERIOD_ANCHORS[timeLabel as TimelinePeriod] : startTime,
+      startTimePrecision: startTimePrecision as TimelineTimePrecision,
+      timeLabel: startTimePrecision === "period" ? timeLabel as TimelinePeriod : null,
+      durationMinutes,
+      locationName,
+      placeSlug,
+      description,
+    },
+  };
 }
 
 async function dayForDate(date: string): Promise<ServiceResult<{ id: string }>> {
@@ -56,7 +81,7 @@ async function editableActivity(id: string): Promise<ServiceResult<TimelineActiv
   const supabase = timelineServerClient();
   const { data, error } = await supabase
     .from("timeline_activities")
-    .select("id, day_id, start_time, duration_minutes, title, description, location_name, place_slug, source_event_id, kind, is_system_generated, created_at, updated_at, days!inner(trip_id, trips!inner(slug))")
+    .select("id, day_id, start_time, start_time_precision, time_label, duration_minutes, title, description, location_name, place_slug, source_event_id, kind, is_system_generated, created_at, updated_at, days!inner(trip_id, trips!inner(slug))")
     .eq("id", id)
     .eq("days.trips.slug", TIMELINE_TRIP_SLUG)
     .maybeSingle();
@@ -74,7 +99,7 @@ async function activityForTrip(id: string): Promise<ServiceResult<TimelineActivi
   const supabase = timelineServerClient();
   const { data, error } = await supabase
     .from("timeline_activities")
-    .select("id, day_id, start_time, duration_minutes, title, description, location_name, place_slug, source_event_id, kind, is_system_generated, created_at, updated_at, days!inner(trip_id, trips!inner(slug))")
+    .select("id, day_id, start_time, start_time_precision, time_label, duration_minutes, title, description, location_name, place_slug, source_event_id, kind, is_system_generated, created_at, updated_at, days!inner(trip_id, trips!inner(slug))")
     .eq("id", id)
     .eq("days.trips.slug", TIMELINE_TRIP_SLUG)
     .maybeSingle();
@@ -98,6 +123,8 @@ export async function createTimelineActivity(date: string, rawInput: unknown, ra
       ...(requestId ? { id: requestId } : {}),
       day_id: day.data.id,
       start_time: input.data.startTime,
+      start_time_precision: input.data.startTimePrecision,
+      time_label: input.data.timeLabel,
       duration_minutes: input.data.durationMinutes,
       title: input.data.title,
       location_name: input.data.locationName || null,
@@ -106,7 +133,7 @@ export async function createTimelineActivity(date: string, rawInput: unknown, ra
       kind: "plan",
       is_system_generated: false,
     })
-    .select("id, day_id, start_time, duration_minutes, title, description, location_name, place_slug, source_event_id, kind, is_system_generated, created_at, updated_at")
+    .select("id, day_id, start_time, start_time_precision, time_label, duration_minutes, title, description, location_name, place_slug, source_event_id, kind, is_system_generated, created_at, updated_at")
     .single();
   if (error) {
     if (requestId && error.code === "23505") {
@@ -128,6 +155,8 @@ export async function updateTimelineActivity(id: string, rawInput: unknown): Pro
     .from("timeline_activities")
     .update({
       start_time: input.data.startTime,
+      start_time_precision: input.data.startTimePrecision,
+      time_label: input.data.timeLabel,
       duration_minutes: input.data.durationMinutes,
       title: input.data.title,
       location_name: input.data.locationName || null,
@@ -135,7 +164,7 @@ export async function updateTimelineActivity(id: string, rawInput: unknown): Pro
       description: input.data.description || null,
     })
     .eq("id", current.data.id)
-    .select("id, day_id, start_time, duration_minutes, title, description, location_name, place_slug, source_event_id, kind, is_system_generated, created_at, updated_at")
+    .select("id, day_id, start_time, start_time_precision, time_label, duration_minutes, title, description, location_name, place_slug, source_event_id, kind, is_system_generated, created_at, updated_at")
     .single();
   if (error) throw error;
   return { data };

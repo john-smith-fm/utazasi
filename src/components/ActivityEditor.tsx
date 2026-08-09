@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useState } from "react";
 import type { HomeActivity } from "@/data/home-days";
-import type { TimelineActivityInput } from "@/lib/timeline-types";
+import type { TimelineActivityInput, TimelinePeriod, TimelineTimePrecision } from "@/lib/timeline-types";
 import { getPlaces } from "@/lib/places";
 import type { Place, PlaceType } from "@/types/places";
 import { FORM_CONTROL, FORM_TEXTAREA } from "@/components/formStyles";
@@ -13,6 +13,8 @@ function initialInput(activity?: HomeActivity): TimelineActivityInput {
   return {
     title: activity?.title ?? "",
     startTime: activity?.time || "09:00",
+    startTimePrecision: activity?.timePrecision ?? "exact",
+    timeLabel: activity?.timeLabel ?? null,
     durationMinutes: activity?.durationMinutes ?? 60,
     locationName: activity?.place ?? "",
     placeSlug: activity?.placeSlug ?? null,
@@ -30,6 +32,13 @@ const PLACE_TYPE_LABEL: Record<PlaceType, string> = {
   parking: "Parkolás",
   other: "Hely",
 };
+
+const TIME_PRECISIONS: { value: TimelineTimePrecision; label: string }[] = [
+  { value: "exact", label: "Pontos" },
+  { value: "approximate", label: "Kb." },
+  { value: "period", label: "Napszak" },
+];
+const PERIODS: TimelinePeriod[] = ["Reggel", "Délelőtt", "Délután", "Este"];
 
 function normalizedSearchValue(value: string) {
   return value
@@ -77,6 +86,15 @@ export function ActivityEditor({ activity, onClose, onSave, onDelete }: {
     setShowSuggestions(false);
   }
 
+  function setTimePrecision(startTimePrecision: TimelineTimePrecision) {
+    setInput((current) => ({
+      ...current,
+      startTimePrecision,
+      timeLabel: startTimePrecision === "period" ? current.timeLabel ?? "Délelőtt" : null,
+    }));
+    setError("");
+  }
+
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (action !== "idle") return;
@@ -111,7 +129,16 @@ export function ActivityEditor({ activity, onClose, onSave, onDelete }: {
       <div className="mt-8 space-y-5">
         <Field label="Program"><input autoFocus required maxLength={120} value={input.title} onChange={(event) => update("title", event.target.value)} className={`${FORM_CONTROL} w-full px-4`} /></Field>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Kezdés"><input required type="time" value={input.startTime} onChange={(event) => update("startTime", event.target.value)} className={`${FORM_CONTROL} w-full px-3`} /></Field>
+          <Field label="Kezdés">
+            <div className="space-y-2">
+              <div className="grid grid-cols-3 gap-1" role="group" aria-label="Időpont pontossága">
+                {TIME_PRECISIONS.map((option) => <button key={option.value} type="button" onClick={() => setTimePrecision(option.value)} className={`min-h-11 rounded-ui-s border px-1 text-[11px] font-semibold ${input.startTimePrecision === option.value ? "border-turquoise bg-turquoise/10 text-deep-sea" : "border-deep-sea/10 bg-white/55 text-deep-sea/55"}`}>{option.label}</button>)}
+              </div>
+              {input.startTimePrecision === "period"
+                ? <select value={input.timeLabel ?? "Délelőtt"} onChange={(event) => update("timeLabel", event.target.value as TimelinePeriod)} className={`${FORM_CONTROL} w-full px-3`} aria-label="Napszak">{PERIODS.map((period) => <option key={period} value={period}>{period}</option>)}</select>
+                : <input required type="time" value={input.startTime} onChange={(event) => update("startTime", event.target.value)} className={`${FORM_CONTROL} w-full px-3`} aria-label={input.startTimePrecision === "approximate" ? "Hozzávetőleges kezdés" : "Pontos kezdés"} />}
+            </div>
+          </Field>
           <Field label="Időtartam (perc)"><input required type="number" min="1" max="1440" inputMode="numeric" value={input.durationMinutes} onChange={(event) => update("durationMinutes", Number(event.target.value))} className={`${FORM_CONTROL} w-full px-3`} /></Field>
         </div>
         <Field label="Helyszín">
