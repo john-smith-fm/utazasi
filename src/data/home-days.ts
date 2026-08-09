@@ -1,8 +1,6 @@
 export interface HomeActivity {
   id?: string;
   time: string;
-  timePrecision?: "exact" | "approximate" | "period";
-  timeLabel?: "Reggel" | "Délelőtt" | "Délután" | "Este" | null;
   title: string;
   place: string;
   placeSlug: string | null;

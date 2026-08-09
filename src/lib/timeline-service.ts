@@ -2,22 +2,13 @@ import "server-only";
 
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database";
-import type { TimelineActivityInput, TimelineActivityRecord, TimelinePeriod, TimelineTimePrecision } from "@/lib/timeline-types";
+import type { TimelineActivityInput, TimelineActivityRecord } from "@/lib/timeline-types";
 import { getPlaceBySlug } from "@/lib/places";
 import { isTripBaseSlug } from "@/lib/trip-base";
 
 export const TIMELINE_TRIP_SLUG = "sardinia-family-2026";
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const TIME_PATTERN = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
-const PERIOD_ANCHORS: Record<TimelinePeriod, string> = {
-  Reggel: "08:00",
-  Délelőtt: "10:30",
-  Délután: "15:30",
-  Este: "19:00",
-};
-
-export const TIMELINE_PERIOD_ANCHORS = PERIOD_ANCHORS;
-
 type ServiceResult<T> = { data: T } | { error: string; status: number };
 
 export function timelineServerClient() {
@@ -32,19 +23,13 @@ function normalizeInput(value: unknown): ServiceResult<TimelineActivityInput> {
   const input = value as Partial<TimelineActivityInput>;
   const title = typeof input.title === "string" ? input.title.trim() : "";
   const startTime = typeof input.startTime === "string" ? input.startTime : "";
-  const startTimePrecision = typeof input.startTimePrecision === "string" ? input.startTimePrecision : "";
-  const timeLabel = input.timeLabel === null ? null : typeof input.timeLabel === "string" ? input.timeLabel.trim() : undefined;
   const durationMinutes = Number(input.durationMinutes);
   const locationName = typeof input.locationName === "string" ? input.locationName.trim() : "";
   const placeSlug = input.placeSlug === null ? null : typeof input.placeSlug === "string" ? input.placeSlug.trim() : undefined;
   const description = typeof input.description === "string" ? input.description.trim() : "";
 
   if (!title || title.length > 120) return { error: "Adj meg legfeljebb 120 karakteres programnevet.", status: 400 };
-  if (startTimePrecision !== "exact" && startTimePrecision !== "approximate" && startTimePrecision !== "period") return { error: "Érvénytelen időpont-pontosság.", status: 400 };
-  if (startTimePrecision === "period") {
-    if (timeLabel !== "Reggel" && timeLabel !== "Délelőtt" && timeLabel !== "Délután" && timeLabel !== "Este") return { error: "Válassz napszakot.", status: 400 };
-  } else if (timeLabel !== null) return { error: "Pontos vagy hozzávetőleges időponthoz nem tartozhat napszak.", status: 400 };
-  if (!TIME_PATTERN.test(startTime) && startTimePrecision !== "period") return { error: "Adj meg érvényes kezdési időt.", status: 400 };
+  if (!TIME_PATTERN.test(startTime)) return { error: "Adj meg érvényes kezdési időt.", status: 400 };
   if (!Number.isInteger(durationMinutes) || durationMinutes < 1 || durationMinutes > 1440) return { error: "Az időtartam 1 és 1440 perc között lehet.", status: 400 };
   if (locationName.length > 160) return { error: "A hely neve legfeljebb 160 karakter lehet.", status: 400 };
   if (placeSlug === undefined) return { error: "Érvénytelen helyazonosító.", status: 400 };
@@ -54,9 +39,7 @@ function normalizeInput(value: unknown): ServiceResult<TimelineActivityInput> {
   return {
     data: {
       title,
-      startTime: startTimePrecision === "period" ? PERIOD_ANCHORS[timeLabel as TimelinePeriod] : startTime,
-      startTimePrecision: startTimePrecision as TimelineTimePrecision,
-      timeLabel: startTimePrecision === "period" ? timeLabel as TimelinePeriod : null,
+      startTime,
       durationMinutes,
       locationName,
       placeSlug,
@@ -124,8 +107,8 @@ export async function createTimelineActivity(date: string, rawInput: unknown, ra
       ...(requestId ? { id: requestId } : {}),
       day_id: day.data.id,
       start_time: input.data.startTime,
-      start_time_precision: input.data.startTimePrecision,
-      time_label: input.data.timeLabel,
+      start_time_precision: "exact",
+      time_label: null,
       duration_minutes: input.data.durationMinutes,
       title: input.data.title,
       location_name: input.data.locationName || null,
@@ -156,8 +139,8 @@ export async function updateTimelineActivity(id: string, rawInput: unknown): Pro
     .from("timeline_activities")
     .update({
       start_time: input.data.startTime,
-      start_time_precision: input.data.startTimePrecision,
-      time_label: input.data.timeLabel,
+      start_time_precision: "exact",
+      time_label: null,
       duration_minutes: input.data.durationMinutes,
       title: input.data.title,
       location_name: input.data.locationName || null,

@@ -23,8 +23,6 @@ export type TimelineActivityRecord = {
 export type TimelineActivityInput = {
   title: string;
   startTime: string;
-  startTimePrecision: TimelineTimePrecision;
-  timeLabel: TimelinePeriod | null;
   durationMinutes: number;
   locationName: string;
   placeSlug: string | null;

@@ -27,8 +27,6 @@ function toInput(activity: HomeActivity): TimelineActivityInput {
   return {
     title: activity.title,
     startTime: activity.time,
-    startTimePrecision: activity.timePrecision ?? "exact",
-    timeLabel: activity.timeLabel ?? null,
     durationMinutes: activity.durationMinutes ?? 60,
     locationName: activity.place,
     placeSlug: activity.placeSlug,
@@ -40,8 +38,6 @@ function toHomeActivity(activity: TimelineActivityRecord): HomeActivity {
   return {
     id: activity.id,
     time: activity.start_time.slice(0, 5),
-    timePrecision: activity.start_time_precision,
-    timeLabel: activity.time_label,
     title: activity.title,
     place: activity.location_name ?? "",
     placeSlug: activity.place_slug,
@@ -115,8 +111,7 @@ export default function HomePage() {
 
   async function changeStartTime(activity: HomeActivity, startTime: string) {
     if (!activity.id) return;
-    // Direct manipulation means the family deliberately chose an exact time.
-    await updateTimelineActivity(activity.id, { ...toInput(activity), startTime, startTimePrecision: "exact", timeLabel: null });
+    await updateTimelineActivity(activity.id, { ...toInput(activity), startTime });
     retry();
     showToast("Időpont módosítva");
   }

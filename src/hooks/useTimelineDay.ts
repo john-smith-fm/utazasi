@@ -41,8 +41,6 @@ function toHomeDay(remote: TimelineDayResult, fallback: HomeDay): HomeDay {
     .map((activity) => ({
       id: activity.id,
       time: activity.start_time.slice(0, 5),
-      timePrecision: activity.start_time_precision,
-      timeLabel: activity.time_label,
       title: activity.title,
       place: activity.location_name ?? "",
       placeSlug: activity.place_slug,
