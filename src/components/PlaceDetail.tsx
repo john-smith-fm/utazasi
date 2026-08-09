@@ -57,8 +57,10 @@ function RestaurantDetails({ place }: { place: Place }) {
 export function PlaceDetail({ place }: { place: Place }) {
   const primaryImage = place.media?.[0];
   const hasCoordinates = place.location?.latitude !== undefined && place.location?.longitude !== undefined;
-  const navigationHref = place.navigation?.directionsUrl
+  const directionsHref = place.navigation?.directionsUrl
     ?? (hasCoordinates ? `https://www.google.com/maps/dir/?api=1&destination=${place.location!.latitude},${place.location!.longitude}` : undefined);
+  const mapsHref = place.navigation?.mapsUrl;
+  const navigationHref = directionsHref ?? mapsHref;
 
   return <article>
     <header>
@@ -86,7 +88,7 @@ export function PlaceDetail({ place }: { place: Place }) {
     <div className="mt-8 space-y-8">
       <BeachAccessDetails place={place} />
       <RestaurantDetails place={place} />
-      {navigationHref && <a href={navigationHref} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">Navigáció megnyitása</a>}
+      {navigationHref && <a href={navigationHref} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">{directionsHref ? "Navigáció megnyitása" : "Megnyitás Google Térképen"}</a>}
     </div>
   </article>;
 }

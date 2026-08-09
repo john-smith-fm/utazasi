@@ -29,11 +29,37 @@ function optionalNumber(value: unknown) {
   return typeof value === "number" && Number.isFinite(value) ? value : undefined;
 }
 
+function optionalBoolean(value: unknown) {
+  return typeof value === "boolean" ? value : undefined;
+}
+
 function optionalNavigation(value: unknown) {
   if (!isRecord(value)) return undefined;
   const mapsUrl = optionalString(value.maps_url);
   const directionsUrl = optionalString(value.directions_url);
   return mapsUrl || directionsUrl ? { mapsUrl, directionsUrl } : undefined;
+}
+
+/** A Maps search hand-off is derived only from an already-approved place name
+ * and locality. It deliberately does not claim a route, coordinate or duration. */
+function mapsSearchNavigation(name: string, location?: { locality?: string; address?: string }) {
+  const query = [name, location?.address ?? location?.locality].filter(Boolean).join(", ");
+  return query ? { mapsUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}` } : undefined;
+}
+
+function navigationFor(raw: UnknownRecord, name: string, location?: { locality?: string; address?: string }) {
+  return optionalNavigation(raw.google_maps) ?? mapsSearchNavigation(name, location);
+}
+
+function provenanceFor(value: unknown) {
+  if (!isRecord(value)) return undefined;
+  const sourceUrls = optionalStringArray(value.sources);
+  const reviewedAt = optionalString(value.last_checked);
+  const reviewStatus = optionalString(value.status);
+  const uncertaintyNote = optionalString(value.uncertainty_note);
+  return sourceUrls || reviewedAt || reviewStatus || uncertaintyNote
+    ? { sourceUrls, reviewedAt, reviewStatus, uncertaintyNote }
+    : undefined;
 }
 
 function validateBeaches(source: unknown): BeachPlace[] {
@@ -49,8 +75,23 @@ function validateBeaches(source: unknown): BeachPlace[] {
     if (slugs.has(slug)) throw new Error(`Duplikált place slug: ${slug}.`);
     slugs.add(slug);
 
-    const location = isRecord(raw.location) && optionalString(raw.location.city) ? { locality: optionalString(raw.location.city) } : undefined;
-    const verification = isRecord(raw.verification) ? optionalString(raw.verification.status) : undefined;
+    const rawLocation = isRecord(raw.location) ? raw.location : undefined;
+    const location = rawLocation ? {
+      locality: optionalString(rawLocation.city),
+      address: optionalString(rawLocation.address),
+      latitude: optionalNumber(rawLocation.latitude),
+      longitude: optionalNumber(rawLocation.longitude),
+    } : undefined;
+    const rawAccess = isRecord(raw.access) ? raw.access : undefined;
+    const access = rawAccess ? {
+      characteristics: optionalStringArray(rawAccess.characteristics),
+      serpentineRoad: optionalBoolean(rawAccess.serpentineRoad),
+      dirtRoad: optionalBoolean(rawAccess.dirtRoad),
+      mainRoad: optionalBoolean(rawAccess.mainRoad),
+      coastalRoad: optionalBoolean(rawAccess.coastalRoad),
+      parkingNotes: optionalString(rawAccess.parkingNotes),
+      notes: optionalString(rawAccess.notes),
+    } : undefined;
 
     return {
       sourceId,
@@ -58,8 +99,9 @@ function validateBeaches(source: unknown): BeachPlace[] {
       name,
       type: "beach",
       location,
-      provenance: verification ? { reviewStatus: verification } : undefined,
-      details: { kind: "beach" },
+      navigation: navigationFor(raw, name, location),
+      provenance: provenanceFor(raw.verification),
+      details: { kind: "beach", access },
     };
   });
 }
@@ -85,7 +127,6 @@ function validateRestaurants(source: unknown): RestaurantPlace[] {
       latitude: optionalNumber(rawLocation.latitude),
       longitude: optionalNumber(rawLocation.longitude),
     } : undefined;
-    const verification = isRecord(raw.verification) ? raw.verification : undefined;
     const openingHours = isRecord(raw.opening_hours) ? raw.opening_hours : undefined;
     const contact = isRecord(raw.contact) ? raw.contact : undefined;
     const phones = contact ? optionalStringArray(contact.phone) : undefined;
@@ -98,12 +139,8 @@ function validateRestaurants(source: unknown): RestaurantPlace[] {
       name,
       type: "restaurant",
       location,
-      navigation: optionalNavigation(raw.google_maps),
-      provenance: verification ? {
-        sourceUrls: optionalStringArray(verification.sources),
-        reviewedAt: optionalString(verification.last_checked),
-        reviewStatus: optionalString(verification.status),
-      } : undefined,
+      navigation: navigationFor(raw, name, location),
+      provenance: provenanceFor(raw.verification),
       details: {
         kind: "restaurant",
         openingNote,
@@ -135,7 +172,6 @@ function validateGenericPlaces(source: unknown, type: GenericPlaceType, category
       latitude: optionalNumber(rawLocation.latitude),
       longitude: optionalNumber(rawLocation.longitude),
     } : undefined;
-    const verification = isRecord(raw.verification) ? raw.verification : undefined;
 
     return {
       sourceId,
@@ -143,13 +179,8 @@ function validateGenericPlaces(source: unknown, type: GenericPlaceType, category
       name,
       type,
       location,
-      navigation: optionalNavigation(raw.google_maps),
-      provenance: verification ? {
-        sourceUrls: optionalStringArray(verification.sources),
-        reviewedAt: optionalString(verification.last_checked),
-        reviewStatus: optionalString(verification.status),
-        uncertaintyNote: optionalString(verification.uncertainty_note),
-      } : undefined,
+      navigation: navigationFor(raw, name, location),
+      provenance: provenanceFor(raw.verification),
       details: { kind: type },
     };
   });
