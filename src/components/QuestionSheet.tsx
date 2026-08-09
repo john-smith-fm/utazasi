@@ -4,11 +4,12 @@ import { useMemo, useState, type FormEvent } from "react";
 import type { HomeDay } from "@/data/home-days";
 import type { WeatherSnapshot } from "@/types";
 import type { TripEvent } from "@/lib/event-types";
+import { getShoppingAnswer, type ShoppingRecommendation } from "@/lib/shopping-intelligence";
 import { Icon } from "./Icon";
 import { FORM_CONTROL } from "@/components/formStyles";
 
 const EXAMPLES = ["Melyik strandot válasszuk?", "Mi fér még bele délután?", "Hova menjünk gyerekkel?"] as const;
-type Answer = { title: string; body: string; sources: string[] };
+type Answer = { title: string; body: string; sources: string[]; recommendations?: ShoppingRecommendation[] };
 
 function eventAnswer(question: string, events: TripEvent[]): Answer | null {
   const normalized = question.toLocaleLowerCase("hu-HU");
@@ -30,7 +31,9 @@ function answerFor(question: string, day: HomeDay, weather: WeatherSnapshot | nu
   const normalized = question.toLocaleLowerCase("hu-HU");
   const afternoon = day.activities.filter((activity) => /^1[2-9]:|^2[0-3]:/.test(activity.time));
   const eventResult = eventAnswer(question, events);
+  const shoppingAnswer = getShoppingAnswer(question);
   if (eventResult) return eventResult;
+  if (shoppingAnswer) return shoppingAnswer;
 
   if (normalized.includes("strand")) {
     const plannedBeach = day.activities.find((activity) => /strand/i.test(`${activity.title} ${activity.place}`));
@@ -74,6 +77,6 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
       <input id="custom-trip-question" value={customQuestion} onChange={(event) => setCustomQuestion(event.target.value)} placeholder="Saját kérdés…" className={`${FORM_CONTROL} w-full border-deep-sea/15 bg-white/55 py-2 pl-3 pr-14`} />
       <button type="submit" disabled={!customQuestion.trim()} aria-label="Kérdés elküldése" className="absolute bottom-0.5 right-0.5 grid h-11 w-11 place-items-center rounded-full bg-turquoise/15 text-turquoise-dark transition-colors disabled:bg-transparent disabled:text-deep-sea/25"><Icon name="arrow-up" size={17} strokeWidth={2} /></button>
     </form>
-    {answer && <section className="mt-5 border-t border-deep-sea/10 pt-5" aria-live="polite"><h3 className="text-[17px] font-bold leading-[23px] text-deep-sea">{answer.title}</h3><p className="mt-2 text-sm leading-[21px] text-deep-sea/70">{answer.body}</p><p className="mt-4 text-[11px] font-semibold tracking-[.02em] text-deep-sea/45">Adatforrás · {answer.sources.join(" · ")}</p></section>}
+    {answer && <section className="mt-5 border-t border-deep-sea/10 pt-5" aria-live="polite"><h3 className="text-[17px] font-bold leading-[23px] text-deep-sea">{answer.title}</h3><p className="mt-2 text-sm leading-[21px] text-deep-sea/70">{answer.body}</p>{answer.recommendations?.length ? <ul className="mt-4 space-y-3" aria-label="Javasolt helyek">{answer.recommendations.map((recommendation) => <li key={recommendation.placeSlug} className="text-sm leading-[21px] text-deep-sea/75"><a className="font-semibold text-turquoise-dark underline underline-offset-4" href={recommendation.placeDetailHref}>{recommendation.name}</a>{recommendation.rationale ? <p className="mt-0.5">{recommendation.rationale}</p> : null}{recommendation.confirmedFacts.length ? <p className="mt-0.5 text-deep-sea/55">Megerősített: {recommendation.confirmedFacts.join(" · ")}</p> : null}{recommendation.uncertainty ? <p className="mt-0.5 text-deep-sea/50">Korlát: {recommendation.uncertainty}</p> : null}</li>)}</ul> : null}<p className="mt-4 text-[11px] font-semibold tracking-[.02em] text-deep-sea/45">Adatforrás · {answer.sources.join(" · ")}</p></section>}
   </section>;
 }
