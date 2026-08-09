@@ -8,7 +8,7 @@ const TABS = [
   { href: "/", label: "Home", icon: "home" },
   { href: "/beaches", label: "Strandok", icon: "umbrella" },
   { href: "/restaurants", label: "Éttermek", icon: "utensils" },
-  { href: "/budget", label: "Költségek", icon: "wallet" },
+  { href: "/budget", label: "Jegyzetfüzet", icon: "notebook-pen" },
 ] as const;
 
 export function TabBar() {
