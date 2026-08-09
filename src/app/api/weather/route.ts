@@ -6,6 +6,7 @@ export const revalidate = 900;
 
 const WEATHER_ATTRIBUTION = "Weather data by Open-Meteo.com" as const;
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const COORDINATE_PATTERN = /^-?\d{1,3}(?:\.\d+)?$/;
 
 type ForecastResponse = {
   current?: { temperature_2m?: number; wind_speed_10m?: number; precipitation?: number };
@@ -43,7 +44,16 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Érvénytelen dátum." }, { status: 400 });
   }
 
-  const { lat, lon } = TRIP.coords;
+  const requestedLat = request.nextUrl.searchParams.get("lat");
+  const requestedLon = request.nextUrl.searchParams.get("lon");
+  if ((requestedLat && !COORDINATE_PATTERN.test(requestedLat)) || (requestedLon && !COORDINATE_PATTERN.test(requestedLon))) {
+    return NextResponse.json({ error: "Érvénytelen helykoordináta." }, { status: 400 });
+  }
+  const lat = requestedLat ? Number(requestedLat) : TRIP.coords.lat;
+  const lon = requestedLon ? Number(requestedLon) : TRIP.coords.lon;
+  if (!Number.isFinite(lat) || !Number.isFinite(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180) {
+    return NextResponse.json({ error: "Érvénytelen helykoordináta." }, { status: 400 });
+  }
   const shared = `latitude=${lat}&longitude=${lon}&timezone=${encodeURIComponent(TRIP.timezone)}`;
   const forecastUrl = `https://api.open-meteo.com/v1/forecast?${shared}&start_date=${requestedDate}&end_date=${requestedDate}&current=temperature_2m,wind_speed_10m,precipitation&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max,sunrise,sunset`;
   const marineUrl = `https://marine-api.open-meteo.com/v1/marine?${shared}&current=sea_surface_temperature`;

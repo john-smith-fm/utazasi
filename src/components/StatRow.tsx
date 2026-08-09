@@ -19,8 +19,8 @@ export function StatRow({ weather, sea, day, events = [] }: { weather: WeatherSn
     {questionMode ? <section className="relative z-[2] w-full overflow-hidden rounded-[22px] border" style={glass}>
       <button type="button" aria-label="Vissza az időjáráshoz" aria-expanded="true" onClick={() => setMode("weather")} className="flex min-h-[52px] w-full items-center justify-center px-5 text-left"><strong className="text-sm tracking-[-.02em] text-deep-sea">Kérdezési</strong></button>
       <QuestionSheet day={day} weather={weather} events={events} />
-    </section> : <button type="button" aria-label="Kérdezési megnyitása" aria-expanded="false" onClick={() => setMode("questions")} className="relative z-[2] grid w-full grid-cols-4 rounded-[22px] border py-2 pl-1.5 pr-8 text-left" style={glass}>
-      <Metric icon="sun" value={weather ? `${weather.temp}°` : "—"} /><Metric icon="waves" value={sea !== null ? `${sea}°` : "—"} bordered /><Metric icon="wind" value={weather ? `${weather.wind} km/h` : "—"} bordered /><Metric icon="cloud-sun" value={condition} bordered />
+    </section> : <button type="button" aria-label="Kérdezési megnyitása" aria-expanded="false" onClick={() => setMode("questions")} className={`relative z-[2] grid w-full ${sea !== null ? "grid-cols-4" : "grid-cols-3"} rounded-[22px] border py-2 pl-1.5 pr-8 text-left`} style={glass}>
+      <Metric icon="sun" value={weather ? `${weather.temp}°` : "—"} />{sea !== null && <Metric icon="waves" value={`${sea}°`} bordered />}<Metric icon="wind" value={weather ? `${weather.wind} km/h` : "—"} bordered /><Metric icon="cloud-sun" value={condition} bordered />
       <Icon aria-hidden="true" name="circle-help" size={18} strokeWidth={1.8} className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-deep-sea/45" />
     </button>}
   </section>;

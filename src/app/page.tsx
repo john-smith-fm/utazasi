@@ -12,6 +12,7 @@ import { HOME_DAYS, type HomeActivity } from "@/data/home-days";
 import { TRIP_CORE_DAYS } from "@/data/trip-core";
 import { useTimelineDay } from "@/hooks/useTimelineDay";
 import { useLiveData } from "@/hooks/useLiveData";
+import { useCurrentLocationContext } from "@/hooks/useCurrentLocationContext";
 import { useEventWatch } from "@/hooks/useEventWatch";
 import { useTripEvents } from "@/hooks/useTripEvents";
 import { createTimelineActivity, deleteTimelineActivity, updateTimelineActivity } from "@/lib/timeline-client";
@@ -57,7 +58,8 @@ export default function HomePage() {
   const feedbackTimer = useRef<number | null>(null);
   const fallbackDay = HOME_DAYS.find((item) => item.date === selectedDate) ?? TRIP_CORE_DAYS.find((item) => item.date === selectedDate) ?? TRIP_CORE_DAYS[0];
   const { day, status, canWrite, retry } = useTimelineDay(selectedDate, fallbackDay);
-  const { weather, sea } = useLiveData(selectedDate);
+  const currentLocation = useCurrentLocationContext();
+  const { weather, sea } = useLiveData(currentLocation);
   const watchChange = useEventWatch();
   const events = useTripEvents(selectedDate);
   const canMutate = canWrite;
@@ -132,7 +134,7 @@ export default function HomePage() {
     <Hero />
     <main className="relative z-10 mx-auto -mt-7 max-w-[430px]">
       <div className="px-5"><StatRow weather={weather} sea={sea} day={day} events={events} /></div>
-      <SunCard weather={weather} />
+      <SunCard weather={weather} locationLabel={currentLocation.label} />
       <div className="px-5">
         <TimelineCard day={day} days={TRIP_CORE_DAYS} summary={statusSummary} onSelect={setSelectedDate} />
         <section className="mt-8"><PlanList activities={day.activities} status={status} canEdit={canMutate} onRetry={retry} onSelect={(activity) => setEditor({ activity })} onDelete={(activity) => { void remove(activity).catch((caught) => showToast(caught instanceof Error ? caught.message : "A törlés nem sikerült.")); }} onTimeChange={changeStartTime} onError={showToast} /></section>

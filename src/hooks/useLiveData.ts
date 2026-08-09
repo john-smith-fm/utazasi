@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { fetchFxRate, fetchWeather } from "@/lib/weather";
 import type { WeatherSnapshot } from "@/types";
+import type { CurrentLocationContext } from "@/hooks/useCurrentLocationContext";
 
 interface LiveData {
   weather: WeatherSnapshot | null;
@@ -13,7 +14,12 @@ interface LiveData {
 
 /** Élő adatok (időjárás, tenger, árfolyam), 15 percenként frissítve.
  *  Offline esetén a lib/weather.ts a legutóbbi localStorage-cache-elt értéket adja vissza. */
-export function useLiveData(date = new Date().toISOString().slice(0, 10), refreshMs = 15 * 60 * 1000): LiveData {
+function localToday() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+}
+
+export function useLiveData(location?: CurrentLocationContext, refreshMs = 15 * 60 * 1000): LiveData {
   const [state, setState] = useState<LiveData>({ weather: null, sea: null, fx: null, loading: true });
 
   useEffect(() => {
@@ -21,7 +27,7 @@ export function useLiveData(date = new Date().toISOString().slice(0, 10), refres
 
     async function load() {
       const [weather, fx] = await Promise.allSettled([
-        fetchWeather(date),
+        fetchWeather(localToday(), location),
         fetchFxRate(),
       ]);
       if (cancelled) return;
@@ -39,7 +45,7 @@ export function useLiveData(date = new Date().toISOString().slice(0, 10), refres
       cancelled = true;
       clearInterval(id);
     };
-  }, [date, refreshMs]);
+  }, [location?.latitude, location?.longitude, location?.seaRelevant, refreshMs]);
 
   return state;
 }

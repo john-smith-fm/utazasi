@@ -12,6 +12,8 @@ type WeatherResponse = {
   stale: boolean;
 };
 
+export type WeatherLocation = { latitude: number; longitude: number; seaRelevant: boolean };
+
 async function fetchJSON<T>(url: string): Promise<T> {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`bad response: ${res.status}`);
@@ -19,10 +21,17 @@ async function fetchJSON<T>(url: string): Promise<T> {
 }
 
 /** Szerveroldali, 15 perces Open-Meteo cache. Offline esetben a kliens a legutóbbi sikeres napot mutatja. */
-export async function fetchWeather(date: string): Promise<WeatherSnapshot> {
-  const cacheKey = `weather-cache:${date}`;
+export async function fetchWeather(date: string, location?: WeatherLocation): Promise<WeatherSnapshot> {
+  const lat = location?.latitude;
+  const lon = location?.longitude;
+  const cacheKey = `weather-cache:${date}:${lat ?? "trip"}:${lon ?? "trip"}`;
   try {
-    const data = await fetchJSON<WeatherResponse>(`/api/weather?date=${encodeURIComponent(date)}`);
+    const search = new URLSearchParams({ date });
+    if (typeof lat === "number" && typeof lon === "number") {
+      search.set("lat", String(lat));
+      search.set("lon", String(lon));
+    }
+    const data = await fetchJSON<WeatherResponse>(`/api/weather?${search.toString()}`);
     const snapshot: WeatherSnapshot = {
       temp: data.airTemperature,
       wind: data.windKmh,
@@ -30,7 +39,7 @@ export async function fetchWeather(date: string): Promise<WeatherSnapshot> {
       sunrise: data.sunrise ?? "—",
       sunset: data.sunset ?? "—",
       precipitationState: data.precipitationState,
-      seaTemperature: data.seaTemperature,
+      seaTemperature: location?.seaRelevant === false ? null : data.seaTemperature,
       fetchedAt: data.fetchedAt,
       stale: data.stale,
     };
