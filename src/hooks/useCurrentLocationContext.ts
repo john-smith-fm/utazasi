@@ -48,18 +48,18 @@ function contextForDevicePosition(latitude: number, longitude: number): CurrentL
 
 /**
  * The Home header means “where we are now”, never the day currently browsed.
- * It does not prompt for permission on load: an already granted device location
- * is used, otherwise the approved Trip base location remains the fallback.
+ * On the first Home visit it requests the native location permission once.
+ * An already denied permission is respected; the approved Trip base location
+ * remains the fallback whenever a device position is unavailable.
  */
 export function useCurrentLocationContext() {
   const [context, setContext] = useState<CurrentLocationContext>(fallback);
 
   useEffect(() => {
     let cancelled = false;
-    if (!("geolocation" in navigator) || !("permissions" in navigator)) return;
+    if (!("geolocation" in navigator)) return;
 
-    void navigator.permissions.query({ name: "geolocation" }).then((permission) => {
-      if (permission.state !== "granted") return;
+    const requestPosition = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           if (!cancelled) setContext(contextForDevicePosition(position.coords.latitude, position.coords.longitude));
@@ -67,7 +67,23 @@ export function useCurrentLocationContext() {
         () => undefined,
         { enableHighAccuracy: false, maximumAge: 10 * 60 * 1000, timeout: 8000 },
       );
-    }).catch(() => undefined);
+    };
+
+    const requestedKey = "utazasi-location-permission-requested";
+    const requestOnce = () => {
+      if (window.localStorage.getItem(requestedKey)) return;
+      window.localStorage.setItem(requestedKey, "true");
+      requestPosition();
+    };
+
+    if (!("permissions" in navigator)) {
+      requestOnce();
+    } else {
+      void navigator.permissions.query({ name: "geolocation" }).then((permission) => {
+        if (permission.state === "granted") requestPosition();
+        else if (permission.state === "prompt") requestOnce();
+      }).catch(requestOnce);
+    }
 
     return () => { cancelled = true; };
   }, []);
