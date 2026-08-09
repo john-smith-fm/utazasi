@@ -37,10 +37,10 @@ export function NowCard() {
       className="mb-4 rounded-m p-5 text-quartz shadow-card"
       style={{ background: "linear-gradient(135deg, #4CB8C4 0%, #2E8A93 100%)" }}
     >
-      <p className="mb-2 font-mono text-xs uppercase tracking-wide text-quartz/85">
+      <p className="mb-2 text-xs uppercase tracking-wide text-quartz/85">
         Mit csináljunk most?
       </p>
-      <p className="mb-1.5 font-mono text-[34px] font-semibold">
+      <p className="mb-1.5 text-[34px] font-semibold">
         {pad(now.h)}:{pad(now.m)}
       </p>
       <p className="text-[17px] leading-snug">{text}</p>

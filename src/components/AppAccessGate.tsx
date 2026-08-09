@@ -101,7 +101,7 @@ function PinColumn({ value, index, onChange }: { value: number; index: number; o
 
   return <button type="button" aria-label={`${index + 1}. PIN számjegy: ${value}. Húzással választható.`} onClick={() => moveBy(1)} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} onWheel={onWheel} className="relative h-[130px] flex-1 overflow-hidden rounded-[22px] border border-deep-sea/8 bg-white/55 text-center shadow-[0_8px_20px_rgba(24,50,59,.045)]">
     <span aria-hidden="true" className="absolute inset-x-0 top-[14px] text-lg font-semibold text-deep-sea/18 blur-[.65px]">{before}</span>
-    <span aria-hidden="true" className="absolute inset-x-0 top-[45px] font-display text-[47px] font-semibold leading-none tracking-[-.05em] text-deep-sea transition-transform duration-200">{value}</span>
+    <span aria-hidden="true" className="absolute inset-x-0 top-[45px] text-[47px] font-semibold leading-none tracking-[-.05em] text-deep-sea transition-transform duration-200">{value}</span>
     <span aria-hidden="true" className="absolute inset-x-0 bottom-[12px] text-lg font-semibold text-deep-sea/18 blur-[.65px]">{after}</span>
   </button>;
 }

@@ -10,7 +10,7 @@ export default function BeachesPage() {
         <p className="mb-1.5 text-[13px] font-semibold uppercase tracking-[0.08em] text-turquoise-dark">
           Hova menjünk fürdeni
         </p>
-        <h1 className="font-display text-[32px] font-semibold text-deep-sea">Strandok</h1>
+        <h1 className="text-[32px] font-semibold text-deep-sea">Strandok</h1>
       </header>
       <div className="mt-4">
         {beaches.map((place) => (

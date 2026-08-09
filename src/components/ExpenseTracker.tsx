@@ -35,7 +35,7 @@ export function ExpenseTracker() {
           <span>{todayTotal.toFixed(0)} €</span>
         </div>
         <div
-          className="mt-1 flex justify-between border-t pt-3 font-mono font-semibold"
+          className="mt-1 flex justify-between border-t pt-3 font-semibold"
           style={{ borderColor: "rgba(24,50,59,0.10)" }}
         >
           <span>Teljes kiadás</span>
@@ -62,7 +62,7 @@ export function ExpenseTracker() {
           inputMode="decimal"
           step="0.01"
           required
-          className="w-[84px] rounded-ui-s border px-2.5 py-3 font-mono text-[15px] text-deep-sea"
+          className="w-[84px] rounded-ui-s border px-2.5 py-3 text-[15px] text-deep-sea"
           style={{ borderColor: "rgba(24,50,59,0.10)" }}
         />
         <button
@@ -87,9 +87,9 @@ export function ExpenseTracker() {
               className="flex items-center justify-between border-b py-2.5 text-[14.5px]"
               style={{ borderColor: "rgba(24,50,59,0.10)" }}
             >
-              <span className="mr-2.5 font-mono text-[11px] text-neutral-700">{e.date.slice(5)}</span>
+              <span className="mr-2.5 text-[11px] text-neutral-700">{e.date.slice(5)}</span>
               <span className="flex-1">{e.name}</span>
-              <span className="mr-2.5 font-mono font-semibold">{e.amount.toFixed(2)} €</span>
+              <span className="mr-2.5 font-semibold">{e.amount.toFixed(2)} €</span>
               <button onClick={() => handleDelete(e.idx)} aria-label="Törlés" className="text-neutral-700">
                 ✕
               </button>

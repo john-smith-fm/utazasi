@@ -28,7 +28,7 @@ export function Journal() {
           .reverse()
           .map((en, i) => (
             <div key={i} className="rounded-ui-s bg-white p-3.5 shadow-sm">
-              <p className="mb-1.5 font-mono text-[11px] text-neutral-700">{fmtDate(en.date)}</p>
+              <p className="mb-1.5 text-[11px] text-neutral-700">{fmtDate(en.date)}</p>
               <p className="text-[14.5px] leading-relaxed text-deep-sea">{en.note}</p>
               {en.rating > 0 && (
                 <p className="mt-1.5 text-sm" style={{ color: "#C6A56A" }}>
@@ -41,7 +41,7 @@ export function Journal() {
       </div>
       <button
         onClick={addEntry}
-        className="mt-3 font-mono text-[13px] font-semibold text-turquoise"
+        className="mt-3 text-[13px] font-semibold text-turquoise"
       >
         + Új bejegyzés a mai napról
       </button>
