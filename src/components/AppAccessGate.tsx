@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode, TouchEvent, WheelEvent } from "react";
+import type { ChangeEvent, ReactNode, TouchEvent, WheelEvent } from "react";
 import { useEffect, useRef, useState } from "react";
 import { TabBar } from "@/components/TabBar";
 
@@ -40,21 +40,27 @@ function AccessLoadingScreen() {
 
 function PinAccessScreen({ configurationError, onUnlocked }: { configurationError: boolean; onUnlocked: () => void }) {
   const [digits, setDigits] = useState([0, 0, 0, 0]);
+  const [typedPin, setTypedPin] = useState("0000");
   const [status, setStatus] = useState<"idle" | "submitting" | "error">("idle");
   const [error, setError] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   function setDigit(index: number, value: number) {
-    setDigits((current) => current.map((digit, digitIndex) => digitIndex === index ? (value + 10) % 10 : digit));
+    setDigits((current) => {
+      const next = current.map((digit, digitIndex) => digitIndex === index ? (value + 10) % 10 : digit);
+      setTypedPin(next.join(""));
+      return next;
+    });
     setStatus("idle");
     setError("");
   }
 
-  async function submit() {
+  async function submit(pinDigits = digits) {
     if (configurationError || status === "submitting") return;
     setStatus("submitting");
     setError("");
     try {
-      const response = await fetch("/api/access/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pin: digits.join("") }) });
+      const response = await fetch("/api/access/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pin: pinDigits.join("") }) });
       if (!response.ok) {
         const data = await response.json().catch(() => null) as { error?: string } | null;
         throw new Error(data?.error ?? "Helytelen PIN.");
@@ -64,12 +70,28 @@ function PinAccessScreen({ configurationError, onUnlocked }: { configurationErro
     } catch (caught) {
       setStatus("error");
       setError(caught instanceof Error ? caught.message : "Helytelen PIN.");
+      window.requestAnimationFrame(() => {
+        inputRef.current?.focus();
+        inputRef.current?.select();
+      });
     }
+  }
+
+  function onPinInput(event: ChangeEvent<HTMLInputElement>) {
+    const nextText = event.target.value.replace(/\D/g, "").slice(0, 4);
+    const nextDigits = [0, 1, 2, 3].map((index) => Number(nextText[index] ?? 0));
+    setTypedPin(nextText);
+    setDigits(nextDigits);
+    setStatus("idle");
+    setError("");
+    if (nextText.length === 4) void submit(nextDigits);
   }
 
   return <main className="relative flex min-h-dvh flex-col overflow-hidden bg-quartz px-5 pb-[calc(30px+env(safe-area-inset-bottom))] pt-[env(safe-area-inset-top)] text-deep-sea">
     <img src="/images/utazasi-pin-logo.svg" alt="" aria-hidden="true" className="pointer-events-none absolute -left-[31vw] top-[7dvh] h-[52vw] min-h-[220px] w-[52vw] min-w-[220px] max-h-[390px] max-w-[390px]" />
     <div className="flex flex-1 flex-col justify-end pb-[14dvh]">
+      <label className="sr-only" htmlFor="utazasi-pin-input">Négyjegyű PIN-kód</label>
+      <input ref={inputRef} id="utazasi-pin-input" autoFocus disabled={configurationError || status === "submitting"} value={typedPin} onChange={onPinInput} onFocus={(event) => event.currentTarget.select()} inputMode="numeric" autoComplete="off" pattern="[0-9]*" maxLength={4} className="sr-only" />
       <div className={`mx-auto flex w-full max-w-[365px] gap-2 ${status === "error" ? "motion-safe:animate-[pin-shake_.3s_ease-in-out]" : ""}`} aria-label="Négyjegyű PIN választó">
         {digits.map((digit, index) => <PinColumn key={index} value={digit} index={index} onChange={setDigit} />)}
       </div>
