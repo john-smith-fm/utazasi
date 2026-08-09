@@ -117,7 +117,58 @@ Priority:
 
 **Acceptance:** no arbitrary URL proxy; no canonical Place or Timeline data is auto-edited; repeated checks do not create duplicate changes or pushes.
 
-## Epic 8 — 1.0 release acceptance
+## Epic 8 — UI/UX refinement package
+
+**Goal:** make the already delivered 1.0 functions feel like one calm, family
+travel companion. This is a refinement package, not a Home, Timeline, Place or
+data-flow rewrite.
+
+**Working rules:**
+
+- improve existing components in place; do not create parallel variants;
+- preserve the PIN/session, Timeline, Place and canonical-data boundaries;
+- preserve the accepted Home visual system and use its existing tokens;
+- review every small change with a production build and an iPhone preview;
+- Timeline remains linear and lightweight: this package must not turn its
+  entries into a dashboard-like card grid.
+
+### P0 — usability and shared surfaces
+
+- **PIN access:** the functional baseline is complete: persistent session,
+  offline reopening, numeric keyboard entry, automatic submission after four
+  digits, clear retry after a failed PIN and no in-app logout. A visual
+  redesign is deferred until an approved reference exists. The eventual copy
+  is `Utazási`, `Villasimius`, `2026.09.02–13.` and `Megnyitás`, rather than a
+  generic login vocabulary.
+- **Shared inputs:** audit Timeline editor, time/duration fields, the future
+  Notebook and Kérdezési input against one existing Utazási input primitive.
+  Touch targets are at least 44px high, preferably 48–52px, with restrained
+  borders, light surfaces and readable 16px input text.
+- **Notebook identity:** rename the navigation label from `Költségek` to
+  `Jegyzetfüzet` without changing the existing route, expense data or runtime
+  behaviour. Future Notes and Observations belong alongside Expenses; they are
+  not part of this rename-only change.
+
+### P1 — accepted contextual surfaces, visual review only
+
+- **Kérdezési:** the Weather Bar state transition, quick questions and the
+  single free-text input with integrated arrow are already implemented. Do not
+  reopen their behaviour or add chat UI without a new approved brief. A review
+  may only remove excess visual cues and preserve the one-card surface.
+- **Weather Bar:** current environment is the default state and Kérdezési is
+  the in-flow state. It must never use an overlay or cover the Timeline.
+- **Current Location Context:** Weather, sunrise, sunset and the location label
+  already share one location source. It is never derived from the selected
+  Timeline date. Future visual work must preserve GPS → Trip base fallback and
+  the rule that sea temperature appears only when meaningful.
+- **Icons and navigation:** audit for unnecessary or inconsistent icons while
+  preserving the established static Lucide/PWA strategy.
+
+**Acceptance:** the app reads as one product rather than a collection of
+features; no unrelated Timeline, Place, API, RLS or canonical-data regression
+is introduced.
+
+## Epic 9 — 1.0 release acceptance
 
 **Goal:** prove the companion loop on the actual iPhone PWA.
 
