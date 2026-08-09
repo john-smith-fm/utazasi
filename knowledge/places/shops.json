@@ -1,5 +1,5 @@
 {
-  "version": "1.0",
+  "version": "1.5",
   "category": "shops",
   "source_dataset": "utazasi_v2f_research_2026-08-07",
   "updated_at": "2026-08-07",
@@ -14,19 +14,162 @@
       "category": "shop",
       "subcategory": "supermarket",
       "location": {
+        "country": "Olaszország",
+        "region": "Szardínia",
         "city": "Villasimius",
         "postal_code": "09049",
-        "address": "Via Raffaello snc"
+        "address": "Via Raffaello snc",
+        "latitude": null,
+        "longitude": null
       },
       "verification": {
         "status": "verified_official",
-        "last_checked": "2026-08-07",
+        "last_checked": "2026-08-10",
         "sources": [
-          "https://www.conad.it/ricerca-negozi/conad-city-via-raffaello-snc-09049-villasimius--008952"
+          "https://www.conad.it/ricerca-negozi/conad-city-via-raffaello-snc-09049-villasimius--008952",
+          "https://www.villasimiusturismo.it/supermarket/"
         ],
         "source_refs": [
           "SH01"
         ]
+      },
+      "provenance": [
+        {
+          "source_type": "official_business",
+          "url": "https://www.conad.it/ricerca-negozi/conad-city-via-raffaello-snc-09049-villasimius--008952",
+          "supports": [
+            "address",
+            "phone",
+            "opening_hours"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "google_maps",
+          "place_id": "ChIJwxcp5JPD4BIR7132LeY5bZU",
+          "supports": [
+            "identity",
+            "address",
+            "parking",
+            "business_category"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.villasimiusturismo.it/supermarket/",
+          "supports": [
+            "identity",
+            "address",
+            "phone",
+            "supermarket_type"
+          ],
+          "checked_at": "2026-08-10"
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Exact coordinates not yet canonicalized.",
+        "Fresh bakery/fish/butcher/baby products not confirmed for this exact store.",
+        "Arrival route detour cannot be ranked until private trip-base mobility is resolved.",
+        "Legally reusable cover image missing."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-10",
+      "destination_intelligence": {
+        "google_maps": {
+          "place_id": "ChIJwxcp5JPD4BIR7132LeY5bZU",
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Conad+City%2C+Via+Raffaello%2C+Villasimius",
+          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Conad+City%2C+Via+Raffaello%2C+Villasimius&travelmode=driving"
+        },
+        "opening_hours": {
+          "timezone": "Europe/Rome",
+          "weekly": {
+            "monday": [
+              {
+                "open": "08:00",
+                "close": "21:00"
+              }
+            ],
+            "tuesday": [
+              {
+                "open": "08:00",
+                "close": "21:00"
+              }
+            ],
+            "wednesday": [
+              {
+                "open": "08:00",
+                "close": "21:00"
+              }
+            ],
+            "thursday": [
+              {
+                "open": "08:00",
+                "close": "21:00"
+              }
+            ],
+            "friday": [
+              {
+                "open": "08:00",
+                "close": "21:00"
+              }
+            ],
+            "saturday": [
+              {
+                "open": "08:00",
+                "close": "21:00"
+              }
+            ],
+            "sunday": [
+              {
+                "open": "08:30",
+                "close": "21:00"
+              }
+            ]
+          },
+          "seasonal_or_exception_note": "Recheck shortly before travel."
+        },
+        "contact": {
+          "phone": "+39 070 7928024",
+          "website": "https://www.conad.it/ricerca-negozi/conad-city-via-raffaello-snc-09049-villasimius--008952"
+        },
+        "services": null,
+        "shopping": {
+          "profiles": [
+            "arrival_shopping",
+            "daily_groceries",
+            "quick_stop"
+          ],
+          "inventory": {
+            "fresh_bakery": "unknown",
+            "fresh_fruit": "unknown",
+            "fresh_fish": "unknown",
+            "butcher": "unknown",
+            "gastronomy": "unknown",
+            "baby_products": "unknown",
+            "wine": "confirmed",
+            "local_products": "unknown"
+          },
+          "family": {
+            "easy_with_stroller": "unknown",
+            "parking": "confirmed",
+            "insight": "Hosszú napi nyitvatartása és saját parkolója miatt erős általános bevásárlási jelölt; a pontos frissáru- és babatermék-kínálatot nem tekintjük bizonyítottnak.",
+            "confidence": "medium"
+          }
+        }
+      },
+      "google_maps": {
+        "place_id": "ChIJwxcp5JPD4BIR7132LeY5bZU",
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Conad+City%2C+Via+Raffaello%2C+Villasimius",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Conad+City%2C+Via+Raffaello%2C+Villasimius&travelmode=driving"
       }
     },
     {
@@ -36,19 +179,156 @@
       "category": "shop",
       "subcategory": "supermarket",
       "location": {
+        "country": "Olaszország",
+        "region": "Szardínia",
         "city": "Villasimius",
         "postal_code": "09049",
-        "address": "Via Carducci snc"
+        "address": "Via Carducci snc",
+        "latitude": null,
+        "longitude": null
       },
       "verification": {
         "status": "verified_official",
-        "last_checked": "2026-08-07",
+        "last_checked": "2026-08-10",
         "sources": [
-          "https://www.eurospin.it/punti-vendita/villasimius-via-carducci/"
+          "https://www.eurospin.it/punti-vendita/villasimius-via-carducci/",
+          "https://www.villasimiusturismo.it/supermarket/"
         ],
         "source_refs": [
           "SH02"
         ]
+      },
+      "provenance": [
+        {
+          "source_type": "official_business",
+          "url": "https://www.eurospin.it/punti-vendita/villasimius-via-carducci/",
+          "supports": [
+            "address",
+            "opening_hours",
+            "parking",
+            "accessibility",
+            "departments",
+            "services"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.villasimiusturismo.it/supermarket/",
+          "supports": [
+            "identity",
+            "address",
+            "phone"
+          ],
+          "checked_at": "2026-08-10"
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "complete",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Exact coordinates / Google Place ID not yet canonicalized.",
+        "Fresh fish, baby products, wine and local-products availability not confirmed.",
+        "Arrival route detour cannot be ranked until private trip-base mobility is resolved.",
+        "Legally reusable cover image missing."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-10",
+      "destination_intelligence": {
+        "google_maps": {
+          "place_id": null,
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Eurospin+Via+Carducci+Villasimius",
+          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Eurospin+Via+Carducci+Villasimius&travelmode=driving",
+          "match_status": "search_query_link"
+        },
+        "opening_hours": {
+          "timezone": "Europe/Rome",
+          "weekly": {
+            "monday": [
+              {
+                "open": "08:30",
+                "close": "20:00"
+              }
+            ],
+            "tuesday": [
+              {
+                "open": "08:30",
+                "close": "20:00"
+              }
+            ],
+            "wednesday": [
+              {
+                "open": "08:30",
+                "close": "20:00"
+              }
+            ],
+            "thursday": [
+              {
+                "open": "08:30",
+                "close": "20:00"
+              }
+            ],
+            "friday": [
+              {
+                "open": "08:30",
+                "close": "20:30"
+              }
+            ],
+            "saturday": [
+              {
+                "open": "08:30",
+                "close": "20:00"
+              }
+            ],
+            "sunday": [
+              {
+                "open": "08:30",
+                "close": "13:30"
+              }
+            ]
+          },
+          "seasonal_or_exception_note": "Current official store page; recheck close to travel."
+        },
+        "contact": null,
+        "services": [
+          "parking",
+          "bancomat",
+          "air_conditioning",
+          "barrier_free"
+        ],
+        "shopping": {
+          "profiles": [
+            "arrival_shopping",
+            "daily_groceries"
+          ],
+          "inventory": {
+            "fresh_bakery": "partial",
+            "fresh_fruit": "confirmed",
+            "fresh_fish": "unknown",
+            "butcher": "confirmed",
+            "gastronomy": "confirmed",
+            "baby_products": "unknown",
+            "wine": "unknown",
+            "local_products": "unknown"
+          },
+          "family": {
+            "easy_with_stroller": "partial",
+            "parking": "confirmed",
+            "insight": "Parkolóval, akadálymentes hozzáféréssel, zöldség-gyümölcs, hentes és gasztronómia részleggel dokumentált nagybevásárlási jelölt. A CRAI-nál rövidebb nyitvatartás miatt késői érkezésnél gyengébb.",
+            "confidence": "high"
+          }
+        }
+      },
+      "google_maps": {
+        "place_id": null,
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Eurospin+Via+Carducci+Villasimius",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Eurospin+Via+Carducci+Villasimius&travelmode=driving",
+        "match_status": "search_query_link"
       }
     },
     {
@@ -213,6 +493,480 @@
           "SH09"
         ],
         "uncertainty_note": "A pontos házszám források között eltér; ezért ebben a csomagban nincs rögzítve."
+      }
+    },
+    {
+      "id": "place_shop_market_simius_crai",
+      "slug": "market-simius-crai",
+      "name": "Market Simius — CRAI",
+      "category": "shop",
+      "location": {
+        "country": "Olaszország",
+        "region": "Szardínia",
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via del Mare 90-92-94",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": "2026-08-10",
+        "sources": [
+          "https://crai.it/negozi-e-volantini/5187-crai-via-del-mare-90-92-94-villasimius",
+          "https://www.villasimiusturismo.it/supermarket/"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "official_business",
+          "url": "https://crai.it/negozi-e-volantini/5187-crai-via-del-mare-90-92-94-villasimius",
+          "supports": [
+            "address",
+            "contact",
+            "opening_hours",
+            "parking",
+            "departments",
+            "services"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.villasimiusturismo.it/supermarket/",
+          "supports": [
+            "identity",
+            "address",
+            "phone"
+          ],
+          "checked_at": "2026-08-10"
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "complete",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Exact coordinates / Google Place ID not yet canonicalized.",
+        "Baby products not confirmed.",
+        "Arrival route detour cannot be ranked until private trip-base mobility is resolved.",
+        "Legally reusable cover image missing."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-10",
+      "destination_intelligence": {
+        "google_maps": {
+          "place_id": null,
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=CRAI+Via+del+Mare+90-92-94+Villasimius",
+          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=CRAI+Via+del+Mare+90-92-94+Villasimius&travelmode=driving",
+          "match_status": "search_query_link"
+        },
+        "opening_hours": {
+          "timezone": "Europe/Rome",
+          "weekly": {
+            "monday": [
+              {
+                "open": "08:00",
+                "close": "23:45"
+              }
+            ],
+            "tuesday": [
+              {
+                "open": "08:00",
+                "close": "23:45"
+              }
+            ],
+            "wednesday": [
+              {
+                "open": "08:00",
+                "close": "23:45"
+              }
+            ],
+            "thursday": [
+              {
+                "open": "08:00",
+                "close": "23:45"
+              }
+            ],
+            "friday": [
+              {
+                "open": "08:00",
+                "close": "23:45"
+              }
+            ],
+            "saturday": [
+              {
+                "open": "08:00",
+                "close": "23:45"
+              }
+            ],
+            "sunday": [
+              {
+                "open": "08:00",
+                "close": "23:45"
+              }
+            ]
+          },
+          "seasonal_or_exception_note": "Current official store page; recheck close to travel."
+        },
+        "contact": {
+          "phone": "+39 070 790350",
+          "email": "006584@pdv.craisardegna.com",
+          "website": "https://crai.it/negozi-e-volantini/5187-crai-via-del-mare-90-92-94-villasimius"
+        },
+        "services": [
+          "parking",
+          "bancomat",
+          "credit_card",
+          "meal_vouchers",
+          "home_delivery"
+        ],
+        "shopping": {
+          "profiles": [
+            "arrival_shopping",
+            "daily_groceries",
+            "quick_stop",
+            "fresh_food"
+          ],
+          "inventory": {
+            "fresh_bakery": "confirmed",
+            "fresh_fruit": "confirmed",
+            "fresh_fish": "confirmed",
+            "butcher": "confirmed",
+            "gastronomy": "confirmed",
+            "baby_products": "unknown",
+            "wine": "partial",
+            "local_products": "unknown"
+          },
+          "family": {
+            "easy_with_stroller": "unknown",
+            "parking": "confirmed",
+            "insight": "A legerősebben dokumentált teljes körű frissáru-jelölt: parkoló, pékség, hal, hús, zöldség-gyümölcs és gasztronómia egy helyen; a 23:45-ig jelzett nyitvatartás különösen praktikus érkezési napon.",
+            "confidence": "high"
+          }
+        }
+      },
+      "google_maps": {
+        "place_id": null,
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=CRAI+Via+del+Mare+90-92-94+Villasimius",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=CRAI+Via+del+Mare+90-92-94+Villasimius&travelmode=driving",
+        "match_status": "search_query_link"
+      }
+    },
+    {
+      "id": "place_shop_supermercati_isa_villasimius",
+      "slug": "supermercati-isa-villasimius",
+      "name": "Supermercati ISA / Market Patrizia",
+      "category": "shop",
+      "location": {
+        "country": "Olaszország",
+        "region": "Szardínia",
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via del Mare 116",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": "2026-08-10",
+        "sources": [
+          "https://www.gruppovege.it/it/punti-vendita/supermercati-isa-villasimius-via-del-mare--116-n1g",
+          "https://www.gruppoisa.com/nonnaisa.php",
+          "https://www.villasimiusturismo.it/supermarket/"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "official_retail_network",
+          "url": "https://www.gruppovege.it/it/punti-vendita/supermercati-isa-villasimius-via-del-mare--116-n1g",
+          "supports": [
+            "identity",
+            "address"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "official_brand",
+          "url": "https://www.gruppoisa.com/nonnaisa.php",
+          "supports": [
+            "chain_local_products_positioning"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.villasimiusturismo.it/supermarket/",
+          "supports": [
+            "same_address_local_food_shop_context"
+          ],
+          "checked_at": "2026-08-10"
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Current opening hours not confirmed from a primary store-specific source.",
+        "Parking/accessibility not confirmed.",
+        "Exact local-product inventory not confirmed.",
+        "Legally reusable cover image missing."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-10",
+      "destination_intelligence": {
+        "google_maps": {
+          "place_id": null,
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Supermercati+ISA+Via+del+Mare+116+Villasimius",
+          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Supermercati+ISA+Via+del+Mare+116+Villasimius&travelmode=driving",
+          "match_status": "search_query_link"
+        },
+        "opening_hours": null,
+        "contact": {
+          "phone": "+39 346 1344193",
+          "website": "https://www.gruppovege.it/it/punti-vendita/supermercati-isa-villasimius-via-del-mare--116-n1g"
+        },
+        "services": null,
+        "shopping": {
+          "profiles": [
+            "daily_groceries",
+            "quick_stop",
+            "local_products"
+          ],
+          "inventory": {
+            "fresh_bakery": "unknown",
+            "fresh_fruit": "unknown",
+            "fresh_fish": "unknown",
+            "butcher": "unknown",
+            "gastronomy": "unknown",
+            "baby_products": "unknown",
+            "wine": "unknown",
+            "local_products": "partial"
+          },
+          "family": {
+            "easy_with_stroller": "unknown",
+            "parking": "unknown",
+            "insight": "A szardíniai ISA/Nonna Isa hálózat helyi termékprofilja miatt releváns local-products jelölt, de az exact üzlet kínálatát nem tekintjük automatikusan megerősítettnek.",
+            "confidence": "medium"
+          }
+        }
+      },
+      "google_maps": {
+        "place_id": null,
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Supermercati+ISA+Via+del+Mare+116+Villasimius",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Supermercati+ISA+Via+del+Mare+116+Villasimius&travelmode=driving",
+        "match_status": "search_query_link"
+      }
+    },
+    {
+      "id": "place_shop_mio_market_villasimius",
+      "slug": "mio-market-villasimius",
+      "name": "Mio Market di Cogoni Luigia",
+      "category": "shop",
+      "location": {
+        "country": "Olaszország",
+        "region": "Szardínia",
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via Quinto Pitzalis 37",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": "2026-08-10",
+        "sources": [
+          "https://www.villasimiusturismo.it/supermarket/",
+          "https://mapy.com/it/?id=1284543286&source=osm"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.villasimiusturismo.it/supermarket/",
+          "supports": [
+            "identity",
+            "address",
+            "phone",
+            "butcher",
+            "rosticceria",
+            "salumeria"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "open_map",
+          "url": "https://mapy.com/it/?id=1284543286&source=osm",
+          "supports": [
+            "identity",
+            "address"
+          ],
+          "checked_at": "2026-08-10"
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Opening hours not confirmed.",
+        "Parking/accessibility not confirmed.",
+        "Fresh bakery/fish/baby/local-product inventory not confirmed.",
+        "Legally reusable cover image missing."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-10",
+      "destination_intelligence": {
+        "google_maps": {
+          "place_id": null,
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Mio+Market+Via+Quinto+Pitzalis+37+Villasimius",
+          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Mio+Market+Via+Quinto+Pitzalis+37+Villasimius&travelmode=driving",
+          "match_status": "search_query_link"
+        },
+        "opening_hours": null,
+        "contact": {
+          "phone": [
+            "+39 070 791490",
+            "+39 331 5917947"
+          ],
+          "website": null
+        },
+        "services": null,
+        "shopping": {
+          "profiles": [
+            "daily_groceries",
+            "quick_stop",
+            "fresh_food"
+          ],
+          "inventory": {
+            "fresh_bakery": "unknown",
+            "fresh_fruit": "unknown",
+            "fresh_fish": "unknown",
+            "butcher": "confirmed",
+            "gastronomy": "confirmed",
+            "baby_products": "unknown",
+            "wine": "unknown",
+            "local_products": "unknown"
+          },
+          "family": {
+            "easy_with_stroller": "unknown",
+            "parking": "unknown",
+            "insight": "Kisebb alimentari jellegű bolt, amelyet a hivatalos turisztikai oldal hentes-, rosticceria- és salumeria-kínálattal sorol fel; gyors napi bevásárlási alternatíva lehet.",
+            "confidence": "medium"
+          }
+        }
+      },
+      "google_maps": {
+        "place_id": null,
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Mio+Market+Via+Quinto+Pitzalis+37+Villasimius",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Mio+Market+Via+Quinto+Pitzalis+37+Villasimius&travelmode=driving",
+        "match_status": "search_query_link"
+      }
+    },
+    {
+      "id": "place_shop_market_spiaggia_del_riso",
+      "slug": "market-spiaggia-del-riso",
+      "name": "Market Spiaggia del Riso",
+      "category": "shop",
+      "location": {
+        "country": "Olaszország",
+        "region": "Szardínia",
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via degli Aranci",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": "2026-08-10",
+        "sources": [
+          "https://www.villasimiusturismo.it/supermarket/"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.villasimiusturismo.it/supermarket/",
+          "supports": [
+            "identity",
+            "address",
+            "phone",
+            "market_type"
+          ],
+          "checked_at": "2026-08-10"
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Opening hours not confirmed.",
+        "Parking/accessibility not confirmed.",
+        "Inventory not confirmed.",
+        "Legally reusable cover image missing."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-10",
+      "destination_intelligence": {
+        "google_maps": {
+          "place_id": null,
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Market+Spiaggia+del+Riso+Villasimius",
+          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Market+Spiaggia+del+Riso+Villasimius&travelmode=driving",
+          "match_status": "search_query_link"
+        },
+        "opening_hours": null,
+        "contact": {
+          "phone": "+39 070 791052",
+          "website": null
+        },
+        "services": null,
+        "shopping": {
+          "profiles": [
+            "quick_stop",
+            "beach_stop"
+          ],
+          "inventory": {
+            "fresh_bakery": "unknown",
+            "fresh_fruit": "unknown",
+            "fresh_fish": "unknown",
+            "butcher": "unknown",
+            "gastronomy": "unknown",
+            "baby_products": "unknown",
+            "wine": "unknown",
+            "local_products": "unknown"
+          },
+          "family": {
+            "easy_with_stroller": "unknown",
+            "parking": "unknown",
+            "insight": "Elhelyezkedése miatt strand/kikötő környéki gyors megállásra releváns jelölt; kínálati és nyitvatartási profilja még alacsony coverage-ű.",
+            "confidence": "low"
+          }
+        }
+      },
+      "google_maps": {
+        "place_id": null,
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Market+Spiaggia+del+Riso+Villasimius",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Market+Spiaggia+del+Riso+Villasimius&travelmode=driving",
+        "match_status": "search_query_link"
       }
     }
   ]

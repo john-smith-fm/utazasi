@@ -1,0 +1,150 @@
+{
+  "version": "1.0",
+  "scope": "SI-1 Villasimius",
+  "principle": "Shopping Intelligence is a category-specific interpretation layer over Place records, not a separate Shop entity.",
+  "status_values": [
+    "confirmed",
+    "partial",
+    "unknown"
+  ],
+  "profiles": [
+    "arrival_shopping",
+    "daily_groceries",
+    "quick_stop",
+    "beach_stop",
+    "fresh_food",
+    "baby_products",
+    "local_products"
+  ],
+  "decision_support": {
+    "arrival_shopping": {
+      "status": "provisional_pending_trip_base_mobility",
+      "question": "Hova menjünk az érkezés után nagybevásárolni?",
+      "ranked_candidates": [
+        {
+          "rank": 1,
+          "place_slug": "market-simius-crai",
+          "confidence": "high",
+          "reason": "Parkoló + teljes frissáru-részlegek + gasztronómia + minden nap 08:00–23:45 a jelenlegi hivatalos oldal szerint.",
+          "caveat": "Airport → store → trip-base kerülő még nincs kiszámítva."
+        },
+        {
+          "rank": 2,
+          "place_slug": "eurospin-villasimius",
+          "confidence": "high",
+          "reason": "Parkoló, akadálymentesség, zöldség-gyümölcs, hentes és gasztronómia dokumentált; jó nagybevásárlási jelölt.",
+          "caveat": "Rövidebb nyitvatartás; útvonal-kerülő még nincs ellenőrizve."
+        },
+        {
+          "rank": 3,
+          "place_slug": "conad-city-villasimius",
+          "confidence": "medium",
+          "reason": "Hosszú napi nyitvatartás és parkoló; stabil teljes szupermarket-alternatíva.",
+          "caveat": "Az exact üzlet részlegkínálata kevésbé dokumentált, mint a CRAI/Eurospin esetén; útvonal-kerülő hiányzik."
+        }
+      ]
+    },
+    "daily_groceries": {
+      "question": "Hova ugorjunk be a napi bevásárlásért?",
+      "ranked_candidates": [
+        {
+          "rank": 1,
+          "place_slug": "market-simius-crai",
+          "confidence": "high",
+          "reason": "Nagyon hosszú nyitvatartás és széles megerősített frissáru-kínálat."
+        },
+        {
+          "rank": 2,
+          "place_slug": "conad-city-villasimius",
+          "confidence": "medium",
+          "reason": "08:00/08:30–21:00 nyitvatartás, stabil supermarket."
+        },
+        {
+          "rank": 3,
+          "place_slug": "mio-market-villasimius",
+          "confidence": "medium",
+          "reason": "Kisebb alimentari, megerősített hentes/rosticceria/salumeria profil; quick-stop jellegű alternatíva."
+        }
+      ]
+    },
+    "quick_stop": {
+      "question": "Hova ugorjak be gyorsan alapélelmiszerért?",
+      "status": "provisional_without_live_distance",
+      "candidates": [
+        {
+          "place_slug": "mio-market-villasimius",
+          "confidence": "medium"
+        },
+        {
+          "place_slug": "conad-city-villasimius",
+          "confidence": "medium"
+        },
+        {
+          "place_slug": "market-spiaggia-del-riso",
+          "confidence": "low"
+        }
+      ],
+      "note": "A végleges sorrend hely- és route-függő; a jelenlegi lista üzlettípus és nyitvatartás alapján készült."
+    },
+    "fresh_food": {
+      "question": "Hol a legerősebben dokumentált a frissáru?",
+      "ranked_candidates": [
+        {
+          "rank": 1,
+          "place_slug": "market-simius-crai",
+          "confidence": "high",
+          "confirmed": [
+            "fresh_bakery",
+            "fresh_fruit",
+            "fresh_fish",
+            "butcher",
+            "gastronomy"
+          ]
+        },
+        {
+          "rank": 2,
+          "place_slug": "eurospin-villasimius",
+          "confidence": "high",
+          "confirmed": [
+            "fresh_fruit",
+            "butcher",
+            "gastronomy"
+          ],
+          "partial": [
+            "fresh_bakery"
+          ]
+        },
+        {
+          "rank": 3,
+          "place_slug": "mio-market-villasimius",
+          "confidence": "medium",
+          "confirmed": [
+            "butcher",
+            "gastronomy"
+          ]
+        }
+      ]
+    },
+    "local_products": {
+      "question": "Hol keressünk helyi szardíniai termékeket?",
+      "status": "partial",
+      "candidates": [
+        {
+          "place_slug": "supermercati-isa-villasimius",
+          "confidence": "medium",
+          "reason": "Az ISA/Nonna Isa hálózat hivatalos márkapozicionálása erősen szardíniai és helyi specialitás-központú, de az exact Villasimius-üzlet készlete nincs megerősítve."
+        }
+      ]
+    },
+    "baby_products": {
+      "question": "Hol vegyünk pelenkát/babaterméket?",
+      "status": "unknown",
+      "candidates": [],
+      "note": "SI-1-ben egyetlen konkrét Villasimius-üzlet baby-product készletét sem sikerült megbízhatóan megerősíteni. Unknown marad, nem false."
+    }
+  },
+  "mobility_gaps": [
+    "Cagliari Airport → candidate store → trip-base detour for arrival shopping",
+    "trip-base → candidate store routes for quick-stop ranking"
+  ]
+}

@@ -21,11 +21,13 @@ const projectRoot = resolve(import.meta.dirname, "..");
 const sourceRoot = resolve(packageRoot);
 const sourceFile = join(sourceRoot, "compatibility", "canonical_places.json");
 const evidenceFile = join(sourceRoot, "compatibility", "mobility_research_evidence.json");
+const shoppingIntelligenceFile = join(sourceRoot, "shopping_intelligence.json");
 
 const typeFiles = {
   beach: "beaches.json",
   sight: "sights.json",
   other: "other.json",
+  shop: "shops.json",
 };
 
 function canonicalId(type, slug) {
@@ -109,5 +111,15 @@ await writeFile(
   join(projectRoot, "knowledge", "mobility", "research-evidence.json"),
   `${JSON.stringify(evidence, null, 2)}\n`,
 );
+
+try {
+  const shoppingIntelligence = JSON.parse(await readFile(shoppingIntelligenceFile, "utf8"));
+  await writeFile(
+    join(projectRoot, "knowledge", "shopping-intelligence.json"),
+    `${JSON.stringify(shoppingIntelligence, null, 2)}\n`,
+  );
+} catch (error) {
+  if (error?.code !== "ENOENT") throw error;
+}
 
 console.log(`Imported ${source.places.length} P0 Place records; no partial route was added to routes.json.`);
