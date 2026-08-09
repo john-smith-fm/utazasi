@@ -14,6 +14,11 @@ export type PlaceProvenance = {
   uncertaintyNote?: string;
 };
 
+export type PlaceNavigation = {
+  mapsUrl?: string;
+  directionsUrl?: string;
+};
+
 export type BeachAccess = {
   characteristics?: string[];
   serpentineRoad?: boolean;
@@ -54,6 +59,7 @@ export type Place = {
   description?: string;
   media?: { src: string; attribution?: string }[];
   provenance?: PlaceProvenance;
+  navigation?: PlaceNavigation;
   details: BeachDetails | RestaurantDetails | GenericPlaceDetails;
 };
 

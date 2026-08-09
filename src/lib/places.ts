@@ -29,6 +29,13 @@ function optionalNumber(value: unknown) {
   return typeof value === "number" && Number.isFinite(value) ? value : undefined;
 }
 
+function optionalNavigation(value: unknown) {
+  if (!isRecord(value)) return undefined;
+  const mapsUrl = optionalString(value.maps_url);
+  const directionsUrl = optionalString(value.directions_url);
+  return mapsUrl || directionsUrl ? { mapsUrl, directionsUrl } : undefined;
+}
+
 function validateBeaches(source: unknown): BeachPlace[] {
   if (!isRecord(source) || !Array.isArray(source.places)) throw new Error("Érvénytelen kanonikus beach adatfájl.");
   const slugs = new Set<string>();
@@ -91,6 +98,7 @@ function validateRestaurants(source: unknown): RestaurantPlace[] {
       name,
       type: "restaurant",
       location,
+      navigation: optionalNavigation(raw.google_maps),
       provenance: verification ? {
         sourceUrls: optionalStringArray(verification.sources),
         reviewedAt: optionalString(verification.last_checked),
@@ -135,6 +143,7 @@ function validateGenericPlaces(source: unknown, type: GenericPlaceType, category
       name,
       type,
       location,
+      navigation: optionalNavigation(raw.google_maps),
       provenance: verification ? {
         sourceUrls: optionalStringArray(verification.sources),
         reviewedAt: optionalString(verification.last_checked),

@@ -57,7 +57,8 @@ function RestaurantDetails({ place }: { place: Place }) {
 export function PlaceDetail({ place }: { place: Place }) {
   const primaryImage = place.media?.[0];
   const hasCoordinates = place.location?.latitude !== undefined && place.location?.longitude !== undefined;
-  const navigationHref = hasCoordinates ? `https://www.google.com/maps/dir/?api=1&destination=${place.location!.latitude},${place.location!.longitude}` : undefined;
+  const navigationHref = place.navigation?.directionsUrl
+    ?? (hasCoordinates ? `https://www.google.com/maps/dir/?api=1&destination=${place.location!.latitude},${place.location!.longitude}` : undefined);
 
   return <article>
     <header>
