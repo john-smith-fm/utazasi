@@ -13,6 +13,7 @@ import { TRIP_CORE_DAYS } from "@/data/trip-core";
 import { useTimelineDay } from "@/hooks/useTimelineDay";
 import { useLiveData } from "@/hooks/useLiveData";
 import { useEventWatch } from "@/hooks/useEventWatch";
+import { useTripEvents } from "@/hooks/useTripEvents";
 import { createTimelineActivity, deleteTimelineActivity, updateTimelineActivity } from "@/lib/timeline-client";
 import type { TimelineActivityInput, TimelineActivityRecord } from "@/lib/timeline-types";
 import { smartStatusSummary } from "@/lib/smart-status";
@@ -58,6 +59,7 @@ export default function HomePage() {
   const { day, status, canWrite, retry } = useTimelineDay(selectedDate, fallbackDay);
   const { weather, sea } = useLiveData(selectedDate);
   const watchChange = useEventWatch();
+  const events = useTripEvents(selectedDate);
   const canMutate = canWrite;
   const statusSummary = smartStatusSummary(day, weather, watchChange);
 
@@ -129,7 +131,7 @@ export default function HomePage() {
   return <>
     <Hero />
     <main className="relative z-10 mx-auto -mt-7 max-w-[430px]">
-      <div className="px-5"><StatRow weather={weather} sea={sea} day={day} /></div>
+      <div className="px-5"><StatRow weather={weather} sea={sea} day={day} events={events} /></div>
       <SunCard weather={weather} />
       <div className="px-5">
         <TimelineCard day={day} days={TRIP_CORE_DAYS} summary={statusSummary} onSelect={setSelectedDate} />

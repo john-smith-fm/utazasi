@@ -3,14 +3,33 @@
 import { useMemo, useState, type FormEvent } from "react";
 import type { HomeDay } from "@/data/home-days";
 import type { WeatherSnapshot } from "@/types";
+import type { TripEvent } from "@/lib/event-types";
 import { Icon } from "./Icon";
 
 const EXAMPLES = ["Melyik strandot válasszuk?", "Mi fér még bele délután?", "Hova menjünk gyerekkel?"] as const;
 type Answer = { title: string; body: string; sources: string[] };
 
-function answerFor(question: string, day: HomeDay, weather: WeatherSnapshot | null): Answer {
+function eventAnswer(question: string, events: TripEvent[]): Answer | null {
+  const normalized = question.toLocaleLowerCase("hu-HU");
+  const asksAdmission = /belépő|belepo|jegy|ár|ar/.test(normalized);
+  const asksFireworks = /tűzijáték|tuzijatek/.test(normalized);
+  const asksEventTime = /mikor|kezd|este|fesztivál|fesztival|esemény|esemeny/.test(normalized);
+  if (!asksAdmission && !asksFireworks && !asksEventTime) return null;
+  if (asksFireworks && !events.some((event) => /tűzijáték|tuzijatek/i.test(event.title))) return { title: "Nincs megerősített tűzijáték", body: "A kiválasztott naphoz nincs ellenőrzött tűzijáték-esemény rögzítve. Nem állítok időpontot vagy helyszínt forrás nélkül.", sources: ["Event"] };
+  if (asksAdmission) return { title: "A belépőről nincs biztos adat", body: "A jelenlegi ellenőrzött Place- és Event-adatok nem tartalmaznak megbízható belépő- vagy jegyár-információt ehhez a kérdéshez. Nem találgatok.", sources: ["Place", "Event"] };
+  const event = events[0];
+  if (!event) return { title: "Nincs rögzített esemény", body: "A kiválasztott naphoz jelenleg nincs ellenőrzött, külső esemény rögzítve.", sources: ["Event"] };
+  if (event.status === "cancelled") return { title: `${event.title} · törölve`, body: "Az esemény törölt állapotban van. Indulás előtt az eredeti szervezői forrást is ellenőrizd.", sources: ["Event"] };
+  const spansWholeDay = Boolean(event.endsAt && new Date(event.startsAt).toDateString() !== new Date(event.endsAt).toDateString());
+  if (spansWholeDay) return { title: event.title, body: "Az esemény a kiválasztott napot lefedi, de a részletes esti kezdési idő nincs ellenőrzött adatként rögzítve.", sources: ["Event"] };
+  return { title: event.title, body: `Kezdés: ${new Intl.DateTimeFormat("hu-HU", { timeZone: "Europe/Rome", hour: "2-digit", minute: "2-digit" }).format(new Date(event.startsAt))}.`, sources: ["Event"] };
+}
+
+function answerFor(question: string, day: HomeDay, weather: WeatherSnapshot | null, events: TripEvent[]): Answer {
   const normalized = question.toLocaleLowerCase("hu-HU");
   const afternoon = day.activities.filter((activity) => /^1[2-9]:|^2[0-3]:/.test(activity.time));
+  const eventResult = eventAnswer(question, events);
+  if (eventResult) return eventResult;
 
   if (normalized.includes("strand")) {
     const plannedBeach = day.activities.find((activity) => /strand/i.test(`${activity.title} ${activity.place}`));
@@ -34,10 +53,10 @@ function answerFor(question: string, day: HomeDay, weather: WeatherSnapshot | nu
 }
 
 /** Inline content for the Weather Bar's Kérdezési state — never a modal or sheet. */
-export function QuestionSheet({ day, weather }: { day: HomeDay; weather: WeatherSnapshot | null }) {
+export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; weather: WeatherSnapshot | null; events?: TripEvent[] }) {
   const [question, setQuestion] = useState<string | null>(null);
   const [customQuestion, setCustomQuestion] = useState("");
-  const answer = useMemo(() => question ? answerFor(question, day, weather) : null, [day, question, weather]);
+  const answer = useMemo(() => question ? answerFor(question, day, weather, events) : null, [day, events, question, weather]);
 
   function submitCustomQuestion(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
