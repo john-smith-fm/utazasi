@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { enableWatchNotifications } from "@/lib/push-client";
+import { enableWatchNotifications, syncExistingWatchSubscription } from "@/lib/push-client";
 
 type State = "ready" | "enabled" | "denied" | "unsupported" | "error";
 
@@ -21,9 +21,8 @@ export function NotificationPreference() {
       return;
     }
     if (Notification.permission !== "granted") return;
-    void navigator.serviceWorker.ready
-      .then((registration) => registration.pushManager.getSubscription())
-      .then((subscription) => setState(subscription ? "enabled" : "ready"))
+    void syncExistingWatchSubscription()
+      .then((synced) => setState(synced ? "enabled" : "ready"))
       .catch(() => setState("ready"));
   }, [configured]);
 
