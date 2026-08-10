@@ -3,7 +3,11 @@ import "server-only";
 import webpush from "web-push";
 import { timelineServerClient } from "@/lib/timeline-service";
 
-type PendingChange = { id: string; change_kind: "status_changed" | "start_time_changed" | "venue_changed"; events: { title: string } | { title: string }[] | null };
+type PendingChange = {
+  id: string;
+  change_kind: "status_changed" | "start_time_changed" | "venue_changed";
+  events: { title: string; starts_at: string } | { title: string; starts_at: string }[] | null;
+};
 
 function configured() {
   const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
@@ -22,6 +26,19 @@ function notificationBody(change: PendingChange) {
   return `${name}: a helyszín módosult.`;
 }
 
+function notificationUrl(change: PendingChange) {
+  const event = Array.isArray(change.events) ? change.events[0] : change.events;
+  if (!event?.starts_at) return "/";
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Rome",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date(event.starts_at));
+  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  return values.year && values.month && values.day ? `/?day=${values.year}-${values.month}-${values.day}` : "/";
+}
+
 /**
  * Delivers only material, already-recorded changes. A failed endpoint is
  * revoked; the Timeline and canonical knowledge are never touched.
@@ -31,7 +48,7 @@ export async function dispatchPendingWatchNotifications() {
   const supabase = timelineServerClient();
   const { data: changes, error: changesError } = await supabase
     .from("event_change_log")
-    .select("id, change_kind, events!inner(title)")
+    .select("id, change_kind, events!inner(title, starts_at)")
     .is("notified_at", null)
     .order("observed_at", { ascending: true })
     .limit(5);
@@ -51,7 +68,7 @@ export async function dispatchPendingWatchNotifications() {
     if (subscriptionsError) throw subscriptionsError;
 
     let delivered = false;
-    const payload = JSON.stringify({ title: "Utazási", body: notificationBody(change), url: "/" });
+    const payload = JSON.stringify({ title: "Utazási", body: notificationBody(change), url: notificationUrl(change) });
     for (const subscription of subscriptions ?? []) {
       try {
         await webpush.sendNotification(subscription.subscription as unknown as webpush.PushSubscription, payload, { TTL: 60 * 60 * 6, urgency: "high" });

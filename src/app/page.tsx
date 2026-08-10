@@ -68,6 +68,13 @@ export default function HomePage() {
   const canMutate = canWrite;
   const statusSummary = smartStatusSummary(day, weather, watchChange);
 
+  useEffect(() => {
+    const requestedDate = new URLSearchParams(window.location.search).get("day");
+    if (requestedDate && TRIP_CORE_DAYS.some((item) => item.date === requestedDate)) {
+      setSelectedDate(requestedDate);
+    }
+  }, []);
+
   useEffect(() => () => {
     if (undoTimer.current) window.clearTimeout(undoTimer.current);
     if (feedbackTimer.current) window.clearTimeout(feedbackTimer.current);

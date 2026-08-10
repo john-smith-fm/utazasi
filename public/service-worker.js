@@ -6,7 +6,7 @@
      azokat a kliens (useLiveData / lib/weather.ts) localStorage-ben cache-eli
    ============================================================ */
 
-const CACHE_NAME = "utazasi-v5";
+const CACHE_NAME = "utazasi-v6";
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
@@ -80,6 +80,7 @@ self.addEventListener("notificationclick", (event) => {
   const target = new URL(event.notification.data?.url || "/", self.location.origin).href;
   event.waitUntil(clients.matchAll({ type: "window", includeUncontrolled: true }).then((windows) => {
     const existing = windows.find((windowClient) => windowClient.url.startsWith(self.location.origin));
-    return existing ? existing.focus() : clients.openWindow(target);
+    if (!existing) return clients.openWindow(target);
+    return existing.navigate(target).then((windowClient) => windowClient?.focus());
   }));
 });
