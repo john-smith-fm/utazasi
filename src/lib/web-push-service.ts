@@ -6,7 +6,14 @@ import { timelineServerClient } from "@/lib/timeline-service";
 type PendingChange = {
   id: string;
   change_kind: "status_changed" | "start_time_changed" | "venue_changed";
-  events: { title: string; starts_at: string } | { title: string; starts_at: string }[] | null;
+  events: WatchEvent | WatchEvent[] | null;
+};
+
+type WatchEvent = {
+  title: string;
+  starts_at: string;
+  ends_at: string | null;
+  trips: { start_date: string | null; end_date: string | null } | { start_date: string | null; end_date: string | null }[] | null;
 };
 
 function configured() {
@@ -26,17 +33,29 @@ function notificationBody(change: PendingChange) {
   return `${name}: a helyszín módosult.`;
 }
 
-function notificationUrl(change: PendingChange) {
-  const event = Array.isArray(change.events) ? change.events[0] : change.events;
-  if (!event?.starts_at) return "/";
+function romeDate(value: string) {
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Europe/Rome",
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
-  }).formatToParts(new Date(event.starts_at));
+  }).formatToParts(new Date(value));
   const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
-  return values.year && values.month && values.day ? `/?day=${values.year}-${values.month}-${values.day}` : "/";
+  return values.year && values.month && values.day ? `${values.year}-${values.month}-${values.day}` : null;
+}
+
+function notificationUrl(change: PendingChange) {
+  const event = Array.isArray(change.events) ? change.events[0] : change.events;
+  if (!event?.starts_at) return "/";
+  const trip = Array.isArray(event.trips) ? event.trips[0] : event.trips;
+  const eventStart = romeDate(event.starts_at);
+  if (!eventStart) return "/";
+
+  // A festival can begin before the trip but still be relevant during it. In
+  // that case the first in-trip day is the honest Timeline destination.
+  const firstRelevantDay = trip?.start_date && eventStart < trip.start_date ? trip.start_date : eventStart;
+  if (trip?.end_date && firstRelevantDay > trip.end_date) return "/";
+  return `/?day=${firstRelevantDay}`;
 }
 
 /**
@@ -48,7 +67,7 @@ export async function dispatchPendingWatchNotifications() {
   const supabase = timelineServerClient();
   const { data: changes, error: changesError } = await supabase
     .from("event_change_log")
-    .select("id, change_kind, events!inner(title, starts_at)")
+    .select("id, change_kind, events!inner(title, starts_at, ends_at, trips!inner(start_date, end_date))")
     .is("notified_at", null)
     .order("observed_at", { ascending: true })
     .limit(5);
