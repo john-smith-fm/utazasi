@@ -208,14 +208,16 @@ if (eventRows.length > 0) {
   seededEvents = data ?? [];
 }
 
-// The first verified canonical Event state is the Watch baseline. Existing
-// Watch rows are deliberately never reset by a later seed run: once a Watch
-// has observed a change, its runtime baseline belongs to the Watch service.
+// The first verified canonical Event state is a Watch baseline, but a newly
+// discovered Event is not watched until the family explicitly accepts it into
+// the Timeline. Existing runtime rows are deliberately never reset by a later
+// seed run: once a Watch has observed a change, its baseline belongs to the
+// Watch service.
 const watchBaselines = (seededEvents ?? [])
   .filter((event) => event.source_url && event.last_verified_at)
   .map((event) => ({
     event_id: event.id,
-    enabled: true,
+    enabled: false,
     baseline_status: event.status,
     baseline_starts_at: event.starts_at,
     baseline_place_slug: event.place_slug,

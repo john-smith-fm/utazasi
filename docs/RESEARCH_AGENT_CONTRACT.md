@@ -65,3 +65,11 @@ npm run research:event -- live research/fixtures/invaso-sep-02-job.json --output
 ```
 
 The command only writes a proposal under `research/proposals/events/`. Applying a ready proposal still requires its explicit candidate ID, a separate human review, then a Git commit and seed. It never creates a Timeline item, writes Supabase, commits, pushes or deploys on its own.
+
+## Automatic Watch rule
+
+A concrete Event can receive a verified baseline at seed time, but it is not
+watched merely because it exists. The Watch becomes active only after the
+family accepts that Event into the Timeline. Deleting the last corresponding
+Timeline item stops the Watch again. This prevents event-series research or
+unaccepted suggestions from sending irrelevant notifications.

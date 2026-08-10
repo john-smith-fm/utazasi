@@ -72,7 +72,11 @@ export async function savePushSubscription(value: unknown, userAgent: string | n
   return { data: { saved: true } } as const;
 }
 
-/** A Watch only runs for an explicitly enabled Event that already has a baseline. */
+/**
+ * A Watch runs only for a baseline-backed Event which the family has accepted
+ * into its Timeline. `enabled` is set by that acceptance path; the Timeline
+ * join is retained as a defensive check for old runtime data as well.
+ */
 export async function eligibleEventWatches(limit: number): Promise<EligibleWatch[]> {
   const { data, error } = await timelineServerClient()
     .from("event_watch_states")
@@ -83,12 +87,22 @@ export async function eligibleEventWatches(limit: number): Promise<EligibleWatch
     .order("last_checked_at", { ascending: true, nullsFirst: true })
     .limit(limit);
   if (error) throw error;
-  return (data ?? []).flatMap((row) => {
+  const candidates = (data ?? []).flatMap((row) => {
     const event = Array.isArray(row.events) ? row.events[0] : row.events;
     if (!event || !row.baseline_status || !row.baseline_starts_at) return [];
     return [{ eventId: event.id, title: event.title, sourceUrl: event.source_url, status: row.baseline_status, startsAt: row.baseline_starts_at, placeSlug: row.baseline_place_slug }];
   });
+  if (candidates.length === 0) return [];
+
+  const { data: acceptedActivities, error: acceptedError } = await timelineServerClient()
+    .from("timeline_activities")
+    .select("source_event_id")
+    .in("source_event_id", candidates.map((candidate) => candidate.eventId));
+  if (acceptedError) throw acceptedError;
+  const acceptedIds = new Set((acceptedActivities ?? []).flatMap((activity) => activity.source_event_id ? [activity.source_event_id] : []));
+  return candidates.filter((candidate) => acceptedIds.has(candidate.eventId));
 }
+
 
 function fingerprint(eventId: string, kind: string, previous: unknown, next: unknown) {
   // Dynamic import keeps Node crypto out of the client bundle; this module is server-only.

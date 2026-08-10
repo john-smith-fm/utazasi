@@ -18,6 +18,30 @@ export function timelineServerClient() {
   return createClient<Database>(url, key, { auth: { autoRefreshToken: false, persistSession: false } });
 }
 
+/** A research suggestion is watched only after the family accepts it into the Timeline. */
+async function enableAcceptedEventWatch(eventId: string) {
+  const supabase = timelineServerClient();
+  const { data, error } = await supabase
+    .from("event_watch_states")
+    .select("event_id, baseline_status, baseline_starts_at")
+    .eq("event_id", eventId)
+    .maybeSingle();
+  if (error) throw error;
+  if (!data?.baseline_status || !data.baseline_starts_at) return;
+  const { error: updateError } = await supabase.from("event_watch_states").update({ enabled: true }).eq("event_id", eventId);
+  if (updateError) throw updateError;
+}
+
+/** Removing the last accepted occurrence stops the associated automatic Watch. */
+async function disableEventWatchWithoutTimelineReference(eventId: string) {
+  const supabase = timelineServerClient();
+  const { data, error } = await supabase.from("timeline_activities").select("id").eq("source_event_id", eventId).limit(1);
+  if (error) throw error;
+  if ((data ?? []).length > 0) return;
+  const { error: updateError } = await supabase.from("event_watch_states").update({ enabled: false }).eq("event_id", eventId);
+  if (updateError) throw updateError;
+}
+
 function normalizeInput(value: unknown): ServiceResult<TimelineActivityInput> {
   if (!value || typeof value !== "object") return { error: "Érvénytelen programadat.", status: 400 };
   const input = value as Partial<TimelineActivityInput>;
@@ -177,7 +201,10 @@ export async function acceptEventIntoTimeline(eventId: string, date: string): Pr
     .eq("source_event_id", ownedEvent.id)
     .maybeSingle();
   if (existingError) throw existingError;
-  if (existing) return { data: existing };
+  if (existing) {
+    await enableAcceptedEventWatch(ownedEvent.id);
+    return { data: existing };
+  }
 
   const place = ownedEvent.place_slug ? getPlaceBySlug(ownedEvent.place_slug) : undefined;
   const { data, error } = await supabase
@@ -199,6 +226,7 @@ export async function acceptEventIntoTimeline(eventId: string, date: string): Pr
     .select("id, day_id, start_time, start_time_precision, time_label, duration_minutes, title, description, location_name, place_slug, source_event_id, kind, is_system_generated, created_at, updated_at")
     .single();
   if (error) throw error;
+  await enableAcceptedEventWatch(ownedEvent.id);
   return { data };
 }
 
@@ -233,5 +261,6 @@ export async function deleteTimelineActivity(id: string): Promise<ServiceResult<
   const supabase = timelineServerClient();
   const { error } = await supabase.from("timeline_activities").delete().eq("id", current.data.id);
   if (error) throw error;
+  if (current.data.source_event_id) await disableEventWatchWithoutTimelineReference(current.data.source_event_id);
   return { data: current.data };
 }
