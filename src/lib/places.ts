@@ -6,6 +6,7 @@ import cafesJson from "../../knowledge/places/cafes.json";
 import shopsJson from "../../knowledge/places/shops.json";
 import otherJson from "../../knowledge/places/other.json";
 import parkingJson from "../../knowledge/places/parking.json";
+import slugAliasesJson from "../../knowledge/places/slug-aliases.json";
 import type { BeachPlace, Place, PlaceType, RestaurantPlace } from "@/types/places";
 
 type UnknownRecord = Record<string, unknown>;
@@ -235,6 +236,29 @@ function assertUniqueSlugs(records: readonly Place[]) {
   });
 }
 
+function validateSlugAliases(source: unknown, records: readonly Place[]) {
+  if (!isRecord(source) || !isRecord(source.aliases)) throw new Error("Érvénytelen place slug alias adatfájl.");
+  const canonicalSlugs = new Set(records.map((place) => place.slug));
+  const aliases: Record<string, string> = {};
+
+  Object.entries(source.aliases).forEach(([alias, canonical]) => {
+    if (!alias || typeof canonical !== "string" || !canonicalSlugs.has(canonical) || canonicalSlugs.has(alias)) {
+      throw new Error(`Érvénytelen place slug alias: ${alias}.`);
+    }
+    aliases[alias] = canonical;
+  });
+
+  return Object.freeze(aliases);
+}
+
+function retiredSlugSet(source: unknown) {
+  if (!isRecord(source) || !isRecord(source.aliases)) {
+    throw new Error("Érvénytelen place slug alias adatfájl.");
+  }
+
+  return new Set(Object.keys(source.aliases));
+}
+
 const loadedPlaces = [
   ...validateBeaches(beachesJson),
   ...validateRestaurants(restaurantsJson),
@@ -245,8 +269,11 @@ const loadedPlaces = [
   ...validateGenericPlaces(parkingJson, "parking", "parking", "parking"),
   ...validateGenericPlaces(otherJson, "other", "other", "other"),
 ];
-assertUniqueSlugs(loadedPlaces);
-const places = Object.freeze(loadedPlaces);
+const retiredPlaceSlugs = retiredSlugSet(slugAliasesJson);
+const canonicalLoadedPlaces = loadedPlaces.filter((place) => !retiredPlaceSlugs.has(place.slug));
+assertUniqueSlugs(canonicalLoadedPlaces);
+const places = Object.freeze(canonicalLoadedPlaces);
+const placeSlugAliases = validateSlugAliases(slugAliasesJson, places);
 
 export function getPlaces(): readonly Place[] {
   return places;
@@ -257,7 +284,8 @@ export function getPlacesByType(type: PlaceType): readonly Place[] {
 }
 
 export function getPlaceBySlug(slug: string): Place | undefined {
-  return places.find((place) => place.slug === slug);
+  const canonicalSlug = placeSlugAliases[slug] ?? slug;
+  return places.find((place) => place.slug === canonicalSlug);
 }
 
 export function toPlaceSlug(value: string) {

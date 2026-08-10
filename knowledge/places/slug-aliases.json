@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "description": "Retired duplicate Place slugs kept resolvable for existing Timeline and deep-link references.",
+  "aliases": {
+    "spiaggia-di-cala-pira": "cala-pira",
+    "spiaggia-cala-sinzias": "cala-sinzias",
+    "spiaggia-costa-rei": "costa-rei",
+    "spiaggia-piscina-rei": "piscina-rei",
+    "spiaggia-porto-sa-ruxi": "porto-sa-ruxi",
+    "spiaggia-di-solanas": "solanas",
+    "via-nazional-ale-villaputzu": "via-nazionale-villaputzu",
+    "la-vela-villasimius": "la-vela",
+    "sa-tankitta-villasimius": "sa-tankitta",
+    "farmacia-simius-villasimius": "farmacia-simius"
+  }
+}
