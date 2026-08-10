@@ -15,6 +15,7 @@
     "research": "node scripts/research.mjs",
     "research:live": "node --env-file=.env.local scripts/research.mjs live",
     "research:apply": "node scripts/research.mjs apply",
+    "research:event": "node --env-file=.env.local scripts/research-event.mjs",
     "test:research": "node --test scripts/research/*.test.mjs"
   },
   "dependencies": {

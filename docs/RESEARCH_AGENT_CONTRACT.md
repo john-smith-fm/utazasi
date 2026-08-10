@@ -55,3 +55,13 @@ It accepts a validated job, makes one bounded web-search request, and writes onl
 ## Relationship to v3A
 
 Research answers: what should become long-lived destination knowledge? Planning answers: what should the family do or know now? Live Planning findings never become canonical automatically.
+
+## Daily Event Research
+
+Event series are research context, not Timeline programs. The bounded Event Research command can examine one selected day within a known series, using only that series' official source domain. Its output is either a `hold` or one reviewable concrete daily Event proposal with an explicit date, start time, end time and provider-confirmed official source.
+
+```bash
+npm run research:event -- live research/fixtures/invaso-sep-02-job.json --output research/proposals/events/invaso-sep-02.json
+```
+
+The command only writes a proposal under `research/proposals/events/`. Applying a ready proposal still requires its explicit candidate ID, a separate human review, then a Git commit and seed. It never creates a Timeline item, writes Supabase, commits, pushes or deploys on its own.
