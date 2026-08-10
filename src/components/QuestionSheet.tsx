@@ -12,10 +12,12 @@ const EXAMPLES = ["Melyik strandot válasszuk?", "Mi fér még bele délután?",
 type Answer = { title: string; body: string; sources: string[]; recommendations?: ShoppingRecommendation[] };
 
 function eventAnswer(question: string, events: TripEvent[]): Answer | null {
-  const normalized = question.toLocaleLowerCase("hu-HU");
-  const asksAdmission = /belépő|belepo|jegy|ár|ar/.test(normalized);
-  const asksFireworks = /tűzijáték|tuzijatek/.test(normalized);
-  const asksEventTime = /mikor|kezd|este|fesztivál|fesztival|esemény|esemeny/.test(normalized);
+  const normalized = question.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("hu-HU");
+  // These must be full words. A loose /ar/ match incorrectly classified
+  // questions such as "Hol tudunk gyorsan bevásárolni?" as admission queries.
+  const asksAdmission = /\b(belepo|jegy|jegyar|ar)\b/.test(normalized);
+  const asksFireworks = /tuzijatek/.test(normalized);
+  const asksEventTime = /\b(mikor|kezd|este|fesztival|esemeny)\b/.test(normalized);
   if (!asksAdmission && !asksFireworks && !asksEventTime) return null;
   if (asksFireworks && !events.some((event) => /tűzijáték|tuzijatek/i.test(event.title))) return { title: "Nincs megerősített tűzijáték", body: "A kiválasztott naphoz nincs ellenőrzött tűzijáték-esemény rögzítve. Nem állítok időpontot vagy helyszínt forrás nélkül.", sources: ["Event"] };
   if (asksAdmission) return { title: "A belépőről nincs biztos adat", body: "A jelenlegi ellenőrzött Place- és Event-adatok nem tartalmaznak megbízható belépő- vagy jegyár-információt ehhez a kérdéshez. Nem találgatok.", sources: ["Place", "Event"] };
