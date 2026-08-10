@@ -20,7 +20,7 @@
           "title": "Repülő indulása",
           "description": "Budapest Airport → Cagliari Airport",
           "location_name": "Budapest Airport",
-          "place_slug": null,
+          "place_slug": "budapest-airport",
           "planning_status": "FIX"
         },
         {
@@ -444,8 +444,8 @@
           "duration_minutes": 60,
           "title": "Gyerekkönyvtár",
           "description": null,
-          "location_name": "Villaputzu",
-          "place_slug": null,
+          "location_name": "Biblioteca Comunale Efisio Melis",
+          "place_slug": "biblioteca-comunale-efisio-melis",
           "planning_status": "PLAN"
         },
         {
@@ -688,7 +688,7 @@
           "title": "Kikötő / séta",
           "description": null,
           "location_name": "Marina di Villasimius",
-          "place_slug": null,
+          "place_slug": "marina-di-villasimius",
           "planning_status": "PLAN"
         },
         {
@@ -804,9 +804,9 @@
           "time_label": null,
           "duration_minutes": 120,
           "title": "Strand",
-          "description": "Poetto, Cagliari.",
-          "location_name": "Poetto",
-          "place_slug": null,
+          "description": "Sam Beach, Poetto, Cagliari.",
+          "location_name": "Sam Beach — Poetto",
+          "place_slug": "sam-beach-poetto",
           "planning_status": "PLAN"
         },
         {
@@ -817,8 +817,8 @@
           "duration_minutes": 60,
           "title": "Ebéd",
           "description": null,
-          "location_name": "Poetto",
-          "place_slug": null,
+          "location_name": "Sam Beach — Poetto",
+          "place_slug": "sam-beach-poetto",
           "planning_status": "PLAN"
         },
         {
@@ -828,9 +828,9 @@
           "time_label": null,
           "duration_minutes": 30,
           "title": "Zuhany + átöltözés",
-          "description": "Konkrét stabilimento később.",
-          "location_name": "Poetto",
-          "place_slug": null,
+          "description": "Sam Beach — Poetto.",
+          "location_name": "Sam Beach — Poetto",
+          "place_slug": "sam-beach-poetto",
           "planning_status": "PLAN"
         },
         {
@@ -878,7 +878,7 @@
           "title": "Érkezés",
           "description": "Érkezési marker.",
           "location_name": "Budapest Airport",
-          "place_slug": null,
+          "place_slug": "budapest-airport",
           "planning_status": "FIX"
         }
       ]

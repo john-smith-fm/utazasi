@@ -828,6 +828,60 @@
       "google_maps": {
         "maps_url": "https://www.google.com/maps/search/?api=1&query=Pronto+Soccorso+San+Marcellino+Muravera"
       }
+    },
+    {
+      "id": "place_other_budapest_airport",
+      "slug": "budapest-airport",
+      "name": "Budapest Airport",
+      "category": "other",
+      "subcategory": "airport",
+      "location": {
+        "city": "Budapest",
+        "address": "Budapest Airport, Terminal 2",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": "2026-08-11",
+        "sources": [
+          "https://www.bud.hu/en"
+        ],
+        "uncertainty_note": "A repülőtér a Trip indulási és érkezési kontextusához került be; terminál- vagy menetidőadat nincs következtetve."
+      },
+      "provenance": [
+        {
+          "source_type": "official_airport",
+          "url": "https://www.bud.hu/en",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "identity",
+            "airport"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "missing",
+        "mobility": "missing",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "A tényleges indulási terminál és az otthonról a reptérre vezető út nem része a publikus Place rekordnak."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-11",
+      "destination_intelligence": {
+        "details": {
+          "kind": "airport",
+          "role": "trip_origin_and_return_destination"
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Budapest+Airport+Terminal+2"
+      }
     }
   ],
   "source_dataset": "utazasi-complete-regional-data-v1.9"

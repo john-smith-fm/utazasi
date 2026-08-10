@@ -13,6 +13,7 @@
     "seed:supabase:dashboard-sql": "node scripts/generate-dashboard-seed-sql.mjs",
     "import:v19-regional": "node scripts/import-v19-regional-data.mjs",
     "report:route-candidates": "node scripts/report-route-candidates.mjs",
+    "backfill:place-links": "node --env-file=.env.local scripts/backfill-canonical-place-links.mjs",
     "research": "node scripts/research.mjs",
     "research:live": "node --env-file=.env.local scripts/research.mjs live",
     "research:apply": "node scripts/research.mjs apply",

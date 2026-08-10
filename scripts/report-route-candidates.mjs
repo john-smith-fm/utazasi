@@ -27,6 +27,13 @@ function addCandidate(candidates, { fromSlug, toSlug, date, reason, note }) {
   });
 }
 
+// Flights are part of the Trip Timeline but are not ground-mobility routes.
+// The report must never turn Budapest ↔ Cagliari into a driving candidate.
+function isFlightMarker(activity) {
+  return activity.title === "Repülő indulása"
+    || (activity.title === "Érkezés" && activity.description === "Érkezési marker.");
+}
+
 const candidates = new Map();
 const unresolvedLocations = new Map();
 
@@ -36,6 +43,8 @@ for (const day of timeline.days) {
   let encounteredUnknownLocation = false;
 
   for (const activity of activities) {
+    if (isFlightMarker(activity)) continue;
+
     if (!activity.place_slug) {
       if (activity.location_name) {
         const entry = unresolvedLocations.get(activity.location_name) ?? { dates: new Set(), titles: new Set() };
