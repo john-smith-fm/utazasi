@@ -1,0 +1,32 @@
+{
+  "package": "utazasi-complete-regional-data-v1.9",
+  "imported_at": "2026-08-10",
+  "incoming_records": 72,
+  "imported_records": 70,
+  "skipped_existing_slugs": [
+    {
+      "slug": "scoglio-di-peppino",
+      "current_file": "beaches.json",
+      "current_name": "Spiaggia di Scoglio di Peppino",
+      "incoming_name": "Scoglio di Peppino",
+      "incoming_type": "sight"
+    },
+    {
+      "slug": "farmacia-melis-villaputzu",
+      "current_file": "shops.json",
+      "current_name": "Farmacia Dott.ssa Melis Romina",
+      "incoming_name": "Farmacia Melis",
+      "incoming_type": "pharmacy_drugstore"
+    }
+  ],
+  "additions_by_file": {
+    "beaches.json": 9,
+    "restaurants.json": 24,
+    "cafes.json": 13,
+    "shops.json": 7,
+    "parking.json": 7,
+    "sights.json": 1,
+    "other.json": 9
+  },
+  "rule": "Existing canonical records were not overwritten. No mobility route was created."
+}

@@ -1,7 +1,7 @@
 {
-  "version": "1.2",
+  "version": "1.9",
   "category": "restaurants",
-  "source_dataset": "utazasi_data_codex_v1.1 + v2f_research_2026-08-07",
+  "source_dataset": "utazasi-complete-regional-data-v1.9",
   "updated_at": "2026-08-07",
   "change_log": [
     "5 új, forrással ellenőrzött étterem rekord.",
@@ -9,6 +9,598 @@
     "Bizonytalan/gyorsan avuló nyitvatartási adatokat nem egészítettünk ki."
   ],
   "places": [
+    {
+      "id": "place_food_arcada_villasimius",
+      "slug": "arcada-villasimius",
+      "name": "Arcada Wine & Restaurant",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via Umberto I 13",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.villasimiusturismo.it/dove-mangiare/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.villasimiusturismo.it/dove-mangiare/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Current hours unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Arcada+Via+Umberto+I+13+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": null,
+          "details": {
+            "kind": "wine_restaurant",
+            "food": {
+              "profiles": [
+                "dinner",
+                "wine"
+              ],
+              "cuisine": []
+            }
+          },
+          "insights": {
+            "tags": [],
+            "confidence": "low"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Arcada+Via+Umberto+I+13+Villasimius"
+      }
+    },
+    {
+      "id": "place_food_aria_villasimius",
+      "slug": "aria-villasimius",
+      "name": "Aria Cocktail Bar & Restaurant",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via del Mare 56",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.ariavillasimius.com/en"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official",
+          "url": "https://www.ariavillasimius.com/en",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "hours",
+            "phone",
+            "cuisine"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Confirm child seating."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Aria+Via+del+Mare+56+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": null,
+          "details": {
+            "kind": "restaurant_cocktail_bar",
+            "food": {
+              "profiles": [
+                "dinner",
+                "aperitivo"
+              ],
+              "cuisine": [
+                "seafood",
+                "grill",
+                "sardinian"
+              ],
+              "opening_hours": "daily 18:30-01:00",
+              "reservation": "available"
+            }
+          },
+          "insights": {
+            "tags": [
+              "sunset_dinner"
+            ],
+            "confidence": "high"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Aria+Via+del+Mare+56+Villasimius"
+      }
+    },
+    {
+      "id": "place_rest_aria",
+      "slug": "aria-restaurant",
+      "name": "Aria Restaurant",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via del Mare 56"
+      },
+      "contact": {
+        "phone": [
+          "+39 334 357 6688"
+        ],
+        "website": "https://www.ariavillasimius.com/en"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.ariavillasimius.com/en"
+        ],
+        "source_refs": [
+          "R03"
+        ]
+      }
+    },
+    {
+      "id": "place_food_b_steak_villasimius",
+      "slug": "b-steak-villasimius",
+      "name": "B-Steak Braceria – Street Food",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via del Mare 62",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.villasimiusturismo.it/dove-mangiare/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.villasimiusturismo.it/dove-mangiare/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "missing",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Current hours unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=B-Steak+Via+del+Mare+62+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": null,
+          "details": {
+            "kind": "steakhouse_street_food",
+            "food": {
+              "profiles": [
+                "quick_dinner",
+                "dinner"
+              ],
+              "cuisine": [
+                "grill",
+                "street_food"
+              ]
+            }
+          },
+          "insights": {
+            "tags": [
+              "casual_meal"
+            ],
+            "confidence": "medium"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=B-Steak+Via+del+Mare+62+Villasimius"
+      }
+    },
+    {
+      "id": "place_food_bar_pizzeria_capo_ferrato",
+      "slug": "bar-pizzeria-capo-ferrato",
+      "name": "Bar Pizzeria Capo Ferrato",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Muravera",
+        "address": "Capo Ferrato village",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.muraverawelcome.com/en/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.muraverawelcome.com/en/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "area",
+            "bar",
+            "pizzeria"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "partial",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Exact address and current hours unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Bar+Pizzeria+Capo+Ferrato"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": "region-03-cala-sinzias-capo-ferrato",
+          "details": {
+            "kind": "bar_pizzeria",
+            "food": {
+              "profiles": [
+                "coffee",
+                "quick_meal",
+                "pizza"
+              ]
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Bar+Pizzeria+Capo+Ferrato"
+      }
+    },
+    {
+      "id": "place_food_carbonara_ristorante_villasimius",
+      "slug": "carbonara-ristorante-villasimius",
+      "name": "Carbonara Ristorante",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via Umberto I 60",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.villasimiusturismo.it/dove-mangiare/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.villasimiusturismo.it/dove-mangiare/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "missing",
+        "mobility": "missing",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Cuisine and hours unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Carbonara+Ristorante+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": null,
+          "details": {
+            "kind": "restaurant",
+            "food": {
+              "profiles": [
+                "dinner"
+              ],
+              "cuisine": []
+            }
+          },
+          "insights": {
+            "tags": [],
+            "confidence": "low"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Carbonara+Ristorante+Villasimius"
+      }
+    },
+    {
+      "id": "place_rest_chiosco_colostrai",
+      "slug": "chiosco-colostrai",
+      "name": "Chiosco Colostrai",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Muravera"
+      },
+      "verification": {
+        "status": "planned_enrichment"
+      }
+    },
+    {
+      "id": "place_food_crilos_villasimius",
+      "slug": "crilos-villasimius",
+      "name": "Crilos",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via Leonardo da Vinci 10/B",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.spiaggevillasimius.it/ristoranti-e-locali-tipici"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "local_directory",
+          "url": "https://www.spiaggevillasimius.it/ristoranti-e-locali-tipici",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "missing",
+        "mobility": "missing",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Cuisine and hours unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Crilos+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": null,
+          "details": {
+            "kind": "restaurant",
+            "food": {
+              "profiles": [
+                "dinner"
+              ],
+              "cuisine": []
+            }
+          },
+          "insights": {
+            "tags": [],
+            "confidence": "low"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Crilos+Villasimius"
+      }
+    },
+    {
+      "id": "place_rest_da_barbara",
+      "slug": "da-barbara",
+      "name": "Da Barbara",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Costa Rei"
+      },
+      "verification": {
+        "status": "planned_enrichment"
+      }
+    },
+    {
+      "id": "place_food_il_castello_ristorante_villaputzu",
+      "slug": "il-castello-ristorante-villaputzu",
+      "name": "Il Castello Ristorante Pizzeria",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Villaputzu",
+        "address": "SS 125 km 78",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.comune.villaputzu.ca.it/modules.php?cid=76&name=Pagine&pa=list_pages_categories",
+          "https://www.tripadvisor.com/Restaurants-g950832-Villaputzu_Province_of_Cagliari_Sardinia.html"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "municipal",
+          "url": "https://www.comune.villaputzu.ca.it/modules.php?cid=76&name=Pagine&pa=list_pages_categories",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phones",
+            "type"
+          ]
+        },
+        {
+          "source_type": "current_business_listing",
+          "url": "https://www.tripadvisor.com/Restaurants-g950832-Villaputzu_Province_of_Cagliari_Sardinia.html",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "current_operation",
+            "cuisine"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "partial",
+        "mobility": "partial",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Current hours unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Il+Castello+Ristorante+Villaputzu"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": "region-06-villaputzu",
+          "details": {
+            "kind": "restaurant_pizzeria",
+            "food": {
+              "profiles": [
+                "lunch",
+                "dinner"
+              ],
+              "cuisine": [
+                "italian",
+                "seafood",
+                "pizza"
+              ]
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Il+Castello+Ristorante+Villaputzu"
+      }
+    },
     {
       "id": "place_villasimius_il_giardino",
       "slug": "il-giardino",
@@ -41,6 +633,861 @@
         "sources": [
           "https://www.thefork.co.uk/restaurant/il-giardino-r395043"
         ]
+      }
+    },
+    {
+      "id": "place_rest_il_miraggio",
+      "slug": "il-miraggio",
+      "name": "Il Miraggio",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Villasimius",
+        "address": "Località Campus"
+      },
+      "contact": {
+        "phone": [
+          "+39 070 798021",
+          "+39 333 3568927"
+        ],
+        "website": "https://www.ristoranteilmiraggio.com/"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.ristoranteilmiraggio.com/"
+        ],
+        "source_refs": [
+          "R04"
+        ]
+      }
+    },
+    {
+      "id": "place_food_janas_beach_santa_giusta",
+      "slug": "janas-beach-santa-giusta",
+      "name": "Janas Beach",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Castiadas",
+        "address": "Santa Giusta",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://janasbeach.it/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official",
+          "url": "https://janasbeach.it/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "area",
+            "restaurant",
+            "bar",
+            "shop",
+            "beach_services"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "complete",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Confirm September hours, parking and family facilities."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Janas+Beach+Santa+Giusta+Castiadas"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": "region-03-cala-sinzias-capo-ferrato",
+          "details": {
+            "kind": "beach_club_restaurant",
+            "food": {
+              "profiles": [
+                "beach_lunch",
+                "bar"
+              ]
+            },
+            "services": {
+              "beach_service": "confirmed",
+              "shop": "confirmed"
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Janas+Beach+Santa+Giusta+Castiadas"
+      }
+    },
+    {
+      "id": "place_food_la_capanna_villasimius",
+      "slug": "la-capanna-villasimius",
+      "name": "La Capanna Villasimius",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via delle Palme 1",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://lacapanna.villasimius.com/en/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official",
+          "url": "https://lacapanna.villasimius.com/en/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "season",
+            "meal_profiles",
+            "walk_in"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "complete",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Exact September hours unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=La+Capanna+Via+delle+Palme+1+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": null,
+          "details": {
+            "kind": "beach_bar_restaurant",
+            "food": {
+              "profiles": [
+                "breakfast",
+                "brunch",
+                "lunch",
+                "aperitivo"
+              ],
+              "cuisine": [
+                "italian",
+                "casual"
+              ],
+              "opening_hours": "daily April-October; exact times unknown",
+              "walk_in": "confirmed"
+            }
+          },
+          "insights": {
+            "tags": [
+              "beach_day_food",
+              "all_day_stop"
+            ],
+            "confidence": "high"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=La+Capanna+Via+delle+Palme+1+Villasimius"
+      }
+    },
+    {
+      "id": "place_food_la_lanterna_villasimius",
+      "slug": "la-lanterna-villasimius",
+      "name": "La Lanterna",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via Roma 64",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.villasimiusturismo.it/dove-mangiare/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.villasimiusturismo.it/dove-mangiare/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "missing",
+        "mobility": "missing",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Current hours unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=La+Lanterna+Via+Roma+64+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": null,
+          "details": {
+            "kind": "restaurant_pizzeria",
+            "food": {
+              "profiles": [
+                "dinner"
+              ],
+              "cuisine": [
+                "italian",
+                "pizza"
+              ]
+            }
+          },
+          "insights": {
+            "tags": [],
+            "confidence": "low"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=La+Lanterna+Via+Roma+64+Villasimius"
+      }
+    },
+    {
+      "id": "place_food_la_pecora_nera_villaputzu",
+      "slug": "la-pecora-nera-villaputzu",
+      "name": "La Pecora Nera",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Villaputzu",
+        "address": "Via Nazionale 36",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.comune.villaputzu.ca.it/modules.php?cid=76&name=Pagine&pa=list_pages_categories"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "municipal",
+          "url": "https://www.comune.villaputzu.ca.it/modules.php?cid=76&name=Pagine&pa=list_pages_categories",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "partial",
+        "mobility": "partial",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Current operation and hours need verification."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=La+Pecora+Nera+Via+Nazionale+36+Villaputzu"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": "region-06-villaputzu",
+          "details": {
+            "kind": "typical_restaurant",
+            "food": {
+              "profiles": [
+                "lunch",
+                "dinner"
+              ],
+              "cuisine": [
+                "sardinian"
+              ]
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=La+Pecora+Nera+Via+Nazionale+36+Villaputzu"
+      }
+    },
+    {
+      "id": "place_rest_la_vela",
+      "slug": "la-vela",
+      "name": "La Vela",
+      "category": "food",
+      "subcategory": "restaurant_pizzeria",
+      "location": {
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via degli Oleandri 12"
+      },
+      "contact": {
+        "phone": [
+          "+39 392 8780232"
+        ],
+        "website": "https://www.ristorantelavelavillasimius.it/"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.ristorantelavelavillasimius.it/"
+        ],
+        "source_refs": [
+          "R01"
+        ]
+      }
+    },
+    {
+      "id": "place_food_la_vela_villasimius",
+      "slug": "la-vela-villasimius",
+      "name": "La Vela",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via degli Oleandri 12",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.spiaggevillasimius.it/ristoranti-e-locali-tipici"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "local_directory",
+          "url": "https://www.spiaggevillasimius.it/ristoranti-e-locali-tipici",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "missing",
+        "mobility": "partial",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Current hours unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=La+Vela+Via+degli+Oleandri+12+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": null,
+          "details": {
+            "kind": "restaurant_pizzeria",
+            "food": {
+              "profiles": [
+                "dinner"
+              ],
+              "cuisine": [
+                "italian",
+                "pizza"
+              ]
+            }
+          },
+          "insights": {
+            "tags": [
+              "near_daily_parking"
+            ],
+            "confidence": "medium"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=La+Vela+Via+degli+Oleandri+12+Villasimius"
+      }
+    },
+    {
+      "id": "place_rest_le_anfore",
+      "slug": "le-anfore",
+      "name": "Le Anfore",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Villasimius"
+      },
+      "contact": {
+        "website": "https://www.ristorantevillasimius.it/en/"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.ristorantevillasimius.it/en/"
+        ],
+        "source_refs": [
+          "R02"
+        ]
+      }
+    },
+    {
+      "id": "place_food_maklas_cala_sinzias",
+      "slug": "maklas-cala-sinzias",
+      "name": "Maklas",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Castiadas",
+        "address": "Cala Sinzias",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.reddit.com/r/Sardinia/comments/1kqp42u/costa_rei_recs/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "current_traveler_reference",
+          "url": "https://www.reddit.com/r/Sardinia/comments/1kqp42u/costa_rei_recs/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "current_name",
+            "area",
+            "restaurant"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "missing",
+        "evidence": "partial",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Confirm official site, hours, services and exact address."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Maklas+Cala+Sinzias"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": "region-03-cala-sinzias-capo-ferrato",
+          "details": {
+            "kind": "beach_bar_restaurant",
+            "food": {
+              "profiles": [
+                "beach_lunch",
+                "drinks"
+              ]
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Maklas+Cala+Sinzias"
+      }
+    },
+    {
+      "id": "place_food_poke_island_villasimius",
+      "slug": "poke-island-villasimius",
+      "name": "Poke Island",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via del Mare 96",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.tripadvisor.com/Restaurant_Review-g194949-d21130650-Reviews-Poke_Island-Villasimius_Province_of_Cagliari_Sardinia.html",
+          "https://restaurantguru.it/Poke-Island-Villasimius"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "business_listing",
+          "url": "https://www.tripadvisor.com/Restaurant_Review-g194949-d21130650-Reviews-Poke_Island-Villasimius_Province_of_Cagliari_Sardinia.html",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "cuisine",
+            "vegan_options"
+          ]
+        },
+        {
+          "source_type": "business_directory",
+          "url": "https://restaurantguru.it/Poke-Island-Villasimius",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "takeaway",
+            "outdoor_seating"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Confirm September 2026 hours directly; current sources conflict.",
+        "Confirm exact coordinates."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Poke+Island+Via+del+Mare+96+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": null,
+          "details": {
+            "kind": "poke",
+            "food": {
+              "profiles": [
+                "quick_lunch",
+                "takeaway",
+                "casual_dinner"
+              ],
+              "cuisine": [
+                "poke",
+                "healthy"
+              ],
+              "takeaway": "confirmed",
+              "outdoor_seating": "confirmed",
+              "vegan_options": "confirmed",
+              "opening_hours": "conflicting_sources"
+            }
+          },
+          "insights": {
+            "tags": [
+              "fast_family_meal",
+              "beach_return_stop"
+            ],
+            "confidence": "medium"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Poke+Island+Via+del+Mare+96+Villasimius"
+      }
+    },
+    {
+      "id": "place_food_bar_pizzeria_guido_costa_rei",
+      "slug": "bar-pizzeria-guido-costa-rei",
+      "name": "Ristorante Pizzeria Bar Guido",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Muravera",
+        "address": "Costa Rei area",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.tripadvisor.it/Restaurants-g1057196-Muravera_Province_of_Cagliari_Sardinia.html"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "current_business_listing",
+          "url": "https://www.tripadvisor.it/Restaurants-g1057196-Muravera_Province_of_Cagliari_Sardinia.html",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "type",
+            "current_operation"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "partial",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Exact address, official contact and hours unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Ristorante+Pizzeria+Bar+Guido+Costa+Rei"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": "region-04-costa-rei",
+          "details": {
+            "kind": "restaurant_pizzeria_bar",
+            "food": {
+              "profiles": [
+                "lunch",
+                "dinner",
+                "drinks"
+              ],
+              "cuisine": [
+                "italian",
+                "pizza"
+              ]
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Ristorante+Pizzeria+Bar+Guido+Costa+Rei"
+      }
+    },
+    {
+      "id": "place_food_il_mondo_villaputzu",
+      "slug": "il-mondo-villaputzu",
+      "name": "Ristorante Pizzeria Il Mondo",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Villaputzu",
+        "address": "Piazza Leonardo da Vinci",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.comune.villaputzu.ca.it/modules.php?cid=76&name=Pagine&pa=list_pages_categories"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "municipal",
+          "url": "https://www.comune.villaputzu.ca.it/modules.php?cid=76&name=Pagine&pa=list_pages_categories",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phones",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "partial",
+        "mobility": "partial",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Current operation and hours need verification."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Ristorante+Il+Mondo+Villaputzu"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": "region-06-villaputzu",
+          "details": {
+            "kind": "restaurant_pizzeria",
+            "food": {
+              "profiles": [
+                "lunch",
+                "dinner"
+              ],
+              "cuisine": [
+                "italian",
+                "pizza"
+              ]
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Ristorante+Il+Mondo+Villaputzu"
+      }
+    },
+    {
+      "id": "place_food_samarcanda_porto_corallo",
+      "slug": "samarcanda-porto-corallo",
+      "name": "Ristorante Pizzeria Samarcanda",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Villaputzu",
+        "address": "Porto Corallo",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.comune.villaputzu.ca.it/modules.php?cid=76&name=Pagine&pa=list_pages_categories"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "municipal",
+          "url": "https://www.comune.villaputzu.ca.it/modules.php?cid=76&name=Pagine&pa=list_pages_categories",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "area",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "partial",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Exact address, current operation and hours need verification."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Samarcanda+Porto+Corallo+Villaputzu"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": "region-06-villaputzu",
+          "details": {
+            "kind": "restaurant_pizzeria",
+            "food": {
+              "profiles": [
+                "lunch",
+                "dinner"
+              ],
+              "cuisine": [
+                "italian",
+                "pizza"
+              ]
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Samarcanda+Porto+Corallo+Villaputzu"
       }
     },
     {
@@ -128,6 +1575,93 @@
       }
     },
     {
+      "id": "place_food_sa_cardiga_e_su_pisci",
+      "slug": "sa-cardiga-e-su-pisci",
+      "name": "Sa Cardiga e Su Pisci",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Muravera",
+        "address": "Costa Rei",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.tripadvisor.it/Restaurants-g1057196-Muravera_Province_of_Cagliari_Sardinia.html"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "current_business_listing",
+          "url": "https://www.tripadvisor.it/Restaurants-g1057196-Muravera_Province_of_Cagliari_Sardinia.html",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "area",
+            "cuisine",
+            "current_operation"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "partial",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Exact address, official contact and hours unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Sa+Cardiga+e+Su+Pisci+Costa+Rei"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": "region-04-costa-rei",
+          "details": {
+            "kind": "seafood_restaurant",
+            "food": {
+              "profiles": [
+                "lunch",
+                "dinner"
+              ],
+              "cuisine": [
+                "seafood",
+                "italian"
+              ]
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Sa+Cardiga+e+Su+Pisci+Costa+Rei"
+      }
+    },
+    {
+      "id": "place_rest_sa_pardula",
+      "slug": "sa-pardula",
+      "name": "Sa Pardula",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Muravera"
+      },
+      "verification": {
+        "status": "planned_enrichment"
+      }
+    },
+    {
       "id": "place_rest_sa_tankitta",
       "slug": "sa-tankitta",
       "name": "Sa Tankitta",
@@ -151,6 +1685,257 @@
         "phone": [
           "+39 070 791338"
         ]
+      }
+    },
+    {
+      "id": "place_food_sa_tankitta_villasimius",
+      "slug": "sa-tankitta-villasimius",
+      "name": "Sa Tankitta",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via Umberto I 240",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.villasimiusturismo.it/dove-mangiare/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.villasimiusturismo.it/dove-mangiare/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "missing",
+        "mobility": "missing",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Current hours unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Sa+Tankitta+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": null,
+          "details": {
+            "kind": "restaurant_pizzeria",
+            "food": {
+              "profiles": [
+                "lunch",
+                "dinner"
+              ],
+              "cuisine": [
+                "italian",
+                "pizza"
+              ]
+            }
+          },
+          "insights": {
+            "tags": [],
+            "confidence": "low"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Sa+Tankitta+Villasimius"
+      }
+    },
+    {
+      "id": "place_food_sandalyon_villasimius",
+      "slug": "sandalyon-villasimius",
+      "name": "Sandalyon",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via Giotto 1",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.spiaggevillasimius.it/ristoranti-e-locali-tipici"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "local_directory",
+          "url": "https://www.spiaggevillasimius.it/ristoranti-e-locali-tipici",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "missing",
+        "mobility": "missing",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Cuisine and hours unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Sandalyon+Via+Giotto+1+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": null,
+          "details": {
+            "kind": "restaurant",
+            "food": {
+              "profiles": [
+                "dinner"
+              ],
+              "cuisine": []
+            }
+          },
+          "insights": {
+            "tags": [],
+            "confidence": "low"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Sandalyon+Via+Giotto+1+Villasimius"
+      }
+    },
+    {
+      "id": "place_rest_sandalyon",
+      "slug": "sandalyon",
+      "name": "Sandalyon Villasimius Restaurant",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via Giotto 1"
+      },
+      "contact": {
+        "website": "https://www.sandalyonrestaurant.it/"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.sandalyonrestaurant.it/"
+        ],
+        "source_refs": [
+          "R05"
+        ],
+        "uncertainty_note": "A nyitvatartás forrásoldalakon eltérhet; ebben a csomagban nem kanonizáltuk."
+      }
+    },
+    {
+      "id": "place_food_su_forreddu_villasimius",
+      "slug": "su-forreddu-villasimius",
+      "name": "Su Forreddu",
+      "category": "food",
+      "subcategory": "restaurant",
+      "location": {
+        "city": "Villasimius",
+        "address": "Viale dei Cipressi 2",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.spiaggevillasimius.it/ristoranti-e-locali-tipici"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "local_directory",
+          "url": "https://www.spiaggevillasimius.it/ristoranti-e-locali-tipici",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "missing",
+        "mobility": "missing",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Hours and family facilities unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Su+Forreddu+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": null,
+          "details": {
+            "kind": "restaurant_pizzeria",
+            "food": {
+              "profiles": [
+                "dinner"
+              ],
+              "cuisine": [
+                "italian",
+                "pizza"
+              ]
+            }
+          },
+          "insights": {
+            "tags": [],
+            "confidence": "low"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Su+Forreddu+Villasimius"
       }
     },
     {
@@ -182,174 +1967,227 @@
       }
     },
     {
-      "id": "place_rest_da_barbara",
-      "slug": "da-barbara",
-      "name": "Da Barbara",
+      "id": "place_food_su_nuraxi_muravera",
+      "slug": "su-nuraxi-muravera",
+      "name": "Su Nuraxi Pizzeria Restaurant",
       "category": "food",
       "subcategory": "restaurant",
       "location": {
-        "city": "Costa Rei"
+        "city": "Muravera",
+        "address": "Muravera",
+        "latitude": null,
+        "longitude": null
       },
       "verification": {
-        "status": "planned_enrichment"
-      }
-    },
-    {
-      "id": "place_rest_chiosco_colostrai",
-      "slug": "chiosco-colostrai",
-      "name": "Chiosco Colostrai",
-      "category": "food",
-      "subcategory": "restaurant",
-      "location": {
-        "city": "Muravera"
-      },
-      "verification": {
-        "status": "planned_enrichment"
-      }
-    },
-    {
-      "id": "place_rest_sa_pardula",
-      "slug": "sa-pardula",
-      "name": "Sa Pardula",
-      "category": "food",
-      "subcategory": "restaurant",
-      "location": {
-        "city": "Muravera"
-      },
-      "verification": {
-        "status": "planned_enrichment"
-      }
-    },
-    {
-      "id": "place_rest_la_vela",
-      "slug": "la-vela",
-      "name": "La Vela",
-      "category": "food",
-      "subcategory": "restaurant_pizzeria",
-      "location": {
-        "city": "Villasimius",
-        "postal_code": "09049",
-        "address": "Via degli Oleandri 12"
-      },
-      "contact": {
-        "phone": [
-          "+39 392 8780232"
-        ],
-        "website": "https://www.ristorantelavelavillasimius.it/"
-      },
-      "verification": {
-        "status": "verified_official",
-        "last_checked": "2026-08-07",
+        "status": "partial",
+        "last_checked": null,
         "sources": [
-          "https://www.ristorantelavelavillasimius.it/"
+          "https://www.muraverawelcome.com/en/"
         ],
-        "source_refs": [
-          "R01"
-        ]
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.muraverawelcome.com/en/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "municipality",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Exact address, contact and current hours unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Su+Nuraxi+Restaurant+Muravera"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": "region-05-muravera",
+          "details": {
+            "kind": "restaurant_pizzeria",
+            "food": {
+              "profiles": [
+                "lunch",
+                "dinner"
+              ],
+              "cuisine": [
+                "italian",
+                "pizza"
+              ]
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Su+Nuraxi+Restaurant+Muravera"
       }
     },
     {
-      "id": "place_rest_le_anfore",
-      "slug": "le-anfore",
-      "name": "Le Anfore",
+      "id": "place_food_tamatete_cala_sinzias",
+      "slug": "tamatete-cala-sinzias",
+      "name": "Tamatete",
       "category": "food",
       "subcategory": "restaurant",
       "location": {
-        "city": "Villasimius"
-      },
-      "contact": {
-        "website": "https://www.ristorantevillasimius.it/en/"
+        "city": "Castiadas",
+        "address": "Cala Sinzias",
+        "latitude": null,
+        "longitude": null
       },
       "verification": {
-        "status": "verified_official",
-        "last_checked": "2026-08-07",
+        "status": "partial",
+        "last_checked": null,
         "sources": [
-          "https://www.ristorantevillasimius.it/en/"
+          "https://castiadasturismo.com/en/sea-and-beaches/cala-sinzias/"
         ],
-        "source_refs": [
-          "R02"
-        ]
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official_tourism_area",
+          "url": "https://castiadasturismo.com/en/sea-and-beaches/cala-sinzias/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "beach_establishments_in_area"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "missing",
+        "evidence": "partial",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Confirm official contact, hours and exact services."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Tamatete+Cala+Sinzias"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": "region-03-cala-sinzias-capo-ferrato",
+          "details": {
+            "kind": "beach_bar_restaurant",
+            "food": {
+              "profiles": [
+                "beach_lunch",
+                "drinks"
+              ]
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Tamatete+Cala+Sinzias"
       }
     },
     {
-      "id": "place_rest_aria",
-      "slug": "aria-restaurant",
-      "name": "Aria Restaurant",
+      "id": "place_food_villa_tamerici_porto_corallo",
+      "slug": "villa-tamerici-porto-corallo",
+      "name": "Villa Tamerici Restaurant",
       "category": "food",
       "subcategory": "restaurant",
       "location": {
-        "city": "Villasimius",
-        "postal_code": "09049",
-        "address": "Via del Mare 56"
-      },
-      "contact": {
-        "phone": [
-          "+39 334 357 6688"
-        ],
-        "website": "https://www.ariavillasimius.com/en"
+        "city": "Villaputzu",
+        "address": "Porto Corallo",
+        "latitude": null,
+        "longitude": null
       },
       "verification": {
-        "status": "verified_official",
-        "last_checked": "2026-08-07",
+        "status": "partial",
+        "last_checked": null,
         "sources": [
-          "https://www.ariavillasimius.com/en"
+          "https://www.comune.villaputzu.ca.it/modules.php?cid=76&name=Pagine&pa=list_pages_categories",
+          "https://www.tripadvisor.com/Restaurants-g950832-Villaputzu_Province_of_Cagliari_Sardinia.html"
         ],
-        "source_refs": [
-          "R03"
-        ]
-      }
-    },
-    {
-      "id": "place_rest_il_miraggio",
-      "slug": "il-miraggio",
-      "name": "Il Miraggio",
-      "category": "food",
-      "subcategory": "restaurant",
-      "location": {
-        "city": "Villasimius",
-        "address": "Località Campus"
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
       },
-      "contact": {
-        "phone": [
-          "+39 070 798021",
-          "+39 333 3568927"
-        ],
-        "website": "https://www.ristoranteilmiraggio.com/"
+      "provenance": [
+        {
+          "source_type": "municipal",
+          "url": "https://www.comune.villaputzu.ca.it/modules.php?cid=76&name=Pagine&pa=list_pages_categories",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "historic_name",
+            "area",
+            "phones"
+          ]
+        },
+        {
+          "source_type": "current_business_listing",
+          "url": "https://www.tripadvisor.com/Restaurants-g950832-Villaputzu_Province_of_Cagliari_Sardinia.html",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "current_name",
+            "current_operation",
+            "cuisine"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "partial",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
       },
-      "verification": {
-        "status": "verified_official",
-        "last_checked": "2026-08-07",
-        "sources": [
-          "https://www.ristoranteilmiraggio.com/"
-        ],
-        "source_refs": [
-          "R04"
-        ]
-      }
-    },
-    {
-      "id": "place_rest_sandalyon",
-      "slug": "sandalyon",
-      "name": "Sandalyon Villasimius Restaurant",
-      "category": "food",
-      "subcategory": "restaurant",
-      "location": {
-        "city": "Villasimius",
-        "address": "Via Giotto 1"
+      "open_questions": [
+        "Confirm exact address and hours."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Villa+Tamerici+Restaurant+Porto+Corallo"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": "region-06-villaputzu",
+          "details": {
+            "kind": "seafood_restaurant",
+            "food": {
+              "profiles": [
+                "lunch",
+                "dinner"
+              ],
+              "cuisine": [
+                "italian",
+                "seafood"
+              ]
+            }
+          },
+          "insights": null
+        }
       },
-      "contact": {
-        "website": "https://www.sandalyonrestaurant.it/"
-      },
-      "verification": {
-        "status": "verified_official",
-        "last_checked": "2026-08-07",
-        "sources": [
-          "https://www.sandalyonrestaurant.it/"
-        ],
-        "source_refs": [
-          "R05"
-        ],
-        "uncertainty_note": "A nyitvatartás forrásoldalakon eltérhet; ebben a csomagban nem kanonizáltuk."
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Villa+Tamerici+Restaurant+Porto+Corallo"
       }
     }
   ]

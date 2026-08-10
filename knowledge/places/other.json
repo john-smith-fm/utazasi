@@ -1,99 +1,192 @@
 {
-  "version": "1.5",
+  "version": "1.9",
   "places": [
     {
-      "id": "place_cagliari_airport",
-      "slug": "cagliari-airport",
-      "name": "Cagliari Elmas Airport (CAG)",
+      "id": "place_other_atm_banco_di_sardegna_muravera",
+      "slug": "atm-banco-di-sardegna-muravera",
+      "name": "ATM Banco di Sardegna Muravera",
       "category": "other",
+      "subcategory": "other",
       "location": {
-        "country": "Olaszország",
-        "region": "Szardínia",
-        "city": "Elmas",
-        "address": "Via dei Trasvolatori snc, 09067 Elmas CA, Italy",
-        "latitude": 39.2515,
-        "longitude": 9.0543
+        "city": "Muravera",
+        "address": "Via Roma 124",
+        "latitude": null,
+        "longitude": null
       },
       "verification": {
         "status": "partial",
-        "last_checked": "2026-08-10",
+        "last_checked": null,
         "sources": [
-          "https://www.sogaer.it/it/contatti",
-          "https://www.sogaer.it/it/parcheggi",
-          "https://www.routebook.io/airport/CAG"
-        ]
+          "https://www.muraverawelcome.com/en/useful-info/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
       },
       "provenance": [
         {
-          "source_type": "official_operator",
-          "url": "https://www.sogaer.it/it/contatti",
+          "source_type": "official_tourism",
+          "url": "https://www.muraverawelcome.com/en/useful-info/",
+          "checked_at": "2026-08-11",
           "supports": [
+            "operator",
             "address",
-            "phone",
-            "website"
-          ],
-          "checked_at": "2026-08-10"
-        },
-        {
-          "source_type": "official_operator",
-          "url": "https://www.sogaer.it/it/parcheggi",
-          "supports": [
-            "parking"
-          ],
-          "checked_at": "2026-08-10"
-        },
-        {
-          "source_type": "google_maps",
-          "place_id": "ChIJ42n2lwc35xIR8SFejyxQ7xA",
-          "supports": [
-            "identity",
-            "address"
-          ],
-          "checked_at": "2026-08-10"
-        },
-        {
-          "source_type": "secondary_geo",
-          "url": "https://www.routebook.io/airport/CAG",
-          "supports": [
-            "coordinates"
-          ],
-          "checked_at": "2026-08-10"
+            "atm"
+          ]
         }
       ],
       "coverage": {
         "basic": "complete",
         "services": "complete",
-        "mobility": "partial",
-        "family": "partial",
+        "mobility": "missing",
+        "family": "missing",
         "evidence": "complete",
         "photos": "missing"
       },
       "open_questions": [
-        "Legally reusable cover image missing.",
-        "Private trip-base ↔ airport route still requires private origin resolution."
+        "24-hour accessibility unknown."
       ],
       "cover_image": null,
-      "checked_at": "2026-08-10",
+      "checked_at": null,
       "destination_intelligence": {
         "google_maps": {
-          "place_id": "ChIJ42n2lwc35xIR8SFejyxQ7xA",
-          "maps_url": "https://www.google.com/maps/search/?api=1&query=Cagliari+Elmas+Airport",
-          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Cagliari+Elmas+Airport&travelmode=driving"
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Banco+di+Sardegna+Via+Roma+124+Muravera"
         },
-        "services": {
-          "parking": true,
-          "prm_assistance": true,
-          "rail_station": true
-        },
-        "contact": {
-          "phone": "+39 070 211 211",
-          "website": "https://www.sogaer.it/"
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "other",
+          "region_id": "region-05-muravera",
+          "details": {
+            "kind": "atm"
+          },
+          "insights": null
         }
       },
       "google_maps": {
-        "place_id": "ChIJ42n2lwc35xIR8SFejyxQ7xA",
-        "maps_url": "https://www.google.com/maps/search/?api=1&query=Cagliari+Elmas+Airport",
-        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Cagliari+Elmas+Airport&travelmode=driving"
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Banco+di+Sardegna+Via+Roma+124+Muravera"
+      }
+    },
+    {
+      "id": "place_other_atm_intesa_sanpaolo_muravera",
+      "slug": "atm-intesa-sanpaolo-muravera",
+      "name": "ATM Intesa Sanpaolo Muravera",
+      "category": "other",
+      "subcategory": "other",
+      "location": {
+        "city": "Muravera",
+        "address": "Via Roma 66",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.muraverawelcome.com/en/useful-info/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.muraverawelcome.com/en/useful-info/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "operator",
+            "address",
+            "atm"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "complete",
+        "mobility": "missing",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "24-hour accessibility unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Intesa+Sanpaolo+Via+Roma+66+Muravera"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "other",
+          "region_id": "region-05-muravera",
+          "details": {
+            "kind": "atm"
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Intesa+Sanpaolo+Via+Roma+66+Muravera"
+      }
+    },
+    {
+      "id": "place_other_atm_piazza_italia_costa_rei",
+      "slug": "atm-piazza-italia-costa-rei",
+      "name": "ATM Piazza Italia Costa Rei",
+      "category": "other",
+      "subcategory": "other",
+      "location": {
+        "city": "Muravera",
+        "address": "Piazza Italia 1, Costa Rei",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.piazzaitaliacostarei.it/centro-commerciale/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official_center",
+          "url": "https://www.piazzaitaliacostarei.it/centro-commerciale/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "atm",
+            "address"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "complete",
+        "mobility": "partial",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Operator and availability unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=ATM+Piazza+Italia+Costa+Rei"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "other",
+          "region_id": "region-04-costa-rei",
+          "details": {
+            "kind": "atm"
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=ATM+Piazza+Italia+Costa+Rei"
       }
     },
     {
@@ -202,6 +295,540 @@
         "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Biblioteca+Comunale+Efisio+Melis%2C+Piazza+Marconi+1%2C+Villaputzu&travelmode=driving",
         "match_status": "search_query_link"
       }
+    },
+    {
+      "id": "place_cagliari_airport",
+      "slug": "cagliari-airport",
+      "name": "Cagliari Elmas Airport (CAG)",
+      "category": "other",
+      "location": {
+        "country": "Olaszország",
+        "region": "Szardínia",
+        "city": "Elmas",
+        "address": "Via dei Trasvolatori snc, 09067 Elmas CA, Italy",
+        "latitude": 39.2515,
+        "longitude": 9.0543
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": "2026-08-10",
+        "sources": [
+          "https://www.sogaer.it/it/contatti",
+          "https://www.sogaer.it/it/parcheggi",
+          "https://www.routebook.io/airport/CAG"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "official_operator",
+          "url": "https://www.sogaer.it/it/contatti",
+          "supports": [
+            "address",
+            "phone",
+            "website"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "official_operator",
+          "url": "https://www.sogaer.it/it/parcheggi",
+          "supports": [
+            "parking"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "google_maps",
+          "place_id": "ChIJ42n2lwc35xIR8SFejyxQ7xA",
+          "supports": [
+            "identity",
+            "address"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "secondary_geo",
+          "url": "https://www.routebook.io/airport/CAG",
+          "supports": [
+            "coordinates"
+          ],
+          "checked_at": "2026-08-10"
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "complete",
+        "mobility": "partial",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Legally reusable cover image missing.",
+        "Private trip-base ↔ airport route still requires private origin resolution."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-10",
+      "destination_intelligence": {
+        "google_maps": {
+          "place_id": "ChIJ42n2lwc35xIR8SFejyxQ7xA",
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Cagliari+Elmas+Airport",
+          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Cagliari+Elmas+Airport&travelmode=driving"
+        },
+        "services": {
+          "parking": true,
+          "prm_assistance": true,
+          "rail_station": true
+        },
+        "contact": {
+          "phone": "+39 070 211 211",
+          "website": "https://www.sogaer.it/"
+        }
+      },
+      "google_maps": {
+        "place_id": "ChIJ42n2lwc35xIR8SFejyxQ7xA",
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Cagliari+Elmas+Airport",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Cagliari+Elmas+Airport&travelmode=driving"
+      }
+    },
+    {
+      "id": "place_other_continuita_assistenziale_muravera",
+      "slug": "continuita-assistenziale-muravera",
+      "name": "Continuità assistenziale San Marcellino",
+      "category": "other",
+      "subcategory": "other",
+      "location": {
+        "city": "Muravera",
+        "address": "Viale Rinascita, Muravera",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.muraverawelcome.com/en/useful-info/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.muraverawelcome.com/en/useful-info/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "service",
+            "address",
+            "phones"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "complete",
+        "mobility": "missing",
+        "family": "complete",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Confirm current operating hours by phone."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Guardia+Medica+San+Marcellino+Muravera"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "other",
+          "region_id": "region-05-muravera",
+          "details": {
+            "kind": "medical_watch",
+            "health": {
+              "phones": [
+                "+39 070 6097737",
+                "+39 366 9373912"
+              ]
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Guardia+Medica+San+Marcellino+Muravera"
+      }
+    },
+    {
+      "id": "place_other_mercato_settimanale_villasimius",
+      "slug": "mercato-settimanale-villasimius",
+      "name": "Mercato settimanale di Villasimius",
+      "category": "other",
+      "subcategory": "other",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via Donatello",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.villasimiusturismo.it/supermarket/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.villasimiusturismo.it/supermarket/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "schedule",
+            "categories"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Confirm operation on public holidays."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Mercato+settimanale+Via+Donatello+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "other",
+          "region_id": null,
+          "details": {
+            "kind": "weekly_market",
+            "market": {
+              "schedule": "Saturday 08:00-13:00",
+              "profiles": [
+                "groceries",
+                "fruit_vegetables",
+                "fish",
+                "local_products",
+                "household"
+              ]
+            }
+          },
+          "insights": {
+            "tags": [
+              "weekly_shopping",
+              "local_products"
+            ],
+            "confidence": "high"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Mercato+settimanale+Via+Donatello+Villasimius"
+      }
+    },
+    {
+      "id": "place_other_panificio_frau_villasimius",
+      "slug": "panificio-frau-villasimius",
+      "name": "Panificio Frau",
+      "category": "other",
+      "subcategory": "other",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via del Mare 31",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.villasimiusturismo.it/supermarket/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.villasimiusturismo.it/supermarket/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Current hours and product range unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Panificio+Frau+Via+del+Mare+31+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "other",
+          "region_id": null,
+          "details": {
+            "kind": "bakery",
+            "food": {
+              "profiles": [
+                "breakfast",
+                "quick_stop",
+                "beach_stop"
+              ],
+              "cuisine": [
+                "bakery"
+              ]
+            }
+          },
+          "insights": {
+            "tags": [
+              "bread_stop",
+              "beach_provisions"
+            ],
+            "confidence": "medium"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Panificio+Frau+Via+del+Mare+31+Villasimius"
+      }
+    },
+    {
+      "id": "place_other_piazza_italia_costa_rei",
+      "slug": "piazza-italia-costa-rei",
+      "name": "Piazza Italia Costa Rei",
+      "category": "other",
+      "subcategory": "other",
+      "location": {
+        "city": "Muravera",
+        "address": "Piazza Italia 1, Costa Rei",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.piazzaitaliacostarei.it/centro-commerciale/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official_center",
+          "url": "https://www.piazzaitaliacostarei.it/centro-commerciale/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "address",
+            "services",
+            "distance_to_sea"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "complete",
+        "mobility": "partial",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Confirm individual tenant names and September hours."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Piazza+Italia+1+Costa+Rei"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "other",
+          "region_id": "region-04-costa-rei",
+          "details": {
+            "kind": "service_center",
+            "services": {
+              "pharmacy": "confirmed",
+              "atm": "confirmed",
+              "supermarket_nearby": "confirmed",
+              "restaurants": "confirmed",
+              "gelateria": "confirmed",
+              "tourist_services": "confirmed"
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Piazza+Italia+1+Costa+Rei"
+      }
+    },
+    {
+      "id": "place_other_piazzetta_rei_marina",
+      "slug": "piazzetta-rei-marina",
+      "name": "Piazzetta Rei Marina",
+      "category": "other",
+      "subcategory": "other",
+      "location": {
+        "city": "Muravera",
+        "address": "Rei Marina, Costa Rei",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://costarei.wixsite.com/villettatamerici/dove-siamo"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "local_property_reference",
+          "url": "https://costarei.wixsite.com/villettatamerici/dove-siamo",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "area",
+            "services"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "complete",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "partial",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Canonical tenant names and hours unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Piazzetta+Rei+Marina+Costa+Rei"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "other",
+          "region_id": "region-04-costa-rei",
+          "details": {
+            "kind": "service_center",
+            "services": {
+              "restaurant_bar": "confirmed",
+              "pharmacy": "confirmed",
+              "fish_shop": "confirmed",
+              "rotisserie": "confirmed",
+              "pastry": "confirmed",
+              "supermarket": "confirmed"
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Piazzetta+Rei+Marina+Costa+Rei"
+      }
+    },
+    {
+      "id": "place_other_pronto_soccorso_san_marcellino_muravera",
+      "slug": "pronto-soccorso-san-marcellino-muravera",
+      "name": "Pronto Soccorso San Marcellino",
+      "category": "other",
+      "subcategory": "other",
+      "location": {
+        "city": "Muravera",
+        "address": "Viale Rinascita 1",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.muraverawelcome.com/en/useful-info/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.muraverawelcome.com/en/useful-info/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "complete",
+        "mobility": "missing",
+        "family": "complete",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "None for basic emergency use; call 112 for emergencies."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Pronto+Soccorso+San+Marcellino+Muravera"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "other",
+          "region_id": "region-05-muravera",
+          "details": {
+            "kind": "emergency_room",
+            "health": {
+              "phone": "+39 070 609 7735"
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Pronto+Soccorso+San+Marcellino+Muravera"
+      }
     }
-  ]
+  ],
+  "source_dataset": "utazasi-complete-regional-data-v1.9"
 }

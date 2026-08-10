@@ -1,0 +1,545 @@
+{
+  "version": "1.9",
+  "source_dataset": "utazasi-complete-regional-data-v1.9",
+  "places": [
+    {
+      "id": "place_parking_parcheggio_ex_esmas_villasimius",
+      "slug": "parcheggio-ex-esmas-villasimius",
+      "name": "Parcheggio Ex Esmas",
+      "category": "parking",
+      "subcategory": "parking",
+      "location": {
+        "city": "Villasimius",
+        "address": "Ex Esmas area",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.villasimiusturismo.it/parcheggi/",
+          "https://villasimiussrl.it/zf/index.php/trasparenza/index/visualizza-documento-generico/categoria/295/documento/298"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.villasimiusturismo.it/parcheggi/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "paid",
+            "charging_window"
+          ]
+        },
+        {
+          "source_type": "municipal_contract",
+          "url": "https://villasimiussrl.it/zf/index.php/trasparenza/index/visualizza-documento-generico/categoria/295/documento/298",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "2026 tariff"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "missing",
+        "mobility": "complete",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Exact entrance and capacity unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Parcheggio+Ex+Esmas+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "parking",
+          "region_id": null,
+          "details": {
+            "kind": "urban_paid_parking",
+            "parking": {
+              "available": "confirmed",
+              "paid": "confirmed",
+              "charging_window": "24 hours",
+              "price": "2026 urban tariff: first hour EUR 1.50; subsequent hours EUR 2.00"
+            }
+          },
+          "insights": {
+            "tags": [
+              "town_center_access",
+              "all_day_paid"
+            ],
+            "confidence": "medium"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Parcheggio+Ex+Esmas+Villasimius"
+      }
+    },
+    {
+      "id": "place_parking_parcheggio_piazza_capitan_gatta_villasimius",
+      "slug": "parcheggio-piazza-capitan-gatta-villasimius",
+      "name": "Parcheggio Piazza Capitan Gatta",
+      "category": "parking",
+      "subcategory": "parking",
+      "location": {
+        "city": "Villasimius",
+        "address": "Piazza Capitan Gatta",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.villasimiusturismo.it/parcheggi/",
+          "https://villasimiussrl.it/zf/index.php/trasparenza/index/visualizza-documento-generico/categoria/295/documento/298"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.villasimiusturismo.it/parcheggi/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "paid",
+            "charging_window"
+          ]
+        },
+        {
+          "source_type": "municipal_contract",
+          "url": "https://villasimiussrl.it/zf/index.php/trasparenza/index/visualizza-documento-generico/categoria/295/documento/298",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "2026 tariff"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "missing",
+        "mobility": "complete",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Capacity and accessibility bays unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Piazza+Capitan+Gatta+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "parking",
+          "region_id": null,
+          "details": {
+            "kind": "urban_paid_parking",
+            "parking": {
+              "available": "confirmed",
+              "paid": "confirmed",
+              "charging_window": "09:00-13:00 and 17:00-22:00",
+              "price": "2026 urban tariff: first hour EUR 1.50; subsequent hours EUR 2.00"
+            }
+          },
+          "insights": {
+            "tags": [
+              "town_center_access"
+            ],
+            "confidence": "medium"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Piazza+Capitan+Gatta+Villasimius"
+      }
+    },
+    {
+      "id": "place_parking_parcheggio_porto_giunco",
+      "slug": "parcheggio-porto-giunco",
+      "name": "Parcheggio Porto Giunco",
+      "category": "parking",
+      "subcategory": "parking",
+      "location": {
+        "city": "Villasimius",
+        "address": "Porto Giunco access area",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://villasimiussrl.it/zf/index.php/trasparenza/index/visualizza-documento-generico/categoria/295/documento/298"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "municipal_contract",
+          "url": "https://villasimiussrl.it/zf/index.php/trasparenza/index/visualizza-documento-generico/categoria/295/documento/298",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "paid",
+            "2026 tariff"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "missing",
+        "mobility": "complete",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Capacity and exact walking distance unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Parcheggio+Porto+Giunco+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "parking",
+          "region_id": null,
+          "details": {
+            "kind": "beach_paid_parking",
+            "parking": {
+              "available": "confirmed",
+              "paid": "confirmed",
+              "season": "summer",
+              "price": "2026 full day: car EUR 10; motorcycle EUR 5; camper EUR 15; 16:00-20:00 reduced tariff"
+            }
+          },
+          "insights": {
+            "tags": [
+              "porto_giunco_access"
+            ],
+            "confidence": "high"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Parcheggio+Porto+Giunco+Villasimius"
+      }
+    },
+    {
+      "id": "place_parking_parcheggio_porto_sa_ruxi",
+      "slug": "parcheggio-porto-sa-ruxi",
+      "name": "Parcheggio Porto Sa Ruxi",
+      "category": "parking",
+      "subcategory": "parking",
+      "location": {
+        "city": "Villasimius",
+        "address": "Porto Sa Ruxi access area",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://villasimiussrl.it/zf/index.php/trasparenza/index/visualizza-documento-generico/categoria/295/documento/298"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "municipal_contract",
+          "url": "https://villasimiussrl.it/zf/index.php/trasparenza/index/visualizza-documento-generico/categoria/295/documento/298",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "parking",
+            "2026 tariff"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "missing",
+        "mobility": "complete",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Exact entrance and capacity unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Parcheggio+Porto+Sa+Ruxi"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "parking",
+          "region_id": "region-02-solanas-cala-pira",
+          "details": {
+            "kind": "beach_paid_parking",
+            "parking": {
+              "paid": "confirmed",
+              "price_2026": "car EUR 12 full day; EUR 6 after 16:00"
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Parcheggio+Porto+Sa+Ruxi"
+      }
+    },
+    {
+      "id": "place_parking_parcheggio_rokkaria_villasimius",
+      "slug": "parcheggio-rokkaria-villasimius",
+      "name": "Parcheggio Rokkaria",
+      "category": "parking",
+      "subcategory": "parking",
+      "location": {
+        "city": "Villasimius",
+        "address": "Rokkaria area",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.villasimiusturismo.it/parcheggi/",
+          "https://villasimiussrl.it/zf/index.php/trasparenza/index/visualizza-documento-generico/categoria/295/documento/298"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.villasimiusturismo.it/parcheggi/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "paid",
+            "charging_window"
+          ]
+        },
+        {
+          "source_type": "municipal_contract",
+          "url": "https://villasimiussrl.it/zf/index.php/trasparenza/index/visualizza-documento-generico/categoria/295/documento/298",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "2026 tariff"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "missing",
+        "mobility": "complete",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Exact entrance and accessibility bays unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Parcheggio+Rokkaria+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "parking",
+          "region_id": null,
+          "details": {
+            "kind": "urban_paid_parking",
+            "parking": {
+              "available": "confirmed",
+              "paid": "confirmed",
+              "charging_window": "09:00-13:00 and 17:00-22:00",
+              "price": "2026 urban tariff: first hour EUR 1.50; subsequent hours EUR 2.00"
+            }
+          },
+          "insights": {
+            "tags": [
+              "town_center_access"
+            ],
+            "confidence": "medium"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Parcheggio+Rokkaria+Villasimius"
+      }
+    },
+    {
+      "id": "place_parking_parcheggio_simius_viale_delle_palme",
+      "slug": "parcheggio-simius-viale-delle-palme",
+      "name": "Parcheggio Simius – Viale delle Palme",
+      "category": "parking",
+      "subcategory": "parking",
+      "location": {
+        "city": "Villasimius",
+        "address": "Viale delle Palme, Simius",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://villasimiussrl.it/zf/index.php/trasparenza/index/visualizza-documento-generico/categoria/295/documento/298"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "municipal_contract",
+          "url": "https://villasimiussrl.it/zf/index.php/trasparenza/index/visualizza-documento-generico/categoria/295/documento/298",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "paid",
+            "2026 tariff"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "missing",
+        "mobility": "complete",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Capacity and pedestrian distance unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Parcheggio+Simius+Viale+delle+Palme"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "parking",
+          "region_id": null,
+          "details": {
+            "kind": "beach_paid_parking",
+            "parking": {
+              "available": "confirmed",
+              "paid": "confirmed",
+              "season": "summer",
+              "price": "2026 full day: car EUR 10; motorcycle EUR 5; camper EUR 15; 16:00-20:00 reduced tariff"
+            }
+          },
+          "insights": {
+            "tags": [
+              "simius_beach_access"
+            ],
+            "confidence": "high"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Parcheggio+Simius+Viale+delle+Palme"
+      }
+    },
+    {
+      "id": "place_parking_parcheggio_via_degli_oleandri_villasimius",
+      "slug": "parcheggio-via-degli-oleandri-villasimius",
+      "name": "Parcheggio Via degli Oleandri",
+      "category": "parking",
+      "subcategory": "parking",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via degli Oleandri",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://villasimiussrl.it/zf/index.php/trasparenza/index/visualizza-documento-generico/categoria/295/documento/298"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "municipal_contract",
+          "url": "https://villasimiussrl.it/zf/index.php/trasparenza/index/visualizza-documento-generico/categoria/295/documento/298",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "paid",
+            "hours",
+            "2026 tariff"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "missing",
+        "mobility": "complete",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Capacity and accessibility bays unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Parcheggio+Via+degli+Oleandri+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "parking",
+          "region_id": null,
+          "details": {
+            "kind": "urban_daily_parking",
+            "parking": {
+              "available": "confirmed",
+              "paid": "confirmed",
+              "charging_window": "08:00-24:00",
+              "price": "2026 daily tariff: car EUR 5.00; camper EUR 7.50"
+            }
+          },
+          "insights": {
+            "tags": [
+              "all_day_town_parking"
+            ],
+            "confidence": "high"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Parcheggio+Via+degli+Oleandri+Villasimius"
+      }
+    }
+  ]
+}

@@ -11,6 +11,7 @@
     "seed:supabase": "node --env-file=.env.local scripts/seed-supabase.mjs",
     "seed:supabase:replace-test-day": "node --env-file=.env.local scripts/seed-supabase.mjs --replace-test-day",
     "seed:supabase:dashboard-sql": "node scripts/generate-dashboard-seed-sql.mjs",
+    "import:v19-regional": "node scripts/import-v19-regional-data.mjs",
     "report:route-candidates": "node scripts/report-route-candidates.mjs",
     "research": "node scripts/research.mjs",
     "research:live": "node --env-file=.env.local scripts/research.mjs live",

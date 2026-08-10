@@ -1,12 +1,649 @@
 {
-  "version": "1.0",
+  "version": "1.9",
   "category": "cafes",
-  "source_dataset": "utazasi_v2f_research_2026-08-07",
+  "source_dataset": "utazasi-complete-regional-data-v1.9",
   "updated_at": "2026-08-07",
   "change_log": [
     "Első kanonikus cafe/gelateria-javaslatcsomag 3 rekorddal."
   ],
   "places": [
+    {
+      "id": "place_cafe_4_passion",
+      "slug": "4-passion-cafe",
+      "name": "4 Passion Cafè",
+      "category": "cafe",
+      "subcategory": "cafe_gelateria",
+      "location": {
+        "city": "Costa Rei"
+      },
+      "verification": {
+        "status": "verified_local_business_network",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.ccncostarei.com/associati/"
+        ],
+        "source_refs": [
+          "C02"
+        ]
+      }
+    },
+    {
+      "id": "place_cafe_bar_lara_villaputzu",
+      "slug": "bar-lara-villaputzu",
+      "name": "Bar Lara Maria Ignazia",
+      "category": "cafe",
+      "subcategory": "cafe_bar",
+      "location": {
+        "city": "Villaputzu",
+        "address": "Piazza Marconi 8",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.comune.villaputzu.ca.it/modules.php?cid=57&name=Pagine&pa=showpage&pid=41"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "municipal",
+          "url": "https://www.comune.villaputzu.ca.it/modules.php?cid=57&name=Pagine&pa=showpage&pid=41",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "partial",
+        "mobility": "partial",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Current operation and hours need verification."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Bar+Lara+Piazza+Marconi+8+Villaputzu"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "cafe_bar",
+          "region_id": "region-06-villaputzu",
+          "details": {
+            "kind": "bar",
+            "food": {
+              "profiles": [
+                "coffee",
+                "quick_stop"
+              ]
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Bar+Lara+Piazza+Marconi+8+Villaputzu"
+      }
+    },
+    {
+      "id": "place_cafe_bar_le_palme_porto_corallo",
+      "slug": "bar-le-palme-porto-corallo",
+      "name": "Bar Le Palme",
+      "category": "cafe",
+      "subcategory": "cafe_bar",
+      "location": {
+        "city": "Villaputzu",
+        "address": "Porto Corallo",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.comune.villaputzu.ca.it/modules.php?cid=57&name=Pagine&pa=showpage&pid=41"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "municipal",
+          "url": "https://www.comune.villaputzu.ca.it/modules.php?cid=57&name=Pagine&pa=showpage&pid=41",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "area",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "partial",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Current operation and hours need verification."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Bar+Le+Palme+Porto+Corallo"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "cafe_bar",
+          "region_id": "region-06-villaputzu",
+          "details": {
+            "kind": "bar",
+            "food": {
+              "profiles": [
+                "coffee",
+                "drinks",
+                "marina_stop"
+              ]
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Bar+Le+Palme+Porto+Corallo"
+      }
+    },
+    {
+      "id": "place_cafe_doppio_malto_villasimius",
+      "slug": "doppio-malto-villasimius",
+      "name": "Doppio Malto",
+      "category": "cafe",
+      "subcategory": "cafe_bar",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via del Mare 71",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.spiaggevillasimius.it/ristoranti-e-locali-tipici"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "local_directory",
+          "url": "https://www.spiaggevillasimius.it/ristoranti-e-locali-tipici",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Current hours unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Doppio+Malto+Via+del+Mare+71+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "cafe_bar",
+          "region_id": null,
+          "details": {
+            "kind": "craft_beer_bar",
+            "food": {
+              "profiles": [
+                "drinks",
+                "casual_dinner"
+              ],
+              "cuisine": []
+            }
+          },
+          "insights": {
+            "tags": [
+              "evening"
+            ],
+            "confidence": "low"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Doppio+Malto+Via+del+Mare+71+Villasimius"
+      }
+    },
+    {
+      "id": "place_cafe_dry_hop_villasimius",
+      "slug": "dry-hop-villasimius",
+      "name": "Dry Hop",
+      "category": "cafe",
+      "subcategory": "cafe_bar",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via Garibaldi 1",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.spiaggevillasimius.it/ristoranti-e-locali-tipici",
+          "https://www.dryhop.it/prenota-un-tavolo-dry-hop-villasimius/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "local_directory",
+          "url": "https://www.spiaggevillasimius.it/ristoranti-e-locali-tipici",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        },
+        {
+          "source_type": "official",
+          "url": "https://www.dryhop.it/prenota-un-tavolo-dry-hop-villasimius/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "reservations"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Current hours unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Dry+Hop+Via+Garibaldi+1+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "cafe_bar",
+          "region_id": null,
+          "details": {
+            "kind": "beer_bar_burger",
+            "food": {
+              "profiles": [
+                "casual_dinner",
+                "drinks"
+              ],
+              "cuisine": [
+                "burgers"
+              ]
+            }
+          },
+          "insights": {
+            "tags": [
+              "casual_evening"
+            ],
+            "confidence": "medium"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Dry+Hop+Via+Garibaldi+1+Villasimius"
+      }
+    },
+    {
+      "id": "place_cafe_gelateria_piazza_italia_costa_rei",
+      "slug": "gelateria-piazza-italia-costa-rei",
+      "name": "Gelateria artigianale Piazza Italia",
+      "category": "cafe",
+      "subcategory": "gelateria",
+      "location": {
+        "city": "Muravera",
+        "address": "Piazza Italia 1, Costa Rei",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.piazzaitaliacostarei.it/centro-commerciale/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official_center",
+          "url": "https://www.piazzaitaliacostarei.it/centro-commerciale/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "gelateria",
+            "address"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "partial",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Confirm current trading name and hours."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Gelateria+Piazza+Italia+Costa+Rei"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "gelateria",
+          "region_id": "region-04-costa-rei",
+          "details": {
+            "kind": "gelateria",
+            "food": {
+              "profiles": [
+                "gelato",
+                "dessert"
+              ]
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Gelateria+Piazza+Italia+Costa+Rei"
+      }
+    },
+    {
+      "id": "place_cafe_gelateria_il_prato_verde_villasimius",
+      "slug": "gelateria-il-prato-verde-villasimius",
+      "name": "Gelateria Il Prato Verde",
+      "category": "cafe",
+      "subcategory": "gelateria",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via del Mare",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.ampcapocarbonara.it/dove-mangiare.html",
+          "https://www.parks.it/riserva.marina.capo.carbonara/ristoratore.php?progressivooperatore=7220"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "protected_area_directory",
+          "url": "https://www.ampcapocarbonara.it/dove-mangiare.html",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "type",
+            "municipality"
+          ]
+        },
+        {
+          "source_type": "parks_directory",
+          "url": "https://www.parks.it/riserva.marina.capo.carbonara/ristoratore.php?progressivooperatore=7220",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "municipality"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Street number, current hours and contact unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Gelateria+Il+Prato+Verde+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "gelateria",
+          "region_id": null,
+          "details": {
+            "kind": "gelateria_cafe",
+            "food": {
+              "profiles": [
+                "gelato",
+                "coffee",
+                "dessert"
+              ],
+              "cuisine": []
+            }
+          },
+          "insights": {
+            "tags": [
+              "central_treat"
+            ],
+            "confidence": "low"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Gelateria+Il+Prato+Verde+Villasimius"
+      }
+    },
+    {
+      "id": "place_cafe_il_delano_solanas",
+      "slug": "il-delano-solanas",
+      "name": "Il Delano",
+      "category": "cafe",
+      "subcategory": "cafe_bar",
+      "location": {
+        "city": "Sinnai",
+        "address": "SS 125 km 14.400, direction Solanas",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.ildelano.it/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official",
+          "url": "https://www.ildelano.it/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "bar",
+            "restaurant",
+            "service_station"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "partial",
+        "mobility": "partial",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Current hours and toilets unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Il+Delano+SS125+Solanas"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "cafe_bar",
+          "region_id": "region-02-solanas-cala-pira",
+          "details": {
+            "kind": "service_station_bar_restaurant",
+            "food": {
+              "profiles": [
+                "coffee",
+                "quick_stop",
+                "road_meal"
+              ]
+            },
+            "services": {
+              "fuel": "confirmed"
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Il+Delano+SS125+Solanas"
+      }
+    },
+    {
+      "id": "place_cafe_il_gelato_di_beppe_villasimius",
+      "slug": "il-gelato-di-beppe-villasimius",
+      "name": "Il Gelato di Beppe",
+      "category": "cafe",
+      "subcategory": "gelateria",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via Umberto I 60",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.tripadvisor.co.uk/Restaurant_Review-g194949-d3724506-Reviews-Il_Gelato_di_Beppe-Villasimius_Province_of_Cagliari_Sardinia.html"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "business_listing",
+          "url": "https://www.tripadvisor.co.uk/Restaurant_Review-g194949-d3724506-Reviews-Il_Gelato_di_Beppe-Villasimius_Province_of_Cagliari_Sardinia.html",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "hours",
+            "dietary_options",
+            "outdoor_seating"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "complete",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Confirm September hours locally."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Il+Gelato+di+Beppe+Via+Umberto+I+60+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "gelateria",
+          "region_id": null,
+          "details": {
+            "kind": "gelateria",
+            "food": {
+              "profiles": [
+                "gelato",
+                "dessert",
+                "takeaway"
+              ],
+              "cuisine": [],
+              "outdoor_seating": "confirmed",
+              "vegan_options": "confirmed",
+              "gluten_free_options": "confirmed",
+              "opening_hours": "daily 09:00-02:00 reported"
+            }
+          },
+          "insights": {
+            "tags": [
+              "family_treat",
+              "late_evening"
+            ],
+            "confidence": "medium"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Il+Gelato+di+Beppe+Via+Umberto+I+60+Villasimius"
+      }
+    },
     {
       "id": "place_cafe_il_gelatone_villasimius",
       "slug": "il-gelatone-villasimius",
@@ -31,23 +668,327 @@
       }
     },
     {
-      "id": "place_cafe_4_passion",
-      "slug": "4-passion-cafe",
-      "name": "4 Passion Cafè",
+      "id": "place_cafe_il_primo_molo_villasimius",
+      "slug": "il-primo-molo-villasimius",
+      "name": "Il Primo Molo",
       "category": "cafe",
-      "subcategory": "cafe_gelateria",
+      "subcategory": "cafe_bar",
       "location": {
-        "city": "Costa Rei"
+        "city": "Villasimius",
+        "address": "Porto Turistico di Villasimius",
+        "latitude": null,
+        "longitude": null
       },
       "verification": {
-        "status": "verified_local_business_network",
-        "last_checked": "2026-08-07",
+        "status": "partial",
+        "last_checked": null,
         "sources": [
-          "https://www.ccncostarei.com/associati/"
+          "https://www.spiaggevillasimius.it/ristoranti-e-locali-tipici"
         ],
-        "source_refs": [
-          "C02"
-        ]
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "local_directory",
+          "url": "https://www.spiaggevillasimius.it/ristoranti-e-locali-tipici",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "location",
+            "type",
+            "live_music"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Current hours and seasonal program unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Il+Primo+Molo+Porto+Turistico+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "cafe_bar",
+          "region_id": null,
+          "details": {
+            "kind": "bar_live_music",
+            "food": {
+              "profiles": [
+                "aperitivo",
+                "drinks"
+              ],
+              "cuisine": []
+            }
+          },
+          "insights": {
+            "tags": [
+              "marina_stop",
+              "evening"
+            ],
+            "confidence": "medium"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Il+Primo+Molo+Porto+Turistico+Villasimius"
+      }
+    },
+    {
+      "id": "place_cafe_la_perla_villasimius",
+      "slug": "la-perla-villasimius",
+      "name": "La Perla",
+      "category": "cafe",
+      "subcategory": "cafe_bar",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via del Mare 104-106",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.spiaggevillasimius.it/ristoranti-e-locali-tipici"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "local_directory",
+          "url": "https://www.spiaggevillasimius.it/ristoranti-e-locali-tipici",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Current hours unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=La+Perla+Via+del+Mare+104+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "cafe_bar",
+          "region_id": null,
+          "details": {
+            "kind": "cafe_pastry",
+            "food": {
+              "profiles": [
+                "breakfast",
+                "coffee",
+                "pastry"
+              ],
+              "cuisine": []
+            }
+          },
+          "insights": {
+            "tags": [
+              "morning_stop"
+            ],
+            "confidence": "medium"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=La+Perla+Via+del+Mare+104+Villasimius"
+      }
+    },
+    {
+      "id": "place_cafe_plaza_cafe_villasimius",
+      "slug": "plaza-cafe-villasimius",
+      "name": "Plaza Cafè",
+      "category": "cafe",
+      "subcategory": "cafe_bar",
+      "location": {
+        "city": "Villasimius",
+        "address": "Piazza Generale Incani 1",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.spiaggevillasimius.it/ristoranti-e-locali-tipici"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "local_directory",
+          "url": "https://www.spiaggevillasimius.it/ristoranti-e-locali-tipici",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Current hours unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Plaza+Cafe+Piazza+Generale+Incani+1+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "cafe_bar",
+          "region_id": null,
+          "details": {
+            "kind": "cocktail_bar",
+            "food": {
+              "profiles": [
+                "coffee",
+                "aperitivo",
+                "drinks"
+              ],
+              "cuisine": []
+            }
+          },
+          "insights": {
+            "tags": [
+              "central_stop"
+            ],
+            "confidence": "medium"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Plaza+Cafe+Piazza+Generale+Incani+1+Villasimius"
+      }
+    },
+    {
+      "id": "place_cafe_savana_cafe_villasimius",
+      "slug": "savana-cafe-villasimius",
+      "name": "Savana Cafe",
+      "category": "cafe",
+      "subcategory": "cafe_bar",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via Regina Elena 44F",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.tripadvisor.co.uk/Restaurant_Review-g194949-d10699368-Reviews-Savana_Cafe-Villasimius_Province_of_Cagliari_Sardinia.html",
+          "https://restaurantguru.com/Savana-Cafe-Villasimius"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "business_listing",
+          "url": "https://www.tripadvisor.co.uk/Restaurant_Review-g194949-d10699368-Reviews-Savana_Cafe-Villasimius_Province_of_Cagliari_Sardinia.html",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "meal_profiles"
+          ]
+        },
+        {
+          "source_type": "business_directory",
+          "url": "https://restaurantguru.com/Savana-Cafe-Villasimius",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "outdoor_seating",
+            "hours"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "complete",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Confirm current phone and September hours; sources differ."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Savana+Cafe+Via+Regina+Elena+44F+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "cafe_bar",
+          "region_id": null,
+          "details": {
+            "kind": "cafe_bistrot",
+            "food": {
+              "profiles": [
+                "breakfast",
+                "coffee",
+                "lunch",
+                "dinner",
+                "drinks"
+              ],
+              "cuisine": [
+                "cafe"
+              ],
+              "outdoor_seating": "confirmed",
+              "opening_hours": "split daily hours reported; verify locally"
+            }
+          },
+          "insights": {
+            "tags": [
+              "all_day_stop"
+            ],
+            "confidence": "medium"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Savana+Cafe+Via+Regina+Elena+44F+Villasimius"
       }
     },
     {
@@ -74,6 +1015,77 @@
         "source_refs": [
           "C03"
         ]
+      }
+    },
+    {
+      "id": "place_cafe_via_nazional_ale_villaputzu",
+      "slug": "via-nazional-ale-villaputzu",
+      "name": "Via Nazion Ale",
+      "category": "cafe",
+      "subcategory": "gelateria",
+      "location": {
+        "city": "Villaputzu",
+        "address": "Via Nazionale 57",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.comune.villaputzu.ca.it/modules.php?cid=57&name=Pagine&pa=showpage&pid=41"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "municipal",
+          "url": "https://www.comune.villaputzu.ca.it/modules.php?cid=57&name=Pagine&pa=showpage&pid=41",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "partial",
+        "mobility": "partial",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Current operation and hours need verification."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Via+Nazion+Ale+Villaputzu"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "gelateria",
+          "region_id": "region-06-villaputzu",
+          "details": {
+            "kind": "cafe_gelateria",
+            "food": {
+              "profiles": [
+                "coffee",
+                "gelato",
+                "quick_stop"
+              ]
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Via+Nazion+Ale+Villaputzu"
       }
     }
   ]

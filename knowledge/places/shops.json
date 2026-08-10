@@ -1,12 +1,56 @@
 {
-  "version": "1.5",
+  "version": "1.9",
   "category": "shops",
-  "source_dataset": "utazasi_v2f_research_2026-08-07",
+  "source_dataset": "utazasi-complete-regional-data-v1.9",
   "updated_at": "2026-08-07",
   "change_log": [
     "Első kanonikus shop-javaslatcsomag: supermarket és pharmacy fókusz, 9 rekord."
   ],
   "places": [
+    {
+      "id": "place_shop_ard_costa_rei",
+      "slug": "ard-discount-costa-rei",
+      "name": "ARD Discount",
+      "category": "shop",
+      "subcategory": "supermarket",
+      "location": {
+        "city": "Costa Rei",
+        "postal_code": "09043",
+        "address": "Via Cristoforo Colombo 24"
+      },
+      "verification": {
+        "status": "verified_government_list",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.masaf.gov.it/flex/cm/pages/ServeAttachment.php/L/IT/D/1%252F7%252F1%252FD.e25bcf4d90eea09b9c20/P/BLOB%3AID%3D23493/E/pdf?mode=download"
+        ],
+        "source_refs": [
+          "SH03"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_conad_muravera",
+      "slug": "conad-muravera",
+      "name": "Conad",
+      "category": "shop",
+      "subcategory": "supermarket",
+      "location": {
+        "city": "Muravera",
+        "postal_code": "09043",
+        "address": "Viale Rinascita snc"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.conad.it/ricerca-negozi/conad-viale-rinascita-snc-09043-muravera--010310"
+        ],
+        "source_refs": [
+          "SH04"
+        ]
+      }
+    },
     {
       "id": "place_shop_conad_city_villasimius",
       "slug": "conad-city-villasimius",
@@ -332,115 +376,70 @@
       }
     },
     {
-      "id": "place_shop_ard_costa_rei",
-      "slug": "ard-discount-costa-rei",
-      "name": "ARD Discount",
+      "id": "place_shop_farmacia_congiu_muravera",
+      "slug": "farmacia-congiu-muravera",
+      "name": "Farmacia Congiu",
       "category": "shop",
-      "subcategory": "supermarket",
-      "location": {
-        "city": "Costa Rei",
-        "postal_code": "09043",
-        "address": "Via Cristoforo Colombo 24"
-      },
-      "verification": {
-        "status": "verified_government_list",
-        "last_checked": "2026-08-07",
-        "sources": [
-          "https://www.masaf.gov.it/flex/cm/pages/ServeAttachment.php/L/IT/D/1%252F7%252F1%252FD.e25bcf4d90eea09b9c20/P/BLOB%3AID%3D23493/E/pdf?mode=download"
-        ],
-        "source_refs": [
-          "SH03"
-        ]
-      }
-    },
-    {
-      "id": "place_shop_conad_muravera",
-      "slug": "conad-muravera",
-      "name": "Conad",
-      "category": "shop",
-      "subcategory": "supermarket",
+      "subcategory": "pharmacy",
       "location": {
         "city": "Muravera",
-        "postal_code": "09043",
-        "address": "Viale Rinascita snc"
+        "address": "Via Roma 145/A",
+        "latitude": null,
+        "longitude": null
       },
       "verification": {
-        "status": "verified_official",
-        "last_checked": "2026-08-07",
+        "status": "partial",
+        "last_checked": null,
         "sources": [
-          "https://www.conad.it/ricerca-negozi/conad-viale-rinascita-snc-09043-muravera--010310"
+          "https://www.muraverawelcome.com/en/useful-info/"
         ],
-        "source_refs": [
-          "SH04"
-        ]
-      }
-    },
-    {
-      "id": "place_shop_sigma_villaputzu",
-      "slug": "sigma-villaputzu",
-      "name": "SIGMA",
-      "category": "shop",
-      "subcategory": "supermarket",
-      "location": {
-        "city": "Villaputzu",
-        "address": "Piazza Leonardo Da Vinci snc"
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
       },
-      "verification": {
-        "status": "verified_official",
-        "last_checked": "2026-08-07",
-        "sources": [
-          "https://www.csssardegna.it/index.php/puntivendita/sigma-villaputzu-piazza-leonardo-davinci/"
-        ],
-        "source_refs": [
-          "SH05"
-        ]
-      }
-    },
-    {
-      "id": "place_shop_farmacia_simius",
-      "slug": "farmacia-simius",
-      "name": "Farmacia Simius",
-      "category": "shop",
-      "subcategory": "pharmacy",
-      "location": {
-        "city": "Villasimius"
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.muraverawelcome.com/en/useful-info/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
       },
-      "verification": {
-        "status": "verified_official_identity",
-        "last_checked": "2026-08-07",
-        "sources": [
-          "https://www.farmaciasimius.com/"
-        ],
-        "source_refs": [
-          "SH06"
-        ],
-        "uncertainty_note": "Pontos cím/nyitvatartás nincs kanonizálva a korábbi forrásütközés miatt."
-      }
-    },
-    {
-      "id": "place_shop_farmacia_san_giovanni_castiadas",
-      "slug": "farmacia-san-giovanni-castiadas",
-      "name": "Farmacia San Giovanni di Tranza e Faa",
-      "category": "shop",
-      "subcategory": "pharmacy",
-      "location": {
-        "city": "Castiadas",
-        "address": "Località Olia Speciosa"
+      "open_questions": [
+        "Hours and duty rota unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Farmacia+Congiu+Via+Roma+145A+Muravera"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "pharmacy_drugstore",
+          "region_id": "region-05-muravera",
+          "details": {
+            "kind": "pharmacy",
+            "health": {
+              "phone": "+39 070 993 0566"
+            }
+          },
+          "insights": null
+        }
       },
-      "contact": {
-        "phone": [
-          "+39 070 9949200"
-        ]
-      },
-      "verification": {
-        "status": "verified_municipal",
-        "last_checked": "2026-08-07",
-        "sources": [
-          "https://www.comune.castiadas.su.it/it/vivere/farmacia-san-giovanni-di-tranza-e-faa"
-        ],
-        "source_refs": [
-          "SH07"
-        ]
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Farmacia+Congiu+Via+Roma+145A+Muravera"
       }
     },
     {
@@ -470,6 +469,73 @@
       }
     },
     {
+      "id": "place_shop_farmacia_tramatzu_muravera",
+      "slug": "farmacia-tramatzu-muravera",
+      "name": "Farmacia Dott.ssa Luisa Tramatzu",
+      "category": "shop",
+      "subcategory": "pharmacy",
+      "location": {
+        "city": "Muravera",
+        "address": "Via Roma",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.muraverawelcome.com/en/useful-info/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.muraverawelcome.com/en/useful-info/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "street",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Street number, hours and duty rota unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Farmacia+Tramatzu+Muravera"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "pharmacy_drugstore",
+          "region_id": "region-05-muravera",
+          "details": {
+            "kind": "pharmacy",
+            "health": {
+              "phone": "+39 070 993 0186"
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Farmacia+Tramatzu+Muravera"
+      }
+    },
+    {
       "id": "place_shop_farmacia_melis_villaputzu",
       "slug": "farmacia-melis-villaputzu",
       "name": "Farmacia Dott.ssa Melis Romina",
@@ -493,6 +559,278 @@
           "SH09"
         ],
         "uncertainty_note": "A pontos házszám források között eltér; ezért ebben a csomagban nincs rögzítve."
+      }
+    },
+    {
+      "id": "place_shop_farmacia_piazza_italia_costa_rei",
+      "slug": "farmacia-piazza-italia-costa-rei",
+      "name": "Farmacia Piazza Italia Costa Rei",
+      "category": "shop",
+      "subcategory": "pharmacy",
+      "location": {
+        "city": "Muravera",
+        "address": "Piazza Italia 1, Costa Rei",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.piazzaitaliacostarei.it/centro-commerciale/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official_center",
+          "url": "https://www.piazzaitaliacostarei.it/centro-commerciale/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "pharmacy",
+            "address"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "partial",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Confirm legal business name, phone and September hours."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Farmacia+Piazza+Italia+Costa+Rei"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "pharmacy_drugstore",
+          "region_id": "region-04-costa-rei",
+          "details": {
+            "kind": "pharmacy",
+            "health": {
+              "opening_hours": "unknown"
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Farmacia+Piazza+Italia+Costa+Rei"
+      }
+    },
+    {
+      "id": "place_shop_farmacia_san_giovanni_castiadas",
+      "slug": "farmacia-san-giovanni-castiadas",
+      "name": "Farmacia San Giovanni di Tranza e Faa",
+      "category": "shop",
+      "subcategory": "pharmacy",
+      "location": {
+        "city": "Castiadas",
+        "address": "Località Olia Speciosa"
+      },
+      "contact": {
+        "phone": [
+          "+39 070 9949200"
+        ]
+      },
+      "verification": {
+        "status": "verified_municipal",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.comune.castiadas.su.it/it/vivere/farmacia-san-giovanni-di-tranza-e-faa"
+        ],
+        "source_refs": [
+          "SH07"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_farmacia_simius",
+      "slug": "farmacia-simius",
+      "name": "Farmacia Simius",
+      "category": "shop",
+      "subcategory": "pharmacy",
+      "location": {
+        "city": "Villasimius"
+      },
+      "verification": {
+        "status": "verified_official_identity",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.farmaciasimius.com/"
+        ],
+        "source_refs": [
+          "SH06"
+        ],
+        "uncertainty_note": "Pontos cím/nyitvatartás nincs kanonizálva a korábbi forrásütközés miatt."
+      }
+    },
+    {
+      "id": "place_shop_farmacia_simius_villasimius",
+      "slug": "farmacia-simius-villasimius",
+      "name": "Farmacia Simius",
+      "category": "shop",
+      "subcategory": "pharmacy",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via del Mare 37",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.farmaciasimius.it/",
+          "https://www.villasimiusturismo.it/farmacie-e-medici/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official",
+          "url": "https://www.farmaciasimius.it/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "hours",
+            "services",
+            "baby_products"
+          ]
+        },
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.villasimiusturismo.it/farmacie-e-medici/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "complete",
+        "mobility": "missing",
+        "family": "complete",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Confirm holiday duty rota when needed."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Farmacia+Simius+Via+del+Mare+37+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "pharmacy_drugstore",
+          "region_id": null,
+          "details": {
+            "kind": "pharmacy",
+            "health": {
+              "profiles": [
+                "medicines",
+                "baby_products",
+                "sun_care",
+                "diagnostics"
+              ],
+              "opening_hours": "Mon-Fri 09:00-13:00, 16:00-20:00; Sat 09:30-12:30; Sun closed",
+              "phone": "+39 340 214 0226"
+            }
+          },
+          "insights": {
+            "tags": [
+              "baby_emergency",
+              "sun_care"
+            ],
+            "confidence": "high"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Farmacia+Simius+Via+del+Mare+37+Villasimius"
+      }
+    },
+    {
+      "id": "place_shop_farmacia_stagionale_solanas",
+      "slug": "farmacia-stagionale-solanas",
+      "name": "Farmacia stagionale di Solanas",
+      "category": "shop",
+      "subcategory": "pharmacy",
+      "location": {
+        "city": "Sinnai",
+        "address": "Via al Mare 5, Solanas",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.regione.sardegna.it/atti-bandi-archivi/atti-amministrativi/bandi/116460"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "regional_government",
+          "url": "https://www.regione.sardegna.it/atti-bandi-archivi/atti-amministrativi/bandi/116460",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "address",
+            "seasonal_pharmacy_concession"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Confirm awarded operator and September hours."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Farmacia+Via+al+Mare+5+Solanas"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "pharmacy_drugstore",
+          "region_id": "region-02-solanas-cala-pira",
+          "details": {
+            "kind": "seasonal_pharmacy",
+            "health": {
+              "season": "summer 2026-2028 concession",
+              "opening_hours": "unknown"
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Farmacia+Via+al+Mare+5+Solanas"
       }
     },
     {
@@ -658,16 +996,16 @@
       }
     },
     {
-      "id": "place_shop_supermercati_isa_villasimius",
-      "slug": "supermercati-isa-villasimius",
-      "name": "Supermercati ISA / Market Patrizia",
+      "id": "place_shop_market_spiaggia_del_riso",
+      "slug": "market-spiaggia-del-riso",
+      "name": "Market Spiaggia del Riso",
       "category": "shop",
       "location": {
         "country": "Olaszország",
         "region": "Szardínia",
         "city": "Villasimius",
         "postal_code": "09049",
-        "address": "Via del Mare 116",
+        "address": "Via degli Aranci",
         "latitude": null,
         "longitude": null
       },
@@ -675,34 +1013,18 @@
         "status": "partial",
         "last_checked": "2026-08-10",
         "sources": [
-          "https://www.gruppovege.it/it/punti-vendita/supermercati-isa-villasimius-via-del-mare--116-n1g",
-          "https://www.gruppoisa.com/nonnaisa.php",
           "https://www.villasimiusturismo.it/supermarket/"
         ]
       },
       "provenance": [
         {
-          "source_type": "official_retail_network",
-          "url": "https://www.gruppovege.it/it/punti-vendita/supermercati-isa-villasimius-via-del-mare--116-n1g",
-          "supports": [
-            "identity",
-            "address"
-          ],
-          "checked_at": "2026-08-10"
-        },
-        {
-          "source_type": "official_brand",
-          "url": "https://www.gruppoisa.com/nonnaisa.php",
-          "supports": [
-            "chain_local_products_positioning"
-          ],
-          "checked_at": "2026-08-10"
-        },
-        {
           "source_type": "official_tourism",
           "url": "https://www.villasimiusturismo.it/supermarket/",
           "supports": [
-            "same_address_local_food_shop_context"
+            "identity",
+            "address",
+            "phone",
+            "market_type"
           ],
           "checked_at": "2026-08-10"
         }
@@ -716,9 +1038,9 @@
         "photos": "missing"
       },
       "open_questions": [
-        "Current opening hours not confirmed from a primary store-specific source.",
+        "Opening hours not confirmed.",
         "Parking/accessibility not confirmed.",
-        "Exact local-product inventory not confirmed.",
+        "Inventory not confirmed.",
         "Legally reusable cover image missing."
       ],
       "cover_image": null,
@@ -726,21 +1048,20 @@
       "destination_intelligence": {
         "google_maps": {
           "place_id": null,
-          "maps_url": "https://www.google.com/maps/search/?api=1&query=Supermercati+ISA+Via+del+Mare+116+Villasimius",
-          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Supermercati+ISA+Via+del+Mare+116+Villasimius&travelmode=driving",
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Market+Spiaggia+del+Riso+Villasimius",
+          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Market+Spiaggia+del+Riso+Villasimius&travelmode=driving",
           "match_status": "search_query_link"
         },
         "opening_hours": null,
         "contact": {
-          "phone": "+39 346 1344193",
-          "website": "https://www.gruppovege.it/it/punti-vendita/supermercati-isa-villasimius-via-del-mare--116-n1g"
+          "phone": "+39 070 791052",
+          "website": null
         },
         "services": null,
         "shopping": {
           "profiles": [
-            "daily_groceries",
             "quick_stop",
-            "local_products"
+            "beach_stop"
           ],
           "inventory": {
             "fresh_bakery": "unknown",
@@ -750,20 +1071,20 @@
             "gastronomy": "unknown",
             "baby_products": "unknown",
             "wine": "unknown",
-            "local_products": "partial"
+            "local_products": "unknown"
           },
           "family": {
             "easy_with_stroller": "unknown",
             "parking": "unknown",
-            "insight": "A szardíniai ISA/Nonna Isa hálózat helyi termékprofilja miatt releváns local-products jelölt, de az exact üzlet kínálatát nem tekintjük automatikusan megerősítettnek.",
-            "confidence": "medium"
+            "insight": "Elhelyezkedése miatt strand/kikötő környéki gyors megállásra releváns jelölt; kínálati és nyitvatartási profilja még alacsony coverage-ű.",
+            "confidence": "low"
           }
         }
       },
       "google_maps": {
         "place_id": null,
-        "maps_url": "https://www.google.com/maps/search/?api=1&query=Supermercati+ISA+Via+del+Mare+116+Villasimius",
-        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Supermercati+ISA+Via+del+Mare+116+Villasimius&travelmode=driving",
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Market+Spiaggia+del+Riso+Villasimius",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Market+Spiaggia+del+Riso+Villasimius&travelmode=driving",
         "match_status": "search_query_link"
       }
     },
@@ -877,16 +1198,181 @@
       }
     },
     {
-      "id": "place_shop_market_spiaggia_del_riso",
-      "slug": "market-spiaggia-del-riso",
-      "name": "Market Spiaggia del Riso",
+      "id": "place_shop_parafarmacia_longoni_villasimius",
+      "slug": "parafarmacia-longoni-villasimius",
+      "name": "Parafarmacia Dott.ssa Longoni",
+      "category": "shop",
+      "subcategory": "pharmacy",
+      "location": {
+        "city": "Villasimius",
+        "address": "Via Umberto I 16",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.villasimiusturismo.it/farmacie-e-medici/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.villasimiusturismo.it/farmacie-e-medici/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Hours, product range and prescription status unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Parafarmacia+Dott.ssa+Longoni+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "pharmacy_drugstore",
+          "region_id": null,
+          "details": {
+            "kind": "parapharmacy",
+            "health": {
+              "profiles": [
+                "over_the_counter",
+                "personal_care"
+              ],
+              "opening_hours": "unknown",
+              "phone": "+39 070 791191"
+            }
+          },
+          "insights": {
+            "tags": [
+              "health_backup"
+            ],
+            "confidence": "medium"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Parafarmacia+Dott.ssa+Longoni+Villasimius"
+      }
+    },
+    {
+      "id": "place_shop_parafarmacia_epichelo_muravera",
+      "slug": "parafarmacia-epichelo-muravera",
+      "name": "Parafarmacia Epichelo",
+      "category": "shop",
+      "subcategory": "pharmacy",
+      "location": {
+        "city": "Muravera",
+        "address": "Via Roma 123",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": null,
+        "sources": [
+          "https://www.muraverawelcome.com/en/useful-info/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.muraverawelcome.com/en/useful-info/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Hours and product range unknown."
+      ],
+      "cover_image": null,
+      "checked_at": null,
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Parafarmacia+Epichelo+Muravera"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "pharmacy_drugstore",
+          "region_id": "region-05-muravera",
+          "details": {
+            "kind": "parapharmacy",
+            "health": {
+              "phone": "+39 070 993 1013"
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Parafarmacia+Epichelo+Muravera"
+      }
+    },
+    {
+      "id": "place_shop_sigma_villaputzu",
+      "slug": "sigma-villaputzu",
+      "name": "SIGMA",
+      "category": "shop",
+      "subcategory": "supermarket",
+      "location": {
+        "city": "Villaputzu",
+        "address": "Piazza Leonardo Da Vinci snc"
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-07",
+        "sources": [
+          "https://www.csssardegna.it/index.php/puntivendita/sigma-villaputzu-piazza-leonardo-davinci/"
+        ],
+        "source_refs": [
+          "SH05"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_supermercati_isa_villasimius",
+      "slug": "supermercati-isa-villasimius",
+      "name": "Supermercati ISA / Market Patrizia",
       "category": "shop",
       "location": {
         "country": "Olaszország",
         "region": "Szardínia",
         "city": "Villasimius",
         "postal_code": "09049",
-        "address": "Via degli Aranci",
+        "address": "Via del Mare 116",
         "latitude": null,
         "longitude": null
       },
@@ -894,18 +1380,34 @@
         "status": "partial",
         "last_checked": "2026-08-10",
         "sources": [
+          "https://www.gruppovege.it/it/punti-vendita/supermercati-isa-villasimius-via-del-mare--116-n1g",
+          "https://www.gruppoisa.com/nonnaisa.php",
           "https://www.villasimiusturismo.it/supermarket/"
         ]
       },
       "provenance": [
         {
+          "source_type": "official_retail_network",
+          "url": "https://www.gruppovege.it/it/punti-vendita/supermercati-isa-villasimius-via-del-mare--116-n1g",
+          "supports": [
+            "identity",
+            "address"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "official_brand",
+          "url": "https://www.gruppoisa.com/nonnaisa.php",
+          "supports": [
+            "chain_local_products_positioning"
+          ],
+          "checked_at": "2026-08-10"
+        },
+        {
           "source_type": "official_tourism",
           "url": "https://www.villasimiusturismo.it/supermarket/",
           "supports": [
-            "identity",
-            "address",
-            "phone",
-            "market_type"
+            "same_address_local_food_shop_context"
           ],
           "checked_at": "2026-08-10"
         }
@@ -919,9 +1421,9 @@
         "photos": "missing"
       },
       "open_questions": [
-        "Opening hours not confirmed.",
+        "Current opening hours not confirmed from a primary store-specific source.",
         "Parking/accessibility not confirmed.",
-        "Inventory not confirmed.",
+        "Exact local-product inventory not confirmed.",
         "Legally reusable cover image missing."
       ],
       "cover_image": null,
@@ -929,20 +1431,21 @@
       "destination_intelligence": {
         "google_maps": {
           "place_id": null,
-          "maps_url": "https://www.google.com/maps/search/?api=1&query=Market+Spiaggia+del+Riso+Villasimius",
-          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Market+Spiaggia+del+Riso+Villasimius&travelmode=driving",
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Supermercati+ISA+Via+del+Mare+116+Villasimius",
+          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Supermercati+ISA+Via+del+Mare+116+Villasimius&travelmode=driving",
           "match_status": "search_query_link"
         },
         "opening_hours": null,
         "contact": {
-          "phone": "+39 070 791052",
-          "website": null
+          "phone": "+39 346 1344193",
+          "website": "https://www.gruppovege.it/it/punti-vendita/supermercati-isa-villasimius-via-del-mare--116-n1g"
         },
         "services": null,
         "shopping": {
           "profiles": [
+            "daily_groceries",
             "quick_stop",
-            "beach_stop"
+            "local_products"
           ],
           "inventory": {
             "fresh_bakery": "unknown",
@@ -952,20 +1455,20 @@
             "gastronomy": "unknown",
             "baby_products": "unknown",
             "wine": "unknown",
-            "local_products": "unknown"
+            "local_products": "partial"
           },
           "family": {
             "easy_with_stroller": "unknown",
             "parking": "unknown",
-            "insight": "Elhelyezkedése miatt strand/kikötő környéki gyors megállásra releváns jelölt; kínálati és nyitvatartási profilja még alacsony coverage-ű.",
-            "confidence": "low"
+            "insight": "A szardíniai ISA/Nonna Isa hálózat helyi termékprofilja miatt releváns local-products jelölt, de az exact üzlet kínálatát nem tekintjük automatikusan megerősítettnek.",
+            "confidence": "medium"
           }
         }
       },
       "google_maps": {
         "place_id": null,
-        "maps_url": "https://www.google.com/maps/search/?api=1&query=Market+Spiaggia+del+Riso+Villasimius",
-        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Market+Spiaggia+del+Riso+Villasimius&travelmode=driving",
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Supermercati+ISA+Via+del+Mare+116+Villasimius",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Supermercati+ISA+Via+del+Mare+116+Villasimius&travelmode=driving",
         "match_status": "search_query_link"
       }
     }
