@@ -138,7 +138,7 @@ export default function HomePage() {
       <div className="px-5"><StatRow weather={weather} sea={sea} day={day} events={events} /></div>
       <SunCard weather={weather} locationLabel={currentLocation.label} />
       <div className="px-5">
-        <TimelineCard day={day} days={TRIP_CORE_DAYS} summary={statusSummary} onSelect={setSelectedDate} />
+        <TimelineCard day={day} days={TRIP_CORE_DAYS} summary={statusSummary} events={events} onSelect={setSelectedDate} />
         <section className="mt-8"><PlanList activities={day.activities} status={status} canEdit={canMutate} onRetry={retry} onSelect={(activity) => setEditor({ activity })} onDelete={(activity) => { void remove(activity).catch((caught) => showToast(caught instanceof Error ? caught.message : "A törlés nem sikerült.")); }} onTimeChange={changeStartTime} onError={showToast} /></section>
         <div aria-hidden="true" className="h-12" />
       </div>
