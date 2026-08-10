@@ -77,6 +77,26 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
       <input id="custom-trip-question" value={customQuestion} onChange={(event) => setCustomQuestion(event.target.value)} placeholder="Saját kérdés…" className={`${FORM_CONTROL} w-full border-deep-sea/15 bg-white/55 py-2 pl-3 pr-14`} />
       <button type="submit" disabled={!customQuestion.trim()} aria-label="Kérdés elküldése" className="absolute bottom-0.5 right-0.5 grid h-11 w-11 place-items-center rounded-full bg-turquoise/15 text-turquoise-dark transition-colors disabled:bg-transparent disabled:text-deep-sea/25"><Icon name="arrow-up" size={17} strokeWidth={2} /></button>
     </form>
-    {answer && <section className="mt-5 border-t border-deep-sea/10 pt-5" aria-live="polite"><h3 className="text-[17px] font-bold leading-[23px] text-deep-sea">{answer.title}</h3><p className="mt-2 text-sm leading-[21px] text-deep-sea/70">{answer.body}</p>{answer.recommendations?.length ? <ul className="mt-4 space-y-3" aria-label="Javasolt helyek">{answer.recommendations.map((recommendation) => <li key={recommendation.placeSlug} className="text-sm leading-[21px] text-deep-sea/75"><a className="font-semibold text-turquoise-dark underline underline-offset-4" href={recommendation.placeDetailHref}>{recommendation.name}</a>{recommendation.rationale ? <p className="mt-0.5">{recommendation.rationale}</p> : null}{recommendation.confirmedFacts.length ? <p className="mt-0.5 text-deep-sea/55">Megerősített: {recommendation.confirmedFacts.join(" · ")}</p> : null}{recommendation.uncertainty ? <p className="mt-0.5 text-deep-sea/50">Korlát: {recommendation.uncertainty}</p> : null}</li>)}</ul> : null}<p className="mt-4 text-[11px] font-semibold tracking-[.02em] text-deep-sea/45">Adatforrás · {answer.sources.join(" · ")}</p></section>}
+    {answer && <section className="mt-5 border-t border-deep-sea/10 pt-5" aria-live="polite">
+      <h3 className="text-[17px] font-bold leading-[23px] text-deep-sea">{answer.title}</h3>
+      <p className="mt-2 text-sm leading-[21px] text-deep-sea/70">{answer.body}</p>
+      {answer.recommendations?.length ? <ul className="mt-4 space-y-2.5" aria-label="Javasolt helyek">
+        {answer.recommendations.map((recommendation) => <li key={recommendation.placeSlug}>
+          <a href={recommendation.placeDetailHref} className="group block rounded-ui-s border border-deep-sea/10 bg-white/50 p-3.5 outline-none transition-colors hover:bg-white/80 focus-visible:ring-2 focus-visible:ring-turquoise-dark">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-[11px] font-semibold tracking-[.04em] text-deep-sea/45">JAVASOLT HELY</p>
+                <p className="mt-0.5 text-[16px] font-bold leading-[22px] text-deep-sea">{recommendation.name}</p>
+              </div>
+              <Icon aria-hidden="true" name="chevron-right" size={18} className="mt-1 shrink-0 text-turquoise-dark transition-transform group-hover:translate-x-0.5" />
+            </div>
+            {recommendation.rationale ? <p className="mt-2 text-[13px] leading-[19px] text-deep-sea/70">{recommendation.rationale}</p> : null}
+            {recommendation.confirmedFacts.length ? <p className="mt-2 text-[12px] leading-[18px] text-deep-sea/55">Megerősített · {recommendation.confirmedFacts.join(" · ")}</p> : null}
+            {recommendation.uncertainty ? <p className="mt-2 text-[12px] leading-[18px] text-deep-sea/50">Korlát · {recommendation.uncertainty}</p> : null}
+          </a>
+        </li>)}
+      </ul> : null}
+      <p className="mt-4 text-[11px] font-semibold tracking-[.02em] text-deep-sea/45">Adatforrás · {answer.sources.join(" · ")}</p>
+    </section>}
   </section>;
 }
