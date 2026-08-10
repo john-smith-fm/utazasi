@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { TRIP } from "@/data/trip";
 import { storageGet, storageSet } from "@/lib/storage";
 
@@ -10,6 +10,14 @@ export type CurrentLocationContext = {
   label: string;
   source: "device" | "trip";
   seaRelevant: boolean;
+};
+
+export type DeviceLocationState = "available" | "prompt" | "denied" | "unavailable" | "locating";
+
+export type CurrentLocationResult = {
+  context: CurrentLocationContext;
+  deviceState: DeviceLocationState;
+  requestDeviceLocation: () => void;
 };
 
 const fallback: CurrentLocationContext = {
@@ -28,6 +36,7 @@ const knownLocations = [
 
 const LOCATION_CACHE_KEY = "current-location-context";
 const LOCATION_CACHE_MAX_AGE_MS = 12 * 60 * 60 * 1000;
+const AUTO_REQUEST_SESSION_KEY = "utazasi-location-auto-requested";
 
 type CachedLocation = { context: CurrentLocationContext; cachedAt: string };
 
@@ -71,47 +80,54 @@ function contextForDevicePosition(latitude: number, longitude: number): CurrentL
  * granted device context stays only on this device for up to twelve hours,
  * so an offline PWA cold start keeps a coherent header context.
  */
-export function useCurrentLocationContext() {
+export function useCurrentLocationContext(): CurrentLocationResult {
   const [context, setContext] = useState<CurrentLocationContext>(fallback);
+  const [deviceState, setDeviceState] = useState<DeviceLocationState>("unavailable");
+
+  const requestDeviceLocation = useCallback(() => {
+    if (!("geolocation" in navigator)) {
+      setDeviceState("unavailable");
+      return;
+    }
+
+    setDeviceState("locating");
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const next = contextForDevicePosition(position.coords.latitude, position.coords.longitude);
+        cacheDeviceContext(next);
+        setContext(next);
+        setDeviceState("available");
+      },
+      (error) => setDeviceState(error.code === error.PERMISSION_DENIED ? "denied" : "unavailable"),
+      { enableHighAccuracy: false, maximumAge: 10 * 60 * 1000, timeout: 8000 },
+    );
+  }, []);
 
   useEffect(() => {
-    let cancelled = false;
     const cached = cachedDeviceContext();
     if (cached) setContext(cached);
     if (!("geolocation" in navigator)) return;
 
-    const requestPosition = () => {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          if (!cancelled) {
-            const next = contextForDevicePosition(position.coords.latitude, position.coords.longitude);
-            cacheDeviceContext(next);
-            setContext(next);
-          }
-        },
-        () => undefined,
-        { enableHighAccuracy: false, maximumAge: 10 * 60 * 1000, timeout: 8000 },
-      );
-    };
-
-    const requestedKey = "utazasi-location-permission-requested";
-    const requestOnce = () => {
-      if (window.localStorage.getItem(requestedKey)) return;
-      window.localStorage.setItem(requestedKey, "true");
-      requestPosition();
+    const requestOnceThisSession = () => {
+      if (window.sessionStorage.getItem(AUTO_REQUEST_SESSION_KEY)) {
+        setDeviceState("prompt");
+        return;
+      }
+      window.sessionStorage.setItem(AUTO_REQUEST_SESSION_KEY, "true");
+      requestDeviceLocation();
     };
 
     if (!("permissions" in navigator)) {
-      requestOnce();
+      requestOnceThisSession();
     } else {
       void navigator.permissions.query({ name: "geolocation" }).then((permission) => {
-        if (permission.state === "granted") requestPosition();
-        else if (permission.state === "prompt") requestOnce();
-      }).catch(requestOnce);
+        if (permission.state === "granted") requestDeviceLocation();
+        else if (permission.state === "denied") setDeviceState("denied");
+        else requestOnceThisSession();
+      }).catch(requestOnceThisSession);
     }
 
-    return () => { cancelled = true; };
-  }, []);
+  }, [requestDeviceLocation]);
 
-  return context;
+  return { context, deviceState, requestDeviceLocation };
 }
