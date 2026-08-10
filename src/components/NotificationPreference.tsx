@@ -28,7 +28,9 @@ export function NotificationPreference() {
 
   if (!configured) return null;
   if (state === "unsupported") return <p className="mt-3 text-[12px] leading-[18px] text-deep-sea/50">Ezen a készüléken az értesítések nem támogatottak.</p>;
-  if (state === "enabled") return <p className="mt-3 text-[12px] leading-[18px] text-deep-sea/55">A fontos utazási változásokról értesítést küldünk.</p>;
+  // A successful preference is intentionally quiet on Home. The Watch remains
+  // active, but it should not compete with the day's travel context.
+  if (state === "enabled") return null;
   if (state === "denied") return <p className="mt-3 text-[12px] leading-[18px] text-deep-sea/55">Az értesítések a készülék beállításaiban kapcsolhatók vissza.</p>;
 
   async function enable() {
