@@ -2,11 +2,13 @@
 
 import {
   ArrowUp,
+  ArrowUpRight,
   Baby,
   Bath,
   Bed,
   CalendarDays,
   ChevronRight,
+  ChevronUp,
   CircleHelp,
   CloudSun,
   Droplet,
@@ -32,10 +34,12 @@ import {
 
 const icons: Record<string, LucideIcon> = {
   "arrow-up": ArrowUp,
+  "arrow-up-right": ArrowUpRight,
   baby: Baby,
   bed: Bed,
   "calendar-days": CalendarDays,
   "chevron-right": ChevronRight,
+  "chevron-up": ChevronUp,
   "circle-help": CircleHelp,
   "cloud-sun": CloudSun,
   droplet: Droplet,

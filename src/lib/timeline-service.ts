@@ -60,6 +60,20 @@ async function dayForDate(date: string): Promise<ServiceResult<{ id: string }>> 
   return day ? { data: day } : { error: "Ehhez a naphoz még nincs napi terv.", status: 404 };
 }
 
+function localDateTimeParts(value: string) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Rome",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(new Date(value));
+  const part = (type: Intl.DateTimeFormatPartTypes) => parts.find((item) => item.type === type)?.value ?? "";
+  return { date: `${part("year")}-${part("month")}-${part("day")}`, time: `${part("hour")}:${part("minute")}` };
+}
+
 async function editableActivity(id: string): Promise<ServiceResult<TimelineActivityRecord>> {
   if (!UUID_PATTERN.test(id)) return { error: "Érvénytelen programpont.", status: 400 };
   const supabase = timelineServerClient();
@@ -126,6 +140,65 @@ export async function createTimelineActivity(date: string, rawInput: unknown, ra
     }
     throw error;
   }
+  return { data };
+}
+
+/** Accepts a verified, concrete daily Event into the family's editable plan.
+ * Event series intentionally never reach this function. */
+export async function acceptEventIntoTimeline(eventId: string, date: string): Promise<ServiceResult<TimelineActivityRecord>> {
+  if (!UUID_PATTERN.test(eventId)) return { error: "Érvénytelen esemény.", status: 400 };
+  const day = await dayForDate(date);
+  if ("error" in day) return day;
+
+  const supabase = timelineServerClient();
+  const { data: ownedEvent, error: ownedEventError } = await supabase
+    .from("events")
+    .select("id, title, starts_at, ends_at, status, place_slug, source_url, trip_id")
+    .eq("id", eventId)
+    .maybeSingle();
+  if (ownedEventError) throw ownedEventError;
+  if (!ownedEvent) return { error: "Az esemény nem található.", status: 404 };
+  const { data: trip, error: tripError } = await supabase.from("trips").select("id").eq("slug", TIMELINE_TRIP_SLUG).maybeSingle();
+  if (tripError) throw tripError;
+  if (!trip || ownedEvent.trip_id !== trip.id) return { error: "Az esemény nem ehhez az utazáshoz tartozik.", status: 403 };
+  if (ownedEvent.status === "cancelled") return { error: "Törölt esemény nem adható a napi tervhez.", status: 409 };
+  if (!ownedEvent.ends_at) return { error: "Az esemény végideje még nincs ellenőrzött adatként rögzítve.", status: 409 };
+
+  const start = localDateTimeParts(ownedEvent.starts_at);
+  const end = localDateTimeParts(ownedEvent.ends_at);
+  if (start.date !== date || end.date !== date) return { error: "Csak konkrét, egy napra eső esemény adható a napi tervhez.", status: 409 };
+  const durationMinutes = Math.round((new Date(ownedEvent.ends_at).getTime() - new Date(ownedEvent.starts_at).getTime()) / 60000);
+  if (durationMinutes < 1 || durationMinutes > 1440) return { error: "Az esemény időtartama nem használható a napi tervben.", status: 409 };
+
+  const { data: existing, error: existingError } = await supabase
+    .from("timeline_activities")
+    .select("id, day_id, start_time, start_time_precision, time_label, duration_minutes, title, description, location_name, place_slug, source_event_id, kind, is_system_generated, created_at, updated_at")
+    .eq("day_id", day.data.id)
+    .eq("source_event_id", ownedEvent.id)
+    .maybeSingle();
+  if (existingError) throw existingError;
+  if (existing) return { data: existing };
+
+  const place = ownedEvent.place_slug ? getPlaceBySlug(ownedEvent.place_slug) : undefined;
+  const { data, error } = await supabase
+    .from("timeline_activities")
+    .insert({
+      day_id: day.data.id,
+      start_time: start.time,
+      start_time_precision: "exact",
+      time_label: null,
+      duration_minutes: durationMinutes,
+      title: ownedEvent.title,
+      location_name: place?.name ?? null,
+      place_slug: ownedEvent.place_slug,
+      description: null,
+      source_event_id: ownedEvent.id,
+      kind: "plan",
+      is_system_generated: false,
+    })
+    .select("id, day_id, start_time, start_time_precision, time_label, duration_minutes, title, description, location_name, place_slug, source_event_id, kind, is_system_generated, created_at, updated_at")
+    .single();
+  if (error) throw error;
   return { data };
 }
 

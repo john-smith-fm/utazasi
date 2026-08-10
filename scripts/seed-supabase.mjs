@@ -15,6 +15,7 @@ if (!url || !secretKey) {
 
 const initialTimeline = JSON.parse(await readFile(new URL("../knowledge/trip/timeline.initial.json", import.meta.url), "utf8"));
 const eventDocument = JSON.parse(await readFile(new URL("../knowledge/events/events.json", import.meta.url), "utf8"));
+const eventSeriesDocument = JSON.parse(await readFile(new URL("../knowledge/events/event-series.json", import.meta.url), "utf8"));
 const tripCore = JSON.parse(await readFile(new URL("../knowledge/trip/trip.public.json", import.meta.url), "utf8"));
 const supabase = createClient(url, secretKey, { auth: { autoRefreshToken: false, persistSession: false } });
 
@@ -157,6 +158,32 @@ const { error: activityError } = await supabase
   .upsert(initialRows, { onConflict: "seed_key", ignoreDuplicates: true });
 if (activityError) throw activityError;
 
+const eventSeriesRows = eventSeriesDocument.series.map((series) => ({
+  trip_id: trip.id,
+  canonical_key: series.id,
+  title: series.title,
+  starts_at: series.starts_at,
+  ends_at: series.ends_at ?? null,
+  organizer: series.organizer ?? null,
+  source_url: series.source_url,
+  place_slug: series.place_slug ?? null,
+  last_verified_at: series.metadata?.verification?.last_checked ? `${series.metadata.verification.last_checked}T00:00:00+02:00` : null,
+}));
+
+if (eventSeriesRows.length > 0) {
+  const { error: eventSeriesError } = await supabase
+    .from("event_series")
+    .upsert(eventSeriesRows, { onConflict: "trip_id,canonical_key" });
+  if (eventSeriesError) throw eventSeriesError;
+}
+
+const { data: eventSeries, error: eventSeriesLookupError } = await supabase
+  .from("event_series")
+  .select("id, canonical_key")
+  .eq("trip_id", trip.id);
+if (eventSeriesLookupError) throw eventSeriesLookupError;
+const eventSeriesIds = new Map((eventSeries ?? []).map((series) => [series.canonical_key, series.id]));
+
 const eventRows = eventDocument.events.map((event) => ({
   trip_id: trip.id,
   canonical_key: event.id,
@@ -166,15 +193,20 @@ const eventRows = eventDocument.events.map((event) => ({
   organizer: event.organizer ?? null,
   source_url: event.source_url,
   status: event.status === "cancelled" ? "cancelled" : event.status === "changed" ? "changed" : "scheduled",
+  series_id: event.series_id ? eventSeriesIds.get(event.series_id) ?? null : null,
   place_slug: event.place_slug ?? null,
   last_verified_at: event.metadata?.verification?.last_checked ? `${event.metadata.verification.last_checked}T00:00:00+02:00` : null,
 }));
 
-const { data: seededEvents, error: eventError } = await supabase
-  .from("events")
-  .upsert(eventRows, { onConflict: "trip_id,canonical_key" })
-  .select("id, source_url, status, starts_at, place_slug, last_verified_at");
-if (eventError) throw eventError;
+let seededEvents = [];
+if (eventRows.length > 0) {
+  const { data, error: eventError } = await supabase
+    .from("events")
+    .upsert(eventRows, { onConflict: "trip_id,canonical_key" })
+    .select("id, source_url, status, starts_at, place_slug, last_verified_at");
+  if (eventError) throw eventError;
+  seededEvents = data ?? [];
+}
 
 // The first verified canonical Event state is the Watch baseline. Existing
 // Watch rows are deliberately never reset by a later seed run: once a Watch
@@ -198,4 +230,4 @@ if (watchBaselines.length > 0) {
   if (watchError) throw watchError;
 }
 
-console.log(`Initialized ${initialRows.length} canonical Timeline activity record(s) across 12 days, plus ${eventRows.length} event(s) and ${watchBaselines.length} Watch baseline(s). Existing Timeline rows were never overwritten.`);
+console.log(`Initialized ${initialRows.length} canonical Timeline activity record(s) across 12 days, plus ${eventSeriesRows.length} event series, ${eventRows.length} concrete event(s) and ${watchBaselines.length} Watch baseline(s). Existing Timeline rows were never overwritten.`);

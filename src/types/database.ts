@@ -26,10 +26,16 @@ export interface Database {
         Relationships: [{ foreignKeyName: "timeline_activities_day_id_fkey"; columns: ["day_id"]; referencedRelation: "days"; referencedColumns: ["id"] }, { foreignKeyName: "timeline_activities_source_event_id_fkey"; columns: ["source_event_id"]; referencedRelation: "events"; referencedColumns: ["id"] }];
       };
       events: {
-        Row: { id: string; trip_id: string; canonical_key: string; title: string; starts_at: string; ends_at: string | null; organizer: string | null; source_url: string; status: EventStatus; place_slug: string | null; last_verified_at: string | null; created_at: string; updated_at: string };
-        Insert: { id?: string; trip_id: string; canonical_key: string; title: string; starts_at: string; ends_at?: string | null; organizer?: string | null; source_url: string; status?: EventStatus; place_slug?: string | null; last_verified_at?: string | null; created_at?: string; updated_at?: string };
+        Row: { id: string; trip_id: string; canonical_key: string; series_id: string | null; title: string; starts_at: string; ends_at: string | null; organizer: string | null; source_url: string; status: EventStatus; place_slug: string | null; last_verified_at: string | null; created_at: string; updated_at: string };
+        Insert: { id?: string; trip_id: string; canonical_key: string; series_id?: string | null; title: string; starts_at: string; ends_at?: string | null; organizer?: string | null; source_url: string; status?: EventStatus; place_slug?: string | null; last_verified_at?: string | null; created_at?: string; updated_at?: string };
         Update: Partial<Database["public"]["Tables"]["events"]["Insert"]>;
-        Relationships: [{ foreignKeyName: "events_trip_id_fkey"; columns: ["trip_id"]; referencedRelation: "trips"; referencedColumns: ["id"] }];
+        Relationships: [{ foreignKeyName: "events_trip_id_fkey"; columns: ["trip_id"]; referencedRelation: "trips"; referencedColumns: ["id"] }, { foreignKeyName: "events_series_id_fkey"; columns: ["series_id"]; referencedRelation: "event_series"; referencedColumns: ["id"] }];
+      };
+      event_series: {
+        Row: { id: string; trip_id: string; canonical_key: string; title: string; starts_at: string; ends_at: string | null; organizer: string | null; source_url: string; place_slug: string | null; last_verified_at: string | null; created_at: string; updated_at: string };
+        Insert: { id?: string; trip_id: string; canonical_key: string; title: string; starts_at: string; ends_at?: string | null; organizer?: string | null; source_url: string; place_slug?: string | null; last_verified_at?: string | null; created_at?: string; updated_at?: string };
+        Update: Partial<Database["public"]["Tables"]["event_series"]["Insert"]>;
+        Relationships: [{ foreignKeyName: "event_series_trip_id_fkey"; columns: ["trip_id"]; referencedRelation: "trips"; referencedColumns: ["id"] }];
       };
       trip_members: {
         Row: { id: string; trip_id: string; email: string; email_normalized: string; user_id: string | null; role: TripMemberRole; invited_at: string; accepted_at: string | null; created_at: string; updated_at: string };
