@@ -36,7 +36,6 @@ const knownLocations = [
 
 const LOCATION_CACHE_KEY = "current-location-context";
 const LOCATION_CACHE_MAX_AGE_MS = 12 * 60 * 60 * 1000;
-const AUTO_REQUEST_SESSION_KEY = "utazasi-location-auto-requested";
 
 type CachedLocation = { context: CurrentLocationContext; cachedAt: string };
 
@@ -74,11 +73,11 @@ function contextForDevicePosition(latitude: number, longitude: number): CurrentL
 
 /**
  * The Home header means “where we are now”, never the day currently browsed.
- * On the first Home visit it requests the native location permission once.
- * An already denied permission is respected; the approved Trip base location
- * remains the fallback whenever a device position is unavailable. The last
- * granted device context stays only on this device for up to twelve hours,
- * so an offline PWA cold start keeps a coherent header context.
+ * A native location prompt is only triggered by the person's explicit action
+ * in the Home UI. An already granted permission may refresh silently; an
+ * already denied permission is respected and the Trip base remains the
+ * fallback. The last granted device context stays only on this device for up
+ * to twelve hours, so an offline PWA cold start keeps a coherent header.
  */
 export function useCurrentLocationContext(): CurrentLocationResult {
   const [context, setContext] = useState<CurrentLocationContext>(fallback);
@@ -108,23 +107,17 @@ export function useCurrentLocationContext(): CurrentLocationResult {
     if (cached) setContext(cached);
     if (!("geolocation" in navigator)) return;
 
-    const requestOnceThisSession = () => {
-      if (window.sessionStorage.getItem(AUTO_REQUEST_SESSION_KEY)) {
-        setDeviceState("prompt");
-        return;
-      }
-      window.sessionStorage.setItem(AUTO_REQUEST_SESSION_KEY, "true");
-      requestDeviceLocation();
-    };
-
     if (!("permissions" in navigator)) {
-      requestOnceThisSession();
+      // Older iOS versions do not expose Permissions API. Do not call
+      // getCurrentPosition here: that would trigger a native prompt on Home
+      // open. The explicit Home control will make the request instead.
+      setDeviceState("prompt");
     } else {
       void navigator.permissions.query({ name: "geolocation" }).then((permission) => {
         if (permission.state === "granted") requestDeviceLocation();
         else if (permission.state === "denied") setDeviceState("denied");
-        else requestOnceThisSession();
-      }).catch(requestOnceThisSession);
+        else setDeviceState("prompt");
+      }).catch(() => setDeviceState("prompt"));
     }
 
   }, [requestDeviceLocation]);
