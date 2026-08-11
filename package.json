@@ -19,7 +19,8 @@
     "research:live": "node --env-file=.env.local scripts/research.mjs live",
     "research:apply": "node scripts/research.mjs apply",
     "research:event": "node --env-file=.env.local scripts/research-event.mjs",
-    "test:research": "node --test scripts/research/*.test.mjs"
+    "test:research": "node --test scripts/research/*.test.mjs",
+    "test:grounding": "node --no-warnings --experimental-strip-types --test scripts/grounding/*.test.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.2",
