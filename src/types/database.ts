@@ -3,6 +3,7 @@ export type TimelineTimePrecision = "exact" | "approximate" | "period";
 export type TripMemberRole = "owner" | "member";
 export type EventStatus = "scheduled" | "changed" | "cancelled";
 export type EventChangeKind = "status_changed" | "start_time_changed" | "venue_changed";
+export type NotebookEntryKind = "expense" | "note" | "journal";
 
 export interface Database {
   public: {
@@ -60,6 +61,24 @@ export interface Database {
         Insert: { id?: string; trip_id: string; endpoint: string; subscription: Record<string, unknown>; user_agent?: string | null; created_at?: string; updated_at?: string; revoked_at?: string | null };
         Update: Partial<Database["public"]["Tables"]["push_subscriptions"]["Insert"]>;
         Relationships: [{ foreignKeyName: "push_subscriptions_trip_id_fkey"; columns: ["trip_id"]; referencedRelation: "trips"; referencedColumns: ["id"] }];
+      };
+      packing_items: {
+        Row: { id: string; trip_id: string; title: string; is_packed: boolean; position: number; legacy_source_id: string | null; created_at: string; updated_at: string };
+        Insert: { id?: string; trip_id: string; title: string; is_packed?: boolean; position?: number; legacy_source_id?: string | null; created_at?: string; updated_at?: string };
+        Update: Partial<Database["public"]["Tables"]["packing_items"]["Insert"]>;
+        Relationships: [{ foreignKeyName: "packing_items_trip_id_fkey"; columns: ["trip_id"]; referencedRelation: "trips"; referencedColumns: ["id"] }];
+      };
+      notebook_entries: {
+        Row: { id: string; trip_id: string; kind: NotebookEntryKind; content: string; amount_eur: number | null; occurred_on: string; rating: number | null; legacy_source_id: string | null; created_at: string; updated_at: string };
+        Insert: { id?: string; trip_id: string; kind: NotebookEntryKind; content: string; amount_eur?: number | null; occurred_on: string; rating?: number | null; legacy_source_id?: string | null; created_at?: string; updated_at?: string };
+        Update: Partial<Database["public"]["Tables"]["notebook_entries"]["Insert"]>;
+        Relationships: [{ foreignKeyName: "notebook_entries_trip_id_fkey"; columns: ["trip_id"]; referencedRelation: "trips"; referencedColumns: ["id"] }];
+      };
+      notebook_legacy_imports: {
+        Row: { id: string; trip_id: string; migration_key: string; completed_at: string; created_at: string };
+        Insert: { id?: string; trip_id: string; migration_key: string; completed_at?: string; created_at?: string };
+        Update: Partial<Database["public"]["Tables"]["notebook_legacy_imports"]["Insert"]>;
+        Relationships: [{ foreignKeyName: "notebook_legacy_imports_trip_id_fkey"; columns: ["trip_id"]; referencedRelation: "trips"; referencedColumns: ["id"] }];
       };
     };
     Views: Record<string, never>;
