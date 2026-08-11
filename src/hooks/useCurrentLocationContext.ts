@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { TRIP } from "@/data/trip";
+import { TRIP_RUNTIME } from "@/data/trip-core";
 import { storageGet, storageSet } from "@/lib/storage";
 
 export type CurrentLocationContext = {
@@ -21,8 +21,8 @@ export type CurrentLocationResult = {
 };
 
 const fallback: CurrentLocationContext = {
-  latitude: TRIP.coords.lat,
-  longitude: TRIP.coords.lon,
+  latitude: TRIP_RUNTIME.coords.lat,
+  longitude: TRIP_RUNTIME.coords.lon,
   label: "Villasimius",
   source: "trip",
   seaRelevant: true,

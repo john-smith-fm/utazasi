@@ -1,4 +1,4 @@
-import { TRIP } from "@/data/trip";
+import { TRIP_RUNTIME } from "@/data/trip-core";
 
 export const HU_DOW = ["Vas", "Hét", "Kedd", "Sze", "Csüt", "Pén", "Szo"];
 export const HU_DOW_LONG = [
@@ -25,7 +25,7 @@ export interface TripNow {
 /** "Local" idő a desztináció időzónájában (Europe/Rome), függetlenül attól, honnan nézi a user. */
 export function nowInTrip(): TripNow {
   const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: TRIP.timezone,
+    timeZone: TRIP_RUNTIME.timezone,
     year: "numeric",
     month: "2-digit",
     day: "2-digit",

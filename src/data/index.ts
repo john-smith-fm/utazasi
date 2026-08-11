@@ -1,4 +1,4 @@
-export { TRIP } from "./trip";
+export { TRIP_CORE, TRIP_CORE_DAYS, TRIP_RUNTIME } from "./trip-core";
 export { RHYTHMS } from "./rhythms";
 export { DAYS } from "./days";
 export { PLAYGROUNDS } from "./playgrounds";

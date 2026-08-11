@@ -1,5 +1,5 @@
 import { DAYS } from "@/data/days";
-import { TRIP } from "@/data/trip";
+import { TRIP_RUNTIME } from "@/data/trip-core";
 import type { Day, DayType } from "@/types";
 import { daysBetween, nowInTrip } from "./time";
 
@@ -13,7 +13,7 @@ export function currentOrNearestDay(): Day {
   const today = nowInTrip().dateStr;
   const day = findDay(today);
   if (day) return day;
-  if (today < TRIP.startDate) return DAYS[0];
+  if (today < TRIP_RUNTIME.startDate) return DAYS[0];
   return DAYS[DAYS.length - 1];
 }
 
@@ -39,6 +39,6 @@ export function typeClass(type: DayType): "strand" | "apartman" | "utazas" {
 }
 
 export function dayIndexLabel(day: Day): string {
-  const idx = daysBetween(TRIP.startDate, day.date) + 1;
+  const idx = daysBetween(TRIP_RUNTIME.startDate, day.date) + 1;
   return `${idx}. nap / ${DAYS.length}`;
 }

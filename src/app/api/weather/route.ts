@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { TRIP } from "@/data/trip";
+import { TRIP_RUNTIME } from "@/data/trip-core";
 import { formatProviderTime, precipitationStateForMillimeters, type WeatherContext } from "@/lib/weather-context";
 
 export const revalidate = 900;
@@ -25,7 +25,7 @@ type MarineResponse = { current?: { sea_surface_temperature?: number } };
 
 function todayInTripTimezone(): string {
   return new Intl.DateTimeFormat("en-CA", {
-    timeZone: TRIP.timezone,
+    timeZone: TRIP_RUNTIME.timezone,
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
@@ -49,12 +49,12 @@ export async function GET(request: NextRequest) {
   if ((requestedLat && !COORDINATE_PATTERN.test(requestedLat)) || (requestedLon && !COORDINATE_PATTERN.test(requestedLon))) {
     return NextResponse.json({ error: "Érvénytelen helykoordináta." }, { status: 400 });
   }
-  const lat = requestedLat ? Number(requestedLat) : TRIP.coords.lat;
-  const lon = requestedLon ? Number(requestedLon) : TRIP.coords.lon;
+  const lat = requestedLat ? Number(requestedLat) : TRIP_RUNTIME.coords.lat;
+  const lon = requestedLon ? Number(requestedLon) : TRIP_RUNTIME.coords.lon;
   if (!Number.isFinite(lat) || !Number.isFinite(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180) {
     return NextResponse.json({ error: "Érvénytelen helykoordináta." }, { status: 400 });
   }
-  const shared = `latitude=${lat}&longitude=${lon}&timezone=${encodeURIComponent(TRIP.timezone)}`;
+  const shared = `latitude=${lat}&longitude=${lon}&timezone=${encodeURIComponent(TRIP_RUNTIME.timezone)}`;
   const forecastUrl = `https://api.open-meteo.com/v1/forecast?${shared}&start_date=${requestedDate}&end_date=${requestedDate}&current=temperature_2m,wind_speed_10m,precipitation&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max,sunrise,sunset`;
   const marineUrl = `https://marine-api.open-meteo.com/v1/marine?${shared}&current=sea_surface_temperature`;
 
