@@ -33,7 +33,14 @@ the system does not continuously poll an Event throughout the trip.
 It writes material time, venue or status changes to `event_change_log` and
 updates the Watch baseline. It never edits the Timeline, Event, Place JSON or
 canonical data automatically. Connect this endpoint to the planned Supabase
-scheduled worker only after a manual, cost-capped smoke test.
+scheduler only after a manual, cost-capped smoke test. The ready-to-run,
+secret-free template is `supabase/queries/configure_watch_scheduler.sql`.
+
+The scheduler has two jobs: `/api/watch/run` every 15 minutes and
+`/api/watch/dispatch` two minutes later. The first job is still constrained by
+the application-level T−6/T−2/T−1 checkpoint rule; the second only sends
+already-recorded, material changes. The Vercel runner secret is copied once
+into Supabase Vault, never into Git or a SQL migration.
 
 Use `supabase/queries/verify_event_watch_foundation.sql` as the read-only
 database check after migration and seed.
