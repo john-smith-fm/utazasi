@@ -5,6 +5,7 @@ import { timelineServerClient } from "@/lib/timeline-service";
 
 type PendingChange = {
   id: string;
+  event_id: string;
   change_kind: "status_changed" | "start_time_changed" | "venue_changed";
   events: WatchEvent | WatchEvent[] | null;
 };
@@ -44,7 +45,24 @@ function romeDate(value: string) {
   return values.year && values.month && values.day ? `${values.year}-${values.month}-${values.day}` : null;
 }
 
-function notificationUrl(change: PendingChange) {
+async function notificationUrl(change: PendingChange, supabase: ReturnType<typeof timelineServerClient>) {
+  // A Timeline placement is the family's explicit decision about which day a
+  // multi-day event belongs to. Prefer it over the parent Event's starts_at;
+  // for example, an Invasio festival change on the 7th must not open day 2
+  // merely because the overall festival began before the trip.
+  const { data: placements, error } = await supabase
+    .from("timeline_activities")
+    .select("days!inner(date)")
+    .eq("source_event_id", change.event_id)
+    .order("start_time", { ascending: true })
+    .limit(1);
+
+  if (!error) {
+    const placement = placements?.[0] as { days?: { date?: string } | { date?: string }[] | null } | undefined;
+    const day = Array.isArray(placement?.days) ? placement?.days[0] : placement?.days;
+    if (day?.date) return `/?day=${day.date}`;
+  }
+
   const event = Array.isArray(change.events) ? change.events[0] : change.events;
   if (!event?.starts_at) return "/";
   const trip = Array.isArray(event.trips) ? event.trips[0] : event.trips;
@@ -67,7 +85,7 @@ export async function dispatchPendingWatchNotifications() {
   const supabase = timelineServerClient();
   const { data: changes, error: changesError } = await supabase
     .from("event_change_log")
-    .select("id, change_kind, events!inner(title, starts_at, ends_at, trips!inner(start_date, end_date))")
+    .select("id, event_id, change_kind, events!inner(title, starts_at, ends_at, trips!inner(start_date, end_date))")
     .is("notified_at", null)
     .order("observed_at", { ascending: true })
     .limit(5);
@@ -87,7 +105,7 @@ export async function dispatchPendingWatchNotifications() {
     if (subscriptionsError) throw subscriptionsError;
 
     let delivered = false;
-    const payload = JSON.stringify({ title: "Utazási", body: notificationBody(change), url: notificationUrl(change) });
+    const payload = JSON.stringify({ title: "Utazási", body: notificationBody(change), url: await notificationUrl(change, supabase) });
     for (const subscription of subscriptions ?? []) {
       try {
         await webpush.sendNotification(subscription.subscription as unknown as webpush.PushSubscription, payload, { TTL: 60 * 60 * 6, urgency: "high" });
