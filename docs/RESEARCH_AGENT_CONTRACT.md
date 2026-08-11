@@ -66,6 +66,15 @@ npm run research:event -- live research/fixtures/invaso-sep-02-job.json --output
 
 The command only writes a proposal under `research/proposals/events/`. Applying a ready proposal still requires its explicit candidate ID, a separate human review, then a Git commit and seed. It never creates a Timeline item, writes Supabase, commits, pushes or deploys on its own.
 
+### Private review endpoint
+
+`POST /api/events/research` is the deployed equivalent for a future in-app
+review surface. It accepts only a PIN-session-protected `seriesKey` and an
+in-range `targetDate`, then performs one bounded OpenAI web search against the
+series' configured official domain. It returns either a concrete daily Event
+proposal or a `hold` result. It has no database, Timeline, Place or canonical
+JSON write path; explicit human approval remains required.
+
 ## Automatic Watch rule
 
 A concrete Event can receive a verified baseline at seed time, but it is not
