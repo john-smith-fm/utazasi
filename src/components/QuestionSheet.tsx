@@ -5,10 +5,10 @@ import type { HomeDay } from "@/data/home-days";
 import type { WeatherSnapshot } from "@/types";
 import type { TripEvent } from "@/lib/event-types";
 import { getShoppingAnswer, type ShoppingRecommendation } from "@/lib/shopping-intelligence";
+import { getTimelineQuestionAnswer, timelineQuestionPrompts } from "@/lib/timeline-questioning";
 import { Icon } from "./Icon";
 import { FORM_CONTROL } from "@/components/formStyles";
 
-const EXAMPLES = ["Melyik strandot válasszuk?", "Mi fér még bele délután?", "Hova menjünk gyerekkel?"] as const;
 type Answer = { title: string; body: string; sources: string[]; recommendations?: ShoppingRecommendation[] };
 
 function eventAnswer(question: string, events: TripEvent[]): Answer | null {
@@ -34,8 +34,10 @@ function answerFor(question: string, day: HomeDay, weather: WeatherSnapshot | nu
   const afternoon = day.activities.filter((activity) => /^1[2-9]:|^2[0-3]:/.test(activity.time));
   const eventResult = eventAnswer(question, events);
   const shoppingAnswer = getShoppingAnswer(question);
+  const timelineAnswer = getTimelineQuestionAnswer(question, day);
   if (eventResult) return eventResult;
   if (shoppingAnswer) return shoppingAnswer;
+  if (timelineAnswer) return timelineAnswer;
 
   if (normalized.includes("strand")) {
     const plannedBeach = day.activities.find((activity) => /strand/i.test(`${activity.title} ${activity.place}`));
@@ -63,6 +65,7 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
   const [question, setQuestion] = useState<string | null>(null);
   const [customQuestion, setCustomQuestion] = useState("");
   const answer = useMemo(() => question ? answerFor(question, day, weather, events) : null, [day, events, question, weather]);
+  const prompts = useMemo(() => timelineQuestionPrompts(day), [day]);
 
   function submitCustomQuestion(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -72,7 +75,7 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
 
   return <section className="px-5 pb-5 pt-2" aria-label="Kérdezési">
     <div className="flex flex-col gap-2">
-      {EXAMPLES.map((example) => <button key={example} type="button" onClick={() => setQuestion(example)} className={`min-h-12 rounded-ui-s border px-3 text-left text-sm font-medium transition-colors ${question === example ? "border-turquoise bg-turquoise/10 text-deep-sea" : "border-deep-sea/10 bg-white/45 text-deep-sea/75"}`}>{example}</button>)}
+      {prompts.map((example) => <button key={example} type="button" onClick={() => setQuestion(example)} className={`min-h-12 rounded-ui-s border px-3 text-left text-sm font-medium transition-colors ${question === example ? "border-turquoise bg-turquoise/10 text-deep-sea" : "border-deep-sea/10 bg-white/45 text-deep-sea/75"}`}>{example}</button>)}
     </div>
     <form className="relative mt-5 border-t border-deep-sea/10 pt-5" onSubmit={submitCustomQuestion}>
       <label className="sr-only" htmlFor="custom-trip-question">Utazási kérdés</label>
