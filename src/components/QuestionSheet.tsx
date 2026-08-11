@@ -15,18 +15,32 @@ import { FORM_CONTROL } from "@/components/formStyles";
 export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; weather: WeatherSnapshot | null; events?: TripEvent[] }) {
   const [question, setQuestion] = useState<string | null>(null);
   const [customQuestion, setCustomQuestion] = useState("");
+  const [aiAnswer, setAiAnswer] = useState<{ title: string; body: string } | null>(null);
+  const [isAsking, setIsAsking] = useState(false);
   const answer = useMemo(() => question ? answerQuestion(question, day, weather, events, getShoppingAnswer(question)) : null, [day, events, question, weather]);
   const prompts = useMemo(() => timelineQuestionPrompts(day), [day]);
+
+  async function ask(value: string) {
+    setQuestion(value);
+    setAiAnswer(null);
+    setIsAsking(true);
+    try {
+      const response = await fetch("/api/question", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: value, date: day.date }) });
+      const payload = await response.json().catch(() => null) as { answer?: { title?: string; body?: string } } | null;
+      if (response.ok && payload?.answer?.title && payload.answer.body) setAiAnswer({ title: payload.answer.title, body: payload.answer.body });
+    } catch { /* The deterministic answer remains a deliberate offline/error fallback. */ }
+    finally { setIsAsking(false); }
+  }
 
   function submitCustomQuestion(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const value = customQuestion.trim();
-    if (value) setQuestion(value);
+    if (value) void ask(value);
   }
 
   return <section className="px-5 pb-5 pt-2" aria-label="Kérdezési">
     <div className="flex flex-col gap-2">
-      {prompts.map((example) => <button key={example} type="button" onClick={() => setQuestion(example)} className={`min-h-12 rounded-ui-s border px-3 text-left text-sm font-medium transition-colors ${question === example ? "border-turquoise bg-turquoise/10 text-deep-sea" : "border-deep-sea/10 bg-white/45 text-deep-sea/75"}`}>{example}</button>)}
+      {prompts.map((example) => <button key={example} type="button" onClick={() => void ask(example)} className={`min-h-12 rounded-ui-s border px-3 text-left text-sm font-medium transition-colors ${question === example ? "border-turquoise bg-turquoise/10 text-deep-sea" : "border-deep-sea/10 bg-white/45 text-deep-sea/75"}`}>{example}</button>)}
     </div>
     <form className="relative mt-5 border-t border-deep-sea/10 pt-5" onSubmit={submitCustomQuestion}>
       <label className="sr-only" htmlFor="custom-trip-question">Utazási kérdés</label>
@@ -34,8 +48,8 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
       <button type="submit" disabled={!customQuestion.trim()} aria-label="Kérdés elküldése" className="absolute bottom-0.5 right-0.5 grid h-11 w-11 place-items-center rounded-full bg-turquoise/15 text-turquoise-dark transition-colors disabled:bg-transparent disabled:text-deep-sea/25"><Icon name="arrow-up" size={17} strokeWidth={2} /></button>
     </form>
     {answer && <section className="mt-5 border-t border-deep-sea/10 pt-5" aria-live="polite">
-      <h3 className="text-[17px] font-bold leading-[23px] text-deep-sea">{answer.title}</h3>
-      <p className="mt-2 text-sm leading-[21px] text-deep-sea/70">{answer.body}</p>
+      <h3 className="text-[17px] font-bold leading-[23px] text-deep-sea">{aiAnswer?.title ?? answer.title}</h3>
+      <p className="mt-2 text-sm leading-[21px] text-deep-sea/70">{isAsking ? "Ellenőrzött utazási kontextusból összefoglalom…" : aiAnswer?.body ?? answer.body}</p>
       {answer.recommendations?.length ? <ul className="mt-4 space-y-2.5" aria-label="Javasolt helyek">
         {answer.recommendations.map((recommendation) => <li key={recommendation.placeSlug}>
           <a href={recommendation.placeDetailHref} className="group block rounded-ui-s border border-deep-sea/10 bg-white/50 p-3.5 outline-none transition-colors hover:bg-white/80 focus-visible:ring-2 focus-visible:ring-turquoise-dark">
