@@ -1,6 +1,7 @@
 import "server-only";
 
 import { TIMELINE_TRIP_SLUG, timelineServerClient } from "@/lib/timeline-service";
+import { watchIsDue } from "@/lib/event-watch-schedule";
 
 export type WatchChange = {
   eventTitle: string;
@@ -20,6 +21,8 @@ type EligibleWatch = {
   status: "scheduled" | "changed" | "cancelled";
   startsAt: string;
   placeSlug: string | null;
+  lastCheckedAt: string | null;
+  lastSuccessAt: string | null;
 };
 
 export type ObservedEventState = Pick<EligibleWatch, "status" | "startsAt" | "placeSlug">;
@@ -80,17 +83,24 @@ export async function savePushSubscription(value: unknown, userAgent: string | n
 export async function eligibleEventWatches(limit: number): Promise<EligibleWatch[]> {
   const { data, error } = await timelineServerClient()
     .from("event_watch_states")
-    .select("baseline_status, baseline_starts_at, baseline_place_slug, events!inner(id, title, source_url, status, starts_at, place_slug)")
+    .select("baseline_status, baseline_starts_at, baseline_place_slug, last_checked_at, last_success_at, events!inner(id, title, source_url, status, starts_at, place_slug)")
     .eq("enabled", true)
     .not("baseline_status", "is", null)
-    .not("baseline_starts_at", "is", null)
-    .order("last_checked_at", { ascending: true, nullsFirst: true })
-    .limit(limit);
+    .not("baseline_starts_at", "is", null);
   if (error) throw error;
   const candidates = (data ?? []).flatMap((row) => {
     const event = Array.isArray(row.events) ? row.events[0] : row.events;
     if (!event || !row.baseline_status || !row.baseline_starts_at) return [];
-    return [{ eventId: event.id, title: event.title, sourceUrl: event.source_url, status: row.baseline_status, startsAt: row.baseline_starts_at, placeSlug: row.baseline_place_slug }];
+    return [{
+      eventId: event.id,
+      title: event.title,
+      sourceUrl: event.source_url,
+      status: row.baseline_status,
+      startsAt: row.baseline_starts_at,
+      placeSlug: row.baseline_place_slug,
+      lastCheckedAt: row.last_checked_at,
+      lastSuccessAt: row.last_success_at,
+    }];
   });
   if (candidates.length === 0) return [];
 
@@ -100,7 +110,11 @@ export async function eligibleEventWatches(limit: number): Promise<EligibleWatch
     .in("source_event_id", candidates.map((candidate) => candidate.eventId));
   if (acceptedError) throw acceptedError;
   const acceptedIds = new Set((acceptedActivities ?? []).flatMap((activity) => activity.source_event_id ? [activity.source_event_id] : []));
-  return candidates.filter((candidate) => acceptedIds.has(candidate.eventId));
+  return candidates
+    .filter((candidate) => acceptedIds.has(candidate.eventId))
+    .filter((candidate) => watchIsDue(candidate))
+    .sort((left, right) => left.startsAt.localeCompare(right.startsAt))
+    .slice(0, limit);
 }
 
 

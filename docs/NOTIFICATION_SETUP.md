@@ -25,6 +25,11 @@ requires a server-only `WATCH_RUNNER_SECRET`, processes at most
 enabled Watch records with a recorded initial baseline. The runner constrains
 OpenAI web search to each Event's approved source domain.
 
+An accepted Event is considered only at the three travel-relevant checkpoints:
+T−6 hours, T−2 hours and T−1 hour. A delayed scheduled pass catches up at the
+latest passed checkpoint once. Failed checks may retry after 15 minutes, but
+the system does not continuously poll an Event throughout the trip.
+
 It writes material time, venue or status changes to `event_change_log` and
 updates the Watch baseline. It never edits the Timeline, Event, Place JSON or
 canonical data automatically. Connect this endpoint to the planned Supabase
