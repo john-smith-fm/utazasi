@@ -54,6 +54,35 @@ function RestaurantDetails({ place }: { place: Place }) {
   </section>;
 }
 
+function ShopDetails({ place }: { place: Place }) {
+  if (place.details.kind !== "shop" || !place.details.shop) return null;
+  const shop = place.details.shop;
+  return <section className="border-t border-deep-sea/10 pt-6" aria-labelledby="shop-information-heading">
+    <h2 id="shop-information-heading" className="text-[17px] font-bold leading-[23px] text-deep-sea">Bolt információk</h2>
+    {shop.familyInsight && <p className="mt-3 text-sm leading-[21px] text-deep-sea/70">{shop.familyInsight}</p>}
+    {shop.openingHours && <div className="mt-4">
+      <h3 className="text-sm font-semibold leading-5 text-deep-sea">Nyitvatartás</h3>
+      <p className="mt-1 text-sm leading-[21px] text-deep-sea/70">{shop.openingHours}</p>
+      {shop.openingNote && <p className="mt-1 text-xs leading-[18px] text-deep-sea/55">{shop.openingNote}</p>}
+    </div>}
+    {shop.confirmedDepartments?.length ? <div className="mt-4">
+      <h3 className="text-sm font-semibold leading-5 text-deep-sea">Biztosan elérhető</h3>
+      <p className="mt-1 text-sm leading-[21px] text-deep-sea/70">{shop.confirmedDepartments.join(" · ")}</p>
+    </div> : null}
+    {shop.services?.length ? <div className="mt-4">
+      <h3 className="text-sm font-semibold leading-5 text-deep-sea">Szolgáltatások</h3>
+      <p className="mt-1 text-sm leading-[21px] text-deep-sea/70">{shop.services.join(" · ")}</p>
+    </div> : null}
+    {shop.phones?.length ? <div className="mt-4">
+      <h3 className="text-sm font-semibold leading-5 text-deep-sea">Telefon</h3>
+      <div className="mt-1 flex flex-col items-start gap-1">
+        {shop.phones.map((phone) => <a key={phone} href={`tel:${phone.replace(/\s+/g, "")}`} className="inline-flex min-h-11 items-center text-sm font-semibold text-turquoise-dark">{phone}</a>)}
+      </div>
+    </div> : null}
+    {shop.website && <a href={shop.website} target="_blank" rel="noreferrer" className="mt-4 inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">Weboldal megnyitása</a>}
+  </section>;
+}
+
 export function PlaceDetail({ place }: { place: Place }) {
   const coverImage = place.intelligence?.coverImage;
   const primaryImage = place.media?.[0] ?? (coverImage?.assetUrl
@@ -94,6 +123,7 @@ export function PlaceDetail({ place }: { place: Place }) {
     <div className="mt-8 space-y-8">
       <BeachAccessDetails place={place} />
       <RestaurantDetails place={place} />
+      <ShopDetails place={place} />
       {navigationHref && <a href={navigationHref} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">{directionsHref ? "Navigáció megnyitása" : "Megnyitás Google Térképen"}</a>}
     </div>
   </article>;

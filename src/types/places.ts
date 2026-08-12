@@ -70,6 +70,15 @@ export type RestaurantDetails = {
 
 export type GenericPlaceDetails = {
   kind: Exclude<PlaceType, "beach" | "restaurant">;
+  shop?: {
+    openingHours?: string;
+    openingNote?: string;
+    phones?: string[];
+    website?: string;
+    services?: string[];
+    confirmedDepartments?: string[];
+    familyInsight?: string;
+  };
 };
 
 export type Place = {

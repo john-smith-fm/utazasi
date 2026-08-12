@@ -43,6 +43,71 @@ function optionalNavigation(value: unknown) {
   return mapsUrl || directionsUrl ? { mapsUrl, directionsUrl } : undefined;
 }
 
+function formatWeeklyOpeningHours(value: unknown) {
+  if (!isRecord(value)) return undefined;
+  const days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+  const ranges = days.map((day) => {
+    const periods = value[day];
+    if (!Array.isArray(periods) || periods.length !== 1 || !isRecord(periods[0])) return undefined;
+    const open = optionalString(periods[0].open);
+    const close = optionalString(periods[0].close);
+    return open && close ? `${open}–${close}` : undefined;
+  });
+  if (ranges.some((range) => !range)) return undefined;
+  if (ranges.every((range) => range === ranges[0])) return `Minden nap: ${ranges[0]}`;
+  if (ranges.slice(0, 6).every((range) => range === ranges[0]) && ranges[6]) return `H–Szo: ${ranges[0]} · V: ${ranges[6]}`;
+  return undefined;
+}
+
+const SHOP_SERVICE_LABELS: Record<string, string> = {
+  parking: "Parkolás",
+  bancomat: "Bankkártyás fizetés",
+  credit_card: "Bankkártyás fizetés",
+  meal_vouchers: "Étkezési utalvány",
+  home_delivery: "Házhoz szállítás",
+};
+
+const SHOP_DEPARTMENT_LABELS: Record<string, string> = {
+  fresh_bakery: "Pékség",
+  fresh_fruit: "Zöldség-gyümölcs",
+  fresh_fish: "Halpult",
+  butcher: "Hentes",
+  gastronomy: "Gasztronómia",
+  wine: "Borválaszték",
+  local_products: "Helyi termékek",
+};
+
+function shopDetailsFor(raw: UnknownRecord) {
+  const intelligence = isRecord(raw.destination_intelligence) ? raw.destination_intelligence : undefined;
+  if (!intelligence) return undefined;
+  const openingHours = isRecord(intelligence.opening_hours) ? intelligence.opening_hours : undefined;
+  const contact = isRecord(intelligence.contact) ? intelligence.contact : undefined;
+  const services = optionalStringArray(intelligence.services)
+    ?.map((service) => SHOP_SERVICE_LABELS[service])
+    .filter((service): service is string => Boolean(service));
+  const shopping = isRecord(intelligence.shopping) ? intelligence.shopping : undefined;
+  const inventory = shopping && isRecord(shopping.inventory) ? shopping.inventory : undefined;
+  const confirmedDepartments = inventory
+    ? Object.entries(inventory)
+      .filter(([, status]) => status === "confirmed")
+      .map(([key]) => SHOP_DEPARTMENT_LABELS[key])
+      .filter((department): department is string => Boolean(department))
+    : undefined;
+  const family = shopping && isRecord(shopping.family) ? shopping.family : undefined;
+  const phones = contact ? optionalStringArray(contact.phone) ?? (optionalString(contact.phone) ? [optionalString(contact.phone)!] : undefined) : undefined;
+  const website = contact ? optionalString(contact.website) : undefined;
+  const result = {
+    openingHours: openingHours ? formatWeeklyOpeningHours(openingHours.weekly) : undefined,
+    openingNote: openingHours ? optionalString(openingHours.seasonal_or_exception_note) : undefined,
+    phones,
+    website,
+    services: services?.length ? [...new Set(services)] : undefined,
+    confirmedDepartments: confirmedDepartments?.length ? [...new Set(confirmedDepartments)] : undefined,
+    familyInsight: family ? optionalString(family.insight) : undefined,
+  };
+  return Object.values(result).some(Boolean) ? result : undefined;
+}
+
 /** A Maps search hand-off is derived only from an already-approved place name
  * and locality. It deliberately does not claim a route, coordinate or duration. */
 function mapsSearchNavigation(name: string, location?: { locality?: string; address?: string }) {
@@ -223,7 +288,7 @@ function validateGenericPlaces(source: unknown, type: GenericPlaceType, category
       navigation: navigationFor(raw, name, location),
       provenance: provenanceFor(raw.provenance ?? raw.verification),
       intelligence: intelligenceFor(raw),
-      details: { kind: type },
+      details: { kind: type, ...(type === "shop" ? { shop: shopDetailsFor(raw) } : {}) },
     };
   });
 }
