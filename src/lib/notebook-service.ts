@@ -4,7 +4,7 @@ import { TIMELINE_TRIP_SLUG, timelineServerClient } from "@/lib/timeline-service
 import type { LegacyNotebookSnapshot, NotebookEntryKind, NotebookEntryRecord, PackingItemRecord } from "@/lib/notebook-types";
 
 type ServiceResult<T> = { data: T } | { error: string; status: number };
-const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{12}$/i;
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 type DbPacking = { id: string; title: string; is_packed: boolean; position: number; created_at: string; updated_at: string };
