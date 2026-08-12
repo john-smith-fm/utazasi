@@ -99,6 +99,14 @@ test("timeline prompts are selected-day aware", () => {
   assert.deepEqual(prompts, ["Mi a következő program?", "Van még értelme strandolni?", "Mi fér még bele ma?"]);
 });
 
+test("a shopping programme adds a grounded shopping prompt for that selected day", () => {
+  const prompts = timelineQuestionPrompts({
+    ...arrivalDay,
+    activities: [{ id: "shopping", time: "17:00", title: "Bevásárlás", place: "", kind: "plan", isSystemGenerated: false }],
+  });
+  assert.ok(prompts.includes("Hova menjünk bevásárolni?"));
+});
+
 test("known planned beach uses only Timeline and Weather facts", () => {
   const answer = answerQuestion("Melyik strandot válasszuk?", futureBeachDay, weather, [], null);
   assert.equal(answer.title, "Porto Giunco");

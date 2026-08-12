@@ -62,9 +62,10 @@ export function nextTimelineActivity(day: HomeDay) {
 }
 
 export function timelineQuestionPrompts(day: HomeDay) {
-  const text = day.activities.map((activity) => `${activity.title} ${activity.place}`).join(" ");
+  const text = normalized(day.activities.map((activity) => `${activity.title} ${activity.place}`).join(" "));
   const prompts = ["Mi a következő program?"];
   if (/strand|beach|tenger/i.test(text)) prompts.push("Van még értelme strandolni?");
+  if (/bevasar|bolt|market|elelmiszer|uzlet/.test(text)) prompts.push("Hova menjünk bevásárolni?");
   prompts.push("Mi fér még bele ma?");
   return [...new Set(prompts)].slice(0, 3);
 }
