@@ -1,5 +1,5 @@
 import shoppingIntelligence from "../../knowledge/shopping-intelligence.json";
-import { getPlaceBySlug } from "@/lib/places";
+import { getPlaceBySlug } from "./places";
 
 type ShoppingIntent = "arrival_shopping" | "daily_groceries" | "quick_stop" | "local_products" | "baby_products" | "mobility";
 
@@ -67,6 +67,29 @@ function detectIntent(question: string): ShoppingIntent | null {
   if (/(gyors|gyorsan|ugor)/.test(value) && hasShoppingWord) return "quick_stop";
   if (/(napi|mindennapi)/.test(value) && hasShoppingWord) return "daily_groceries";
   return null;
+}
+
+/**
+ * The Timeline place picker uses the same approved Shopping Intelligence
+ * profiles as Kérdezési, but exposes candidates rather than a prose answer.
+ * Unknown baby-product coverage deliberately returns no shop recommendation.
+ */
+export function getShoppingPlaceCandidates(title: string): { recommended: Array<{ place: NonNullable<ReturnType<typeof getPlaceBySlug>>; rationale?: string }>; additional: Array<{ place: NonNullable<ReturnType<typeof getPlaceBySlug>>; rationale?: string }> } | null {
+  const intent = detectIntent(title);
+  if (!intent || intent === "mobility" || intent === "baby_products") return intent === "baby_products" ? { recommended: [], additional: [] } : null;
+  const profileName = intent === "arrival_shopping" || intent === "quick_stop" || intent === "local_products" || intent === "daily_groceries"
+    ? intent
+    : "daily_groceries";
+  const profile = decisions[profileName];
+  if (!profile) return null;
+  const seen = new Set<string>();
+  const candidates = (profile.ranked_candidates ?? profile.candidates ?? []).flatMap((candidate) => {
+    const place = getPlaceBySlug(candidate.place_slug);
+    if (!place || seen.has(place.slug)) return [];
+    seen.add(place.slug);
+    return [{ place, rationale: candidate.reason }];
+  });
+  return { recommended: candidates.slice(0, 5), additional: candidates.slice(5) };
 }
 
 function record(value: unknown): Record<string, unknown> | undefined {

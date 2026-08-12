@@ -4,6 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import type { HomeActivity } from "@/data/home-days";
 import type { TimelineActivityInput } from "@/lib/timeline-types";
 import { getPlaces } from "@/lib/places";
+import { contextualPlaceSuggestionsFor } from "@/lib/contextual-place-suggestions";
 import { TRIP_BASE_NAME, TRIP_BASE_SLUG } from "@/lib/trip-base";
 import type { Place, PlaceType } from "@/types/places";
 import { FORM_CONTROL, FORM_TEXTAREA } from "@/components/formStyles";
@@ -47,7 +48,7 @@ function matchingPlaces(query: string): readonly Place[] {
     .some((value) => normalizedSearchValue(value).includes(normalizedQuery)));
 }
 
-type LocationSuggestion = { slug: string; name: string; meta: string };
+type LocationSuggestion = { slug: string; name: string; meta: string; rationale?: string };
 
 function matchingLocations(query: string): readonly LocationSuggestion[] {
   const normalizedQuery = normalizedSearchValue(query.trim());
@@ -79,6 +80,8 @@ export function ActivityEditor({ activity, onClose, onSave, onDelete }: {
   const editing = Boolean(activity?.id);
   const createRequestId = useRef<string | null>(null);
   const suggestions = useMemo(() => matchingLocations(input.locationName), [input.locationName]);
+  const contextualSuggestions = useMemo(() => contextualPlaceSuggestionsFor(input.title), [input.title]);
+  const shouldShowContextualSuggestions = showSuggestions && !input.locationName.trim() && Boolean(contextualSuggestions.intent);
 
   function update<Key extends keyof TimelineActivityInput>(key: Key, value: TimelineActivityInput[Key]) {
     setInput((current) => ({ ...current, [key]: value }));
@@ -95,6 +98,15 @@ export function ActivityEditor({ activity, onClose, onSave, onDelete }: {
     setInput((current) => ({ ...current, locationName: place.name, placeSlug: place.slug }));
     setError("");
     setShowSuggestions(false);
+  }
+
+  function suggestionButton(place: LocationSuggestion) {
+    return <li key={place.slug} role="option" aria-selected={input.placeSlug === place.slug}>
+      <button type="button" onMouseDown={(event) => event.preventDefault()} onClick={() => selectPlace(place)} className="min-h-11 w-full px-4 py-2 text-left outline-none transition-colors hover:bg-sand focus-visible:bg-sand">
+        <span className="block text-[15px] font-semibold leading-5 text-deep-sea">{place.name}</span>
+        {place.rationale ? <span className="mt-0.5 block text-[13px] leading-[18px] text-deep-sea/60">{place.rationale}</span> : place.meta && <span className="mt-0.5 block text-[13px] leading-[18px] text-deep-sea/60">{place.meta}</span>}
+      </button>
+    </li>;
   }
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
@@ -145,20 +157,24 @@ export function ActivityEditor({ activity, onClose, onSave, onDelete }: {
               onFocus={() => setShowSuggestions(true)}
               role="combobox"
               aria-autocomplete="list"
-              aria-expanded={showSuggestions && suggestions.length > 0}
+              aria-expanded={showSuggestions && (suggestions.length > 0 || shouldShowContextualSuggestions)}
               aria-controls="place-suggestions"
               className={`${FORM_CONTROL} w-full px-4`}
             />
-            {showSuggestions && suggestions.length > 0 && <ul id="place-suggestions" role="listbox" className="absolute z-10 mt-2 max-h-56 w-full overflow-y-auto rounded-ui-s border border-deep-sea/10 bg-white py-1 shadow-[0_10px_24px_rgba(24,50,59,.12)]">
-              {suggestions.map((place) => {
-                return <li key={place.slug} role="option" aria-selected={input.placeSlug === place.slug}>
-                  <button type="button" onMouseDown={(event) => event.preventDefault()} onClick={() => selectPlace(place)} className="min-h-11 w-full px-4 py-2 text-left outline-none transition-colors hover:bg-sand focus-visible:bg-sand">
-                    <span className="block text-[15px] font-semibold leading-5 text-deep-sea">{place.name}</span>
-                    {place.meta && <span className="mt-0.5 block text-[13px] leading-[18px] text-deep-sea/60">{place.meta}</span>}
-                  </button>
-                </li>;
-              })}
-            </ul>}
+            {showSuggestions && (suggestions.length > 0 || shouldShowContextualSuggestions) && <div id="place-suggestions" role="listbox" className="absolute z-10 mt-2 max-h-64 w-full overflow-y-auto rounded-ui-s border border-deep-sea/10 bg-white py-1 shadow-[0_10px_24px_rgba(24,50,59,.12)]">
+              {shouldShowContextualSuggestions && <>
+                {contextualSuggestions.recommended.length > 0 ? <>
+                  <p className="px-4 pb-1 pt-2 text-[12px] font-semibold uppercase tracking-[.08em] text-deep-sea/45">Ajánlott helyek</p>
+                  <ul>{contextualSuggestions.recommended.map(suggestionButton)}</ul>
+                  {contextualSuggestions.additional.length > 0 && <><div className="mx-4 my-1 border-t border-deep-sea/10" /><p className="px-4 pb-1 pt-2 text-[12px] font-semibold uppercase tracking-[.08em] text-deep-sea/45">További helyek</p><ul>{contextualSuggestions.additional.map(suggestionButton)}</ul></>}
+                </> : <p className="px-4 py-3 text-[14px] leading-5 text-deep-sea/60">Ehhez még nincs ajánlott helyünk. Keress rá egy másik helyre, vagy írj be szabad szöveges helyszínt.</p>}
+              </>}
+              {suggestions.length > 0 && <>
+                {shouldShowContextualSuggestions && <div className="mx-4 my-1 border-t border-deep-sea/10" />}
+                <p className="px-4 pb-1 pt-2 text-[12px] font-semibold uppercase tracking-[.08em] text-deep-sea/45">Keresési találatok</p>
+                <ul>{suggestions.map(suggestionButton)}</ul>
+              </>}
+            </div>}
           </div>
         </Field>
         <Field label="Megjegyzés"><textarea maxLength={1000} value={input.description} onChange={(event) => update("description", event.target.value)} className={`${FORM_TEXTAREA} w-full px-4 py-3`} /></Field>
