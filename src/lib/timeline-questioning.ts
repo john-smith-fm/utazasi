@@ -74,7 +74,34 @@ export function getTimelineQuestionAnswer(question: string, day: HomeDay): Timel
   const next = nextTimelineActivity(day);
   const timed = orderedTimedActivities(day);
 
-  if (/kovetkez|ut[aá]na/.test(value)) {
+  // "Érkezés után" is a planning question, not a request for external travel
+  // facts. Keep the answer bounded to the explicitly scheduled items which
+  // follow the arrival marker on the selected day.
+  if (/erkezes.*utan|utan.*erkezes/.test(value)) {
+    const arrivalIndex = timed.findIndex(({ activity }) => normalized(activity.title).includes("erkezes"));
+    if (arrivalIndex < 0) {
+      return {
+        title: "Nincs rögzített érkezés",
+        body: "A kiválasztott naphoz nincs érkezési programpont rögzítve, ezért nem következtetek érkezés utáni teendőkre.",
+        sources: ["Timeline"],
+      };
+    }
+    const afterArrival = timed.slice(arrivalIndex + 1, arrivalIndex + 4).map(({ activity }) => activity);
+    if (!afterArrival.length) {
+      return {
+        title: "Az érkezés után még nincs program",
+        body: "A kiválasztott nap Timeline-jában az érkezés után még nincs további rögzített programpont.",
+        sources: ["Timeline"],
+      };
+    }
+    return {
+      title: "Érkezés után",
+      body: afterArrival.map((activity) => `${activity.time} · ${activity.title}${activity.place ? ` · ${activity.place}` : ""}`).join("\n"),
+      sources: ["Timeline"],
+    };
+  }
+
+  if (/kovetkez|utan/.test(value)) {
     if (!next) return {
       title: "Nincs következő rögzített program",
       body: day.date < romeToday()

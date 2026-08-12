@@ -18,6 +18,21 @@ const futureBeachDay = {
 
 const pastDay = { ...futureBeachDay, date: "2020-09-03" };
 
+const arrivalDay = {
+  date: "2099-09-02",
+  day: 2,
+  weekday: "Sze" as const,
+  title: "Érkezés és ráhangolódás",
+  summary: "Teszt érkezési nap.",
+  activities: [
+    { time: "10:35", title: "Repülő indulása", place: "Budapest Airport", placeSlug: "budapest-airport" },
+    { time: "12:45", title: "Érkezés", place: "Cagliari Airport", placeSlug: "cagliari-airport" },
+    { time: "13:00", title: "Autófelvétel", place: "Cagliari Airport", placeSlug: "cagliari-airport" },
+    { time: "15:00", title: "Szállás elfoglalása", place: "Ollastu Apartments", placeSlug: null },
+    { time: "16:30", title: "Bevásárlás", place: "Market Simius — CRAI", placeSlug: "market-simius-crai" },
+  ],
+};
+
 const weather = {
   temp: 27,
   wind: 14,
@@ -45,6 +60,16 @@ test("future selected day resolves its first explicit Timeline item", () => {
   const answer = answerQuestion("Mi a következő program?", futureBeachDay, weather, [], null);
   assert.equal(answer.title, "09:30 · Strandolás");
   assert.match(answer.body, /Porto Giunco/);
+  assert.deepEqual(answer.sources, ["Timeline"]);
+});
+
+test("arrival-after question lists only the scheduled post-arrival plan", () => {
+  const answer = answerQuestion("Mit érdemes még ma elintéznünk érkezés után?", arrivalDay, weather, [], null);
+  assert.equal(answer.title, "Érkezés után");
+  assert.match(answer.body, /13:00 · Autófelvétel/);
+  assert.match(answer.body, /15:00 · Szállás elfoglalása/);
+  assert.match(answer.body, /16:30 · Bevásárlás/);
+  assert.doesNotMatch(answer.body, /Repülő indulása/);
   assert.deepEqual(answer.sources, ["Timeline"]);
 });
 
