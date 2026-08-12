@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { answerQuestion } from "../../src/lib/questioning-answer.ts";
+import { smartStatusSummary } from "../../src/lib/smart-status.ts";
 import { timelineQuestionPrompts } from "../../src/lib/timeline-questioning.ts";
 
 const futureBeachDay = {
@@ -97,6 +98,21 @@ test("remaining-time answer declares missing route and opening-hours evidence", 
 test("timeline prompts are selected-day aware", () => {
   const prompts = timelineQuestionPrompts(futureBeachDay);
   assert.deepEqual(prompts, ["Mi a következő program?", "Van még értelme strandolni?", "Mi fér még bele ma?"]);
+});
+
+test("a watch change appears only on the Timeline day that accepted its event", () => {
+  const change = {
+    eventTitle: "Invasio Fesztivál",
+    kind: "start_time_changed" as const,
+    observedAt: "2026-08-13T10:00:00.000Z",
+    timelineDates: ["2099-09-07"],
+  };
+
+  const unrelatedDayStatus = smartStatusSummary(futureBeachDay, weather, change);
+  assert.equal(unrelatedDayStatus, futureBeachDay.summary);
+
+  const acceptedDayStatus = smartStatusSummary({ ...futureBeachDay, date: "2099-09-07" }, weather, change);
+  assert.match(acceptedDayStatus, /Fontos változás: Invasio Fesztivál időpontja módosult/);
 });
 
 test("a shopping programme adds a grounded shopping prompt for that selected day", () => {
