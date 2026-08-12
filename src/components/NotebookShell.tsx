@@ -46,10 +46,44 @@ function EntryForm({ kind, onCreate }: { kind: NotebookEntryKind; onCreate: (dat
   </form>;
 }
 
-function EntryList({ entries, kind, onDelete }: { entries: NotebookEntryRecord[]; kind: NotebookEntryKind; onDelete: (id: string) => Promise<void> }) {
+function EntryEditForm({ entry, onSave, onCancel }: { entry: NotebookEntryRecord; onSave: (data: Record<string, unknown>) => Promise<void>; onCancel: () => void }) {
+  const [content, setContent] = useState(entry.content);
+  const [amount, setAmount] = useState(entry.amountEur === null ? "" : String(entry.amountEur));
+  const [occurredOn, setOccurredOn] = useState(entry.occurredOn);
+  const [rating, setRating] = useState(String(entry.rating ?? 5));
+  const [saving, setSaving] = useState(false);
+
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!content.trim()) return;
+    setSaving(true);
+    try {
+      await onSave({
+        kind: entry.kind,
+        content: content.trim(),
+        amountEur: entry.kind === "expense" ? amount : null,
+        occurredOn,
+        rating: entry.kind === "journal" ? Number(rating) : null,
+      });
+    } finally { setSaving(false); }
+  }
+
+  return <form onSubmit={submit} className="space-y-2.5 rounded-ui-s bg-turquoise/5 p-3">
+    <input value={content} onChange={(event) => setContent(event.target.value)} aria-label="Bejegyzés tartalma" maxLength={2000} required className={`${FORM_CONTROL} w-full px-3.5`} />
+    <div className="flex flex-wrap gap-2">
+      <input value={occurredOn} onChange={(event) => setOccurredOn(event.target.value)} aria-label="Bejegyzés dátuma" type="date" required className={`${FORM_CONTROL} w-[154px] px-3`} />
+      {entry.kind === "expense" ? <input value={amount} onChange={(event) => setAmount(event.target.value)} aria-label="Összeg euróban" type="number" inputMode="decimal" min="0" step="0.01" required className={`${FORM_CONTROL} w-28 px-3`} /> : null}
+      {entry.kind === "journal" ? <select value={rating} onChange={(event) => setRating(event.target.value)} aria-label="Nap értékelése" className={`${FORM_CONTROL} h-12 w-24 px-2`}><option value="1">1 / 5</option><option value="2">2 / 5</option><option value="3">3 / 5</option><option value="4">4 / 5</option><option value="5">5 / 5</option></select> : null}
+    </div>
+    <div className="flex gap-2"><button disabled={saving} className="min-h-11 rounded-ui-s border border-turquoise bg-turquoise/15 px-3.5 text-sm font-semibold text-deep-sea disabled:opacity-50">{saving ? "Mentés…" : "Mentés"}</button><button type="button" onClick={onCancel} disabled={saving} className="min-h-11 px-2 text-sm font-semibold text-deep-sea/60">Mégse</button></div>
+  </form>;
+}
+
+function EntryList({ entries, kind, onDelete, onUpdate }: { entries: NotebookEntryRecord[]; kind: NotebookEntryKind; onDelete: (id: string) => Promise<void>; onUpdate: (id: string, data: Record<string, unknown>) => Promise<void> }) {
+  const [editingId, setEditingId] = useState<string | null>(null);
   const visible = entries.filter((entry) => entry.kind === kind);
   if (!visible.length) return <p className="mt-5 text-sm leading-6 text-deep-sea/60">Még nincs bejegyzés.</p>;
-  return <div className="mt-5 divide-y divide-deep-sea/10">{visible.map((entry) => <article key={entry.id} className="flex gap-3 py-3.5"><div className="min-w-0 flex-1"><p className="text-[11px] font-semibold uppercase tracking-[.04em] text-deep-sea/45">{dateLabel(entry.occurredOn)}</p><p className="mt-1 text-sm leading-6 text-deep-sea">{entry.content}</p>{kind === "journal" && entry.rating ? <p className="mt-1 text-xs text-turquoise-dark">{"★".repeat(entry.rating)}{"☆".repeat(5 - entry.rating)}</p> : null}</div>{kind === "expense" && entry.amountEur !== null ? <strong className="whitespace-nowrap text-sm text-deep-sea">{entry.amountEur.toFixed(2)} €</strong> : null}<button onClick={() => void onDelete(entry.id)} aria-label="Bejegyzés törlése" className="min-h-11 min-w-11 self-start text-sm text-deep-sea/45">Törlés</button></article>)}</div>;
+  return <div className="mt-5 divide-y divide-deep-sea/10">{visible.map((entry) => <article key={entry.id} className="py-3.5">{editingId === entry.id ? <EntryEditForm entry={entry} onCancel={() => setEditingId(null)} onSave={async (value) => { await onUpdate(entry.id, value); setEditingId(null); }} /> : <div className="flex gap-3"><div className="min-w-0 flex-1"><p className="text-[11px] font-semibold uppercase tracking-[.04em] text-deep-sea/45">{dateLabel(entry.occurredOn)}</p><p className="mt-1 text-sm leading-6 text-deep-sea">{entry.content}</p>{kind === "journal" && entry.rating ? <p className="mt-1 text-xs text-turquoise-dark">{"★".repeat(entry.rating)}{"☆".repeat(5 - entry.rating)}</p> : null}</div>{kind === "expense" && entry.amountEur !== null ? <strong className="whitespace-nowrap text-sm text-deep-sea">{entry.amountEur.toFixed(2)} €</strong> : null}<div className="flex shrink-0 flex-col items-end"><button onClick={() => setEditingId(entry.id)} aria-label="Bejegyzés szerkesztése" className="min-h-11 px-2 text-sm text-deep-sea/60">Szerkesztés</button><button onClick={() => void onDelete(entry.id)} aria-label="Bejegyzés törlése" className="min-h-11 px-2 text-sm text-deep-sea/45">Törlés</button></div></div>}</article>)}</div>;
 }
 
 /** The runtime Notebook reads/writes only through the PIN-protected server API. */
@@ -87,6 +121,15 @@ export function NotebookShell() {
     try { const entry = await request("POST", { resource: "entry", data: value }) as unknown as NotebookEntryRecord; setNotebook({ ...data, entries: [entry, ...data.entries] }); }
     catch (error) { setMessage(error instanceof Error ? error.message : "A mentés nem sikerült."); throw error; }
   }
+  async function updateEntry(id: string, value: Record<string, unknown>) {
+    try {
+      const entry = await request("PATCH", { resource: "entry", id, data: value }) as unknown as NotebookEntryRecord;
+      setNotebook({ ...data, entries: data.entries.map((current) => current.id === id ? entry : current) });
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "A mentés nem sikerült.");
+      throw error;
+    }
+  }
   async function deleteEntry(id: string) { try { await request("DELETE", { resource: "entry", id }); setNotebook({ ...data, entries: data.entries.filter((entry) => entry.id !== id) }); } catch (error) { setMessage(error instanceof Error ? error.message : "A törlés nem sikerült."); } }
   async function addPacking(event: FormEvent<HTMLFormElement>) { event.preventDefault(); if (!packingTitle.trim()) return; try { const item = await request("POST", { resource: "packing", data: { title: packingTitle.trim(), isPacked: false, position: data.packing.length } }) as unknown as PackingItemRecord; setNotebook({ ...data, packing: [...data.packing, item] }); setPackingTitle(""); } catch (error) { setMessage(error instanceof Error ? error.message : "A mentés nem sikerült."); } }
   async function togglePacking(item: PackingItemRecord) { try { const updated = await request("PATCH", { resource: "packing", id: item.id, data: { title: item.title, isPacked: !item.isPacked, position: item.position } }) as unknown as PackingItemRecord; setNotebook({ ...data, packing: data.packing.map((entry) => entry.id === item.id ? updated : entry) }); } catch (error) { setMessage(error instanceof Error ? error.message : "A mentés nem sikerült."); } }
@@ -100,9 +143,9 @@ export function NotebookShell() {
     {message ? <div className="mt-4 flex items-center justify-between gap-3 rounded-ui-s border border-coral/25 bg-coral/5 px-3.5 py-3 text-sm text-deep-sea/75"><span>{message}</span><button onClick={() => { setMessage(null); void load(); }} className="min-h-11 shrink-0 font-semibold text-deep-sea">Újrapróbálás</button></div> : null}
     {status === "offline" ? <p className="mt-4 text-sm text-deep-sea/60">Offline módban az utoljára betöltött Jegyzetfüzet látható. Módosítás most nem menthető.</p> : null}
     {status === "loading" ? <p className="mt-5 text-sm text-deep-sea/60">Jegyzetfüzet betöltése…</p> : null}
-    {tab === "money" ? <section className="pt-5"><div className="rounded-ui-s bg-white/60 p-4"><p className="text-xs font-semibold uppercase tracking-[.04em] text-deep-sea/45">Teljes kiadás</p><p className="mt-1 text-2xl font-semibold text-deep-sea">{total.toFixed(2)} €</p></div><EntryForm kind="expense" onCreate={createEntry} /><EntryList entries={data.entries} kind="expense" onDelete={deleteEntry} /></section> : null}
+    {tab === "money" ? <section className="pt-5"><div className="rounded-ui-s bg-white/60 p-4"><p className="text-xs font-semibold uppercase tracking-[.04em] text-deep-sea/45">Teljes kiadás</p><p className="mt-1 text-2xl font-semibold text-deep-sea">{total.toFixed(2)} €</p></div><EntryForm kind="expense" onCreate={createEntry} /><EntryList entries={data.entries} kind="expense" onDelete={deleteEntry} onUpdate={updateEntry} /></section> : null}
     {tab === "packing" ? <section className="pt-5"><p className="text-sm text-deep-sea/65">{data.packing.length ? `${packed} / ${data.packing.length} becsomagolva` : "Add hozzá az első tételt."}</p><form onSubmit={addPacking} className="mt-4 flex gap-2"><input value={packingTitle} onChange={(event) => setPackingTitle(event.target.value)} placeholder="Új pakolási tétel" className={`${FORM_CONTROL} min-w-0 flex-1 px-3.5`} /><button className="min-h-12 rounded-ui-s border border-turquoise bg-turquoise/15 px-4 text-sm font-semibold text-deep-sea">Hozzáadás</button></form><div className="mt-4 divide-y divide-deep-sea/10">{data.packing.map((item) => <div key={item.id} className="flex items-center gap-2 py-3"><button onClick={() => void togglePacking(item)} aria-label={`${item.title} ${item.isPacked ? "nincs becsomagolva" : "becsomagolva"}`} className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border ${item.isPacked ? "border-turquoise bg-turquoise text-white" : "border-deep-sea/20 text-transparent"}`}>✓</button><p className={`min-w-0 flex-1 text-sm ${item.isPacked ? "text-deep-sea/45 line-through" : "text-deep-sea"}`}>{item.title}</p><button onClick={() => void deletePacking(item.id)} aria-label="Pakolási tétel törlése" className="min-h-11 px-2 text-sm text-deep-sea/45">Törlés</button></div>)}</div></section> : null}
-    {tab === "notes" ? <section className="pt-5"><EntryForm kind="note" onCreate={createEntry} /><EntryList entries={data.entries} kind="note" onDelete={deleteEntry} /></section> : null}
-    {tab === "journal" ? <section className="pt-5"><EntryForm kind="journal" onCreate={createEntry} /><EntryList entries={data.entries} kind="journal" onDelete={deleteEntry} /></section> : null}
+    {tab === "notes" ? <section className="pt-5"><EntryForm kind="note" onCreate={createEntry} /><EntryList entries={data.entries} kind="note" onDelete={deleteEntry} onUpdate={updateEntry} /></section> : null}
+    {tab === "journal" ? <section className="pt-5"><EntryForm kind="journal" onCreate={createEntry} /><EntryList entries={data.entries} kind="journal" onDelete={deleteEntry} onUpdate={updateEntry} /></section> : null}
   </section>;
 }
