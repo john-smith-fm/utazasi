@@ -8,7 +8,10 @@ import { storageGet, storageSet } from "@/lib/storage";
 
 type NotebookData = { packing: PackingItemRecord[]; entries: NotebookEntryRecord[] };
 type Tab = "money" | "packing" | "notes" | "journal";
-const CACHE_KEY = "utazasi-notebook-v1";
+// v1 could contain pre-persistence rows without the fields used by the API.
+// Start v2 with a server-shaped cache; the browser's original legacy data is
+// still preserved separately and imported safely only once.
+const CACHE_KEY = "utazasi-notebook-v2";
 const TAB_KEY = "utazasi-notebook-tab-v1";
 const TABS: Array<{ id: Tab; label: string }> = [{ id: "money", label: "Pénz" }, { id: "packing", label: "Pakolás" }, { id: "notes", label: "Jegyzetek" }, { id: "journal", label: "Napló" }];
 

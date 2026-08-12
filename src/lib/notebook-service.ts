@@ -61,6 +61,34 @@ function packingInput(raw: unknown): ServiceResult<{ title: string; isPacked: bo
   return { data: { title, isPacked, position } };
 }
 
+/**
+ * A modification may originate from an older browser cache. In that case the
+ * request can omit unchanged fields; they are retained from the server record
+ * rather than making a checkbox tap fail validation.
+ */
+function packingPatchInput(raw: unknown): ServiceResult<Partial<{ title: string; isPacked: boolean; position: number }>> {
+  if (!raw || typeof raw !== "object") return { error: "Érvénytelen pakolási tétel.", status: 400 };
+  const input = raw as Record<string, unknown>;
+  const patch: Partial<{ title: string; isPacked: boolean; position: number }> = {};
+
+  if ("title" in input) {
+    const title = text(input.title, 160);
+    if (!title) return { error: "Adj meg tételnevet.", status: 400 };
+    patch.title = title;
+  }
+  if ("isPacked" in input) {
+    if (typeof input.isPacked !== "boolean") return { error: "Érvénytelen pakolási állapot.", status: 400 };
+    patch.isPacked = input.isPacked;
+  }
+  if ("position" in input) {
+    const position = Number(input.position);
+    if (!Number.isInteger(position) || position < 0) return { error: "Érvénytelen listahely.", status: 400 };
+    patch.position = position;
+  }
+  if (!Object.keys(patch).length) return { error: "Nincs módosítandó adat.", status: 400 };
+  return { data: patch };
+}
+
 export async function readNotebook(): Promise<ServiceResult<{ packing: PackingItemRecord[]; entries: NotebookEntryRecord[] }>> {
   const trip = await tripId();
   if ("error" in trip) return trip;
@@ -109,11 +137,19 @@ export async function createPackingItem(raw: unknown): Promise<ServiceResult<Pac
 export async function updatePackingItem(id: unknown, raw: unknown): Promise<ServiceResult<PackingItemRecord>> {
   if (!validId(id)) return { error: "Érvénytelen pakolási tétel.", status: 400 };
   const packingId = id as string;
-  const input = packingInput(raw);
+  const input = packingPatchInput(raw);
   if ("error" in input) return input;
   const trip = await tripId();
   if ("error" in trip) return trip;
-  const { data, error } = await timelineServerClient().from("packing_items").update({ title: input.data.title, is_packed: input.data.isPacked, position: input.data.position }).eq("id", packingId).eq("trip_id", trip.data).select("id, title, is_packed, position, created_at, updated_at").maybeSingle();
+  const supabase = timelineServerClient();
+  const { data: existing, error: existingError } = await supabase.from("packing_items").select("title, is_packed, position").eq("id", packingId).eq("trip_id", trip.data).maybeSingle();
+  if (existingError) throw existingError;
+  if (!existing) return { error: "A pakolási tétel nem található.", status: 404 };
+  const { data, error } = await supabase.from("packing_items").update({
+    title: input.data.title ?? existing.title,
+    is_packed: input.data.isPacked ?? existing.is_packed,
+    position: input.data.position ?? existing.position,
+  }).eq("id", packingId).eq("trip_id", trip.data).select("id, title, is_packed, position, created_at, updated_at").maybeSingle();
   if (error) throw error;
   return data ? { data: packingRecord(data as DbPacking) } : { error: "A pakolási tétel nem található.", status: 404 };
 }
