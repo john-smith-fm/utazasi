@@ -101,7 +101,7 @@ export function NotebookShell() {
       const response = await fetch("/api/notebook", { cache: "no-store" });
       if (!response.ok) throw new Error("A Jegyzetfüzet most nem érhető el.");
       const next = await response.json() as NotebookData;
-      setNotebook(next); setStatus("ready");
+      setNotebook(next); setStatus("ready"); setMessage(null);
     } catch (error) {
       setStatus(typeof navigator !== "undefined" && !navigator.onLine ? "offline" : "error");
       setMessage(error instanceof Error ? error.message : "A Jegyzetfüzet most nem érhető el.");
@@ -118,22 +118,23 @@ export function NotebookShell() {
     return payload;
   }
   async function createEntry(value: Record<string, unknown>) {
-    try { const entry = await request("POST", { resource: "entry", data: value }) as unknown as NotebookEntryRecord; setNotebook({ ...data, entries: [entry, ...data.entries] }); }
+    try { const entry = await request("POST", { resource: "entry", data: value }) as unknown as NotebookEntryRecord; setNotebook({ ...data, entries: [entry, ...data.entries] }); setMessage(null); }
     catch (error) { setMessage(error instanceof Error ? error.message : "A mentés nem sikerült."); throw error; }
   }
   async function updateEntry(id: string, value: Record<string, unknown>) {
     try {
       const entry = await request("PATCH", { resource: "entry", id, data: value }) as unknown as NotebookEntryRecord;
       setNotebook({ ...data, entries: data.entries.map((current) => current.id === id ? entry : current) });
+      setMessage(null);
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "A mentés nem sikerült.");
       throw error;
     }
   }
-  async function deleteEntry(id: string) { try { await request("DELETE", { resource: "entry", id }); setNotebook({ ...data, entries: data.entries.filter((entry) => entry.id !== id) }); } catch (error) { setMessage(error instanceof Error ? error.message : "A törlés nem sikerült."); } }
-  async function addPacking(event: FormEvent<HTMLFormElement>) { event.preventDefault(); if (!packingTitle.trim()) return; try { const item = await request("POST", { resource: "packing", data: { title: packingTitle.trim(), isPacked: false, position: data.packing.length } }) as unknown as PackingItemRecord; setNotebook({ ...data, packing: [...data.packing, item] }); setPackingTitle(""); } catch (error) { setMessage(error instanceof Error ? error.message : "A mentés nem sikerült."); } }
-  async function togglePacking(item: PackingItemRecord) { try { const updated = await request("PATCH", { resource: "packing", id: item.id, data: { title: item.title, isPacked: !item.isPacked, position: item.position } }) as unknown as PackingItemRecord; setNotebook({ ...data, packing: data.packing.map((entry) => entry.id === item.id ? updated : entry) }); } catch (error) { setMessage(error instanceof Error ? error.message : "A mentés nem sikerült."); } }
-  async function deletePacking(id: string) { try { await request("DELETE", { resource: "packing", id }); setNotebook({ ...data, packing: data.packing.filter((item) => item.id !== id) }); } catch (error) { setMessage(error instanceof Error ? error.message : "A törlés nem sikerült."); } }
+  async function deleteEntry(id: string) { try { await request("DELETE", { resource: "entry", id }); setNotebook({ ...data, entries: data.entries.filter((entry) => entry.id !== id) }); setMessage(null); } catch (error) { setMessage(error instanceof Error ? error.message : "A törlés nem sikerült."); } }
+  async function addPacking(event: FormEvent<HTMLFormElement>) { event.preventDefault(); if (!packingTitle.trim()) return; try { const item = await request("POST", { resource: "packing", data: { title: packingTitle.trim(), isPacked: false, position: data.packing.length } }) as unknown as PackingItemRecord; setNotebook({ ...data, packing: [...data.packing, item] }); setPackingTitle(""); setMessage(null); } catch (error) { setMessage(error instanceof Error ? error.message : "A mentés nem sikerült."); } }
+  async function togglePacking(item: PackingItemRecord) { try { const updated = await request("PATCH", { resource: "packing", id: item.id, data: { title: item.title, isPacked: !item.isPacked, position: item.position } }) as unknown as PackingItemRecord; setNotebook({ ...data, packing: data.packing.map((entry) => entry.id === item.id ? updated : entry) }); setMessage(null); } catch (error) { setMessage(error instanceof Error ? error.message : "A mentés nem sikerült."); } }
+  async function deletePacking(id: string) { try { await request("DELETE", { resource: "packing", id }); setNotebook({ ...data, packing: data.packing.filter((item) => item.id !== id) }); setMessage(null); } catch (error) { setMessage(error instanceof Error ? error.message : "A törlés nem sikerült."); } }
 
   const expenses = data.entries.filter((entry) => entry.kind === "expense");
   const total = useMemo(() => expenses.reduce((sum, entry) => sum + (entry.amountEur ?? 0), 0), [expenses]);
