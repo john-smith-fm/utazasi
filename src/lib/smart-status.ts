@@ -22,7 +22,9 @@ function watchChangeSummary(change: WatchChange): string {
 }
 
 export function smartStatusSummary(day: HomeDay, weather: WeatherSnapshot | null, watchChange: WatchChange | null = null): string {
-  if (watchChange) return watchChangeSummary(watchChange);
+  // A Watch change is not a global Home banner. It belongs only to the
+  // Timeline date(s) where that Event was explicitly accepted.
+  if (watchChange?.timelineDates.includes(day.date)) return watchChangeSummary(watchChange);
   if (day.date === todayInTripTimezone()) {
     const next = nextActivity(day.activities);
     if (next) return `Következő: ${next.title}${next.place ? ` · ${next.place}` : ""}.`;

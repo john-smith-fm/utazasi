@@ -7,6 +7,8 @@ export type WatchChange = {
   eventTitle: string;
   kind: "status_changed" | "start_time_changed" | "venue_changed";
   observedAt: string;
+  /** A change is relevant only on the day(s) where the Event is in the Timeline. */
+  timelineDates: string[];
 };
 
 export type BrowserPushSubscription = {
@@ -33,13 +35,17 @@ async function currentTripId(): Promise<string | null> {
   return data?.id ?? null;
 }
 
-/** Returns only the one most recent material change for the selected family trip. */
+/**
+ * Returns the most recent material change together with the Timeline day(s)
+ * that accepted the Event. The UI must not surface a Sep 7 change while the
+ * family is viewing Sep 2.
+ */
 export async function latestWatchChange(): Promise<WatchChange | null> {
   const tripId = await currentTripId();
   if (!tripId) return null;
   const { data, error } = await timelineServerClient()
     .from("event_change_log")
-    .select("change_kind, observed_at, events!inner(title, trip_id)")
+    .select("change_kind, observed_at, events!inner(id, title, trip_id)")
     .eq("events.trip_id", tripId)
     .order("observed_at", { ascending: false })
     .limit(1)
@@ -47,8 +53,17 @@ export async function latestWatchChange(): Promise<WatchChange | null> {
   if (error) throw error;
   if (!data) return null;
   const event = Array.isArray(data.events) ? data.events[0] : data.events;
-  if (!event?.title) return null;
-  return { eventTitle: event.title, kind: data.change_kind, observedAt: data.observed_at };
+  if (!event?.title || !event.id) return null;
+  const { data: activities, error: activitiesError } = await timelineServerClient()
+    .from("timeline_activities")
+    .select("days!inner(date)")
+    .eq("source_event_id", event.id);
+  if (activitiesError) throw activitiesError;
+  const timelineDates = [...new Set((activities ?? []).flatMap((activity) => {
+    const day = Array.isArray(activity.days) ? activity.days[0] : activity.days;
+    return day?.date ? [day.date] : [];
+  }))].sort();
+  return { eventTitle: event.title, kind: data.change_kind, observedAt: data.observed_at, timelineDates };
 }
 
 function isValidSubscription(value: unknown): value is BrowserPushSubscription {
