@@ -6,7 +6,7 @@ import type { WeatherSnapshot } from "@/types";
 import type { TripEvent } from "@/lib/event-types";
 import { getShoppingAnswer } from "@/lib/shopping-intelligence";
 import { timelineQuestionPrompts } from "@/lib/timeline-questioning";
-import { answerQuestion } from "@/lib/questioning-answer";
+import { answerQuestion, isAccommodationQuestion } from "@/lib/questioning-answer";
 import { Icon } from "./Icon";
 import { FORM_CONTROL } from "@/components/formStyles";
 
@@ -16,6 +16,7 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
   const [question, setQuestion] = useState<string | null>(null);
   const [customQuestion, setCustomQuestion] = useState("");
   const [aiAnswer, setAiAnswer] = useState<{ title: string; body: string } | null>(null);
+  const [tripBase, setTripBase] = useState<{ address: string; mapUrl: string } | null>(null);
   const [isAsking, setIsAsking] = useState(false);
   const answer = useMemo(() => question ? answerQuestion(question, day, weather, events, getShoppingAnswer(question)) : null, [day, events, question, weather]);
   const prompts = useMemo(() => timelineQuestionPrompts(day), [day]);
@@ -23,7 +24,18 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
   async function ask(value: string) {
     setQuestion(value);
     setAiAnswer(null);
+    setTripBase(null);
     const localAnswer = answerQuestion(value, day, weather, events, getShoppingAnswer(value));
+    if (isAccommodationQuestion(value)) {
+      setIsAsking(true);
+      try {
+        const response = await fetch("/api/trip-base", { cache: "no-store" });
+        const payload = await response.json().catch(() => null) as { tripBase?: { address?: string; mapUrl?: string } } | null;
+        if (response.ok && payload?.tripBase?.address && payload.tripBase.mapUrl) setTripBase({ address: payload.tripBase.address, mapUrl: payload.tripBase.mapUrl });
+      } catch { /* Keep the verified Trip label if private details are temporarily unavailable. */ }
+      finally { setIsAsking(false); }
+      return;
+    }
     // Verified local answers are the source of truth. Do not let a generative
     // summary replace an explicit Timeline, Place, Weather or Shopping answer.
     if (localAnswer.title !== "Erre még nincs biztos válasz") return;
@@ -54,6 +66,11 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
     {answer && <section className="mt-5 border-t border-deep-sea/10 pt-5" aria-live="polite">
       <h3 className="text-[17px] font-bold leading-[23px] text-deep-sea">{aiAnswer?.title ?? answer.title}</h3>
       <p className="mt-2 text-sm leading-[21px] text-deep-sea/70">{isAsking ? "Ellenőrzött utazási kontextusból összefoglalom…" : aiAnswer?.body ?? answer.body}</p>
+      {tripBase ? <div className="mt-4 rounded-ui-s border border-deep-sea/10 bg-white/50 p-3.5">
+        <p className="text-[11px] font-semibold tracking-[.04em] text-deep-sea/45">SZÁLLÁS CÍME</p>
+        <p className="mt-1 text-sm leading-[21px] text-deep-sea">{tripBase.address}</p>
+        <a href={tripBase.mapUrl} target="_blank" rel="noreferrer" className="mt-3 inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-3 text-sm font-semibold text-deep-sea">Navigáció megnyitása</a>
+      </div> : null}
       {answer.recommendations?.length ? <ul className="mt-4 space-y-2.5" aria-label="Javasolt helyek">
         {answer.recommendations.map((recommendation) => <li key={recommendation.placeSlug}>
           <a href={recommendation.placeDetailHref} className="group block rounded-ui-s border border-deep-sea/10 bg-white/50 p-3.5 outline-none transition-colors hover:bg-white/80 focus-visible:ring-2 focus-visible:ring-turquoise-dark">

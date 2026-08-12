@@ -77,7 +77,7 @@ test("accommodation question uses the private trip-base label without exposing a
   const answer = answerQuestion("Hol van a szállásunk?", arrivalDay, weather, [], null);
   assert.equal(answer.title, "Ollastu Apartments");
   assert.match(answer.body, /Villasimius/);
-  assert.match(answer.body, /trip-base/);
+  assert.match(answer.body, /belépett családi nézetben/);
   assert.doesNotMatch(answer.body, /Via |utca|szám/i);
   assert.deepEqual(answer.sources, ["Trip", "Timeline"]);
 });
@@ -159,6 +159,7 @@ test("unknown baby-product answer is preserved exactly", () => {
   assert.equal(answer.title, "A babatermékekről nincs biztos adat");
   assert.doesNotMatch(answer.body, /Crai|Eurospin|Conad/i);
 });
+
 
 test("missing mobility route is never converted to a distance or duration", () => {
   const answer = answerQuestion("Mennyi kerülő az Eurospin?", futureBeachDay, weather, [], {

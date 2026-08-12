@@ -26,6 +26,10 @@ function normalized(value: string) {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("hu-HU");
 }
 
+export function isAccommodationQuestion(question: string) {
+  return /(hol.*szallas|szallas.*hol|apartman.*hol)/.test(normalized(question));
+}
+
 function eventAnswer(question: string, events: TripEvent[]): QuestionAnswer | null {
   const value = normalized(question);
   // These must be full words. A loose /ar/ match incorrectly classified
@@ -66,10 +70,10 @@ export function answerQuestion(
   const timelineAnswer = getTimelineQuestionAnswer(question, day);
   if (eventResult) return eventResult;
   if (shoppingAnswer) return shoppingAnswer;
-  if (/(hol.*szallas|szallas.*hol|apartman.*hol)/.test(value)) {
+  if (isAccommodationQuestion(question)) {
     return {
       title: TRIP_BASE_NAME,
-      body: "Ez az utazás szállása Villasimiusban. A Timeline-ban trip-base néven szerepel; a pontos cím nem része a publikus Place-adatoknak.",
+      body: "Ez az utazás szállása Villasimiusban. A pontos cím és a navigáció a belépett családi nézetben jelenik meg.",
       sources: ["Trip", "Timeline"],
     };
   }
