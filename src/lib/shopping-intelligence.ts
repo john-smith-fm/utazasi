@@ -61,7 +61,7 @@ function detectIntent(question: string): ShoppingIntent | null {
   const hasShoppingWord = /bevasar|bolt|market|elelmiszer|uzlet/.test(value);
 
   if (/pelenk|baba|bebi|babatermek/.test(value)) return "baby_products";
-  if (/kerulo|mennyi|tavolsag|km|perc|utba esik/.test(value) && (/eurospin|crai|conad|mio|isa|market/.test(value) || hasShoppingWord)) return "mobility";
+  if (/kerulo|mennyi|milyen messze|legkozeleb|tavolsag|km|perc|utba esik|szallas.*bolt|bolt.*szallas/.test(value) && (/eurospin|crai|conad|mio|isa|market/.test(value) || hasShoppingWord)) return "mobility";
   if (/helyi.*termek|termek.*helyi|szardin|sardin/.test(value) && hasShoppingWord) return "local_products";
   if (/(erkez|nagybevasar|nagy bevasar)/.test(value) && hasShoppingWord) return "arrival_shopping";
   if (/(gyors|gyorsan|ugor)/.test(value) && hasShoppingWord) return "quick_stop";

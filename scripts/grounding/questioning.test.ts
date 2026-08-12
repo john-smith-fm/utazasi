@@ -207,6 +207,18 @@ test("missing mobility route is never converted to a distance or duration", () =
   assert.doesNotMatch(answer.body, /\b\d+\s*(km|perc)\b/i);
 });
 
+test("nearest-shop questions are treated as Mobility questions, not shopping rankings", () => {
+  const answer = answerQuestion("Milyen messze van a szállásunktól a legközelebbi bolt?", futureBeachDay, weather, [], {
+    title: "Nincs ellenőrzött útvonaladat",
+    body: "Ehhez a bolthoz még nincs jóváhagyott Mobility-route. Ezért nem mondok km-t, percet vagy kerülőt.",
+    sources: ["Mobility"],
+    recommendations: [],
+  });
+  assert.equal(answer.title, "Nincs ellenőrzött útvonaladat");
+  assert.match(answer.body, /nem mondok km-t, percet vagy kerülőt/);
+  assert.equal(answer.recommendations?.length ?? 0, 0);
+});
+
 test("grounded shopping recommendation preserves its Place detail handoff", () => {
   const answer = answerQuestion("Hol tudunk gyorsan bevásárolni?", futureBeachDay, weather, [], {
     title: "Gyors bevásárlás",
