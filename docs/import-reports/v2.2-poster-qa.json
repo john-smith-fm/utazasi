@@ -1,0 +1,27 @@
+{
+  "package": "utazasi-complete-regional-data-v2.2",
+  "checked_at": "2026-08-12",
+  "canonical_place_count": 139,
+  "json_files_valid": true,
+  "slug_uniqueness": {
+    "passed": true,
+    "duplicates": []
+  },
+  "id_uniqueness": {
+    "passed": true,
+    "duplicates": []
+  },
+  "parco_bussi": {
+    "passed": true
+  },
+  "event_report": {
+    "passed": true,
+    "confirmed_event_facts": 11,
+    "multi_day_or_recurring": 3
+  },
+  "compatibility": {
+    "passed": true,
+    "reason": "Parco Bussi uses the existing playground category; no canonical Event or Mobility schema was introduced."
+  },
+  "passed": true
+}

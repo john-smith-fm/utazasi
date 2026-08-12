@@ -1,30 +1,373 @@
 {
-  "version": "1.0",
+  "version": "2.2",
   "category": "playgrounds",
-  "source_dataset": "utazasi_v2f_research_2026-08-07",
-  "updated_at": "2026-08-07",
+  "source_dataset": "utazasi-complete-regional-data-v2.2-family-intelligence",
+  "updated_at": "2026-08-12",
   "change_log": [
-    "Első kanonikus playground-javaslat: 1 erős, friss rekord."
+    "Piazza Galileo Galilei record-level enrichment.",
+    "Added verified public playgrounds at Piazza Europa (Muravera) and Via Ichnusa (Costa Rei).",
+    "Unknown amenities remain null or are listed as open questions; unknown is never encoded as false.",
+    "Added Parco Bussi as a Partial canonical family Place based on the official-branded Villasimius Estate 2026 programme; exact address remains unresolved."
   ],
   "places": [
+    {
+      "id": "place_playground_piazza_europa_muravera",
+      "slug": "parco-giochi-piazza-europa-muravera",
+      "name": "Area giochi di Piazza Europa",
+      "category": "playground",
+      "subcategory": "public_playground",
+      "location": {
+        "city": "Muravera",
+        "address": "Piazza Europa",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "ready",
+        "last_checked": "2026-08-12",
+        "sources": [
+          "https://www.unionesarda.it/news-sardegna/provincia-cagliari/muravera-riapre-con-una-nuova-veste-l-area-giochi-di-piazza-europa-fpwpcht0"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "local_news",
+          "url": "https://www.unionesarda.it/news-sardegna/provincia-cagliari/muravera-riapre-con-una-nuova-veste-l-area-giochi-di-piazza-europa-fpwpcht0",
+          "supports": [
+            "identity",
+            "location",
+            "renovated_public_play_area",
+            "reopened_2025-07"
+          ],
+          "checked_at": "2026-08-12"
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "partial",
+        "mobility": "partial",
+        "family": "complete",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Exact equipment, shade, fencing, toilets, drinking water and parking remain unverified.",
+        "Legally reusable cover image missing."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-12",
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Area%20giochi%20Piazza%20Europa%2C%20Muravera",
+          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Area%20giochi%20Piazza%20Europa%2C%20Muravera&travelmode=driving",
+          "match_status": "search_query_link"
+        },
+        "family": {
+          "toddler_friendly": null,
+          "public_access": "confirmed",
+          "renovated": "2025-07",
+          "insight": "Central public play area reopened after renovation in July 2025.",
+          "confidence": "high"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v2.0",
+          "source_type": "playground",
+          "region_id": "region-05-muravera",
+          "details": {
+            "kind": "public_playground"
+          },
+          "insights": {
+            "tags": [
+              "family_stop",
+              "town_center"
+            ],
+            "confidence": "high"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Area%20giochi%20Piazza%20Europa%2C%20Muravera",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Area%20giochi%20Piazza%20Europa%2C%20Muravera&travelmode=driving",
+        "match_status": "search_query_link"
+      }
+    },
+    {
+      "id": "place_playground_parco_bussi_villasimius",
+      "slug": "parco-bussi-villasimius",
+      "name": "Parco Bussi",
+      "category": "playground",
+      "subcategory": "public_programmed_park",
+      "location": {
+        "city": "Villasimius",
+        "address": null,
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "partial",
+        "last_checked": "2026-08-12",
+        "sources": [
+          "docs/evidence/villasimius-estate-2026-events.jpeg"
+        ],
+        "uncertainty_note": "The 2026 poster is accepted as a valid source. The record remains Partial only because the poster does not state the exact address, boundaries, equipment or programme end date."
+      },
+      "provenance": [
+        {
+          "source_type": "accepted_valid_2026_event_poster",
+          "url": null,
+          "local_asset": "docs/evidence/villasimius-estate-2026-events.jpeg",
+          "sha256": "6cb579029ef92c34b4c5502110391c88cb4753942d3fdd416e8aff72bb8d5d5e",
+          "checked_at": "2026-08-12",
+          "supports": [
+            "identity",
+            "summer_family_programming",
+            "tuesday_thursday_schedule",
+            "17:30-19:30"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "complete",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Exact address, coordinates and municipal ownership/public-access terms remain unverified.",
+        "The poster says Tuesdays and Thursdays in summer but does not state explicit start/end dates for the Parco Bussi programme.",
+        "Play equipment, fencing, shade, toilets, drinking water, stroller access and parking remain unverified.",
+        "Legally reusable cover image missing; the supplied poster is evidence only."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-12",
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Parco%20Bussi%2C%20Villasimius",
+          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Parco%20Bussi%2C%20Villasimius&travelmode=driving",
+          "match_status": "search_query_link"
+        },
+        "family": {
+          "toddler_friendly": null,
+          "public_access": "confirmed",
+          "recurring_schedule": {
+            "days": [
+              "tuesday",
+              "thursday"
+            ],
+            "time": "17:30-19:30",
+            "season": "summer_2026",
+            "explicit_date_range": null
+          },
+          "activities_confirmed": [
+            "games",
+            "entertainment",
+            "music",
+            "team_challenges",
+            "face_painting",
+            "creative_workshop"
+          ],
+          "insight": "Official-branded summer programme identifies recurring supervised family activities at Parco Bussi; verify the precise September continuation and location locally.",
+          "confidence": "medium"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v2.2",
+          "source_type": "playground",
+          "region_id": "region-01-villasimius",
+          "details": {
+            "kind": "public_programmed_park"
+          },
+          "insights": {
+            "tags": [
+              "family_programming",
+              "toddler_stop",
+              "watch_exact_dates"
+            ],
+            "confidence": "medium"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Parco%20Bussi%2C%20Villasimius",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Parco%20Bussi%2C%20Villasimius&travelmode=driving",
+        "match_status": "search_query_link"
+      }
+    },
+    {
+      "id": "place_playground_via_ichnusa_costa_rei",
+      "slug": "parco-giochi-via-ichnusa-costa-rei",
+      "name": "Parco giochi comunale di Via Ichnusa",
+      "category": "playground",
+      "subcategory": "public_playground",
+      "location": {
+        "city": "Costa Rei",
+        "address": "Via Ichnusa",
+        "latitude": null,
+        "longitude": null
+      },
+      "verification": {
+        "status": "ready",
+        "last_checked": "2026-08-12",
+        "sources": [
+          "https://www.costarei.eu/ce-un-parco-giochi-a-costa-rei/"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "local_destination_site",
+          "url": "https://www.costarei.eu/ce-un-parco-giochi-a-costa-rei/",
+          "supports": [
+            "municipal_playground",
+            "location",
+            "benches",
+            "swings",
+            "rocking_play_equipment",
+            "near_beach"
+          ],
+          "checked_at": "2026-08-12"
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "partial",
+        "mobility": "partial",
+        "family": "complete",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Current completion state of the approved refurbishment is unverified.",
+        "Exact coordinates, fencing, shade, toilets, drinking water and parking remain unverified.",
+        "Legally reusable cover image missing."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-12",
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Parco%20giochi%20Via%20Ichnusa%2C%20Costa%20Rei",
+          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Parco%20giochi%20Via%20Ichnusa%2C%20Costa%20Rei&travelmode=driving",
+          "match_status": "search_query_link"
+        },
+        "family": {
+          "toddler_friendly": null,
+          "public_access": "confirmed",
+          "amenities_confirmed": [
+            "benches",
+            "swings",
+            "rocking_play_equipment"
+          ],
+          "beach_proximity": "a_few_metres_reported",
+          "insight": "Municipal playground in Mediterranean vegetation close to the beach; refurbishment completion should be rechecked.",
+          "confidence": "medium"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v2.0",
+          "source_type": "playground",
+          "region_id": "region-04-costa-rei",
+          "details": {
+            "kind": "public_playground"
+          },
+          "insights": {
+            "tags": [
+              "family_stop",
+              "beach_pairing"
+            ],
+            "confidence": "medium"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Parco%20giochi%20Via%20Ichnusa%2C%20Costa%20Rei",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Parco%20giochi%20Via%20Ichnusa%2C%20Costa%20Rei&travelmode=driving",
+        "match_status": "search_query_link"
+      }
+    },
     {
       "id": "place_playground_piazza_galilei_villaputzu",
       "slug": "parco-giochi-piazza-galilei",
       "name": "Parco giochi di Piazza Galileo Galilei",
       "category": "playground",
+      "subcategory": "public_playground",
       "location": {
         "city": "Villaputzu",
-        "address": "Piazza Galileo Galilei"
+        "address": "Piazza Galileo Galilei",
+        "latitude": null,
+        "longitude": null
       },
       "verification": {
-        "status": "verified_recent",
-        "last_checked": "2026-08-07",
+        "status": "ready",
+        "last_checked": "2026-08-12",
         "sources": [
           "https://www.unionesarda.it/news-sardegna/provincia-cagliari/villaputzu-inaugurato-il-parco-giochi-in-piazza-galilei-f0vx5jb3"
-        ],
-        "source_refs": [
-          "P01"
         ]
+      },
+      "provenance": [
+        {
+          "source_type": "local_news_primary_statement",
+          "url": "https://www.unionesarda.it/news-sardegna/provincia-cagliari/villaputzu-inaugurato-il-parco-giochi-in-piazza-galilei-f0vx5jb3",
+          "supports": [
+            "opening_2026",
+            "public_family_space",
+            "modern_play_equipment",
+            "green_area",
+            "picnic_tables"
+          ],
+          "checked_at": "2026-08-12"
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "complete",
+        "mobility": "partial",
+        "family": "complete",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Exact equipment list, shade, fencing, drinking water, toilets, stroller access and parking remain unverified.",
+        "Legally reusable cover image missing."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-12",
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Parco%20giochi%20Piazza%20Galileo%20Galilei%2C%20Villaputzu",
+          "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Parco%20giochi%20Piazza%20Galileo%20Galilei%2C%20Villaputzu&travelmode=driving",
+          "match_status": "search_query_link"
+        },
+        "family": {
+          "toddler_friendly": null,
+          "public_access": "confirmed",
+          "opened": "2026-04-26",
+          "amenities_confirmed": [
+            "modern_play_equipment",
+            "green_area",
+            "picnic_tables"
+          ],
+          "insight": "New public playground intended for children, meeting and family use.",
+          "confidence": "high"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v2.0",
+          "source_type": "playground",
+          "region_id": "region-06-villaputzu",
+          "details": {
+            "kind": "public_playground"
+          },
+          "insights": {
+            "tags": [
+              "family_stop",
+              "picnic"
+            ],
+            "confidence": "high"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Parco%20giochi%20Piazza%20Galileo%20Galilei%2C%20Villaputzu",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Parco%20giochi%20Piazza%20Galileo%20Galilei%2C%20Villaputzu&travelmode=driving",
+        "match_status": "search_query_link"
       }
     }
   ]

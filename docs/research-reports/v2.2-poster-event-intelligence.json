@@ -1,0 +1,189 @@
+{
+  "version": "2.2",
+  "canonical": false,
+  "updated_at": "2026-08-12",
+  "sources": [
+    {
+      "id": "poster_costa_rei_sommer_2026",
+      "local_asset": "docs/evidence/costa-rei-sommer-2026-events.jpg",
+      "sha256": "2193d450cc2712d6f4a8ea33e6b5c5acd2c1985472173a62f245636025d2e400",
+      "language": "de",
+      "apparent_publisher": "Costa Rei local destination/social channels; publisher identity not printed legibly in the supplied image",
+      "trust": "accepted_valid_2026_source"
+    },
+    {
+      "id": "poster_villasimius_estate_2026",
+      "local_asset": "docs/evidence/villasimius-estate-2026-events.jpeg",
+      "sha256": "6cb579029ef92c34b4c5502110391c88cb4753942d3fdd416e8aff72bb8d5d5e",
+      "language": "it",
+      "apparent_publisher": "Villasimius Turismo / Comune di Villasimius branding visible",
+      "trust": "accepted_valid_official_2026_source"
+    }
+  ],
+  "confirmed_event_facts": [
+    {
+      "id": "event_costa_rei_music_rey_2026-09-02",
+      "name": "Music Rey con Maury Diana",
+      "date": "2026-09-02",
+      "time": "21:30",
+      "venue": "Piazza Colombo",
+      "locality": "Costa Rei",
+      "family_specific": false,
+      "source_id": "poster_costa_rei_sommer_2026"
+    },
+    {
+      "id": "event_costa_rei_latin_rey_2026-09-03",
+      "name": "Latin Rey",
+      "date": "2026-09-03",
+      "time": "21:30",
+      "venue": "Piazza Colombo",
+      "locality": "Costa Rei",
+      "family_specific": false,
+      "source_id": "poster_costa_rei_sommer_2026"
+    },
+    {
+      "id": "event_villasimius_b_come_bambini_2026-09-03",
+      "name": "B come bambini",
+      "date": "2026-09-03",
+      "time": "21:30",
+      "venue": "Piazza Gramsci",
+      "locality": "Villasimius",
+      "family_specific": true,
+      "source_id": "poster_villasimius_estate_2026"
+    },
+    {
+      "id": "event_costa_rei_tanzen_unter_den_sternen_2026-09-04",
+      "name": "Tanzen unter den Sternen mit Maui & Ila",
+      "date": "2026-09-04",
+      "time": "21:30",
+      "venue": "Piazza Colombo",
+      "locality": "Costa Rei",
+      "family_specific": false,
+      "source_id": "poster_costa_rei_sommer_2026"
+    },
+    {
+      "id": "event_villasimius_festival_fortezza_2026-09-04",
+      "name": "Festival della Fortezza",
+      "date": "2026-09-04",
+      "time": "21:30",
+      "venue": "Fortezza Vecchia",
+      "locality": "Villasimius",
+      "family_specific": false,
+      "source_id": "poster_villasimius_estate_2026"
+    },
+    {
+      "id": "event_costa_rei_magic_circus_2026-09-05",
+      "name": "Magic Circus Rey",
+      "date": "2026-09-05",
+      "time": "19:00",
+      "venue": "Piazza Colombo",
+      "locality": "Costa Rei",
+      "family_specific": true,
+      "description": "Zirkus für Kinder & Familien",
+      "source_id": "poster_costa_rei_sommer_2026"
+    },
+    {
+      "id": "event_villasimius_first_time_in_villa_2026-09-05",
+      "name": "First time in Villa",
+      "date": "2026-09-05",
+      "time": "21:30",
+      "venue": "Lo Sciabecco",
+      "locality": "Villasimius",
+      "family_specific": false,
+      "age_note": "14-18 anni",
+      "source_id": "poster_villasimius_estate_2026"
+    },
+    {
+      "id": "event_villasimius_santa_maria_2026",
+      "name": "Santa Maria",
+      "date_start": "2026-09-06",
+      "date_end": "2026-09-08",
+      "time": null,
+      "venue": null,
+      "locality": "Villasimius",
+      "family_specific": null,
+      "source_id": "poster_villasimius_estate_2026",
+      "scope_note": "The poster confirms the date window only; programme details are not shown."
+    },
+    {
+      "id": "event_costa_rei_giocaquiz_2026-09-08",
+      "name": "GiocaQuiz con Enrico Rotteri",
+      "date": "2026-09-08",
+      "time": "21:30",
+      "venue": "Piazza Colombo",
+      "locality": "Costa Rei",
+      "family_specific": null,
+      "source_id": "poster_costa_rei_sommer_2026"
+    },
+    {
+      "id": "event_villasimius_villa_music_festival_2026-09-12",
+      "name": "Villa Music Festival",
+      "date": "2026-09-12",
+      "time": "21:30",
+      "venue": "Piazza Hack",
+      "locality": "Villasimius",
+      "family_specific": false,
+      "source_id": "poster_villasimius_estate_2026"
+    },
+    {
+      "id": "event_villasimius_nicola_agus_2026-09-13",
+      "name": "Nicola Agus – Voci & Suoni dal Mare",
+      "date": "2026-09-13",
+      "time": "21:30",
+      "venue": "Piazza Gramsci",
+      "locality": "Villasimius",
+      "family_specific": false,
+      "source_id": "poster_villasimius_estate_2026"
+    }
+  ],
+  "multi_day_or_recurring": [
+    {
+      "id": "event_villasimius_calici_diversi_2026",
+      "name": "Calici Diversi",
+      "dates": [
+        "2026-09-01",
+        "2026-09-02",
+        "2026-09-03",
+        "2026-09-04",
+        "2026-09-05"
+      ],
+      "time": "21:30",
+      "venue": "Casa Todde",
+      "locality": "Villasimius",
+      "source_id": "poster_villasimius_estate_2026"
+    },
+    {
+      "id": "programme_parco_bussi_summer_2026",
+      "name": "Estate al Parco Bussi",
+      "recurrence": "Tuesday and Thursday",
+      "time": "17:30-19:30",
+      "explicit_date_range": null,
+      "locality": "Villasimius",
+      "activities": [
+        "games",
+        "entertainment",
+        "music",
+        "team challenges",
+        "face painting",
+        "creative workshop"
+      ],
+      "status": "confirmed_recurring_pattern_exact_september_dates_not_explicit",
+      "source_id": "poster_villasimius_estate_2026"
+    },
+    {
+      "id": "programme_costa_rei_summer_markets_2026",
+      "name": "Sommermärkte unter den Sternen",
+      "recurrence": "every evening",
+      "time_start": "19:00",
+      "explicit_date_range": null,
+      "locality": "Costa Rei",
+      "status": "confirmed_poster_claim_exact_season_end_not_explicit",
+      "source_id": "poster_costa_rei_sommer_2026"
+    }
+  ],
+  "caveats": [
+    "Both posters are accepted as valid 2026 sources; their published schedules may still change as stated on the material.",
+    "No event is promoted into a canonical Event file because the supplied base package contains no Event schema.",
+    "Poster images are provenance evidence, not licensed cover images."
+  ]
+}
