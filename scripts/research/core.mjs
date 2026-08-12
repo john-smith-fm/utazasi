@@ -8,6 +8,8 @@ export const PLACE_CATEGORIES = {
   playground: { file: "playgrounds.json", category: "playground" },
   shop: { file: "shops.json", category: "shop" },
   sight: { file: "sights.json", category: "sight" },
+  parking: { file: "parking.json", category: "parking" },
+  other: { file: "other.json", category: "other" },
 };
 
 export const FACT_FIELDS = {
@@ -17,6 +19,8 @@ export const FACT_FIELDS = {
   playground: new Set(["name", "location.city", "location.address", "verification"]),
   shop: new Set(["name", "location.city", "location.address", "contact.phone", "contact.website", "verification"]),
   sight: new Set(["name", "location.city", "location.address", "verification"]),
+  parking: new Set(["name", "location.city", "location.address", "verification"]),
+  other: new Set(["name", "location.city", "location.address", "verification"]),
 };
 
 const SOURCE_TYPES = new Set(["official_business", "municipality", "government", "tourism_authority", "official_organizer", "reliable_listing", "secondary"]);
@@ -110,7 +114,7 @@ export function validateResearchProposal(proposal, canonicalRecords) {
     }
     if (candidate.action === "update" && (!nonEmptyString(candidate.canonicalSlug) || !canonicalBySlug.has(candidate.canonicalSlug) || !isRecord(candidate.proposedChanges))) fail(`Érvénytelen UPDATE jelölt: ${candidate.id}`);
     for (const fact of candidate.facts) {
-      if (!isRecord(fact) || !FACT_FIELDS[type].has(fact.field) || !Array.isArray(fact.sourceRefs) || fact.sourceRefs.length === 0 || fact.sourceRefs.some((id) => !sources.has(id)) || !nonEmptyString(fact.checkedAt) || !SOURCE_TYPES.has(fact.confidenceBasis)) fail(`Érvénytelen vagy forrás nélküli fact: ${candidate.id}`);
+      if (!isRecord(fact) || (fact.kind !== undefined && fact.kind !== "extracted_fact") || !FACT_FIELDS[type].has(fact.field) || !Array.isArray(fact.sourceRefs) || fact.sourceRefs.length === 0 || fact.sourceRefs.some((id) => !sources.has(id)) || !nonEmptyString(fact.checkedAt) || !SOURCE_TYPES.has(fact.confidenceBasis)) fail(`Érvénytelen vagy forrás nélküli fact: ${candidate.id}`);
     }
   }
   return proposal;

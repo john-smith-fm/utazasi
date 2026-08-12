@@ -4,6 +4,7 @@ export type ResearchMode = "discover" | "enrich" | "verify";
 export type ResearchCandidateAction = "add" | "update" | "no_change" | "hold";
 export type ResearchCandidateStatus = "ready_for_approval" | "needs_review" | "hold";
 export type ResearchSourceType = "official_business" | "municipality" | "government" | "tourism_authority" | "official_organizer" | "reliable_listing" | "secondary";
+export type ResearchFactKind = "extracted_fact" | "synthesized_insight";
 
 export type ResearchJob = {
   mode: ResearchMode;
@@ -26,8 +27,19 @@ export type ResearchSource = {
 };
 
 export type ResearchFact = {
+  /** Canonical updates may contain only source-backed extracted facts. */
+  kind?: "extracted_fact";
   field: string;
   value: unknown;
+  sourceRefs: string[];
+  checkedAt: string;
+  confidenceBasis: ResearchSourceType;
+};
+
+/** A review-only interpretation. It must never be applied as a canonical fact. */
+export type ResearchInsight = {
+  kind: "synthesized_insight";
+  text: string;
   sourceRefs: string[];
   checkedAt: string;
   confidenceBasis: ResearchSourceType;
@@ -41,6 +53,7 @@ export type ResearchCandidate = {
   proposedPlace?: Record<string, unknown>;
   proposedChanges?: Record<string, unknown>;
   facts: ResearchFact[];
+  insights?: ResearchInsight[];
   conflicts?: { field: string; candidates: { value: unknown; sourceRefs: string[] }[] }[];
   uncertaintyNotes?: string[];
 };

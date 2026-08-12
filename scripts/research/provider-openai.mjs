@@ -133,7 +133,8 @@ function proposalFromModel({ modelOutput, job, canonical, providerSources, times
       if (sourceRefs.length === 0) fail("A kutatási tény URL-je nem az élő provider forrásából származik.");
       const basis = SOURCE_TYPES.has(fact.confidenceBasis) ? fact.confidenceBasis : "secondary";
       for (const ref of sourceRefs) sourceCatalog.find((source) => source.id === ref).sourceType = basis;
-      candidate.facts.push({ field: fact.field, value: fact.value, sourceRefs, checkedAt: timestamp, confidenceBasis: basis });
+      if (fact.kind !== undefined && fact.kind !== "extracted_fact") fail("A kanonikus tényjelölt csak extracted_fact lehet.");
+      candidate.facts.push({ kind: "extracted_fact", field: fact.field, value: fact.value, sourceRefs, checkedAt: timestamp, confidenceBasis: basis });
     }
     if (["add", "update"].includes(candidate.action) && candidate.facts.length === 0) fail("Az élő ADD vagy UPDATE jelöltnek legalább egy forrásolt ténye kell legyen.");
     if (Array.isArray(raw.uncertaintyNotes) && raw.uncertaintyNotes.length) candidate.uncertaintyNotes = raw.uncertaintyNotes.filter(nonEmptyString).slice(0, 4);

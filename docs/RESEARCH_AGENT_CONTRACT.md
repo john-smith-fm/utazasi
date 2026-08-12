@@ -40,6 +40,35 @@ The apply tool accepts only explicit candidate IDs with `ready_for_approval` sta
 
 The tool does not research, commit, push or deploy. Changed category JSON files alone receive a version/change-log update.
 
+## Coverage-driven research queue
+
+The research:queue command creates a **read-only, bounded proposal** from the
+existing canonical coverage metadata, open questions and verification age. It
+groups the coverage map by locality and Place type, then proposes at most eight
+explicit enrich jobs. It never calls OpenAI, writes canonical JSON, changes
+Supabase or commits.
+
+For a reviewable file, run:
+
+    npm run research:queue -- --limit 8 --output research/queues/villasimius-enrichment.json
+
+Each queue item names its canonical Place, locality, type, explicit
+missing/partial areas and open questions. A human selects an item and passes
+only its embedded research job to the existing bounded live provider. The queue
+is therefore a prioritisation aid, not an autonomous scheduler. Missing
+Mobility and photo coverage is reported but is not used by itself to start a
+Place-research job: routes require their own approved source data, and images
+must meet their separate reuse rules.
+
+## Facts and insights
+
+Canonical changes accept only extracted_fact: a field-level statement with
+direct source references, timestamp and source-quality basis.
+synthesized_insight is review context only and must never be applied as a
+canonical factual field. Existing legacy proposals without a kind remain
+readable and are treated as extracted facts for compatibility; newly generated
+live proposals label factual assertions explicitly.
+
 ## Security and v2G.2
 
 v2G.1 has no live provider and no credentials. v2G.2 uses the OpenAI Responses API with its built-in web search tool, server-side only. `OPENAI_API_KEY` is read only by the local research CLI or future server routes; it is never a `NEXT_PUBLIC_` variable and is never committed.
