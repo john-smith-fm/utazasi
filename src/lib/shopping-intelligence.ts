@@ -66,6 +66,9 @@ function detectIntent(question: string): ShoppingIntent | null {
   if (/(erkez|nagybevasar|nagy bevasar)/.test(value) && hasShoppingWord) return "arrival_shopping";
   if (/(gyors|gyorsan|ugor)/.test(value) && hasShoppingWord) return "quick_stop";
   if (/(napi|mindennapi)/.test(value) && hasShoppingWord) return "daily_groceries";
+  // A bare "bevásárlás" is still a valid, broad shopping intent. It uses the
+  // approved daily-groceries profile rather than leaving the picker empty.
+  if (hasShoppingWord) return "daily_groceries";
   return null;
 }
 
