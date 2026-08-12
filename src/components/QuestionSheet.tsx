@@ -23,6 +23,10 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
   async function ask(value: string) {
     setQuestion(value);
     setAiAnswer(null);
+    const localAnswer = answerQuestion(value, day, weather, events, getShoppingAnswer(value));
+    // Verified local answers are the source of truth. Do not let a generative
+    // summary replace an explicit Timeline, Place, Weather or Shopping answer.
+    if (localAnswer.title !== "Erre még nincs biztos válasz") return;
     setIsAsking(true);
     try {
       const response = await fetch("/api/question", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: value, date: day.date }) });
