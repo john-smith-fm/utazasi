@@ -73,6 +73,15 @@ test("arrival-after question lists only the scheduled post-arrival plan", () => 
   assert.deepEqual(answer.sources, ["Timeline"]);
 });
 
+test("accommodation question uses the private trip-base label without exposing an address", () => {
+  const answer = answerQuestion("Hol van a szállásunk?", arrivalDay, weather, [], null);
+  assert.equal(answer.title, "Ollastu Apartments");
+  assert.match(answer.body, /Villasimius/);
+  assert.match(answer.body, /trip-base/);
+  assert.doesNotMatch(answer.body, /Via |utca|szám/i);
+  assert.deepEqual(answer.sources, ["Trip", "Timeline"]);
+});
+
 test("past selected day does not invent a next programme", () => {
   const answer = answerQuestion("Mi a következő program?", pastDay, weather, [], null);
   assert.equal(answer.title, "Nincs következő rögzített program");

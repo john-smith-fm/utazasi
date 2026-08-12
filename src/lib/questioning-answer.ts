@@ -2,6 +2,7 @@ import type { HomeDay } from "../data/home-days";
 import type { WeatherSnapshot } from "../types";
 import type { TripEvent } from "./event-types";
 import { getTimelineQuestionAnswer } from "./timeline-questioning.ts";
+import { TRIP_BASE_NAME } from "./trip-base.ts";
 
 export type QuestionRecommendation = {
   placeSlug: string;
@@ -65,6 +66,13 @@ export function answerQuestion(
   const timelineAnswer = getTimelineQuestionAnswer(question, day);
   if (eventResult) return eventResult;
   if (shoppingAnswer) return shoppingAnswer;
+  if (/(hol.*szallas|szallas.*hol|apartman.*hol)/.test(value)) {
+    return {
+      title: TRIP_BASE_NAME,
+      body: "Ez az utazás szállása Villasimiusban. A Timeline-ban trip-base néven szerepel; a pontos cím nem része a publikus Place-adatoknak.",
+      sources: ["Trip", "Timeline"],
+    };
+  }
   if (timelineAnswer) return timelineAnswer;
 
   if (value.includes("strand")) {
