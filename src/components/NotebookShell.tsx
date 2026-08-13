@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { FORM_CONTROL } from "@/components/formStyles";
 import { migrateLegacyNotebookOnce } from "@/lib/notebook-legacy-migration";
 import type { NotebookEntryKind, NotebookEntryRecord, PackingItemRecord } from "@/lib/notebook-types";
@@ -23,7 +23,7 @@ function romeDate() {
 
 function dateLabel(value: string) { return new Intl.DateTimeFormat("hu-HU", { month: "short", day: "numeric" }).format(new Date(`${value}T12:00:00Z`)); }
 
-function EntryForm({ kind, onCreate }: { kind: NotebookEntryKind; onCreate: (data: Record<string, unknown>) => Promise<void> }) {
+function EntryForm({ kind, onCreate, disabled = false }: { kind: NotebookEntryKind; onCreate: (data: Record<string, unknown>) => Promise<void>; disabled?: boolean }) {
   const [content, setContent] = useState("");
   const [amount, setAmount] = useState("");
   const [rating, setRating] = useState("5");
@@ -39,10 +39,10 @@ function EntryForm({ kind, onCreate }: { kind: NotebookEntryKind; onCreate: (dat
   }
   const placeholder = kind === "expense" ? "Mire költöttetek?" : kind === "journal" ? "Mi történt ma?" : "Új jegyzet…";
   return <form onSubmit={submit} className="mt-4 space-y-2.5">
-    <input value={content} onChange={(event) => setContent(event.target.value)} placeholder={placeholder} className={`${FORM_CONTROL} w-full px-3.5`} maxLength={2000} required />
-    {kind === "expense" ? <input value={amount} onChange={(event) => setAmount(event.target.value)} placeholder="Összeg €" type="number" inputMode="decimal" min="0" step="0.01" className={`${FORM_CONTROL} w-32 px-3.5`} required /> : null}
-    {kind === "journal" ? <label className="flex min-h-12 items-center gap-3 text-sm text-deep-sea/70">Nap értékelése <select value={rating} onChange={(event) => setRating(event.target.value)} className={`${FORM_CONTROL} h-11 w-20 px-2`}><option value="1">1 / 5</option><option value="2">2 / 5</option><option value="3">3 / 5</option><option value="4">4 / 5</option><option value="5">5 / 5</option></select></label> : null}
-    <button disabled={saving} className="min-h-12 rounded-ui-s border border-turquoise bg-turquoise/15 px-4 text-sm font-semibold text-deep-sea disabled:opacity-50">{saving ? "Mentés…" : "Mentés"}</button>
+    <input value={content} onChange={(event) => setContent(event.target.value)} placeholder={placeholder} disabled={disabled || saving} className={`${FORM_CONTROL} w-full px-3.5 disabled:opacity-50`} maxLength={2000} required />
+    {kind === "expense" ? <input value={amount} onChange={(event) => setAmount(event.target.value)} placeholder="Összeg €" disabled={disabled || saving} type="number" inputMode="decimal" min="0" step="0.01" className={`${FORM_CONTROL} w-32 px-3.5 disabled:opacity-50`} required /> : null}
+    {kind === "journal" ? <label className="flex min-h-12 items-center gap-3 text-sm text-deep-sea/70">Nap értékelése <select value={rating} onChange={(event) => setRating(event.target.value)} disabled={disabled || saving} className={`${FORM_CONTROL} h-11 w-20 px-2 disabled:opacity-50`}><option value="1">1 / 5</option><option value="2">2 / 5</option><option value="3">3 / 5</option><option value="4">4 / 5</option><option value="5">5 / 5</option></select></label> : null}
+    <button disabled={disabled || saving} className="min-h-12 rounded-ui-s border border-turquoise bg-turquoise/15 px-4 text-sm font-semibold text-deep-sea disabled:opacity-50">{saving || disabled ? "Mentés…" : "Mentés"}</button>
   </form>;
 }
 
@@ -79,11 +79,11 @@ function EntryEditForm({ entry, onSave, onCancel }: { entry: NotebookEntryRecord
   </form>;
 }
 
-function EntryList({ entries, kind, onDelete, onUpdate }: { entries: NotebookEntryRecord[]; kind: NotebookEntryKind; onDelete: (id: string) => Promise<void>; onUpdate: (id: string, data: Record<string, unknown>) => Promise<void> }) {
+function EntryList({ entries, kind, onDelete, onUpdate, disabled = false }: { entries: NotebookEntryRecord[]; kind: NotebookEntryKind; onDelete: (id: string) => Promise<void>; onUpdate: (id: string, data: Record<string, unknown>) => Promise<void>; disabled?: boolean }) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const visible = entries.filter((entry) => entry.kind === kind);
   if (!visible.length) return <p className="mt-5 text-sm leading-6 text-deep-sea/60">Még nincs bejegyzés.</p>;
-  return <div className="mt-5 divide-y divide-deep-sea/10">{visible.map((entry) => <article key={entry.id} className="py-3.5">{editingId === entry.id ? <EntryEditForm entry={entry} onCancel={() => setEditingId(null)} onSave={async (value) => { await onUpdate(entry.id, value); setEditingId(null); }} /> : <div className="flex gap-3"><div className="min-w-0 flex-1"><p className="text-[11px] font-semibold uppercase tracking-[.04em] text-deep-sea/45">{dateLabel(entry.occurredOn)}</p><p className="mt-1 text-sm leading-6 text-deep-sea">{entry.content}</p>{kind === "journal" && entry.rating ? <p className="mt-1 text-xs text-turquoise-dark">{"★".repeat(entry.rating)}{"☆".repeat(5 - entry.rating)}</p> : null}</div>{kind === "expense" && entry.amountEur !== null ? <strong className="whitespace-nowrap text-sm text-deep-sea">{entry.amountEur.toFixed(2)} €</strong> : null}<div className="flex shrink-0 flex-col items-end"><button onClick={() => setEditingId(entry.id)} aria-label="Bejegyzés szerkesztése" className="min-h-11 px-2 text-sm text-deep-sea/60">Szerkesztés</button><button onClick={() => void onDelete(entry.id)} aria-label="Bejegyzés törlése" className="min-h-11 px-2 text-sm text-deep-sea/45">Törlés</button></div></div>}</article>)}</div>;
+  return <div className="mt-5 divide-y divide-deep-sea/10">{visible.map((entry) => <article key={entry.id} className="py-3.5">{editingId === entry.id ? <EntryEditForm entry={entry} onCancel={() => setEditingId(null)} onSave={async (value) => { await onUpdate(entry.id, value); setEditingId(null); }} /> : <div className="flex gap-3"><div className="min-w-0 flex-1"><p className="text-[11px] font-semibold uppercase tracking-[.04em] text-deep-sea/45">{dateLabel(entry.occurredOn)}</p><p className="mt-1 text-sm leading-6 text-deep-sea">{entry.content}</p>{kind === "journal" && entry.rating ? <p className="mt-1 text-xs text-turquoise-dark">{"★".repeat(entry.rating)}{"☆".repeat(5 - entry.rating)}</p> : null}</div>{kind === "expense" && entry.amountEur !== null ? <strong className="whitespace-nowrap text-sm text-deep-sea">{entry.amountEur.toFixed(2)} €</strong> : null}<div className="flex shrink-0 flex-col items-end"><button disabled={disabled} onClick={() => setEditingId(entry.id)} aria-label="Bejegyzés szerkesztése" className="min-h-11 px-2 text-sm text-deep-sea/60 disabled:opacity-50">Szerkesztés</button><button disabled={disabled} onClick={() => void onDelete(entry.id)} aria-label="Bejegyzés törlése" className="min-h-11 px-2 text-sm text-deep-sea/45 disabled:opacity-50">Törlés</button></div></div>}</article>)}</div>;
 }
 
 /** The runtime Notebook reads/writes only through the PIN-protected server API. */
@@ -93,6 +93,8 @@ export function NotebookShell() {
   const [status, setStatus] = useState<"loading" | "ready" | "offline" | "error">("loading");
   const [message, setMessage] = useState<string | null>(null);
   const [packingTitle, setPackingTitle] = useState("");
+  const [isMutating, setIsMutating] = useState(false);
+  const mutationLock = useRef(false);
 
   function setNotebook(next: NotebookData) { storageSet(CACHE_KEY, next); setData(next); }
   async function load() {
@@ -113,10 +115,15 @@ export function NotebookShell() {
   async function request(method: "POST" | "PATCH" | "DELETE", body: Record<string, unknown>) {
     if (!navigator.onLine) throw new Error("Offline módban a módosítás nem menthető.");
     if (status !== "ready") throw new Error("A Jegyzetfüzet még betöltődik. Próbáld újra egy pillanat múlva.");
-    const response = await fetch("/api/notebook", { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-    const payload = await response.json().catch(() => null) as { error?: string } | null;
-    if (!response.ok) throw new Error(payload?.error ?? "A mentés nem sikerült.");
-    return payload;
+    if (mutationLock.current) throw new Error("Az előző módosítás még mentődik.");
+    mutationLock.current = true;
+    setIsMutating(true);
+    try {
+      const response = await fetch("/api/notebook", { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+      const payload = await response.json().catch(() => null) as { error?: string } | null;
+      if (!response.ok) throw new Error(payload?.error ?? "A mentés nem sikerült.");
+      return payload;
+    } finally { mutationLock.current = false; setIsMutating(false); }
   }
   async function createEntry(value: Record<string, unknown>) {
     try { const entry = await request("POST", { resource: "entry", data: value }) as unknown as NotebookEntryRecord; setNotebook({ ...data, entries: [entry, ...data.entries] }); setMessage(null); }
@@ -145,9 +152,9 @@ export function NotebookShell() {
     {message ? <div className="mt-4 flex items-center justify-between gap-3 rounded-ui-s border border-coral/25 bg-coral/5 px-3.5 py-3 text-sm text-deep-sea/75"><span>{message}</span><button onClick={() => { setMessage(null); void load(); }} className="min-h-11 shrink-0 font-semibold text-deep-sea">Újrapróbálás</button></div> : null}
     {status === "offline" ? <p className="mt-4 text-sm text-deep-sea/60">Offline módban az utoljára betöltött Jegyzetfüzet látható. Módosítás most nem menthető.</p> : null}
     {status === "loading" ? <p className="mt-5 text-sm text-deep-sea/60">Jegyzetfüzet betöltése…</p> : null}
-    {tab === "money" ? <section className="pt-5"><div className="rounded-ui-s bg-white/60 p-4"><p className="text-xs font-semibold uppercase tracking-[.04em] text-deep-sea/45">Teljes kiadás</p><p className="mt-1 text-2xl font-semibold text-deep-sea">{total.toFixed(2)} €</p></div><EntryForm kind="expense" onCreate={createEntry} /><EntryList entries={data.entries} kind="expense" onDelete={deleteEntry} onUpdate={updateEntry} /></section> : null}
-    {tab === "packing" ? <section className="pt-5"><p className="text-sm text-deep-sea/65">{data.packing.length ? `${packed} / ${data.packing.length} becsomagolva` : "Add hozzá az első tételt."}</p><form onSubmit={addPacking} className="mt-4 flex gap-2"><input value={packingTitle} onChange={(event) => setPackingTitle(event.target.value)} placeholder="Új pakolási tétel" disabled={status !== "ready"} className={`${FORM_CONTROL} min-w-0 flex-1 px-3.5 disabled:opacity-50`} /><button disabled={status !== "ready"} className="min-h-12 rounded-ui-s border border-turquoise bg-turquoise/15 px-4 text-sm font-semibold text-deep-sea disabled:opacity-50">Hozzáadás</button></form><div className="mt-4 divide-y divide-deep-sea/10">{data.packing.map((item) => <div key={item.id} className="flex items-center gap-2 py-3"><button disabled={status !== "ready"} onClick={() => void togglePacking(item)} aria-label={`${item.title} ${item.isPacked ? "nincs becsomagolva" : "becsomagolva"}`} className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border disabled:opacity-50 ${item.isPacked ? "border-turquoise bg-turquoise text-white" : "border-deep-sea/20 text-transparent"}`}>✓</button><p className={`min-w-0 flex-1 text-sm ${item.isPacked ? "text-deep-sea/45 line-through" : "text-deep-sea"}`}>{item.title}</p><button disabled={status !== "ready"} onClick={() => void deletePacking(item.id)} aria-label="Pakolási tétel törlése" className="min-h-11 px-2 text-sm text-deep-sea/45 disabled:opacity-50">Törlés</button></div>)}</div></section> : null}
-    {tab === "notes" ? <section className="pt-5"><EntryForm kind="note" onCreate={createEntry} /><EntryList entries={data.entries} kind="note" onDelete={deleteEntry} onUpdate={updateEntry} /></section> : null}
-    {tab === "journal" ? <section className="pt-5"><EntryForm kind="journal" onCreate={createEntry} /><EntryList entries={data.entries} kind="journal" onDelete={deleteEntry} onUpdate={updateEntry} /></section> : null}
+    {tab === "money" ? <section className="pt-5"><div className="rounded-ui-s bg-white/60 p-4"><p className="text-xs font-semibold uppercase tracking-[.04em] text-deep-sea/45">Teljes kiadás</p><p className="mt-1 text-2xl font-semibold text-deep-sea">{total.toFixed(2)} €</p></div><EntryForm kind="expense" onCreate={createEntry} disabled={status !== "ready" || isMutating} /><EntryList entries={data.entries} kind="expense" onDelete={deleteEntry} onUpdate={updateEntry} disabled={status !== "ready" || isMutating} /></section> : null}
+    {tab === "packing" ? <section className="pt-5"><p className="text-sm text-deep-sea/65">{data.packing.length ? `${packed} / ${data.packing.length} becsomagolva` : "Add hozzá az első tételt."}</p><form onSubmit={addPacking} className="mt-4 flex gap-2"><input value={packingTitle} onChange={(event) => setPackingTitle(event.target.value)} placeholder="Új pakolási tétel" disabled={status !== "ready" || isMutating} className={`${FORM_CONTROL} min-w-0 flex-1 px-3.5 disabled:opacity-50`} /><button disabled={status !== "ready" || isMutating} className="min-h-12 rounded-ui-s border border-turquoise bg-turquoise/15 px-4 text-sm font-semibold text-deep-sea disabled:opacity-50">{isMutating ? "Mentés…" : "Hozzáadás"}</button></form><div className="mt-4 divide-y divide-deep-sea/10">{data.packing.map((item) => <div key={item.id} className="flex items-center gap-2 py-3"><button disabled={status !== "ready" || isMutating} onClick={() => void togglePacking(item)} aria-label={`${item.title} ${item.isPacked ? "nincs becsomagolva" : "becsomagolva"}`} className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border disabled:opacity-50 ${item.isPacked ? "border-turquoise bg-turquoise text-white" : "border-deep-sea/20 text-transparent"}`}>✓</button><p className={`min-w-0 flex-1 text-sm ${item.isPacked ? "text-deep-sea/45 line-through" : "text-deep-sea"}`}>{item.title}</p><button disabled={status !== "ready" || isMutating} onClick={() => void deletePacking(item.id)} aria-label="Pakolási tétel törlése" className="min-h-11 px-2 text-sm text-deep-sea/45 disabled:opacity-50">Törlés</button></div>)}</div></section> : null}
+    {tab === "notes" ? <section className="pt-5"><EntryForm kind="note" onCreate={createEntry} disabled={status !== "ready" || isMutating} /><EntryList entries={data.entries} kind="note" onDelete={deleteEntry} onUpdate={updateEntry} disabled={status !== "ready" || isMutating} /></section> : null}
+    {tab === "journal" ? <section className="pt-5"><EntryForm kind="journal" onCreate={createEntry} disabled={status !== "ready" || isMutating} /><EntryList entries={data.entries} kind="journal" onDelete={deleteEntry} onUpdate={updateEntry} disabled={status !== "ready" || isMutating} /></section> : null}
   </section>;
 }
