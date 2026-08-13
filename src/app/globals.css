@@ -23,6 +23,99 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Shared motion vocabulary: a view changes, it does not fly through the UI. */
+@keyframes subtle-view-in-right {
+  from { opacity: 0; transform: translateX(6px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes subtle-view-in-left {
+  from { opacity: 0; transform: translateX(-6px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes subtle-reveal {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.view-transition-forward { animation: subtle-view-in-right 190ms ease-out both; }
+.view-transition-backward { animation: subtle-view-in-left 190ms ease-out both; }
+.subtle-reveal { animation: subtle-reveal 170ms ease-out both; }
+
+.folder-tabs {
+  display: flex;
+  gap: 3px;
+  overflow-x: auto;
+  border-bottom: 1px solid rgb(24 50 59 / 0.11);
+  scrollbar-width: none;
+}
+
+.folder-tabs::-webkit-scrollbar { display: none; }
+
+.folder-tab {
+  min-height: 44px;
+  flex: 1 0 max-content;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 14px 14px 0 0;
+  padding: 0 12px;
+  color: rgb(24 50 59 / 0.55);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  outline: none;
+  transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.folder-tab:focus-visible { box-shadow: 0 0 0 2px #2E8A93; }
+
+.folder-tabs--notebook .folder-tab--active {
+  position: relative;
+  z-index: 1;
+  transform: translateY(1px);
+  border-color: rgb(24 50 59 / 0.10);
+  background: #F8F7F3;
+  color: #18323B;
+  box-shadow: 0 -2px 7px rgb(24 50 59 / 0.035);
+}
+
+.folder-tabs--places .folder-tab {
+  border-radius: 12px 12px 0 0;
+  font-size: 13px;
+}
+
+.folder-tabs--places .folder-tab--active {
+  position: relative;
+  z-index: 1;
+  transform: translateY(1px);
+  border-color: rgb(24 50 59 / 0.10);
+  background: rgb(76 184 196 / 0.10);
+  color: #18323B;
+  box-shadow: 0 -2px 6px rgb(24 50 59 / 0.025);
+}
+
+.folder-content-surface {
+  min-height: 1px;
+  border: 1px solid rgb(24 50 59 / 0.10);
+  border-top: 0;
+  border-radius: 0 0 20px 20px;
+  background: rgb(248 247 243 / 0.68);
+  padding: 0 14px 14px;
+}
+
+.folder-content-surface--places {
+  border-color: rgb(24 50 59 / 0.075);
+  background: rgb(255 255 255 / 0.22);
+  padding: 0 12px 4px;
+}
+
+.editor-soft-sheet {
+  background: rgb(255 255 255 / 0.48);
+  border: 1px solid rgb(24 50 59 / 0.07);
+  box-shadow: 0 2px 14px rgb(24 50 59 / 0.04);
+}
+
 /* Rejtett scrollbar a napválasztó vízszintes sávjához (Chrome/Safari) */
 .no-scrollbar::-webkit-scrollbar {
   display: none;

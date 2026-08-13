@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { FORM_CONTROL } from "@/components/formStyles";
+import { FolderTabs } from "@/components/FolderTabs";
 import { migrateLegacyNotebookOnce } from "@/lib/notebook-legacy-migration";
 import type { NotebookEntryKind, NotebookEntryRecord, PackingItemRecord } from "@/lib/notebook-types";
 import { storageGet, storageSet } from "@/lib/storage";
@@ -89,6 +90,7 @@ function EntryList({ entries, kind, onDelete, onUpdate, disabled = false }: { en
 /** The runtime Notebook reads/writes only through the PIN-protected server API. */
 export function NotebookShell() {
   const [tab, setTab] = useState<Tab>(() => storageGet<Tab>(TAB_KEY, "money"));
+  const [transition, setTransition] = useState<"forward" | "backward">("forward");
   const [data, setData] = useState<NotebookData>(() => storageGet<NotebookData>(CACHE_KEY, { packing: [], entries: [] }));
   const [status, setStatus] = useState<"loading" | "ready" | "offline" | "error">("loading");
   const [message, setMessage] = useState<string | null>(null);
@@ -111,6 +113,12 @@ export function NotebookShell() {
   }
   useEffect(() => { void load(); }, []);
   useEffect(() => { storageSet(TAB_KEY, tab); }, [tab]);
+
+  function changeTab(next: Tab) {
+    if (next === tab) return;
+    setTransition(TABS.findIndex((item) => item.id === next) > TABS.findIndex((item) => item.id === tab) ? "forward" : "backward");
+    setTab(next);
+  }
 
   async function request(method: "POST" | "PATCH" | "DELETE", body: Record<string, unknown>) {
     if (!navigator.onLine) throw new Error("Offline módban a módosítás nem menthető.");
@@ -148,13 +156,15 @@ export function NotebookShell() {
   const total = useMemo(() => expenses.reduce((sum, entry) => sum + (entry.amountEur ?? 0), 0), [expenses]);
   const packed = data.packing.filter((item) => item.isPacked).length;
   return <section className="mt-6" aria-label="Jegyzetfüzet tartalma">
-    <div role="tablist" aria-label="Jegyzetfüzet kategóriák" className="flex gap-1 overflow-x-auto border-b border-deep-sea/10 pb-1">{TABS.map((item) => <button key={item.id} role="tab" aria-selected={tab === item.id} onClick={() => setTab(item.id)} className={`min-h-11 shrink-0 rounded-ui-s px-3 text-sm font-semibold ${tab === item.id ? "bg-turquoise/15 text-deep-sea" : "text-deep-sea/55"}`}>{item.label}</button>)}</div>
+    <FolderTabs items={TABS} activeId={tab} onChange={changeTab} ariaLabel="Jegyzetfüzet kategóriák" />
     {message ? <div className="mt-4 flex items-center justify-between gap-3 rounded-ui-s border border-coral/25 bg-coral/5 px-3.5 py-3 text-sm text-deep-sea/75"><span>{message}</span><button onClick={() => { setMessage(null); void load(); }} className="min-h-11 shrink-0 font-semibold text-deep-sea">Újrapróbálás</button></div> : null}
     {status === "offline" ? <p className="mt-4 text-sm text-deep-sea/60">Offline módban az utoljára betöltött Jegyzetfüzet látható. Módosítás most nem menthető.</p> : null}
     {status === "loading" ? <p className="mt-5 text-sm text-deep-sea/60">Jegyzetfüzet betöltése…</p> : null}
-    {tab === "money" ? <section className="pt-5"><div className="rounded-ui-s bg-white/60 p-4"><p className="text-xs font-semibold uppercase tracking-[.04em] text-deep-sea/45">Teljes kiadás</p><p className="mt-1 text-2xl font-semibold text-deep-sea">{total.toFixed(2)} €</p></div><EntryForm kind="expense" onCreate={createEntry} disabled={status !== "ready" || isMutating} /><EntryList entries={data.entries} kind="expense" onDelete={deleteEntry} onUpdate={updateEntry} disabled={status !== "ready" || isMutating} /></section> : null}
-    {tab === "packing" ? <section className="pt-5"><p className="text-sm text-deep-sea/65">{data.packing.length ? `${packed} / ${data.packing.length} becsomagolva` : "Add hozzá az első tételt."}</p><form onSubmit={addPacking} className="mt-4 flex gap-2"><input value={packingTitle} onChange={(event) => setPackingTitle(event.target.value)} placeholder="Új pakolási tétel" disabled={status !== "ready" || isMutating} className={`${FORM_CONTROL} min-w-0 flex-1 px-3.5 disabled:opacity-50`} /><button disabled={status !== "ready" || isMutating} className="min-h-12 rounded-ui-s border border-turquoise bg-turquoise/15 px-4 text-sm font-semibold text-deep-sea disabled:opacity-50">{isMutating ? "Mentés…" : "Hozzáadás"}</button></form><div className="mt-4 divide-y divide-deep-sea/10">{data.packing.map((item) => <div key={item.id} className="flex items-center gap-2 py-3"><button disabled={status !== "ready" || isMutating} onClick={() => void togglePacking(item)} aria-label={`${item.title} ${item.isPacked ? "nincs becsomagolva" : "becsomagolva"}`} className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border disabled:opacity-50 ${item.isPacked ? "border-turquoise bg-turquoise text-white" : "border-deep-sea/20 text-transparent"}`}>✓</button><p className={`min-w-0 flex-1 text-sm ${item.isPacked ? "text-deep-sea/45 line-through" : "text-deep-sea"}`}>{item.title}</p><button disabled={status !== "ready" || isMutating} onClick={() => void deletePacking(item.id)} aria-label="Pakolási tétel törlése" className="min-h-11 px-2 text-sm text-deep-sea/45 disabled:opacity-50">Törlés</button></div>)}</div></section> : null}
-    {tab === "notes" ? <section className="pt-5"><EntryForm kind="note" onCreate={createEntry} disabled={status !== "ready" || isMutating} /><EntryList entries={data.entries} kind="note" onDelete={deleteEntry} onUpdate={updateEntry} disabled={status !== "ready" || isMutating} /></section> : null}
-    {tab === "journal" ? <section className="pt-5"><EntryForm kind="journal" onCreate={createEntry} disabled={status !== "ready" || isMutating} /><EntryList entries={data.entries} kind="journal" onDelete={deleteEntry} onUpdate={updateEntry} disabled={status !== "ready" || isMutating} /></section> : null}
+    <div key={tab} role="tabpanel" aria-label={TABS.find((item) => item.id === tab)?.label} className={`folder-content-surface ${transition === "forward" ? "view-transition-forward" : "view-transition-backward"}`}>
+      {tab === "money" ? <section className="pt-5"><div className="rounded-ui-s bg-white/60 p-4"><p className="text-xs font-semibold uppercase tracking-[.04em] text-deep-sea/45">Teljes kiadás</p><p className="mt-1 text-2xl font-semibold text-deep-sea">{total.toFixed(2)} €</p></div><EntryForm kind="expense" onCreate={createEntry} disabled={status !== "ready" || isMutating} /><EntryList entries={data.entries} kind="expense" onDelete={deleteEntry} onUpdate={updateEntry} disabled={status !== "ready" || isMutating} /></section> : null}
+      {tab === "packing" ? <section className="pt-5"><p className="text-sm text-deep-sea/65">{data.packing.length ? `${packed} / ${data.packing.length} becsomagolva` : "Add hozzá az első tételt."}</p><form onSubmit={addPacking} className="mt-4 flex gap-2"><input value={packingTitle} onChange={(event) => setPackingTitle(event.target.value)} placeholder="Új pakolási tétel" disabled={status !== "ready" || isMutating} className={`${FORM_CONTROL} min-w-0 flex-1 px-3.5 disabled:opacity-50`} /><button disabled={status !== "ready" || isMutating} className="min-h-12 rounded-ui-s border border-turquoise bg-turquoise/15 px-4 text-sm font-semibold text-deep-sea disabled:opacity-50">{isMutating ? "Mentés…" : "Hozzáadás"}</button></form><div className="mt-4 divide-y divide-deep-sea/10">{data.packing.map((item) => <div key={item.id} className="flex items-center gap-2 py-3"><button disabled={status !== "ready" || isMutating} onClick={() => void togglePacking(item)} aria-label={`${item.title} ${item.isPacked ? "nincs becsomagolva" : "becsomagolva"}`} className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border disabled:opacity-50 ${item.isPacked ? "border-turquoise bg-turquoise text-white" : "border-deep-sea/20 text-transparent"}`}>✓</button><p className={`min-w-0 flex-1 text-sm ${item.isPacked ? "text-deep-sea/45 line-through" : "text-deep-sea"}`}>{item.title}</p><button disabled={status !== "ready" || isMutating} onClick={() => void deletePacking(item.id)} aria-label="Pakolási tétel törlése" className="min-h-11 px-2 text-sm text-deep-sea/45 disabled:opacity-50">Törlés</button></div>)}</div></section> : null}
+      {tab === "notes" ? <section className="pt-5"><EntryForm kind="note" onCreate={createEntry} disabled={status !== "ready" || isMutating} /><EntryList entries={data.entries} kind="note" onDelete={deleteEntry} onUpdate={updateEntry} disabled={status !== "ready" || isMutating} /></section> : null}
+      {tab === "journal" ? <section className="pt-5"><EntryForm kind="journal" onCreate={createEntry} disabled={status !== "ready" || isMutating} /><EntryList entries={data.entries} kind="journal" onDelete={deleteEntry} onUpdate={updateEntry} disabled={status !== "ready" || isMutating} /></section> : null}
+    </div>
   </section>;
 }

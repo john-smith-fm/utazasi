@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PlaceListItem } from "@/components/PlaceListItem";
+import { FolderTabs } from "@/components/FolderTabs";
 import {
   DEFAULT_PLACE_BROWSE_CATEGORY,
   isPlaceBrowseCategory,
@@ -25,6 +26,7 @@ export function PlacesBrowser() {
   const searchParams = useSearchParams();
   const requestedCategory = searchParams.get("category");
   const [categoryId, setCategoryId] = useState<PlaceBrowseCategoryId>(() => resolveInitialCategory(requestedCategory));
+  const [transition, setTransition] = useState<"forward" | "backward">("forward");
 
   useEffect(() => {
     if (isPlaceBrowseCategory(requestedCategory) && requestedCategory !== categoryId) {
@@ -44,6 +46,7 @@ export function PlacesBrowser() {
 
   function changeCategory(nextCategory: PlaceBrowseCategoryId) {
     if (nextCategory === categoryId) return;
+    setTransition(PLACE_BROWSE_CATEGORIES.findIndex((item) => item.id === nextCategory) > PLACE_BROWSE_CATEGORIES.findIndex((item) => item.id === categoryId) ? "forward" : "backward");
     setCategoryId(nextCategory);
     router.replace(placeBrowseHref(nextCategory), { scroll: false });
   }
@@ -55,27 +58,9 @@ export function PlacesBrowser() {
         <h1 className="text-[32px] font-semibold tracking-[-0.03em] text-deep-sea">Helyek</h1>
       </header>
 
-      <div className="mt-5 grid grid-cols-4 gap-1 border-b border-deep-sea/10 pb-2" role="tablist" aria-label="Helytípusok">
-        {PLACE_BROWSE_CATEGORIES.map((item) => {
-          const active = item.id === categoryId;
-          return (
-            <button
-              key={item.id}
-              type="button"
-              role="tab"
-              aria-selected={active}
-              onClick={() => changeCategory(item.id)}
-              className={`min-h-11 rounded-[18px] px-1 text-center text-[13px] font-semibold outline-none transition-colors focus-visible:ring-2 focus-visible:ring-turquoise-dark ${
-                active ? "bg-turquoise/10 text-deep-sea" : "text-deep-sea/55"
-              }`}
-            >
-              {item.label}
-            </button>
-          );
-        })}
-      </div>
+      <div className="mt-5"><FolderTabs items={PLACE_BROWSE_CATEGORIES} activeId={categoryId} onChange={changeCategory} ariaLabel="Helytípusok" variant="places" /></div>
 
-      <section className="mt-2" role="tabpanel" aria-label={category.label}>
+      <section key={categoryId} className={`folder-content-surface folder-content-surface--places mt-0 ${transition === "forward" ? "view-transition-forward" : "view-transition-backward"}`} role="tabpanel" aria-label={category.label}>
         {places.length ? (
           places.map((place) => (
             <PlaceListItem
