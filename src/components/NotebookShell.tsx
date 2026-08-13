@@ -9,10 +9,12 @@ import { storageGet, storageSet } from "@/lib/storage";
 
 type NotebookData = { packing: PackingItemRecord[]; entries: NotebookEntryRecord[] };
 type Tab = "money" | "packing" | "notes" | "journal";
-// v1 could contain pre-persistence rows without the fields used by the API.
-// Start v2 with a server-shaped cache; the browser's original legacy data is
-// still preserved separately and imported safely only once.
-const CACHE_KEY = "utazasi-notebook-v2";
+// Earlier browser builds could retain prototype rows whose identifiers were
+// not issued by Supabase. Those rows are safe to read as legacy data, but must
+// never be reused as mutation targets. v3 is exclusively a server-shaped
+// cache; the original legacy snapshot remains separately available for the
+// one-time, idempotent migration.
+const CACHE_KEY = "utazasi-notebook-v3";
 const TAB_KEY = "utazasi-notebook-tab-v1";
 const TABS: Array<{ id: Tab; label: string }> = [{ id: "money", label: "Pénz" }, { id: "packing", label: "Pakolás" }, { id: "notes", label: "Jegyzetek" }, { id: "journal", label: "Napló" }];
 
