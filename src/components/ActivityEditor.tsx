@@ -161,7 +161,7 @@ export function ActivityEditor({ activity, onClose, onSave, onDelete }: {
               aria-controls="place-suggestions"
               className={`${FORM_CONTROL} w-full px-4`}
             />
-            {showSuggestions && (suggestions.length > 0 || shouldShowContextualSuggestions) && <div id="place-suggestions" role="listbox" className="subtle-reveal absolute z-10 mt-2 max-h-64 w-full overflow-y-auto rounded-ui-s border border-deep-sea/10 bg-white py-1 shadow-[0_10px_24px_rgba(24,50,59,.12)]">
+            {showSuggestions && (suggestions.length > 0 || shouldShowContextualSuggestions) && <div id="place-suggestions" role="listbox" className="glass-surface contextual-place-suggestions subtle-reveal absolute z-10 mt-2 max-h-64 w-full overflow-y-auto rounded-ui-s border py-1">
               {shouldShowContextualSuggestions && <>
                 {contextualSuggestions.recommended.length > 0 ? <>
                   <p className="px-4 pb-1 pt-2 text-[12px] font-semibold uppercase tracking-[.08em] text-deep-sea/45">Ajánlott helyek</p>

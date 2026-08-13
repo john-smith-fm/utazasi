@@ -38,10 +38,22 @@ body {
 .view-transition-backward { animation: subtle-view-in 190ms ease-out both; }
 .subtle-reveal { animation: subtle-reveal 170ms ease-out both; }
 
+/* The Weather Bar's Kérdezési state is the source for all small glass layers:
+   translucent paper, a restrained blur and an almost imperceptible edge. */
+.glass-surface {
+  border: 1px solid rgb(255 255 255 / 0.78);
+  background: rgb(255 255 255 / 0.58);
+  box-shadow: 0 10px 26px rgb(24 50 59 / 0.07), 0 1px 4px rgb(24 50 59 / 0.035);
+  backdrop-filter: blur(16px) saturate(1.04);
+  -webkit-backdrop-filter: blur(16px) saturate(1.04);
+}
+
 .folder-tabs {
   display: flex;
-  gap: 6px;
+  align-items: flex-end;
+  gap: 3px;
   overflow-x: auto;
+  margin-bottom: -1px;
   padding: 0 2px;
   scrollbar-width: none;
 }
@@ -49,10 +61,16 @@ body {
 .folder-tabs::-webkit-scrollbar { display: none; }
 
 .folder-tab {
+  position: relative;
   min-height: 44px;
   flex: 1 0 max-content;
-  border: 1px solid transparent;
-  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 0.60);
+  border-bottom-color: rgb(24 50 59 / 0.08);
+  border-radius: 16px 16px 8px 8px;
+  background: rgb(255 255 255 / 0.32);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.45);
+  backdrop-filter: blur(12px) saturate(1.03);
+  -webkit-backdrop-filter: blur(12px) saturate(1.03);
   padding: 0 12px;
   color: rgb(24 50 59 / 0.55);
   font-size: 14px;
@@ -64,52 +82,48 @@ body {
 
 .folder-tab:focus-visible { box-shadow: 0 0 0 2px #2E8A93; }
 
-.folder-tabs--notebook .folder-tab--active {
-  position: relative;
+.folder-tab--active {
   z-index: 1;
-  transform: translateY(8px);
-  border-color: rgb(24 50 59 / 0.10);
-  background: #F8F7F3;
+  transform: translateY(1px);
+  border-color: rgb(255 255 255 / 0.84);
+  border-bottom-color: transparent;
+  border-radius: 18px 18px 0 0;
+  background: rgb(248 247 243 / 0.88);
   color: #18323B;
-  box-shadow: 0 -2px 7px rgb(24 50 59 / 0.035);
+  box-shadow: 0 -5px 15px rgb(24 50 59 / 0.05), inset 0 1px 0 rgb(255 255 255 / 0.70);
+  backdrop-filter: blur(16px) saturate(1.04);
+  -webkit-backdrop-filter: blur(16px) saturate(1.04);
 }
 
-/* The bridge keeps the active capsule and its content page visually connected,
-   while the curved corners avoid a hard, squared tab-to-page junction. */
+/* A small overlap removes the seam between the pulled-forward register and
+   its paper sheet without turning the tabs back into independent pills. */
 .folder-tab--active::after {
   position: absolute;
   z-index: -1;
-  right: 10px;
-  bottom: -12px;
-  left: 10px;
-  height: 18px;
-  border: 1px solid rgb(24 50 59 / 0.10);
-  border-top: 0;
-  border-radius: 0 0 12px 12px;
+  right: -1px;
+  bottom: -5px;
+  left: -1px;
+  height: 7px;
   background: inherit;
   content: "";
 }
 
 .folder-tabs--places .folder-tab {
-  border-radius: 999px;
   font-size: 13px;
 }
 
 .folder-tabs--places .folder-tab--active {
-  position: relative;
-  z-index: 1;
-  transform: translateY(8px);
-  border-color: rgb(24 50 59 / 0.10);
-  background: rgb(76 184 196 / 0.10);
-  color: #18323B;
-  box-shadow: 0 -2px 6px rgb(24 50 59 / 0.025);
+  background: rgb(235 248 248 / 0.86);
 }
 
 .folder-content-surface {
   min-height: 1px;
-  border: 1px solid rgb(24 50 59 / 0.10);
+  border: 1px solid rgb(255 255 255 / 0.72);
   border-radius: 20px;
-  background: rgb(248 247 243 / 0.68);
+  background: rgb(248 247 243 / 0.84);
+  box-shadow: 0 12px 28px rgb(24 50 59 / 0.055), inset 0 1px 0 rgb(255 255 255 / 0.52);
+  backdrop-filter: blur(12px) saturate(1.02);
+  -webkit-backdrop-filter: blur(12px) saturate(1.02);
   padding: 14px 14px;
 }
 
@@ -123,6 +137,14 @@ body {
   background: rgb(255 255 255 / 0.48);
   border: 1px solid rgb(24 50 59 / 0.07);
   box-shadow: 0 2px 14px rgb(24 50 59 / 0.04);
+}
+
+.contextual-place-suggestions {
+  border-color: rgb(255 255 255 / 0.78);
+  background: rgb(255 255 255 / 0.66);
+  box-shadow: 0 12px 28px rgb(24 50 59 / 0.10), 0 1px 5px rgb(24 50 59 / 0.04);
+  backdrop-filter: blur(16px) saturate(1.04);
+  -webkit-backdrop-filter: blur(16px) saturate(1.04);
 }
 
 /* Rejtett scrollbar a napválasztó vízszintes sávjához (Chrome/Safari) */
