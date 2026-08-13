@@ -4,10 +4,6 @@ import { TIMELINE_TRIP_SLUG, timelineServerClient } from "@/lib/timeline-service
 import type { LegacyNotebookSnapshot, NotebookEntryKind, NotebookEntryRecord, PackingItemRecord } from "@/lib/notebook-types";
 
 type ServiceResult<T> = { data: T } | { error: string; status: number };
-// PostgreSQL/Supabase may issue newer UUID versions (for example UUIDv7).
-// The Notebook only needs to verify the UUID wire format here; ownership is
-// enforced separately by the trip_id condition on every mutation.
-const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 type DbPacking = { id: string; title: string; is_packed: boolean; position: number; created_at: string; updated_at: string };
@@ -27,7 +23,15 @@ async function tripId(): Promise<ServiceResult<string>> {
   return data ? { data: data.id } : { error: "Az utazás nem található.", status: 404 };
 }
 
-function validId(value: unknown) { return typeof value === "string" && UUID_PATTERN.test(value); }
+/**
+ * The record id is an opaque value at the API boundary. Older browser caches
+ * and Supabase UUID versions must not make a valid mutation fail before the
+ * query can scope it to this trip. Ownership is always enforced below with
+ * `.eq("trip_id", trip.data)`; an unknown id simply returns 404.
+ */
+function validId(value: unknown) {
+  return typeof value === "string" && value.trim().length > 0 && value.length <= 160;
+}
 
 function text(value: unknown, max: number) {
   return typeof value === "string" ? value.trim().slice(0, max) : "";
