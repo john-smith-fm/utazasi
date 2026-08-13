@@ -60,6 +60,13 @@ Mobility and photo coverage is reported but is not used by itself to start a
 Place-research job: routes require their own approved source data, and images
 must meet their separate reuse rules.
 
+The queue also reads the approved initial Timeline in a read-only manner. A
+Place that already appears in the family's planned program receives a visible,
+bounded priority boost and lists the relevant dates and activities. This does
+not infer a Place for free-text programs, change the Timeline, or start live
+research; it only helps a human spend the limited enrichment batch on places
+that matter to the actual trip.
+
 ## Facts and insights
 
 Canonical changes accept only extracted_fact: a field-level statement with

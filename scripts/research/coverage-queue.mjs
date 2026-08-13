@@ -1,9 +1,10 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { loadCanonicalPlaces } from "./core.mjs";
 
 const AREA_WEIGHT = { basic: 8, evidence: 7, services: 5, family: 4, mobility: 3, photos: 1 };
 const RESEARCHABLE_AREAS = new Set(["basic", "evidence", "services", "family"]);
+const TIMELINE_RELEVANCE_WEIGHT = 10;
 
 function isRecord(value) { return Boolean(value) && typeof value === "object" && !Array.isArray(value); }
 function text(value) { return typeof value === "string" && value.trim() ? value.trim() : undefined; }
@@ -25,6 +26,28 @@ function queueReason(areas, questions, stale) {
   return parts.join(" · ");
 }
 
+async function loadTimelineReferences(root) {
+  const timelinePath = path.join(root, "knowledge", "trip", "timeline.initial.json");
+  const document = JSON.parse(await readFile(timelinePath, "utf8"));
+  if (!isRecord(document) || !Array.isArray(document.days)) {
+    throw new Error("Érvénytelen kanonikus induló Timeline.");
+  }
+
+  const references = new Map();
+  for (const day of document.days) {
+    if (!isRecord(day) || typeof day.date !== "string" || !Array.isArray(day.activities)) continue;
+    for (const activity of day.activities) {
+      if (!isRecord(activity) || !text(activity.place_slug)) continue;
+      const slug = text(activity.place_slug);
+      if (!slug || slug === "trip-base") continue;
+      const existing = references.get(slug) ?? [];
+      existing.push({ date: day.date, title: text(activity.title) ?? "Névtelen program" });
+      references.set(slug, existing);
+    }
+  }
+  return references;
+}
+
 /**
  * Deterministically proposes bounded enrichment jobs from canonical coverage.
  * It does not call a provider, write canonical JSON, or claim a missing field
@@ -33,6 +56,7 @@ function queueReason(areas, questions, stale) {
 export async function buildCoverageQueue({ root = process.cwd(), limit = 8, staleAfterDays = 90, now = new Date() } = {}) {
   if (!Number.isInteger(limit) || limit < 1 || limit > 8) throw new Error("A research queue limit 1 és 8 közötti egész szám lehet.");
   const canonical = await loadCanonicalPlaces(root);
+  const timelineReferences = await loadTimelineReferences(root);
   const coverage = new Map();
   const candidates = canonical.flatMap(({ type, raw }) => {
     const locality = text(raw.location?.city) ?? "Ismeretlen hely";
@@ -49,8 +73,10 @@ export async function buildCoverageQueue({ root = process.cwd(), limit = 8, stal
     const researchAreas = areas.filter((item) => RESEARCHABLE_AREAS.has(item.area));
     if (!researchAreas.length && !questions.length && stale === undefined) return [];
 
+    const timelineUses = timelineReferences.get(raw.slug) ?? [];
     const score = researchAreas.reduce((sum, item) => sum + (AREA_WEIGHT[item.area] ?? 2) + (item.status === "missing" ? 2 : 0), 0)
-      + Math.min(questions.length, 3) * 2 + (stale === undefined ? 0 : 2);
+      + Math.min(questions.length, 3) * 2 + (stale === undefined ? 0 : 2)
+      + (timelineUses.length ? TIMELINE_RELEVANCE_WEIGHT : 0);
     summary.queued += 1;
     const focus = [...researchAreas.map((item) => item.area), ...questions].join("; ");
     return [{
@@ -60,6 +86,9 @@ export async function buildCoverageQueue({ root = process.cwd(), limit = 8, stal
       missingAreas: areas,
       researchFocus: researchAreas.map((item) => item.area),
       openQuestions: questions,
+      timelineRelevance: timelineUses.length
+        ? { status: "planned", activities: timelineUses }
+        : { status: "not_in_initial_timeline", activities: [] },
       freshness: checkedAt ? { checkedAt, ageDays: age, status: stale === undefined ? "current" : "stale" } : { status: "unknown" },
       reason: queueReason(areas, questions, stale),
       researchJob: {
@@ -78,7 +107,13 @@ export async function buildCoverageQueue({ root = process.cwd(), limit = 8, stal
     generatedAt: now.toISOString(),
     limits: { maxJobs: limit, liveResearchStarted: false, canonicalWrites: false },
     coverageMap: [...coverage.values()].sort((a, b) => a.locality.localeCompare(b.locality, "hu") || a.type.localeCompare(b.type)),
-    summary: { canonicalPlaces: canonical.length, eligibleForEnrichment: candidates.length, proposedJobs: proposals.length, deferredJobs: Math.max(0, candidates.length - proposals.length) },
+    summary: {
+      canonicalPlaces: canonical.length,
+      timelineLinkedPlaces: timelineReferences.size,
+      eligibleForEnrichment: candidates.length,
+      proposedJobs: proposals.length,
+      deferredJobs: Math.max(0, candidates.length - proposals.length),
+    },
     proposals,
   };
 }

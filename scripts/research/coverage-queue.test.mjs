@@ -15,3 +15,13 @@ test("coverage queue is bounded and never starts live research", async () => {
     assert.ok(proposal.reason.length > 0);
   }
 });
+
+test("planned Timeline places are visibly prioritised without starting research", async () => {
+  const queue = await buildCoverageQueue({ root: process.cwd(), limit: 8, now: new Date("2026-08-13T12:00:00.000Z") });
+  const marina = queue.proposals.find((proposal) => proposal.target.slug === "marina-di-villasimius");
+  assert.ok(marina, "a Timeline-ban szereplő Marina di Villasimius kutatási jelölt");
+  assert.equal(marina.timelineRelevance.status, "planned");
+  assert.ok(marina.timelineRelevance.activities.length > 0);
+  assert.equal(queue.limits.liveResearchStarted, false);
+  assert.equal(queue.limits.canonicalWrites, false);
+});

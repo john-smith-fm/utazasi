@@ -1,0 +1,803 @@
+{
+  "queueVersion": "1.0",
+  "generatedAt": "2026-08-13T20:33:10.908Z",
+  "limits": {
+    "maxJobs": 8,
+    "liveResearchStarted": false,
+    "canonicalWrites": false
+  },
+  "coverageMap": [
+    {
+      "locality": "Budapest",
+      "type": "other",
+      "records": 1,
+      "queued": 1
+    },
+    {
+      "locality": "Cagliari",
+      "type": "beach",
+      "records": 1,
+      "queued": 1
+    },
+    {
+      "locality": "Castiadas",
+      "type": "beach",
+      "records": 9,
+      "queued": 6
+    },
+    {
+      "locality": "Castiadas",
+      "type": "restaurant",
+      "records": 3,
+      "queued": 3
+    },
+    {
+      "locality": "Castiadas",
+      "type": "shop",
+      "records": 1,
+      "queued": 0
+    },
+    {
+      "locality": "Castiadas",
+      "type": "sight",
+      "records": 2,
+      "queued": 0
+    },
+    {
+      "locality": "Costa Rei",
+      "type": "beach",
+      "records": 2,
+      "queued": 0
+    },
+    {
+      "locality": "Costa Rei",
+      "type": "cafe",
+      "records": 1,
+      "queued": 0
+    },
+    {
+      "locality": "Costa Rei",
+      "type": "playground",
+      "records": 1,
+      "queued": 1
+    },
+    {
+      "locality": "Costa Rei",
+      "type": "restaurant",
+      "records": 1,
+      "queued": 0
+    },
+    {
+      "locality": "Costa Rei",
+      "type": "shop",
+      "records": 2,
+      "queued": 0
+    },
+    {
+      "locality": "Costa Rei / Castiadas",
+      "type": "beach",
+      "records": 1,
+      "queued": 1
+    },
+    {
+      "locality": "Elmas",
+      "type": "other",
+      "records": 1,
+      "queued": 1
+    },
+    {
+      "locality": "Muravera",
+      "type": "beach",
+      "records": 5,
+      "queued": 2
+    },
+    {
+      "locality": "Muravera",
+      "type": "cafe",
+      "records": 1,
+      "queued": 1
+    },
+    {
+      "locality": "Muravera",
+      "type": "other",
+      "records": 7,
+      "queued": 7
+    },
+    {
+      "locality": "Muravera",
+      "type": "playground",
+      "records": 1,
+      "queued": 1
+    },
+    {
+      "locality": "Muravera",
+      "type": "restaurant",
+      "records": 6,
+      "queued": 4
+    },
+    {
+      "locality": "Muravera",
+      "type": "shop",
+      "records": 5,
+      "queued": 4
+    },
+    {
+      "locality": "Muravera",
+      "type": "sight",
+      "records": 3,
+      "queued": 0
+    },
+    {
+      "locality": "Sinnai",
+      "type": "beach",
+      "records": 1,
+      "queued": 1
+    },
+    {
+      "locality": "Sinnai",
+      "type": "cafe",
+      "records": 1,
+      "queued": 1
+    },
+    {
+      "locality": "Sinnai",
+      "type": "shop",
+      "records": 1,
+      "queued": 1
+    },
+    {
+      "locality": "Solanas (Sinnai)",
+      "type": "beach",
+      "records": 1,
+      "queued": 1
+    },
+    {
+      "locality": "Villaputzu",
+      "type": "beach",
+      "records": 3,
+      "queued": 0
+    },
+    {
+      "locality": "Villaputzu",
+      "type": "cafe",
+      "records": 4,
+      "queued": 3
+    },
+    {
+      "locality": "Villaputzu",
+      "type": "other",
+      "records": 1,
+      "queued": 1
+    },
+    {
+      "locality": "Villaputzu",
+      "type": "playground",
+      "records": 1,
+      "queued": 1
+    },
+    {
+      "locality": "Villaputzu",
+      "type": "restaurant",
+      "records": 5,
+      "queued": 5
+    },
+    {
+      "locality": "Villaputzu",
+      "type": "shop",
+      "records": 2,
+      "queued": 0
+    },
+    {
+      "locality": "Villaputzu",
+      "type": "sight",
+      "records": 3,
+      "queued": 1
+    },
+    {
+      "locality": "Villasimius",
+      "type": "beach",
+      "records": 6,
+      "queued": 3
+    },
+    {
+      "locality": "Villasimius",
+      "type": "cafe",
+      "records": 9,
+      "queued": 8
+    },
+    {
+      "locality": "Villasimius",
+      "type": "other",
+      "records": 2,
+      "queued": 2
+    },
+    {
+      "locality": "Villasimius",
+      "type": "parking",
+      "records": 7,
+      "queued": 7
+    },
+    {
+      "locality": "Villasimius",
+      "type": "playground",
+      "records": 1,
+      "queued": 1
+    },
+    {
+      "locality": "Villasimius",
+      "type": "restaurant",
+      "records": 21,
+      "queued": 12
+    },
+    {
+      "locality": "Villasimius",
+      "type": "shop",
+      "records": 9,
+      "queued": 8
+    },
+    {
+      "locality": "Villasimius",
+      "type": "sight",
+      "records": 6,
+      "queued": 2
+    }
+  ],
+  "summary": {
+    "canonicalPlaces": 138,
+    "timelineLinkedPlaces": 11,
+    "eligibleForEnrichment": 91,
+    "proposedJobs": 8,
+    "deferredJobs": 83
+  },
+  "proposals": [
+    {
+      "id": "enrich-marina-di-villasimius",
+      "priorityScore": 33,
+      "target": {
+        "slug": "marina-di-villasimius",
+        "name": "Marina di Villasimius",
+        "type": "sight",
+        "locality": "Villasimius"
+      },
+      "missingAreas": [
+        {
+          "area": "basic",
+          "status": "partial"
+        },
+        {
+          "area": "services",
+          "status": "partial"
+        },
+        {
+          "area": "mobility",
+          "status": "partial"
+        },
+        {
+          "area": "family",
+          "status": "partial"
+        },
+        {
+          "area": "photos",
+          "status": "missing"
+        }
+      ],
+      "researchFocus": [
+        "basic",
+        "services",
+        "family"
+      ],
+      "openQuestions": [
+        "Canonical coordinates not yet sourced reliably.",
+        "Visitor parking cost/location and public WC not yet verified.",
+        "Legally reusable cover image missing.",
+        "Fortezza → Marina walking duration not yet canonicalized."
+      ],
+      "timelineRelevance": {
+        "status": "planned",
+        "activities": [
+          {
+            "date": "2026-09-11",
+            "title": "Kikötő / séta"
+          }
+        ]
+      },
+      "freshness": {
+        "checkedAt": "2026-08-10",
+        "ageDays": 3,
+        "status": "current"
+      },
+      "reason": "basic: partial, services: partial, mobility: partial, family: partial, photos: missing · 4 nyitott kérdés",
+      "researchJob": {
+        "mode": "enrich",
+        "placeTypes": [
+          "sight"
+        ],
+        "geographicScope": {
+          "localities": [
+            "Villasimius"
+          ]
+        },
+        "slugs": [
+          "marina-di-villasimius"
+        ],
+        "query": "Only enrich verified missing or partial information for Marina di Villasimius in Villasimius. Focus on: basic; services; family; Canonical coordinates not yet sourced reliably.; Visitor parking cost/location and public WC not yet verified.; Legally reusable cover image missing.; Fortezza → Marina walking duration not yet canonicalized.."
+      }
+    },
+    {
+      "id": "enrich-maklas-cala-sinzias",
+      "priorityScore": 28,
+      "target": {
+        "slug": "maklas-cala-sinzias",
+        "name": "Maklas",
+        "type": "restaurant",
+        "locality": "Castiadas"
+      },
+      "missingAreas": [
+        {
+          "area": "basic",
+          "status": "partial"
+        },
+        {
+          "area": "services",
+          "status": "partial"
+        },
+        {
+          "area": "mobility",
+          "status": "missing"
+        },
+        {
+          "area": "family",
+          "status": "missing"
+        },
+        {
+          "area": "evidence",
+          "status": "partial"
+        },
+        {
+          "area": "photos",
+          "status": "missing"
+        }
+      ],
+      "researchFocus": [
+        "basic",
+        "services",
+        "family",
+        "evidence"
+      ],
+      "openQuestions": [
+        "Confirm official site, hours, services and exact address."
+      ],
+      "timelineRelevance": {
+        "status": "not_in_initial_timeline",
+        "activities": []
+      },
+      "freshness": {
+        "status": "unknown"
+      },
+      "reason": "basic: partial, services: partial, mobility: missing, family: missing, evidence: partial, photos: missing · 1 nyitott kérdés",
+      "researchJob": {
+        "mode": "enrich",
+        "placeTypes": [
+          "restaurant"
+        ],
+        "geographicScope": {
+          "localities": [
+            "Castiadas"
+          ]
+        },
+        "slugs": [
+          "maklas-cala-sinzias"
+        ],
+        "query": "Only enrich verified missing or partial information for Maklas in Castiadas. Focus on: basic; services; family; evidence; Confirm official site, hours, services and exact address.."
+      }
+    },
+    {
+      "id": "enrich-tamatete-cala-sinzias",
+      "priorityScore": 28,
+      "target": {
+        "slug": "tamatete-cala-sinzias",
+        "name": "Tamatete",
+        "type": "restaurant",
+        "locality": "Castiadas"
+      },
+      "missingAreas": [
+        {
+          "area": "basic",
+          "status": "partial"
+        },
+        {
+          "area": "services",
+          "status": "partial"
+        },
+        {
+          "area": "mobility",
+          "status": "missing"
+        },
+        {
+          "area": "family",
+          "status": "missing"
+        },
+        {
+          "area": "evidence",
+          "status": "partial"
+        },
+        {
+          "area": "photos",
+          "status": "missing"
+        }
+      ],
+      "researchFocus": [
+        "basic",
+        "services",
+        "family",
+        "evidence"
+      ],
+      "openQuestions": [
+        "Confirm official contact, hours and exact services."
+      ],
+      "timelineRelevance": {
+        "status": "not_in_initial_timeline",
+        "activities": []
+      },
+      "freshness": {
+        "status": "unknown"
+      },
+      "reason": "basic: partial, services: partial, mobility: missing, family: missing, evidence: partial, photos: missing · 1 nyitott kérdés",
+      "researchJob": {
+        "mode": "enrich",
+        "placeTypes": [
+          "restaurant"
+        ],
+        "geographicScope": {
+          "localities": [
+            "Castiadas"
+          ]
+        },
+        "slugs": [
+          "tamatete-cala-sinzias"
+        ],
+        "query": "Only enrich verified missing or partial information for Tamatete in Castiadas. Focus on: basic; services; family; evidence; Confirm official contact, hours and exact services.."
+      }
+    },
+    {
+      "id": "enrich-spiaggia-piscina-rei",
+      "priorityScore": 28,
+      "target": {
+        "slug": "spiaggia-piscina-rei",
+        "name": "Spiaggia di Piscina Rei",
+        "type": "beach",
+        "locality": "Muravera"
+      },
+      "missingAreas": [
+        {
+          "area": "basic",
+          "status": "partial"
+        },
+        {
+          "area": "services",
+          "status": "missing"
+        },
+        {
+          "area": "mobility",
+          "status": "missing"
+        },
+        {
+          "area": "family",
+          "status": "partial"
+        },
+        {
+          "area": "evidence",
+          "status": "partial"
+        },
+        {
+          "area": "photos",
+          "status": "missing"
+        }
+      ],
+      "researchFocus": [
+        "basic",
+        "services",
+        "family",
+        "evidence"
+      ],
+      "openQuestions": [
+        "Parking, access and services unknown."
+      ],
+      "timelineRelevance": {
+        "status": "not_in_initial_timeline",
+        "activities": []
+      },
+      "freshness": {
+        "status": "unknown"
+      },
+      "reason": "basic: partial, services: missing, mobility: missing, family: partial, evidence: partial, photos: missing · 1 nyitott kérdés",
+      "researchJob": {
+        "mode": "enrich",
+        "placeTypes": [
+          "beach"
+        ],
+        "geographicScope": {
+          "localities": [
+            "Muravera"
+          ]
+        },
+        "slugs": [
+          "spiaggia-piscina-rei"
+        ],
+        "query": "Only enrich verified missing or partial information for Spiaggia di Piscina Rei in Muravera. Focus on: basic; services; family; evidence; Parking, access and services unknown.."
+      }
+    },
+    {
+      "id": "enrich-bar-pizzeria-guido-costa-rei",
+      "priorityScore": 26,
+      "target": {
+        "slug": "bar-pizzeria-guido-costa-rei",
+        "name": "Ristorante Pizzeria Bar Guido",
+        "type": "restaurant",
+        "locality": "Muravera"
+      },
+      "missingAreas": [
+        {
+          "area": "basic",
+          "status": "partial"
+        },
+        {
+          "area": "services",
+          "status": "partial"
+        },
+        {
+          "area": "mobility",
+          "status": "missing"
+        },
+        {
+          "area": "family",
+          "status": "partial"
+        },
+        {
+          "area": "evidence",
+          "status": "partial"
+        },
+        {
+          "area": "photos",
+          "status": "missing"
+        }
+      ],
+      "researchFocus": [
+        "basic",
+        "services",
+        "family",
+        "evidence"
+      ],
+      "openQuestions": [
+        "Exact address, official contact and hours unknown."
+      ],
+      "timelineRelevance": {
+        "status": "not_in_initial_timeline",
+        "activities": []
+      },
+      "freshness": {
+        "status": "unknown"
+      },
+      "reason": "basic: partial, services: partial, mobility: missing, family: partial, evidence: partial, photos: missing · 1 nyitott kérdés",
+      "researchJob": {
+        "mode": "enrich",
+        "placeTypes": [
+          "restaurant"
+        ],
+        "geographicScope": {
+          "localities": [
+            "Muravera"
+          ]
+        },
+        "slugs": [
+          "bar-pizzeria-guido-costa-rei"
+        ],
+        "query": "Only enrich verified missing or partial information for Ristorante Pizzeria Bar Guido in Muravera. Focus on: basic; services; family; evidence; Exact address, official contact and hours unknown.."
+      }
+    },
+    {
+      "id": "enrich-sa-cardiga-e-su-pisci",
+      "priorityScore": 26,
+      "target": {
+        "slug": "sa-cardiga-e-su-pisci",
+        "name": "Sa Cardiga e Su Pisci",
+        "type": "restaurant",
+        "locality": "Muravera"
+      },
+      "missingAreas": [
+        {
+          "area": "basic",
+          "status": "partial"
+        },
+        {
+          "area": "services",
+          "status": "partial"
+        },
+        {
+          "area": "mobility",
+          "status": "missing"
+        },
+        {
+          "area": "family",
+          "status": "partial"
+        },
+        {
+          "area": "evidence",
+          "status": "partial"
+        },
+        {
+          "area": "photos",
+          "status": "missing"
+        }
+      ],
+      "researchFocus": [
+        "basic",
+        "services",
+        "family",
+        "evidence"
+      ],
+      "openQuestions": [
+        "Exact address, official contact and hours unknown."
+      ],
+      "timelineRelevance": {
+        "status": "not_in_initial_timeline",
+        "activities": []
+      },
+      "freshness": {
+        "status": "unknown"
+      },
+      "reason": "basic: partial, services: partial, mobility: missing, family: partial, evidence: partial, photos: missing · 1 nyitott kérdés",
+      "researchJob": {
+        "mode": "enrich",
+        "placeTypes": [
+          "restaurant"
+        ],
+        "geographicScope": {
+          "localities": [
+            "Muravera"
+          ]
+        },
+        "slugs": [
+          "sa-cardiga-e-su-pisci"
+        ],
+        "query": "Only enrich verified missing or partial information for Sa Cardiga e Su Pisci in Muravera. Focus on: basic; services; family; evidence; Exact address, official contact and hours unknown.."
+      }
+    },
+    {
+      "id": "enrich-spiaggia-costa-rei",
+      "priorityScore": 26,
+      "target": {
+        "slug": "spiaggia-costa-rei",
+        "name": "Spiaggia di Costa Rei",
+        "type": "beach",
+        "locality": "Muravera"
+      },
+      "missingAreas": [
+        {
+          "area": "basic",
+          "status": "partial"
+        },
+        {
+          "area": "services",
+          "status": "partial"
+        },
+        {
+          "area": "mobility",
+          "status": "missing"
+        },
+        {
+          "area": "family",
+          "status": "partial"
+        },
+        {
+          "area": "evidence",
+          "status": "partial"
+        },
+        {
+          "area": "photos",
+          "status": "missing"
+        }
+      ],
+      "researchFocus": [
+        "basic",
+        "services",
+        "family",
+        "evidence"
+      ],
+      "openQuestions": [
+        "Split into named access zones during deeper build."
+      ],
+      "timelineRelevance": {
+        "status": "not_in_initial_timeline",
+        "activities": []
+      },
+      "freshness": {
+        "status": "unknown"
+      },
+      "reason": "basic: partial, services: partial, mobility: missing, family: partial, evidence: partial, photos: missing · 1 nyitott kérdés",
+      "researchJob": {
+        "mode": "enrich",
+        "placeTypes": [
+          "beach"
+        ],
+        "geographicScope": {
+          "localities": [
+            "Muravera"
+          ]
+        },
+        "slugs": [
+          "spiaggia-costa-rei"
+        ],
+        "query": "Only enrich verified missing or partial information for Spiaggia di Costa Rei in Muravera. Focus on: basic; services; family; evidence; Split into named access zones during deeper build.."
+      }
+    },
+    {
+      "id": "enrich-spiaggia-di-solanas",
+      "priorityScore": 26,
+      "target": {
+        "slug": "spiaggia-di-solanas",
+        "name": "Spiaggia di Solanas",
+        "type": "beach",
+        "locality": "Sinnai"
+      },
+      "missingAreas": [
+        {
+          "area": "basic",
+          "status": "partial"
+        },
+        {
+          "area": "services",
+          "status": "partial"
+        },
+        {
+          "area": "mobility",
+          "status": "missing"
+        },
+        {
+          "area": "family",
+          "status": "partial"
+        },
+        {
+          "area": "evidence",
+          "status": "partial"
+        },
+        {
+          "area": "photos",
+          "status": "missing"
+        }
+      ],
+      "researchFocus": [
+        "basic",
+        "services",
+        "family",
+        "evidence"
+      ],
+      "openQuestions": [
+        "Verify 2026 operators, parking and toilets."
+      ],
+      "timelineRelevance": {
+        "status": "not_in_initial_timeline",
+        "activities": []
+      },
+      "freshness": {
+        "status": "unknown"
+      },
+      "reason": "basic: partial, services: partial, mobility: missing, family: partial, evidence: partial, photos: missing · 1 nyitott kérdés",
+      "researchJob": {
+        "mode": "enrich",
+        "placeTypes": [
+          "beach"
+        ],
+        "geographicScope": {
+          "localities": [
+            "Sinnai"
+          ]
+        },
+        "slugs": [
+          "spiaggia-di-solanas"
+        ],
+        "query": "Only enrich verified missing or partial information for Spiaggia di Solanas in Sinnai. Focus on: basic; services; family; evidence; Verify 2026 operators, parking and toilets.."
+      }
+    }
+  ]
+}
