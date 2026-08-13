@@ -40,7 +40,7 @@ body {
   gap: 0;
   overflow-x: auto;
   margin-bottom: -1px;
-  min-height: 54px;
+  min-height: 44px;
   padding: 0;
   scrollbar-width: none;
 }
@@ -67,14 +67,9 @@ body {
 
 .folder-tab--active {
   z-index: 1;
-  min-height: 54px;
-  border: 0;
-  border-radius: 24px 24px 0 0;
-  background: var(--folder-paper);
-  color: #C96C5D;
-  box-shadow: 0 -6px 18px rgba(43, 41, 38, .05);
-  backdrop-filter: blur(20px) saturate(1.08);
-  -webkit-backdrop-filter: blur(20px) saturate(1.08);
+  min-height: 44px;
+  background: transparent;
+  color: #F18C79;
 }
 
 .folder-tab--active::after {
@@ -84,7 +79,22 @@ body {
   bottom: -1px;
   left: 0;
   height: 2px;
-  background: inherit;
+  background: var(--folder-paper);
+  content: "";
+}
+
+.folder-tab--active::before {
+  position: absolute;
+  z-index: -1;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 36px;
+  border-radius: 22px 22px 0 0;
+  background: var(--folder-paper);
+  box-shadow: 0 -6px 18px rgba(43, 41, 38, .05);
+  backdrop-filter: blur(20px) saturate(1.08);
+  -webkit-backdrop-filter: blur(20px) saturate(1.08);
   content: "";
 }
 
@@ -106,6 +116,11 @@ body {
 .folder-content-surface--places {
   padding: 14px 12px 4px;
 }
+
+/* When the selected tab reaches an outer edge, the sheet continues that same
+   edge rather than rounding back toward it. */
+.folder-content-surface--first { border-top-left-radius: 0; }
+.folder-content-surface--last { border-top-right-radius: 0; }
 
 .editor-soft-sheet {
   background: rgb(255 255 255 / 0.48);

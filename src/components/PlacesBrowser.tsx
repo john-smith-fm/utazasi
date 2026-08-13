@@ -60,7 +60,7 @@ export function PlacesBrowser() {
 
       <div className="mt-5"><FolderTabs items={PLACE_BROWSE_CATEGORIES} activeId={categoryId} onChange={changeCategory} ariaLabel="Helytípusok" variant="places" /></div>
 
-      <section key={categoryId} className={`folder-content-surface folder-content-surface--places mt-0 ${transition === "forward" ? "view-transition-forward" : "view-transition-backward"}`} role="tabpanel" aria-label={category.label}>
+      <section key={categoryId} className={`folder-content-surface folder-content-surface--places mt-0 ${PLACE_BROWSE_CATEGORIES.findIndex((item) => item.id === categoryId) === 0 ? "folder-content-surface--first" : ""} ${PLACE_BROWSE_CATEGORIES.findIndex((item) => item.id === categoryId) === PLACE_BROWSE_CATEGORIES.length - 1 ? "folder-content-surface--last" : ""} ${transition === "forward" ? "view-transition-forward" : "view-transition-backward"}`} role="tabpanel" aria-label={category.label}>
         {places.length ? (
           places.map((place) => (
             <PlaceListItem

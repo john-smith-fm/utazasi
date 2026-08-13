@@ -17,7 +17,7 @@ export function FolderTabs<T extends string>({
 }) {
   return (
     <div className={`folder-tabs folder-tabs--${variant}`} role="tablist" aria-label={ariaLabel}>
-      {items.map((item) => {
+      {items.map((item, index) => {
         const active = item.id === activeId;
         return (
           <button
@@ -26,7 +26,7 @@ export function FolderTabs<T extends string>({
             role="tab"
             aria-selected={active}
             onClick={() => onChange(item.id)}
-            className={`folder-tab ${active ? "folder-tab--active" : ""}`}
+            className={`folder-tab ${active ? "folder-tab--active" : ""} ${active && index === 0 ? "folder-tab--first" : ""} ${active && index === items.length - 1 ? "folder-tab--last" : ""}`}
           >
             {item.label}
           </button>
