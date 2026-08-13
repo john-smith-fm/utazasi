@@ -4,7 +4,9 @@ import { loadCanonicalPlaces } from "./core.mjs";
 
 const AREA_WEIGHT = { basic: 8, evidence: 7, services: 5, family: 4, mobility: 3, photos: 1 };
 const RESEARCHABLE_AREAS = new Set(["basic", "evidence", "services", "family"]);
-const TIMELINE_RELEVANCE_WEIGHT = 10;
+// Timeline-linked Places are P0: even after partial enrichment they must stay
+// ahead of deeper P1/P2 coverage gaps until their open questions are resolved.
+const TIMELINE_RELEVANCE_WEIGHT = 30;
 
 function isRecord(value) { return Boolean(value) && typeof value === "object" && !Array.isArray(value); }
 function text(value) { return typeof value === "string" && value.trim() ? value.trim() : undefined; }

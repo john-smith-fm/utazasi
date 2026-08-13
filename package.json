@@ -14,6 +14,7 @@
     "import:v19-regional": "node scripts/import-v19-regional-data.mjs",
     "report:route-candidates": "node scripts/report-route-candidates.mjs",
     "audit:place-coverage": "node --env-file=.env.local scripts/audit-place-coverage-mobility.mjs",
+    "validate:intelligence": "node scripts/validate-destination-intelligence.mjs",
     "mobility:trip-base-links": "node --env-file=.env.local scripts/open-trip-base-route-links.mjs",
     "backfill:place-links": "node --env-file=.env.local scripts/backfill-canonical-place-links.mjs",
     "research": "node scripts/research.mjs",

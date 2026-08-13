@@ -142,6 +142,19 @@ function intelligenceFor(raw: UnknownRecord) {
     : undefined;
   const openQuestions = optionalStringArray(raw.open_questions);
   const cover = isRecord(raw.cover_image) ? raw.cover_image : undefined;
+  const supportingVisuals = Array.isArray(raw.supporting_visuals)
+    ? raw.supporting_visuals.filter(isRecord).map((visual) => ({
+      role: optionalString(visual.role),
+      assetUrl: optionalString(visual.asset_url),
+      sourceUrl: optionalString(visual.source_url),
+      sourceType: optionalString(visual.source_type),
+      license: optionalString(visual.license),
+      attribution: optionalString(visual.attribution),
+      checkedAt: optionalString(visual.checked_at),
+      captureDate: optionalString(visual.capture_date),
+      observation: optionalString(visual.observation),
+    }))
+    : undefined;
   const evidence = Array.isArray(raw.provenance)
     ? raw.provenance.filter(isRecord).map((entry) => ({
       sourceType: optionalString(entry.source_type),
@@ -161,8 +174,8 @@ function intelligenceFor(raw: UnknownRecord) {
   } : undefined;
   const checkedAt = optionalString(raw.checked_at);
 
-  return coverage || openQuestions || coverImage || evidence || details || checkedAt
-    ? { coverage, openQuestions, coverImage, evidence, details, checkedAt }
+  return coverage || openQuestions || coverImage || supportingVisuals?.length || evidence || details || checkedAt
+    ? { coverage, openQuestions, coverImage, supportingVisuals, evidence, details, checkedAt }
     : undefined;
 }
 

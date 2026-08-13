@@ -33,6 +33,17 @@ export type PlaceIntelligence = {
     attribution?: string;
     checkedAt?: string;
   };
+  supportingVisuals?: Array<{
+    role?: string;
+    assetUrl?: string;
+    sourceUrl?: string;
+    sourceType?: string;
+    license?: string;
+    attribution?: string;
+    checkedAt?: string;
+    captureDate?: string;
+    observation?: string;
+  }>;
   evidence?: Array<{
     sourceType?: string;
     url?: string;

@@ -1,9 +1,11 @@
 {
-  "version": "1.9",
+  "version": "2.3",
   "category": "beaches",
   "source_dataset": "utazasi-complete-regional-data-v1.9",
   "updated_at": "2026-08-07",
   "change_log": [
+    "P0 visual enrichment: Cala Pira and Scoglio di Peppino received source-backed primary covers and functional supporting visuals.",
+    "Changed P0 evidence entries now separate source reliability, evidence confidence and freshness; unknown service/access fields remain unknown.",
     "7 új, hivatalos turisztikai forrással ellenőrzött strand rekord.",
     "Murtas hozzáférési korlátozás explicit rögzítve.",
     "Koordinátát nem adtunk hozzá ellenőrzés nélkül."
@@ -337,6 +339,20 @@
             "access"
           ],
           "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "wikimedia_commons",
+          "url": "https://commons.wikimedia.org/wiki/File:Cala_Pira_-_panoramio_-_gian_luca_bucci.jpg",
+          "supports": [
+            "cover_image",
+            "place_overview",
+            "historical_visual_observation"
+          ],
+          "checked_at": "2026-08-13",
+          "capture_date": "2008-09-18",
+          "source_reliability": "B",
+          "evidence_confidence": "high_historical_medium_current",
+          "freshness": "historical"
         }
       ],
       "coverage": {
@@ -345,16 +361,38 @@
         "mobility": "missing",
         "family": "partial",
         "evidence": "complete",
-        "photos": "missing"
+        "photos": "complete"
       },
       "open_questions": [
         "WC/shower not confirmed.",
         "Stroller/accessibility not confirmed.",
         "2026 September parking tariff not confirmed.",
-        "Legally reusable cover image missing.",
+        "Current beach layout should not be inferred from the 2008 cover image; it is identity/context evidence only.",
         "trip-base route missing."
       ],
-      "cover_image": null,
+      "cover_image": {
+        "asset_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Cala_Pira_-_panoramio_-_gian_luca_bucci.jpg",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Cala_Pira_-_panoramio_-_gian_luca_bucci.jpg",
+        "source_type": "wikimedia_commons",
+        "license": "CC BY 3.0",
+        "attribution": "gian luca bucci",
+        "checked_at": "2026-08-13",
+        "capture_date": "2008-09-18",
+        "role": "cover"
+      },
+      "supporting_visuals": [
+        {
+          "role": "surroundings",
+          "asset_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Torre_di_Cala_Pira_-_Castiadas.jpg",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Torre_di_Cala_Pira_-_Castiadas.jpg",
+          "source_type": "wikimedia_commons",
+          "license": "CC BY-SA 3.0",
+          "attribution": "Gianni Careddu",
+          "checked_at": "2026-08-13",
+          "capture_date": "2010",
+          "observation": "Historical visual context for the coastal tower and beach surroundings; not evidence of current services or access."
+        }
+      ],
       "checked_at": "2026-08-10",
       "destination_intelligence": {
         "google_maps": {
@@ -1293,6 +1331,20 @@
             "walk_insight"
           ],
           "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "wikimedia_commons",
+          "url": "https://commons.wikimedia.org/wiki/File:Costa_Rei_Scoglio_di_Peppino.jpg",
+          "supports": [
+            "cover_image",
+            "place_overview",
+            "historical_visual_observation"
+          ],
+          "checked_at": "2026-08-13",
+          "capture_date": "2006-04-17",
+          "source_reliability": "B",
+          "evidence_confidence": "high_historical_low_current",
+          "freshness": "historical"
         }
       ],
       "coverage": {
@@ -1301,15 +1353,37 @@
         "mobility": "missing",
         "family": "partial",
         "evidence": "complete",
-        "photos": "missing"
+        "photos": "complete"
       },
       "open_questions": [
         "Exact September 2026 parking fee not confirmed.",
         "Stroller path not confirmed.",
-        "Legally reusable cover image missing.",
+        "The 2006 cover confirms identity/landscape context only; current access, crowding and services require fresher evidence.",
         "trip-base route missing."
       ],
-      "cover_image": null,
+      "cover_image": {
+        "asset_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Costa_Rei_Scoglio_di_Peppino.jpg",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Costa_Rei_Scoglio_di_Peppino.jpg",
+        "source_type": "wikimedia_commons",
+        "license": "CC BY-SA 3.0",
+        "attribution": "Alex10",
+        "checked_at": "2026-08-13",
+        "capture_date": "2006-04-17",
+        "role": "cover"
+      },
+      "supporting_visuals": [
+        {
+          "role": "place_overview",
+          "asset_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Costa_Rei_Scoglio_di_Peppino.jpg",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Costa_Rei_Scoglio_di_Peppino.jpg",
+          "source_type": "wikimedia_commons",
+          "license": "CC BY-SA 3.0",
+          "attribution": "Alex10",
+          "checked_at": "2026-08-13",
+          "capture_date": "2006-04-17",
+          "observation": "The named rock and adjoining sandy shoreline are visible; no current operational fact is inferred."
+        }
+      ],
       "checked_at": "2026-08-10",
       "destination_intelligence": {
         "google_maps": {

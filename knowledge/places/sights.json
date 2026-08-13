@@ -1,9 +1,11 @@
 {
-  "version": "1.9",
+  "version": "2.3",
   "category": "sights",
   "source_dataset": "utazasi-complete-regional-data-v1.9",
   "updated_at": "2026-08-07",
   "change_log": [
+    "P0 Marina di Villasimius enrichment from current official operator data and Wikimedia visual evidence.",
+    "Marina coordinates, continuous public-area access context and water/toilet services are now source-backed; office hours remain distinct from promenade access.",
     "Első kanonikus sight-javaslatcsomag 12 rekorddal."
   ],
   "places": [
@@ -268,12 +270,12 @@
         "region": "Szardínia",
         "city": "Villasimius",
         "address": "Via Degli Oleandri 10, 09049 Villasimius CA, Italy",
-        "latitude": null,
-        "longitude": null
+        "latitude": 39.116667,
+        "longitude": 9.512222
       },
       "verification": {
         "status": "partial",
-        "last_checked": "2026-08-10",
+        "last_checked": "2026-08-13",
         "sources": [
           "https://marinedi.com/marina-di-villasimius/",
           "https://www.villasimiusturismo.it/il-porto-turistico/",
@@ -290,7 +292,10 @@
             "contact",
             "location_context"
           ],
-          "checked_at": "2026-08-10"
+          "checked_at": "2026-08-13",
+          "source_reliability": "A",
+          "evidence_confidence": "high",
+          "freshness": "current"
         },
         {
           "source_type": "official_tourism",
@@ -320,24 +325,59 @@
             "fortezza_proximity"
           ],
           "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "wikimedia_commons",
+          "url": "https://commons.wikimedia.org/wiki/File:Marina_di_Villasimius_01.jpg",
+          "supports": [
+            "cover_image",
+            "place_overview",
+            "historical_visual_observation"
+          ],
+          "checked_at": "2026-08-13",
+          "capture_date": "2017-09-15",
+          "source_reliability": "B",
+          "evidence_confidence": "high_historical_medium_current",
+          "freshness": "historical"
         }
       ],
       "coverage": {
-        "basic": "partial",
-        "services": "partial",
+        "basic": "complete",
+        "services": "complete",
         "mobility": "partial",
         "family": "partial",
         "evidence": "complete",
-        "photos": "missing"
+        "photos": "complete"
       },
       "open_questions": [
-        "Canonical coordinates not yet sourced reliably.",
-        "Visitor parking cost/location and public WC not yet verified.",
-        "Legally reusable cover image missing.",
+        "Visitor parking cost/location remains unverified.",
+        "The official source confirms water/toilet services in the marina but does not describe family-changing facilities.",
         "Fortezza → Marina walking duration not yet canonicalized."
       ],
-      "cover_image": null,
-      "checked_at": "2026-08-10",
+      "cover_image": {
+        "asset_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Marina_di_Villasimius_01.jpg",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Marina_di_Villasimius_01.jpg",
+        "source_type": "wikimedia_commons",
+        "license": "CC BY 3.0",
+        "attribution": "Olaf Tausch",
+        "checked_at": "2026-08-13",
+        "capture_date": "2017-09-15",
+        "role": "cover"
+      },
+      "supporting_visuals": [
+        {
+          "role": "map_context",
+          "asset_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Aerial_view_of_the_lake_Stagno_di_Notteri_with_Marina_di_Villasimius_in_the_background,_Sardinia,_Italy_(48402743736).jpg",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Aerial_view_of_the_lake_Stagno_di_Notteri_with_Marina_di_Villasimius_in_the_background,_Sardinia,_Italy_(48402743736).jpg",
+          "source_type": "wikimedia_commons",
+          "license": "CC BY 2.0",
+          "attribution": "dronepicr",
+          "checked_at": "2026-08-13",
+          "capture_date": "2019-06-22",
+          "observation": "Historical aerial context shows the marina in relation to Stagno di Notteri; it is not current access or parking evidence."
+        }
+      ],
+      "checked_at": "2026-08-13",
       "destination_intelligence": {
         "google_maps": {
           "place_id": "ChIJMytuut3C4BIRmVCnMEb0fcE",
@@ -351,7 +391,9 @@
           "shipyard": true,
           "bar": null,
           "restaurant": null,
-          "wc": null
+          "wc": true,
+          "water": true,
+          "public_area_access": "continuous"
         },
         "family": {
           "toddler_friendly": true,
@@ -359,8 +401,10 @@
           "confidence": "medium"
         },
         "opening_hours": {
-          "daily": "08:30-19:30",
-          "notes": "Google Business hours; office/service hours may differ from promenade access."
+          "office_daily": "09:00-19:00",
+          "public_area_access": "continuous",
+          "fuel_daily": "08:00-20:00",
+          "notes": "Official operator hours checked 2026-08-13; office/fuel hours are distinct from continuous access to the marina area."
         },
         "contact": {
           "phone": "+39 070 7978006",
