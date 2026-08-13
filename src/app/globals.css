@@ -49,12 +49,15 @@ body {
 }
 
 .folder-tabs {
+  --folder-paper: rgb(248 247 243 / 0.96);
+  --folder-edge: rgb(24 50 59 / 0.20);
   display: flex;
   align-items: flex-end;
-  gap: 3px;
+  gap: 0;
   overflow-x: auto;
   margin-bottom: -1px;
-  padding: 0 2px;
+  min-height: 58px;
+  padding: 0;
   scrollbar-width: none;
 }
 
@@ -64,13 +67,10 @@ body {
   position: relative;
   min-height: 44px;
   flex: 1 0 max-content;
-  border: 1px solid rgb(255 255 255 / 0.60);
-  border-bottom-color: rgb(24 50 59 / 0.08);
-  border-radius: 16px 16px 8px 8px;
-  background: rgb(255 255 255 / 0.32);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.45);
-  backdrop-filter: blur(12px) saturate(1.03);
-  -webkit-backdrop-filter: blur(12px) saturate(1.03);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
   padding: 0 12px;
   color: rgb(24 50 59 / 0.55);
   font-size: 14px;
@@ -84,26 +84,23 @@ body {
 
 .folder-tab--active {
   z-index: 1;
+  min-height: 58px;
   transform: translateY(1px);
-  border-color: rgb(255 255 255 / 0.84);
-  border-bottom-color: transparent;
-  border-radius: 18px 18px 0 0;
-  background: rgb(248 247 243 / 0.88);
+  border: 1px solid var(--folder-edge);
+  border-bottom: 0;
+  border-radius: 26px 26px 0 0;
+  background: var(--folder-paper);
   color: #18323B;
-  box-shadow: 0 -5px 15px rgb(24 50 59 / 0.05), inset 0 1px 0 rgb(255 255 255 / 0.70);
-  backdrop-filter: blur(16px) saturate(1.04);
-  -webkit-backdrop-filter: blur(16px) saturate(1.04);
+  box-shadow: 0 -4px 14px rgb(24 50 59 / 0.035), inset 0 1px 0 rgb(255 255 255 / 0.55);
 }
 
-/* A small overlap removes the seam between the pulled-forward register and
-   its paper sheet without turning the tabs back into independent pills. */
 .folder-tab--active::after {
   position: absolute;
-  z-index: -1;
+  z-index: 1;
   right: -1px;
-  bottom: -5px;
+  bottom: -1px;
   left: -1px;
-  height: 7px;
+  height: 2px;
   background: inherit;
   content: "";
 }
@@ -112,24 +109,21 @@ body {
   font-size: 13px;
 }
 
-.folder-tabs--places .folder-tab--active {
-  background: rgb(235 248 248 / 0.86);
+.folder-tabs--places {
+  --folder-paper: rgb(235 248 248 / 0.94);
+  --folder-edge: rgb(24 50 59 / 0.17);
 }
 
 .folder-content-surface {
   min-height: 1px;
-  border: 1px solid rgb(255 255 255 / 0.72);
-  border-radius: 20px;
-  background: rgb(248 247 243 / 0.84);
+  border: 1px solid var(--folder-edge, rgb(24 50 59 / 0.16));
+  border-radius: 24px;
+  background: var(--folder-paper, rgb(248 247 243 / 0.94));
   box-shadow: 0 12px 28px rgb(24 50 59 / 0.055), inset 0 1px 0 rgb(255 255 255 / 0.52);
-  backdrop-filter: blur(12px) saturate(1.02);
-  -webkit-backdrop-filter: blur(12px) saturate(1.02);
   padding: 14px 14px;
 }
 
 .folder-content-surface--places {
-  border-color: rgb(24 50 59 / 0.075);
-  background: rgb(255 255 255 / 0.22);
   padding: 14px 12px 4px;
 }
 
