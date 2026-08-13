@@ -105,7 +105,7 @@ export function PlaceDetail({ place }: { place: Place }) {
     </header>
 
     {primaryImage && <figure className="mt-7 overflow-hidden rounded-m bg-sand">
-      <img src={primaryImage.src} alt={place.name} className="aspect-[4/3] w-full object-cover" />
+      <img src={primaryImage.src} alt={place.name} loading="lazy" decoding="async" className="aspect-[4/3] w-full object-cover" />
       {primaryImage.attribution && <figcaption className="px-3 py-2 text-[11px] leading-4 text-deep-sea/55">{primaryImage.attribution}</figcaption>}
     </figure>}
 
