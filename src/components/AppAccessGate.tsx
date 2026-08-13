@@ -93,11 +93,11 @@ function PinAccessScreen({ configurationError, onUnlocked }: { configurationErro
     <img src="/images/utazasi-pin-logo.svg" alt="" aria-hidden="true" className="pointer-events-none absolute -left-[31vw] top-[7dvh] h-[52vw] min-h-[220px] w-[52vw] min-w-[220px] max-h-[390px] max-w-[390px]" />
     <div className="flex flex-1 flex-col justify-end pb-[14dvh]">
       <label className="sr-only" htmlFor="utazasi-pin-input">Négyjegyű PIN-kód</label>
-      <input ref={inputRef} id="utazasi-pin-input" autoFocus disabled={configurationError || status === "submitting"} value={typedPin} onChange={onPinInput} onFocus={(event) => event.currentTarget.select()} inputMode="numeric" autoComplete="off" pattern="[0-9]*" maxLength={4} className="sr-only" />
+      <input ref={inputRef} id="utazasi-pin-input" autoFocus disabled={configurationError || status === "submitting"} value={typedPin} onChange={onPinInput} onFocus={(event) => event.currentTarget.select()} inputMode="numeric" type="tel" autoComplete="off" enterKeyHint="done" pattern="[0-9]*" maxLength={4} className="sr-only" />
       <div className={`mx-auto flex w-full max-w-[365px] gap-2 ${status === "error" ? "motion-safe:animate-[pin-shake_.3s_ease-in-out]" : ""}`} aria-label="Négyjegyű PIN választó">
         {digits.map((digit, index) => <PinColumn key={index} value={digit} index={index} onChange={setDigit} />)}
       </div>
-      <button type="button" onClick={() => void submit()} disabled={status === "submitting" || configurationError} className="mx-auto mt-10 h-[52px] w-full max-w-[365px] rounded-ui-s border border-coral bg-coral/20 text-[15px] font-bold text-deep-sea shadow-card transition-transform active:scale-[.98] disabled:opacity-45">{status === "submitting" ? "…" : "Megnyitás"}</button>
+      <button type="button" onClick={() => void submit()} disabled={typedPin.length !== 4 || status === "submitting" || configurationError} className="mx-auto mt-10 h-[52px] w-full max-w-[365px] rounded-ui-s border border-coral bg-coral/20 text-[15px] font-bold text-deep-sea shadow-card transition-transform active:scale-[.98] disabled:opacity-45">{status === "submitting" ? "…" : "Megnyitás"}</button>
       <p className="mx-auto mt-3 min-h-5 max-w-[365px] text-center text-sm leading-5 text-coral" role="status" aria-live="polite">{configurationError ? "A PIN hozzáférés még nincs beállítva." : error}</p>
     </div>
   </main>;
@@ -105,6 +105,7 @@ function PinAccessScreen({ configurationError, onUnlocked }: { configurationErro
 
 function PinColumn({ value, index, onChange }: { value: number; index: number; onChange: (index: number, value: number) => void }) {
   const touchStart = useRef<number | null>(null);
+  const didSwipe = useRef(false);
   const before = (value + 9) % 10;
   const after = (value + 1) % 10;
 
@@ -119,11 +120,24 @@ function PinColumn({ value, index, onChange }: { value: number; index: number; o
     touchStart.current = null;
     if (start === null) return;
     const distance = start - (event.changedTouches[0]?.clientY ?? start);
-    if (Math.abs(distance) >= 14) moveBy(Math.round(distance / 28));
+    if (Math.abs(distance) >= 14) {
+      didSwipe.current = true;
+      moveBy(Math.round(distance / 28));
+    }
   }
   function onWheel(event: WheelEvent<HTMLButtonElement>) { event.preventDefault(); moveBy(event.deltaY > 0 ? 1 : -1); }
 
-  return <button type="button" aria-label={`${index + 1}. PIN számjegy: ${value}. Húzással választható.`} onClick={() => moveBy(1)} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} onWheel={onWheel} className="relative h-[130px] flex-1 overflow-hidden rounded-[22px] border border-deep-sea/8 bg-white/55 text-center shadow-[0_8px_20px_rgba(24,50,59,.045)]">
+  function onClick() {
+    // iOS sends a click after touchend. A vertical swipe must therefore not
+    // also advance the number once more.
+    if (didSwipe.current) {
+      didSwipe.current = false;
+      return;
+    }
+    moveBy(1);
+  }
+
+  return <button type="button" aria-label={`${index + 1}. PIN számjegy: ${value}. Húzással választható.`} onClick={onClick} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} onWheel={onWheel} className="relative h-[130px] flex-1 overflow-hidden rounded-[22px] border border-deep-sea/8 bg-white/55 text-center shadow-[0_8px_20px_rgba(24,50,59,.045)]">
     <span aria-hidden="true" className="absolute inset-x-0 top-[14px] text-lg font-semibold text-deep-sea/18 blur-[.65px]">{before}</span>
     <span aria-hidden="true" className="absolute inset-x-0 top-[45px] text-[47px] font-semibold leading-none tracking-[-.05em] text-deep-sea transition-transform duration-200">{value}</span>
     <span aria-hidden="true" className="absolute inset-x-0 bottom-[12px] text-lg font-semibold text-deep-sea/18 blur-[.65px]">{after}</span>
