@@ -7,4 +7,6 @@ export type TripEvent = {
   placeSlug: string | null;
   sourceUrl: string;
   lastVerifiedAt: string | null;
+  /** True when this concrete Event already has a Timeline item on this day. */
+  accepted?: boolean;
 };

@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { storageGet, storageSet } from "@/lib/storage";
 import type { TripEvent } from "@/lib/event-types";
 
-type ApiEvent = { id: string; title: string; starts_at: string; ends_at: string | null; status: TripEvent["status"]; place_slug: string | null; source_url: string; last_verified_at: string | null };
-function toTripEvent(event: ApiEvent): TripEvent { return { id: event.id, title: event.title, startsAt: event.starts_at, endsAt: event.ends_at, status: event.status, placeSlug: event.place_slug, sourceUrl: event.source_url, lastVerifiedAt: event.last_verified_at }; }
+type ApiEvent = { id: string; title: string; starts_at: string; ends_at: string | null; status: TripEvent["status"]; place_slug: string | null; source_url: string; last_verified_at: string | null; accepted?: boolean };
+function toTripEvent(event: ApiEvent): TripEvent { return { id: event.id, title: event.title, startsAt: event.starts_at, endsAt: event.ends_at, status: event.status, placeSlug: event.place_slug, sourceUrl: event.source_url, lastVerifiedAt: event.last_verified_at, accepted: Boolean(event.accepted) }; }
 
 /** Reads selected-day Events through the same PIN-protected server boundary as Timeline. */
 export function useTripEvents(date: string) {

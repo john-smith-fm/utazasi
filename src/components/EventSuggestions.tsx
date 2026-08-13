@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Icon } from "@/components/Icon";
 import type { TripEvent } from "@/lib/event-types";
 
@@ -24,8 +24,10 @@ export function EventSuggestions({ date, events, onAccepted }: { date: string; e
 function EventSuggestion({ date, event, onAccepted }: { date: string; event: TripEvent; onAccepted: () => void }) {
   const [expanded, setExpanded] = useState(false);
   const [accepting, setAccepting] = useState(false);
-  const [accepted, setAccepted] = useState(false);
+  const [accepted, setAccepted] = useState(Boolean(event.accepted));
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => { setAccepted(Boolean(event.accepted)); }, [event.accepted, event.id]);
 
   async function accept() {
     setAccepting(true);

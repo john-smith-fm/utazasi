@@ -23,7 +23,15 @@ export async function GET(request: NextRequest) {
       .select("id, title, starts_at, ends_at, status, place_slug, source_url, last_verified_at")
       .eq("trip_id", trip.id).lt("starts_at", end).or(`ends_at.is.null,ends_at.gte.${start}`).order("starts_at", { ascending: true });
     if (error) throw error;
-    return NextResponse.json({ events: data ?? [] }, { headers: { "Cache-Control": "no-store" } });
+    const { data: day, error: dayError } = await supabase.from("days").select("id").eq("trip_id", trip.id).eq("date", date).maybeSingle();
+    if (dayError) throw dayError;
+    const eventIds = (data ?? []).map((event) => event.id);
+    const { data: acceptedActivities, error: acceptedError } = eventIds.length && day
+      ? await supabase.from("timeline_activities").select("source_event_id").eq("day_id", day.id).in("source_event_id", eventIds)
+      : { data: [], error: null };
+    if (acceptedError) throw acceptedError;
+    const acceptedEventIds = new Set((acceptedActivities ?? []).flatMap((activity) => activity.source_event_id ? [activity.source_event_id] : []));
+    return NextResponse.json({ events: (data ?? []).map((event) => ({ ...event, accepted: acceptedEventIds.has(event.id) })) }, { headers: { "Cache-Control": "no-store" } });
   } catch {
     return NextResponse.json({ error: "Events unavailable" }, { status: 503 });
   }
