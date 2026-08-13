@@ -20,6 +20,7 @@
     "research": "node scripts/research.mjs",
     "research:live": "node --env-file=.env.local scripts/research.mjs live",
     "research:queue": "node scripts/research-coverage-queue.mjs",
+    "research:full": "node --env-file=.env.local scripts/research/full-enrichment.mjs",
     "research:apply": "node scripts/research.mjs apply",
     "research:event": "node --env-file=.env.local scripts/research-event.mjs",
     "test:research": "node --test scripts/research/*.test.mjs",

@@ -67,6 +67,28 @@ not infer a Place for free-text programs, change the Timeline, or start live
 research; it only helps a human spend the limited enrichment batch on places
 that matter to the actual trip.
 
+## Full-catalogue validation run
+
+The explicitly requested full-catalogue command creates one constrained,
+review-only provider call per canonical Place. It is resumable: every
+successfully saved proposal is skipped on the next run unless `--no-resume` is
+given. It does not apply candidates, modify canonical JSON, write Supabase,
+commit or deploy.
+
+```bash
+# First verify the 138-record plan without any provider call.
+npm run research:full -- --dry-run
+
+# Then create individually reviewable proposals. Interrupted runs continue.
+npm run research:full -- --resume
+```
+
+Proposals are stored under `research/proposals/full-enrichment/`, while a
+progress report is updated after every Place at
+`research/reports/full-enrichment-progress.json`. Mobility, route duration,
+prices, coordinates and images stay out of this pass because they require
+separate evidence and approval rules.
+
 ## Facts and insights
 
 Canonical changes accept only extracted_fact: a field-level statement with
