@@ -3,6 +3,7 @@ import test from "node:test";
 import { answerQuestion } from "../../src/lib/questioning-answer.ts";
 import { smartStatusSummary } from "../../src/lib/smart-status.ts";
 import { timelineQuestionPrompts } from "../../src/lib/timeline-questioning.ts";
+import { validPlaceBrowseCategoryForType } from "../../src/lib/place-categories.ts";
 
 const futureBeachDay = {
   date: "2099-09-03",
@@ -62,6 +63,11 @@ test("future selected day resolves its first explicit Timeline item", () => {
   assert.equal(answer.title, "09:30 · Strandolás");
   assert.match(answer.body, /Porto Giunco/);
   assert.deepEqual(answer.sources, ["Timeline"]);
+});
+
+test("a Place detail cannot keep an unrelated category in its back link", () => {
+  assert.equal(validPlaceBrowseCategoryForType("beach", "food"), "beaches");
+  assert.equal(validPlaceBrowseCategoryForType("shop", "shopping"), "shopping");
 });
 
 test("arrival-after question lists only the scheduled post-arrival plan", () => {

@@ -29,3 +29,15 @@ export function placeBrowseHref(category: PlaceBrowseCategoryId = DEFAULT_PLACE_
 export function placeBrowseCategoryForType(type: PlaceType): PlaceBrowseCategoryId {
   return PLACE_BROWSE_CATEGORIES.find((category) => category.types.includes(type))?.id ?? DEFAULT_PLACE_BROWSE_CATEGORY;
 }
+
+/**
+ * A detail URL can retain the category it was opened from, but an arbitrary
+ * query parameter must never send a Beach back to Food (or vice versa).
+ */
+export function validPlaceBrowseCategoryForType(type: PlaceType, requested: string | null | undefined): PlaceBrowseCategoryId {
+  if (isPlaceBrowseCategory(requested)) {
+    const category = PLACE_BROWSE_CATEGORIES.find((item) => item.id === requested);
+    if (category?.types.includes(type)) return requested;
+  }
+  return placeBrowseCategoryForType(type);
+}
