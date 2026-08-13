@@ -7,6 +7,7 @@ import type { TripEvent } from "@/lib/event-types";
 import { getShoppingAnswer } from "@/lib/shopping-intelligence";
 import { timelineQuestionPrompts } from "@/lib/timeline-questioning";
 import { answerQuestion, isAccommodationQuestion } from "@/lib/questioning-answer";
+import { getPlaceBySlug } from "@/lib/places";
 import { Icon } from "./Icon";
 import { FORM_CONTROL } from "@/components/formStyles";
 
@@ -72,8 +73,13 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
         <a href={tripBase.mapUrl} target="_blank" rel="noreferrer" className="mt-3 inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-3 text-sm font-semibold text-deep-sea">Navigáció megnyitása</a>
       </div> : null}
       {answer.recommendations?.length ? <ul className="mt-4 space-y-2.5" aria-label="Javasolt helyek">
-        {answer.recommendations.map((recommendation) => <li key={recommendation.placeSlug}>
-          <a href={recommendation.placeDetailHref} className="group block rounded-ui-s border border-deep-sea/10 bg-white/50 p-3.5 outline-none transition-colors hover:bg-white/80 focus-visible:ring-2 focus-visible:ring-turquoise-dark">
+        {answer.recommendations.map((recommendation) => {
+          const place = getPlaceBySlug(recommendation.placeSlug);
+          const imageSrc = place?.media?.[0]?.src ?? place?.intelligence?.coverImage?.assetUrl;
+          return <li key={recommendation.placeSlug}>
+          <a href={recommendation.placeDetailHref} className="group flex gap-3 rounded-ui-s border border-deep-sea/10 bg-white/50 p-3.5 outline-none transition-colors hover:bg-white/80 focus-visible:ring-2 focus-visible:ring-turquoise-dark">
+            {imageSrc ? <img src={imageSrc} alt="" loading="lazy" decoding="async" className="mt-0.5 h-[68px] w-[68px] shrink-0 rounded-ui-s object-cover" /> : null}
+            <div className="min-w-0 flex-1">
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="text-[11px] font-semibold tracking-[.04em] text-deep-sea/45">JAVASOLT HELY</p>
@@ -84,8 +90,10 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
             {recommendation.rationale ? <p className="mt-2 text-[13px] leading-[19px] text-deep-sea/70">{recommendation.rationale}</p> : null}
             {recommendation.confirmedFacts.length ? <p className="mt-2 text-[12px] leading-[18px] text-deep-sea/55">Megerősített · {recommendation.confirmedFacts.join(" · ")}</p> : null}
             {recommendation.uncertainty ? <p className="mt-2 text-[12px] leading-[18px] text-deep-sea/50">Korlát · {recommendation.uncertainty}</p> : null}
+            </div>
           </a>
-        </li>)}
+        </li>;
+        })}
       </ul> : null}
       <p className="mt-4 text-[11px] font-semibold tracking-[.02em] text-deep-sea/45">Adatforrás · {answer.sources.join(" · ")}</p>
     </section>}
