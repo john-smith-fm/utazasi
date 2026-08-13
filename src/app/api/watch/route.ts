@@ -6,8 +6,10 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   if (!hasValidAccessSession(request.cookies.get(ACCESS_COOKIE_NAME)?.value)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const date = request.nextUrl.searchParams.get("date");
+  if (date && !/^\d{4}-\d{2}-\d{2}$/.test(date)) return NextResponse.json({ error: "Érvénytelen nap." }, { status: 400 });
   try {
-    return NextResponse.json({ change: await latestWatchChange() }, { headers: { "Cache-Control": "no-store" } });
+    return NextResponse.json({ change: await latestWatchChange(date ?? undefined) }, { headers: { "Cache-Control": "no-store" } });
   } catch {
     // Migration/setup can temporarily lag a deploy. The normal Home state remains usable.
     return NextResponse.json({ change: null }, { headers: { "Cache-Control": "no-store" } });

@@ -64,7 +64,7 @@ export default function HomePage() {
   const { day, status, canWrite, retry } = useTimelineDay(selectedDate, fallbackDay);
   const currentLocation = useCurrentLocationContext();
   const { weather, sea } = useLiveData(currentLocation.context);
-  const watchChange = useEventWatch();
+  const watchChange = useEventWatch(selectedDate);
   const events = useTripEvents(selectedDate);
   const canMutate = canWrite;
   const statusSummary = smartStatusSummary(day, weather, watchChange);

@@ -40,16 +40,33 @@ async function currentTripId(): Promise<string | null> {
  * that accepted the Event. The UI must not surface a Sep 7 change while the
  * family is viewing Sep 2.
  */
-export async function latestWatchChange(): Promise<WatchChange | null> {
+export async function latestWatchChange(timelineDate?: string): Promise<WatchChange | null> {
   const tripId = await currentTripId();
   if (!tripId) return null;
-  const { data, error } = await timelineServerClient()
+
+  // On Home we ask for the selected day, rather than first choosing the most
+  // recent change globally. Otherwise a newer Sep 7 change could hide an
+  // older, still-relevant change on the Sep 2 day the family is viewing.
+  let acceptedEventIds: string[] | null = null;
+  if (timelineDate) {
+    const { data: acceptedActivities, error: acceptedError } = await timelineServerClient()
+      .from("timeline_activities")
+      .select("source_event_id, days!inner(date)")
+      .eq("days.date", timelineDate)
+      .not("source_event_id", "is", null);
+    if (acceptedError) throw acceptedError;
+    acceptedEventIds = [...new Set((acceptedActivities ?? []).flatMap((activity) => activity.source_event_id ? [activity.source_event_id] : []))];
+    if (acceptedEventIds.length === 0) return null;
+  }
+
+  let changeQuery = timelineServerClient()
     .from("event_change_log")
     .select("change_kind, observed_at, events!inner(id, title, trip_id)")
     .eq("events.trip_id", tripId)
     .order("observed_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .limit(1);
+  if (acceptedEventIds) changeQuery = changeQuery.in("event_id", acceptedEventIds);
+  const { data, error } = await changeQuery.maybeSingle();
   if (error) throw error;
   if (!data) return null;
   const event = Array.isArray(data.events) ? data.events[0] : data.events;
