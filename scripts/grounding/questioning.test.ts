@@ -149,6 +149,22 @@ test("changing a day's Timeline content changes its regenerated quick questions"
   assert.ok(!after.includes("Van még értelme strandolni?"));
 });
 
+test("canonical Place type adds the right prompt even when the Timeline title is neutral", () => {
+  const conad = {
+    sourceId: "test-conad", slug: "conad-city", name: "Conad City", type: "shop" as const,
+    details: { kind: "generic" as const },
+  };
+  const beach = {
+    sourceId: "test-beach", slug: "test-beach", name: "Teszt strand", type: "beach" as const,
+    details: { kind: "beach" as const },
+  };
+  const resolve = (slug: string) => slug === conad.slug ? conad : slug === beach.slug ? beach : undefined;
+  const shopDay = { ...futureBeachDay, activities: [{ time: "10:00", title: "Délelőtti megálló", place: conad.name, placeSlug: conad.slug }] };
+  const beachDay = { ...futureBeachDay, activities: [{ time: "10:00", title: "Pihenő", place: beach.name, placeSlug: beach.slug }] };
+  assert.ok(questionPromptsForContext(buildQuestionContext(shopDay, null, [], { getPlaceBySlug: resolve, places: [conad, beach] })).includes("Hova menjünk bevásárolni?"));
+  assert.ok(questionPromptsForContext(buildQuestionContext(beachDay, null, [], { getPlaceBySlug: resolve, places: [conad, beach] })).includes("Van még értelme strandolni?"));
+});
+
 test("the approved twelve-day Timeline yields selected-day-specific prompt sets", () => {
   const trip = JSON.parse(readFileSync(new URL("../../knowledge/trip/trip.public.json", import.meta.url), "utf8")) as {
     days: Array<{ date: string; day: number; weekday: "Sze" | "Csü" | "Pén" | "Szo" | "Vas" | "Hét" | "Kedd"; title: string; subtitle: string }>;
