@@ -38,6 +38,9 @@ function EntryForm({ kind, onCreate, disabled = false }: { kind: NotebookEntryKi
     try {
       await onCreate({ kind, content: content.trim(), amountEur: kind === "expense" ? amount : null, occurredOn: romeDate(), rating: kind === "journal" ? Number(rating) : null });
       setContent(""); setAmount("");
+    } catch {
+      // The parent has already rendered the server/offline error. Keep the
+      // user's form content in place so the entry can be retried safely.
     } finally { setSaving(false); }
   }
   const placeholder = kind === "expense" ? "Mire költöttetek?" : kind === "journal" ? "Mi történt ma?" : "Új jegyzet…";
@@ -68,6 +71,9 @@ function EntryEditForm({ entry, onSave, onCancel }: { entry: NotebookEntryRecord
         occurredOn,
         rating: entry.kind === "journal" ? Number(rating) : null,
       });
+    } catch {
+      // The parent displays the error and deliberately leaves this editor
+      // open with the entered values intact for a retry.
     } finally { setSaving(false); }
   }
 
@@ -102,12 +108,20 @@ export function NotebookShell() {
 
   function setNotebook(next: NotebookData) { storageSet(CACHE_KEY, next); setData(next); }
   async function load() {
+    let migrationMessage: string | null = null;
     try {
       await migrateLegacyNotebookOnce();
+    } catch (error) {
+      // A one-time legacy import must never prevent the current server data
+      // (or the existing offline cache) from being read. It remains pending
+      // and is retried by the normal "Újrapróbálás" action.
+      migrationMessage = error instanceof Error ? error.message : "A régi Jegyzetfüzet-adatok átemelése később újrapróbálható.";
+    }
+    try {
       const response = await fetch("/api/notebook", { cache: "no-store" });
       if (!response.ok) throw new Error("A Jegyzetfüzet most nem érhető el.");
       const next = await response.json() as NotebookData;
-      setNotebook(next); setStatus("ready"); setMessage(null);
+      setNotebook(next); setStatus("ready"); setMessage(migrationMessage);
     } catch (error) {
       setStatus(typeof navigator !== "undefined" && !navigator.onLine ? "offline" : "error");
       setMessage(error instanceof Error ? error.message : "A Jegyzetfüzet most nem érhető el.");
