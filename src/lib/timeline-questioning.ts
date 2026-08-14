@@ -75,6 +75,19 @@ export function getTimelineQuestionAnswer(question: string, day: HomeDay): Timel
   const next = nextTimelineActivity(day);
   const timed = orderedTimedActivities(day);
 
+  // A flight is a scheduled family-plan fact, not an externally watched Event.
+  // Resolve it directly from the selected day's Timeline whenever it is named.
+  if (/\b(repulo|jarat|flight)\b/.test(value)) {
+    const flight = timed.find(({ activity }) => /repulo|flight|jarat/i.test(normalized(`${activity.title} ${activity.place}`)))?.activity;
+    if (flight) {
+      return {
+        title: `${flight.time} · ${flight.title}`,
+        body: `A kiválasztott nap Timeline-jában a repülő indulása ekkor szerepel${flight.place ? `: ${flight.place}.` : "."}`,
+        sources: ["Timeline"],
+      };
+    }
+  }
+
   // "Érkezés után" is a planning question, not a request for external travel
   // facts. Keep the answer bounded to the explicitly scheduled items which
   // follow the arrival marker on the selected day.

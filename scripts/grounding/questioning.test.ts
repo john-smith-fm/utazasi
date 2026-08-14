@@ -58,6 +58,18 @@ const scheduledEvent = {
   lastVerifiedAt: "2026-08-12T10:00:00.000Z",
 };
 
+const returnFlightDay = {
+  date: "2099-09-13",
+  day: 13,
+  weekday: "Vas" as const,
+  title: "Hazautazás",
+  summary: "Teszt hazautazási nap.",
+  activities: [
+    { time: "14:30", title: "Indulás a reptérre", place: "Cagliari Airport", placeSlug: "cagliari-airport" },
+    { time: "17:30", title: "Repülő indulása", place: "Cagliari Airport", placeSlug: "cagliari-airport" },
+  ],
+};
+
 test("future selected day resolves its first explicit Timeline item", () => {
   const answer = answerQuestion("Mi a következő program?", futureBeachDay, weather, [], null);
   assert.equal(answer.title, "09:30 · Strandolás");
@@ -167,6 +179,13 @@ test("event start time comes from a verified event", () => {
   assert.equal(answer.title, "Helyi koncert");
   assert.match(answer.body, /Kezdés:/);
   assert.deepEqual(answer.sources, ["Event"]);
+});
+
+test("a scheduled return flight comes from the selected Timeline day, not the Event branch", () => {
+  const answer = answerQuestion("Mikor indul haza a repülő?", returnFlightDay, weather, [], null);
+  assert.equal(answer.title, "17:30 · Repülő indulása");
+  assert.match(answer.body, /Cagliari Airport/);
+  assert.deepEqual(answer.sources, ["Timeline"]);
 });
 
 test("unknown fireworks explicitly remains unknown", () => {

@@ -36,7 +36,10 @@ function eventAnswer(question: string, events: TripEvent[]): QuestionAnswer | nu
   // questions such as "Hol tudunk gyorsan bevásárolni?" as admission queries.
   const asksAdmission = /\b(belepo|jegy|jegyar|ar)\b/.test(value);
   const asksFireworks = /tuzijatek/.test(value);
-  const asksEventTime = /\b(mikor|kezd|este|fesztival|esemeny)\b/.test(value);
+  // A bare "mikor" is not an Event question: it can just as easily mean the
+  // family's own Timeline plan (for example, a scheduled flight home).
+  // Only named external-event concepts should enter the Event branch.
+  const asksEventTime = /\b(fesztival|esemeny|koncert|felvonulas|kiallitas|hajokirandulas|muzeum)\b/.test(value);
   if (!asksAdmission && !asksFireworks && !asksEventTime) return null;
   if (asksFireworks && !events.some((event) => /tűzijáték|tuzijatek/i.test(event.title))) {
     return { title: "Nincs megerősített tűzijáték", body: "A kiválasztott naphoz nincs ellenőrzött tűzijáték-esemény rögzítve. Nem állítok időpontot vagy helyszínt forrás nélkül.", sources: ["Event"] };
