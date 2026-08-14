@@ -1,4 +1,5 @@
 import type { HomeActivity, HomeDay } from "@/data/home-days";
+import { buildQuestionContext, questionPromptsForContext } from "./question-context.ts";
 
 export type TimelineQuestionAnswer = {
   title: string;
@@ -62,12 +63,7 @@ export function nextTimelineActivity(day: HomeDay) {
 }
 
 export function timelineQuestionPrompts(day: HomeDay) {
-  const text = normalized(day.activities.map((activity) => `${activity.title} ${activity.place}`).join(" "));
-  const prompts = ["Mi a következő program?"];
-  if (/strand|beach|tenger/i.test(text)) prompts.push("Van még értelme strandolni?");
-  if (/bevasar|bolt|market|elelmiszer|uzlet/.test(text)) prompts.push("Hova menjünk bevásárolni?");
-  prompts.push("Mi fér még bele ma?");
-  return [...new Set(prompts)].slice(0, 3);
+  return questionPromptsForContext(buildQuestionContext(day, null));
 }
 
 export function getTimelineQuestionAnswer(question: string, day: HomeDay): TimelineQuestionAnswer | null {

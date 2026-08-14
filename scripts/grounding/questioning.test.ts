@@ -3,6 +3,8 @@ import test from "node:test";
 import { answerQuestion } from "../../src/lib/questioning-answer.ts";
 import { smartStatusSummary } from "../../src/lib/smart-status.ts";
 import { timelineQuestionPrompts } from "../../src/lib/timeline-questioning.ts";
+import { buildQuestionContext, questionPromptsForContext } from "../../src/lib/question-context.ts";
+import { answerQuestionWithContext } from "../../src/lib/questioning-answer.ts";
 import { validPlaceBrowseCategoryForType } from "../../src/lib/place-categories.ts";
 
 const futureBeachDay = {
@@ -115,7 +117,43 @@ test("remaining-time answer declares missing route and opening-hours evidence", 
 
 test("timeline prompts are selected-day aware", () => {
   const prompts = timelineQuestionPrompts(futureBeachDay);
-  assert.deepEqual(prompts, ["Mi a következő program?", "Van még értelme strandolni?", "Mi fér még bele ma?"]);
+  assert.deepEqual(prompts, ["Van még értelme strandolni?", "Mi a következő program?", "Mi fér még bele ma?"]);
+});
+
+test("quick questions differ when the selected day has different capabilities", () => {
+  const beachPrompts = questionPromptsForContext(buildQuestionContext(futureBeachDay, weather));
+  const shoppingPrompts = questionPromptsForContext(buildQuestionContext(arrivalDay, weather));
+  const flightPrompts = questionPromptsForContext(buildQuestionContext(returnFlightDay, weather));
+  assert.ok(beachPrompts.includes("Van még értelme strandolni?"));
+  assert.ok(shoppingPrompts.includes("Hova menjünk bevásárolni?"));
+  assert.ok(flightPrompts.includes("Mikor indul a repülő?"));
+  assert.notDeepEqual(beachPrompts, shoppingPrompts);
+  assert.notDeepEqual(shoppingPrompts, flightPrompts);
+});
+
+test("a day without Timeline, Event or Place capabilities renders no misleading quick question", () => {
+  const emptyDay = { ...futureBeachDay, activities: [] };
+  assert.deepEqual(questionPromptsForContext(buildQuestionContext(emptyDay, null)), []);
+});
+
+test("parking is grounded in the selected-day linked Place", () => {
+  const portoSaRuxi = {
+    sourceId: "test-porto-sa-ruxi",
+    slug: "porto-sa-ruxi",
+    name: "Spiaggia di Porto Sa Ruxi",
+    type: "beach" as const,
+    details: { kind: "beach" as const, access: { parkingNotes: "Parkoló a strand közelében; rövid földutas bekötőszakasz." } },
+  };
+  const context = buildQuestionContext(
+    { ...futureBeachDay, activities: [{ time: "09:00", title: "Strand", place: "Spiaggia di Porto Sa Ruxi", placeSlug: "porto-sa-ruxi" }] },
+    weather,
+    [],
+    { getPlaceBySlug: (slug) => slug === portoSaRuxi.slug ? portoSaRuxi : undefined, places: [portoSaRuxi] },
+  );
+  const answer = answerQuestionWithContext("Milyen a parkolás Porto Sa Ruxin?", context, null);
+  assert.equal(answer.title, "Spiaggia di Porto Sa Ruxi · parkolás");
+  assert.match(answer.body, /Parkoló a strand közelében/);
+  assert.deepEqual(answer.sources, ["Place"]);
 });
 
 test("a watch change appears only on the Timeline day that accepted its event", () => {

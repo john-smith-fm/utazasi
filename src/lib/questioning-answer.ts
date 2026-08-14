@@ -3,6 +3,8 @@ import type { WeatherSnapshot } from "../types";
 import type { TripEvent } from "./event-types";
 import { getTimelineQuestionAnswer } from "./timeline-questioning.ts";
 import { TRIP_BASE_NAME } from "./trip-base.ts";
+import { buildQuestionContext, type QuestionContext } from "./question-context.ts";
+import type { Place } from "@/types/places";
 
 export type QuestionRecommendation = {
   placeSlug: string;
@@ -30,7 +32,7 @@ export function isAccommodationQuestion(question: string) {
   return /(hol.*szallas|szallas.*hol|apartman.*hol)/.test(normalized(question));
 }
 
-function eventAnswer(question: string, events: TripEvent[]): QuestionAnswer | null {
+function eventAnswer(question: string, events: readonly TripEvent[]): QuestionAnswer | null {
   const value = normalized(question);
   // These must be full words. A loose /ar/ match incorrectly classified
   // questions such as "Hol tudunk gyorsan bevásárolni?" as admission queries.
@@ -55,6 +57,53 @@ function eventAnswer(question: string, events: TripEvent[]): QuestionAnswer | nu
   return { title: event.title, body: `Kezdés: ${new Intl.DateTimeFormat("hu-HU", { timeZone: "Europe/Rome", hour: "2-digit", minute: "2-digit" }).format(new Date(event.startsAt))}.`, sources: ["Event"] };
 }
 
+function placeParkingNote(place: Place) {
+  if (place.details.kind === "beach") return place.details.access?.parkingNotes;
+  const details = place.intelligence?.details;
+  if (!details || typeof details !== "object" || Array.isArray(details)) return undefined;
+  const access = (details as Record<string, unknown>).access;
+  if (!access || typeof access !== "object" || Array.isArray(access)) return undefined;
+  const parking = (access as Record<string, unknown>).parking_notes ?? (access as Record<string, unknown>).parking;
+  return typeof parking === "string" && parking.trim() ? parking : undefined;
+}
+
+function placeCandidatesInQuestion(question: string, context: QuestionContext) {
+  const value = normalized(question);
+  const candidates = context.linkedPlaces.map((entry) => entry.place);
+  return candidates.filter((place) => {
+    const words = normalized(place.name).split(/[^a-z0-9]+/).filter((word) => word.length >= 3 && !["spiaggia", "beach"].includes(word));
+    // Require all meaningful canonical-name words that were actually named by
+    // the family. A one-word "Porto" query therefore keeps several candidates.
+    return words.length > 0 && words.every((word) => value.includes(word));
+  });
+}
+
+function placeAnswer(question: string, context: QuestionContext): QuestionAnswer | null {
+  const value = normalized(question);
+  if (!/parkolas|parkolo/.test(value)) return null;
+
+  const named = placeCandidatesInQuestion(question, context);
+  const linkedPlaces = context.linkedPlaces.map((entry) => entry.place);
+  const candidates = named.length ? named : linkedPlaces;
+  const unique = [...new Map(candidates.map((place) => [place.slug, place])).values()];
+  if (unique.length > 1) {
+    return {
+      title: "Több hely is megfelel",
+      body: `A kérdés több helyre is utalhat: ${unique.slice(0, 3).map((place) => place.name).join(", ")}. Írd be a teljes helynevet, és nem választok találgatással közülük.`,
+      sources: ["Place"],
+    };
+  }
+  const place = unique[0];
+  if (!place) {
+    return { title: "Nincs azonosítható hely", body: "A parkolásról csak egy konkrét, kanonikus Place rekordhoz tudok ellenőrzött adatot adni. Írd be a hely nevét.", sources: ["Place"] };
+  }
+  const note = placeParkingNote(place);
+  if (!note) {
+    return { title: `${place.name} · parkolás`, body: "Ehhez a helyhez nincs ellenőrzött parkolási információ rögzítve. Nem következtetek a helyszínből.", sources: ["Place"] };
+  }
+  return { title: `${place.name} · parkolás`, body: note, sources: ["Place"] };
+}
+
 /**
  * Deterministic first-pass decision layer. It only consumes already provided
  * canonical context. An LLM may later summarize this output, but must never
@@ -64,13 +113,25 @@ export function answerQuestion(
   question: string,
   day: HomeDay,
   weather: WeatherSnapshot | null,
-  events: TripEvent[],
+  events: readonly TripEvent[],
   shoppingAnswer: ShoppingAnswer,
 ): QuestionAnswer {
+  return answerQuestionWithContext(question, buildQuestionContext(day, weather, events), shoppingAnswer);
+}
+
+/** Shared resolver entry point. Every deterministic branch reads the same
+ * selected-day context, so prompt generation and answering cannot drift apart. */
+export function answerQuestionWithContext(
+  question: string,
+  context: QuestionContext,
+  shoppingAnswer: ShoppingAnswer,
+): QuestionAnswer {
+  const { day, weather, events } = context;
   const value = normalized(question);
   const afternoon = day.activities.filter((activity) => /^1[2-9]:|^2[0-3]:/.test(activity.time));
   const eventResult = eventAnswer(question, events);
   const timelineAnswer = getTimelineQuestionAnswer(question, day);
+  const placeResult = placeAnswer(question, context);
   if (eventResult) return eventResult;
   if (shoppingAnswer) return shoppingAnswer;
   if (isAccommodationQuestion(question)) {
@@ -81,6 +142,7 @@ export function answerQuestion(
     };
   }
   if (timelineAnswer) return timelineAnswer;
+  if (placeResult) return placeResult;
 
   if (value.includes("strand")) {
     const plannedBeach = day.activities.find((activity) => /strand/i.test(`${activity.title} ${activity.place}`));

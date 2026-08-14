@@ -5,9 +5,9 @@ import type { HomeDay } from "@/data/home-days";
 import type { WeatherSnapshot } from "@/types";
 import type { TripEvent } from "@/lib/event-types";
 import { getShoppingAnswer } from "@/lib/shopping-intelligence";
-import { timelineQuestionPrompts } from "@/lib/timeline-questioning";
-import { answerQuestion, isAccommodationQuestion } from "@/lib/questioning-answer";
-import { getPlaceBySlug } from "@/lib/places";
+import { buildQuestionContext, questionPromptsForContext } from "@/lib/question-context";
+import { answerQuestionWithContext, isAccommodationQuestion } from "@/lib/questioning-answer";
+import { getPlaceBySlug, getPlaces } from "@/lib/places";
 import { Icon } from "./Icon";
 import { FORM_CONTROL } from "@/components/formStyles";
 
@@ -20,15 +20,16 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
   const [tripBase, setTripBase] = useState<{ address: string; mapUrl: string } | null>(null);
   const [tripBaseError, setTripBaseError] = useState<string | null>(null);
   const [isAsking, setIsAsking] = useState(false);
-  const answer = useMemo(() => question ? answerQuestion(question, day, weather, events, getShoppingAnswer(question)) : null, [day, events, question, weather]);
-  const prompts = useMemo(() => timelineQuestionPrompts(day), [day]);
+  const context = useMemo(() => buildQuestionContext(day, weather, events, { getPlaceBySlug, places: getPlaces() }), [day, events, weather]);
+  const answer = useMemo(() => question ? answerQuestionWithContext(question, context, getShoppingAnswer(question)) : null, [context, question]);
+  const prompts = useMemo(() => questionPromptsForContext(context), [context]);
 
   async function ask(value: string) {
     setQuestion(value);
     setAiAnswer(null);
     setTripBase(null);
     setTripBaseError(null);
-    const localAnswer = answerQuestion(value, day, weather, events, getShoppingAnswer(value));
+    const localAnswer = answerQuestionWithContext(value, context, getShoppingAnswer(value));
     if (isAccommodationQuestion(value)) {
       setIsAsking(true);
       try {
@@ -63,6 +64,7 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
   return <section className="px-5 pb-5 pt-2" aria-label="Kérdezési">
     <div className="flex flex-col gap-2">
       {prompts.map((example) => <button key={example} type="button" onClick={() => void ask(example)} className={`min-h-12 rounded-ui-s border px-3 text-left text-sm font-medium transition-colors ${question === example ? "border-turquoise bg-turquoise/10 text-deep-sea" : "border-deep-sea/10 bg-white/45 text-deep-sea/75"}`}>{example}</button>)}
+      {!prompts.length && <p className="rounded-ui-s border border-deep-sea/10 bg-white/35 px-3 py-3 text-sm leading-[21px] text-deep-sea/65">Ehhez a naphoz még nincs elég rögzített adat. Adj hozzá egy programot vagy helyet a Timeline-hoz.</p>}
     </div>
     <form className="relative mt-5 border-t border-deep-sea/10 pt-5" onSubmit={submitCustomQuestion}>
       <label className="sr-only" htmlFor="custom-trip-question">Utazási kérdés</label>
