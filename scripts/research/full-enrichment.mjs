@@ -16,6 +16,32 @@ function unresolvedCoverage(raw) {
     .map(([area]) => area);
 }
 
+/**
+ * Returns the public Places that are actually used by the approved initial
+ * trip Timeline. This lets a limited, review-only enrichment batch spend its
+ * first requests on the family's real plan rather than on alphabetical order.
+ * `trip-base` is deliberately excluded: it is a private runtime reference,
+ * not a canonical public Place.
+ */
+async function loadTimelinePlaceDates(root) {
+  const timelinePath = path.join(root, "knowledge", "trip", "timeline.initial.json");
+  const timeline = JSON.parse(await readFile(timelinePath, "utf8"));
+  const placeDates = new Map();
+
+  for (const day of Array.isArray(timeline.days) ? timeline.days : []) {
+    if (typeof day?.date !== "string" || !Array.isArray(day.activities)) continue;
+    for (const activity of day.activities) {
+      const slug = text(activity?.place_slug);
+      if (!slug || slug === "trip-base") continue;
+      const dates = placeDates.get(slug) ?? new Set();
+      dates.add(day.date);
+      placeDates.set(slug, dates);
+    }
+  }
+
+  return new Map([...placeDates].map(([slug, dates]) => [slug, [...dates].sort()]));
+}
+
 /** Creates one deliberately narrow, review-only job per canonical Place. */
 export function buildFullEnrichmentJob({ type, raw }) {
   const locality = text(raw.location?.city) ?? "ismeretlen település";
@@ -39,16 +65,27 @@ export function buildFullEnrichmentJob({ type, raw }) {
 }
 
 export async function buildFullEnrichmentPlan({ root = process.cwd() } = {}) {
-  const canonical = await loadCanonicalPlaces(root);
+  const [canonical, timelinePlaceDates] = await Promise.all([
+    loadCanonicalPlaces(root),
+    loadTimelinePlaceDates(root),
+  ]);
   return canonical
-    .map((record) => ({
-      slug: record.raw.slug,
-      name: record.raw.name,
-      type: record.type,
-      locality: text(record.raw.location?.city) ?? "ismeretlen település",
-      job: buildFullEnrichmentJob(record),
-    }))
-    .sort((a, b) => a.slug.localeCompare(b.slug));
+    .map((record) => {
+      const timelineDates = timelinePlaceDates.get(record.raw.slug) ?? [];
+      return {
+        slug: record.raw.slug,
+        name: record.raw.name,
+        type: record.type,
+        locality: text(record.raw.location?.city) ?? "ismeretlen település",
+        priority: timelineDates.length ? "timeline_linked" : "standard",
+        timelineDates,
+        job: buildFullEnrichmentJob(record),
+      };
+    })
+    .sort((a, b) => {
+      const priority = Number(b.timelineDates.length > 0) - Number(a.timelineDates.length > 0);
+      return priority || a.slug.localeCompare(b.slug);
+    });
 }
 
 async function exists(file) {
@@ -110,6 +147,7 @@ export async function runFullEnrichment({
     canonicalWrites: false,
     supabaseWrites: false,
     totalCanonicalPlaces: plan.length,
+    timelineLinkedCanonicalPlaces: plan.filter((item) => item.priority === "timeline_linked").length,
     selectedPlaces: selected.length,
     completed: [],
     skipped: [],
@@ -117,7 +155,9 @@ export async function runFullEnrichment({
   };
 
   if (options.dryRun) {
-    report.completed = selected.map(({ slug, name, type, locality, job }) => ({ slug, name, type, locality, mode: job.mode, status: "planned" }));
+    report.completed = selected.map(({ slug, name, type, locality, priority, timelineDates, job }) => ({
+      slug, name, type, locality, priority, timelineDates, mode: job.mode, status: "planned",
+    }));
     report.updatedAt = new Date().toISOString();
     if (options.report) await saveReport({ root, reportPath: options.report, report });
     return report;
@@ -128,17 +168,17 @@ export async function runFullEnrichment({
     const outputPath = path.posix.join(options.outputDir, `${item.slug}.json`);
     const absoluteOutput = path.resolve(root, outputPath);
     if (options.resume && await exists(absoluteOutput)) {
-      report.skipped.push({ slug: item.slug, reason: "existing_proposal" });
+      report.skipped.push({ slug: item.slug, priority: item.priority, timelineDates: item.timelineDates, reason: "existing_proposal" });
       log(`[${index + 1}/${selected.length}] ${item.slug}: meglévő javaslat, kihagyva.`);
     } else {
       try {
         const result = await createProposal({ job: item.job, root });
         const file = await saveProposal({ proposal: result.proposal, outputPath, root });
-        report.completed.push({ slug: item.slug, file, candidates: result.proposal.summary, provider: result.provider });
+        report.completed.push({ slug: item.slug, priority: item.priority, timelineDates: item.timelineDates, file, candidates: result.proposal.summary, provider: result.provider });
         log(`[${index + 1}/${selected.length}] ${item.slug}: javaslat elkészült.`);
       } catch (error) {
         const message = error instanceof Error ? error.message : "Ismeretlen kutatási hiba.";
-        report.failed.push({ slug: item.slug, message });
+        report.failed.push({ slug: item.slug, priority: item.priority, timelineDates: item.timelineDates, message });
         if (blocksEntireProvider(error)) {
           report.blocked = { slug: item.slug, reason: message };
           log(`[${index + 1}/${selected.length}] ${item.slug}: a research provider nem érhető el, a batch megáll.`);
@@ -163,6 +203,7 @@ if (isDirectRun) {
     status: report.failed.length ? "completed_with_failures" : "completed",
     mode: report.mode,
     selectedPlaces: report.selectedPlaces,
+    timelineLinkedCanonicalPlaces: report.timelineLinkedCanonicalPlaces,
     completed: report.completed.length,
     skipped: report.skipped.length,
     failed: report.failed.length,

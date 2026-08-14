@@ -9,6 +9,19 @@ test("full enrichment plan covers every canonical Place without writing", async 
   assert.ok(plan.every((item) => item.job.slugs.length === 1 && item.job.slugs[0] === item.slug));
 });
 
+test("Timeline-linked Places are researched first in a stable order", async () => {
+  const plan = await buildFullEnrichmentPlan({ root: process.cwd() });
+  const firstStandardIndex = plan.findIndex((item) => item.priority === "standard");
+  const timelineLinked = plan.slice(0, firstStandardIndex);
+
+  assert.ok(timelineLinked.length > 0);
+  assert.ok(timelineLinked.every((item) => item.priority === "timeline_linked" && item.timelineDates.length > 0));
+  assert.ok(plan.slice(firstStandardIndex).every((item) => item.priority === "standard"));
+  assert.ok(timelineLinked.some((item) => item.slug === "porto-giunco"));
+  assert.ok(timelineLinked.some((item) => item.slug === "sam-beach-poetto"));
+  assert.ok(timelineLinked.every((item, index) => index === 0 || timelineLinked[index - 1].slug.localeCompare(item.slug) <= 0));
+});
+
 test("full enrichment job remains constrained to a known Place", () => {
   const job = buildFullEnrichmentJob({
     type: "beach",
