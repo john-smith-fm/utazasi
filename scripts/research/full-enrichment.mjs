@@ -57,7 +57,12 @@ async function exists(file) {
 
 function blocksEntireProvider(error) {
   const message = error instanceof Error ? error.message : String(error);
-  return /OpenAI research kapcsolat nem érhető el: (ENOTFOUND|EAI_AGAIN|időtúllépés)/.test(message);
+  // A connection outage, invalid credentials, unavailable model access or
+  // inactive billing cannot succeed for the next Place either. Stop the
+  // batch after the first such response instead of needlessly issuing up to
+  // 138 identical failing provider calls.
+  return /OpenAI research kapcsolat nem érhető el: (ENOTFOUND|EAI_AGAIN|időtúllépés)/.test(message)
+    || /OpenAI research hiba \((401|403|429)\):/.test(message);
 }
 
 function argumentValue(args, flag) {

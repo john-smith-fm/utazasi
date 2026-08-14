@@ -31,3 +31,20 @@ test("full run stops after a provider-wide connection failure", async () => {
   assert.equal(report.failed.length, 1);
   assert.equal(report.blocked?.reason, "OpenAI research kapcsolat nem érhető el: ENOTFOUND");
 });
+
+test("full run stops after an inactive-billing provider response", async () => {
+  let calls = 0;
+  const report = await runFullEnrichment({
+    root: process.cwd(),
+    options: { limit: 2, resume: false, outputDir: "research/proposals/test-run", report: undefined },
+    createProposal: async () => {
+      calls += 1;
+      throw new Error("OpenAI research hiba (429): Your account is not active, please check your billing details.");
+    },
+    saveProposal: async () => { throw new Error("should not save"); },
+    log: () => {},
+  });
+  assert.equal(calls, 1);
+  assert.equal(report.failed.length, 1);
+  assert.match(report.blocked?.reason ?? "", /account is not active/);
+});
