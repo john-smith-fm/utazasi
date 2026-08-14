@@ -76,6 +76,9 @@ given. It does not apply candidates, modify canonical JSON, write Supabase,
 commit or deploy.
 
 ```bash
+# Show the command usage. This never calls the provider.
+npm run research:full -- --help
+
 # First verify the 138-record plan without any provider call.
 npm run research:full -- --dry-run
 

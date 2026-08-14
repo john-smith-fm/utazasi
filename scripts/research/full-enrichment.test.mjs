@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { buildFullEnrichmentJob, buildFullEnrichmentPlan, parseArguments, runFullEnrichment } from "./full-enrichment.mjs";
+import { buildFullEnrichmentJob, buildFullEnrichmentPlan, FULL_ENRICHMENT_USAGE, parseArguments, runFullEnrichment } from "./full-enrichment.mjs";
 
 test("full enrichment plan covers every canonical Place without writing", async () => {
   const plan = await buildFullEnrichmentPlan({ root: process.cwd() });
@@ -25,6 +25,9 @@ test("Timeline-linked Places are researched first in a stable order", async () =
 test("full enrichment is deliberately one review proposal by default", () => {
   assert.equal(parseArguments([]).limit, 1);
   assert.equal(parseArguments(["--limit", "8"]).limit, 8);
+  assert.equal(parseArguments(["--help"]).help, true);
+  assert.equal(parseArguments(["-h"]).help, true);
+  assert.match(FULL_ENRICHMENT_USAGE, /dry-run/);
   assert.throws(() => parseArguments(["--limit", "139"]), /1 és 138/);
 });
 

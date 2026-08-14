@@ -4,6 +4,12 @@ import { loadCanonicalPlaces, validateResearchJob } from "./core.mjs";
 import { createLiveResearchProposal, saveResearchProposal } from "./provider-openai.mjs";
 
 const RESEARCHABLE_AREAS = new Set(["basic", "evidence", "services", "family"]);
+export const FULL_ENRICHMENT_USAGE = `Használat:
+  npm run research:full -- --dry-run [--limit 1..138]
+  npm run research:full -- --resume [--limit 1..138]
+
+Alapértelmezés: pontosan egy, Timeline-hoz kötött Place review-javaslata.
+A futás csak javaslatot ír a research/proposals könyvtárba; kanonikus adatot nem módosít.`;
 
 function text(value) {
   return typeof value === "string" && value.trim() ? value.trim() : undefined;
@@ -121,6 +127,7 @@ export function parseArguments(args) {
     limit,
     dryRun: args.includes("--dry-run"),
     resume: !args.includes("--no-resume"),
+    help: args.includes("--help") || args.includes("-h"),
     outputDir: argumentValue(args, "--output-dir") ?? "research/proposals/full-enrichment",
     report: argumentValue(args, "--report") ?? "research/reports/full-enrichment-progress.json",
   };
@@ -202,17 +209,21 @@ export async function runFullEnrichment({
 const isDirectRun = process.argv[1] && path.resolve(process.argv[1]) === path.resolve(new URL(import.meta.url).pathname);
 if (isDirectRun) {
   const options = parseArguments(process.argv.slice(2));
-  const report = await runFullEnrichment({ options });
-  console.log(JSON.stringify({
-    status: report.failed.length ? "completed_with_failures" : "completed",
-    mode: report.mode,
-    selectedPlaces: report.selectedPlaces,
-    timelineLinkedCanonicalPlaces: report.timelineLinkedCanonicalPlaces,
-    completed: report.completed.length,
-    skipped: report.skipped.length,
-    failed: report.failed.length,
-    blocked: report.blocked ?? null,
-    report: options.report,
-    canonicalWrites: false,
-  }, null, 2));
+  if (options.help) {
+    console.log(FULL_ENRICHMENT_USAGE);
+  } else {
+    const report = await runFullEnrichment({ options });
+    console.log(JSON.stringify({
+      status: report.failed.length ? "completed_with_failures" : "completed",
+      mode: report.mode,
+      selectedPlaces: report.selectedPlaces,
+      timelineLinkedCanonicalPlaces: report.timelineLinkedCanonicalPlaces,
+      completed: report.completed.length,
+      skipped: report.skipped.length,
+      failed: report.failed.length,
+      blocked: report.blocked ?? null,
+      report: options.report,
+      canonicalWrites: false,
+    }, null, 2));
+  }
 }
