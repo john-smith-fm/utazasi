@@ -67,14 +67,39 @@ function placeParkingNote(place: Place) {
   return typeof parking === "string" && parking.trim() ? parking : undefined;
 }
 
+const PLACE_QUERY_STOP_WORDS = new Set([
+  "a", "az", "a", "milyen", "mi", "van", "hol", "hogyan", "merre", "parkolas", "parkolo",
+  "milyen", "oda", "itt", "ott", "es", "meg", "a", "strand", "beach", "spiaggia",
+]);
+
+function placeNameTokens(place: Place) {
+  return normalized(place.name)
+    .split(/[^a-z0-9]+/)
+    .filter((word) => word.length >= 3 && !["spiaggia", "beach"].includes(word));
+}
+
+function questionPlaceTokens(question: string) {
+  return normalized(question)
+    .split(/[^a-z0-9]+/)
+    .filter((word) => word.length >= 3 && !PLACE_QUERY_STOP_WORDS.has(word));
+}
+
+function sameOrHungarianSuffix(value: string, canonical: string) {
+  return value === canonical || (canonical.length >= 4 && value.startsWith(canonical));
+}
+
+/**
+ * Resolve only an explicit canonical name or a uniquely matching meaningful
+ * name fragment. "Porto" deliberately produces all Porto candidates; it
+ * never silently picks the place that happens to be in today's Timeline.
+ */
 function placeCandidatesInQuestion(question: string, context: QuestionContext) {
-  const value = normalized(question);
-  const candidates = context.linkedPlaces.map((entry) => entry.place);
+  const questionTokens = questionPlaceTokens(question);
+  if (!questionTokens.length) return [];
+  const candidates = context.knownPlaces;
   return candidates.filter((place) => {
-    const words = normalized(place.name).split(/[^a-z0-9]+/).filter((word) => word.length >= 3 && !["spiaggia", "beach"].includes(word));
-    // Require all meaningful canonical-name words that were actually named by
-    // the family. A one-word "Porto" query therefore keeps several candidates.
-    return words.length > 0 && words.every((word) => value.includes(word));
+    const nameTokens = placeNameTokens(place);
+    return questionTokens.every((questionToken) => nameTokens.some((nameToken) => sameOrHungarianSuffix(questionToken, nameToken)));
   });
 }
 
@@ -84,7 +109,10 @@ function placeAnswer(question: string, context: QuestionContext): QuestionAnswer
 
   const named = placeCandidatesInQuestion(question, context);
   const linkedPlaces = context.linkedPlaces.map((entry) => entry.place);
-  const candidates = named.length ? named : linkedPlaces;
+  // A question that contains a place-like term must resolve it explicitly.
+  // Only a generic "milyen a parkolás?" can use the single Place already
+  // linked to the selected day.
+  const candidates = named.length ? named : questionPlaceTokens(question).length ? [] : linkedPlaces;
   const unique = [...new Map(candidates.map((place) => [place.slug, place])).values()];
   if (unique.length > 1) {
     return {

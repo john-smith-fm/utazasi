@@ -22,6 +22,9 @@ export type QuestionContext = {
   day: HomeDay;
   weather: WeatherSnapshot | null;
   events: readonly TripEvent[];
+  /** Canonical Places available to a resolver. They are read-only context,
+   * not a licence to infer missing facts or choose a fuzzy match. */
+  knownPlaces: readonly Place[];
   linkedPlaces: readonly ContextPlace[];
   unresolvedActivities: readonly HomeActivity[];
   capabilities: ReadonlySet<QuestionCapability>;
@@ -67,6 +70,7 @@ export function buildQuestionContext(
   events: readonly TripEvent[] = [],
   placeSource: QuestionContextPlaceSource = {},
 ): QuestionContext {
+  const knownPlaces = placeSource.places ?? [];
   const linkedPlaces: ContextPlace[] = [];
   const unresolvedActivities: HomeActivity[] = [];
   const capabilities = new Set<QuestionCapability>();
@@ -80,7 +84,7 @@ export function buildQuestionContext(
     const activityText = normalized(`${activity.title} ${activity.place}`);
     if (/strand|beach|tenger/.test(activityText)) capabilities.add("beach");
     const explicitPlace = activity.placeSlug ? placeSource.getPlaceBySlug?.(activity.placeSlug) : undefined;
-    const uniqueNamePlace = explicitPlace ? undefined : uniquePlaceForName(activity.place, placeSource.places ?? []);
+    const uniqueNamePlace = explicitPlace ? undefined : uniquePlaceForName(activity.place, knownPlaces);
     const place = explicitPlace ?? uniqueNamePlace;
     if (!place) {
       unresolvedActivities.push(activity);
@@ -93,7 +97,7 @@ export function buildQuestionContext(
     if (place.type === "shop" || isShoppingActivity(activity)) capabilities.add("shopping");
   }
 
-  return { day, weather, events, linkedPlaces, unresolvedActivities, capabilities };
+  return { day, weather, events, knownPlaces, linkedPlaces, unresolvedActivities, capabilities };
 }
 
 /** At most three questions, generated from real capabilities of the selected day. */

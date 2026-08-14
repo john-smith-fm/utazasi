@@ -156,6 +156,38 @@ test("parking is grounded in the selected-day linked Place", () => {
   assert.deepEqual(answer.sources, ["Place"]);
 });
 
+test("a partial Place name stays ambiguous instead of choosing today's Porto", () => {
+  const portoGiunco = {
+    sourceId: "test-porto-giunco", slug: "porto-giunco", name: "Spiaggia di Porto Giunco", type: "beach" as const,
+    details: { kind: "beach" as const, access: { parkingNotes: "Fizetős parkoló." } },
+  };
+  const portoSaRuxi = {
+    sourceId: "test-porto-sa-ruxi", slug: "porto-sa-ruxi", name: "Spiaggia di Porto Sa Ruxi", type: "beach" as const,
+    details: { kind: "beach" as const, access: { parkingNotes: "Parkoló a strand közelében." } },
+  };
+  const context = buildQuestionContext(
+    { ...futureBeachDay, activities: [{ time: "09:00", title: "Strand", place: portoSaRuxi.name, placeSlug: portoSaRuxi.slug }] },
+    weather,
+    [],
+    { getPlaceBySlug: (slug) => slug === portoSaRuxi.slug ? portoSaRuxi : undefined, places: [portoGiunco, portoSaRuxi] },
+  );
+  const answer = answerQuestionWithContext("Milyen a parkolás Porto?", context, null);
+  assert.equal(answer.title, "Több hely is megfelel");
+  assert.match(answer.body, /Porto Giunco/);
+  assert.match(answer.body, /Porto Sa Ruxi/);
+});
+
+test("a full unambiguous canonical Place can answer even if it is not today's activity", () => {
+  const calaPira = {
+    sourceId: "test-cala-pira", slug: "cala-pira", name: "Cala Pira", type: "beach" as const,
+    details: { kind: "beach" as const, access: { parkingNotes: "A strandhoz közeli ellenőrzött parkoló." } },
+  };
+  const context = buildQuestionContext(futureBeachDay, weather, [], { places: [calaPira] });
+  const answer = answerQuestionWithContext("Milyen a parkolás Cala Pirán?", context, null);
+  assert.equal(answer.title, "Cala Pira · parkolás");
+  assert.match(answer.body, /ellenőrzött parkoló/);
+});
+
 test("a watch change appears only on the Timeline day that accepted its event", () => {
   const change = {
     eventTitle: "Invasio Fesztivál",
