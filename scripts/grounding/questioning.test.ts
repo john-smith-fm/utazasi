@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import { answerQuestion } from "../../src/lib/questioning-answer.ts";
 import { smartStatusSummary } from "../../src/lib/smart-status.ts";
@@ -129,6 +130,36 @@ test("quick questions differ when the selected day has different capabilities", 
   assert.ok(flightPrompts.includes("Mikor indul a repülő?"));
   assert.notDeepEqual(beachPrompts, shoppingPrompts);
   assert.notDeepEqual(shoppingPrompts, flightPrompts);
+});
+
+test("the approved twelve-day Timeline yields selected-day-specific prompt sets", () => {
+  const trip = JSON.parse(readFileSync(new URL("../../knowledge/trip/trip.public.json", import.meta.url), "utf8")) as {
+    days: Array<{ date: string; day: number; weekday: "Sze" | "Csü" | "Pén" | "Szo" | "Vas" | "Hét" | "Kedd"; title: string; subtitle: string }>;
+  };
+  const timeline = JSON.parse(readFileSync(new URL("../../knowledge/trip/timeline.initial.json", import.meta.url), "utf8")) as {
+    days: Array<{ date: string; activities: Array<{ start_time: string; title: string; location_name: string | null; place_slug: string | null }> }>;
+  };
+  const promptsByDate = new Map(trip.days.map((tripDay) => {
+    const seededDay = timeline.days.find((day) => day.date === tripDay.date);
+    assert.ok(seededDay, `${tripDay.date} has canonical Timeline content`);
+    const day = {
+      ...tripDay,
+      summary: tripDay.subtitle,
+      activities: seededDay.activities.map((activity) => ({
+        time: activity.start_time,
+        title: activity.title,
+        place: activity.location_name ?? "",
+        placeSlug: activity.place_slug,
+      })),
+    };
+    return [tripDay.date, questionPromptsForContext(buildQuestionContext(day, null))] as const;
+  }));
+
+  assert.equal(promptsByDate.size, 12);
+  assert.ok(promptsByDate.get("2026-09-02")?.includes("Hova menjünk bevásárolni?"));
+  assert.ok(promptsByDate.get("2026-09-13")?.includes("Mikor indul a repülő?"));
+  assert.ok(promptsByDate.get("2026-09-03")?.includes("Van még értelme strandolni?"));
+  assert.notDeepEqual(promptsByDate.get("2026-09-02"), promptsByDate.get("2026-09-13"));
 });
 
 test("a day without Timeline, Event or Place capabilities renders no misleading quick question", () => {
