@@ -107,8 +107,12 @@ function argumentValue(args, flag) {
   return index < 0 ? undefined : args[index + 1];
 }
 
-function parseArguments(args) {
-  const limitValue = argumentValue(args, "--limit") ?? "138";
+export function parseArguments(args) {
+  // A review proposal may still consume an API request. The default therefore
+  // intentionally stays at one selected Place: a person reviews that proposal
+  // before choosing whether another Timeline-priority Place should be run.
+  // A larger batch is possible, but must be requested explicitly with --limit.
+  const limitValue = argumentValue(args, "--limit") ?? "1";
   const limit = Number(limitValue);
   if (!Number.isInteger(limit) || limit < 1 || limit > 138) {
     throw new Error("A --limit 1 és 138 közötti egész szám lehet.");

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { buildFullEnrichmentJob, buildFullEnrichmentPlan, runFullEnrichment } from "./full-enrichment.mjs";
+import { buildFullEnrichmentJob, buildFullEnrichmentPlan, parseArguments, runFullEnrichment } from "./full-enrichment.mjs";
 
 test("full enrichment plan covers every canonical Place without writing", async () => {
   const plan = await buildFullEnrichmentPlan({ root: process.cwd() });
@@ -20,6 +20,12 @@ test("Timeline-linked Places are researched first in a stable order", async () =
   assert.ok(timelineLinked.some((item) => item.slug === "porto-giunco"));
   assert.ok(timelineLinked.some((item) => item.slug === "sam-beach-poetto"));
   assert.ok(timelineLinked.every((item, index) => index === 0 || timelineLinked[index - 1].slug.localeCompare(item.slug) <= 0));
+});
+
+test("full enrichment is deliberately one review proposal by default", () => {
+  assert.equal(parseArguments([]).limit, 1);
+  assert.equal(parseArguments(["--limit", "8"]).limit, 8);
+  assert.throws(() => parseArguments(["--limit", "139"]), /1 és 138/);
 });
 
 test("full enrichment job remains constrained to a known Place", () => {
