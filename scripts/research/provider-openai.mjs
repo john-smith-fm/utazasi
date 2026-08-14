@@ -11,6 +11,7 @@ import {
 
 const OPENAI_RESPONSES_URL = "https://api.openai.com/v1/responses";
 const REQUEST_TIMEOUT_MS = 45_000;
+const DEFAULT_MAX_OUTPUT_TOKENS = 2400;
 const MAX_SOURCES = 8;
 const SOURCE_TYPES = new Set(["official_business", "municipality", "government", "tourism_authority", "official_organizer", "reliable_listing", "secondary"]);
 const ACTIONS = new Set(["add", "update", "no_change", "hold"]);
@@ -21,6 +22,18 @@ function isRecord(value) { return Boolean(value) && typeof value === "object" &&
 function nonEmptyString(value) { return typeof value === "string" && value.trim() !== ""; }
 function checkedAt() { return new Date().toISOString(); }
 function sourceId(index) { return `src_${String(index + 1).padStart(2, "0")}`; }
+
+/**
+ * One Place job should create a compact, reviewable JSON proposal — never an
+ * open-ended response. Keep the project default conservative, while allowing
+ * an explicit server-only tuning value inside a safe range.
+ */
+export function researchMaxOutputTokens(value = process.env.OPENAI_RESEARCH_MAX_OUTPUT_TOKENS) {
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed >= 512 && parsed <= 4096
+    ? parsed
+    : DEFAULT_MAX_OUTPUT_TOKENS;
+}
 
 function responseText(response) {
   if (nonEmptyString(response.output_text)) return response.output_text;
@@ -172,6 +185,7 @@ async function openAIResearchRequest({ apiKey, model, prompt, fetchImpl = fetch 
         body: JSON.stringify({
           model,
           store: false,
+          max_output_tokens: researchMaxOutputTokens(),
           tools: [{ type: "web_search", search_context_size: "medium", user_location: { type: "approximate", country: "IT", city: "Villasimius", timezone: "Europe/Rome" } }],
           input: prompt,
         }),
