@@ -132,6 +132,23 @@ test("quick questions differ when the selected day has different capabilities", 
   assert.notDeepEqual(shoppingPrompts, flightPrompts);
 });
 
+test("changing a day's Timeline content changes its regenerated quick questions", () => {
+  const initial = {
+    ...futureBeachDay,
+    activities: [{ time: "09:00", title: "Strand", place: "Porto Giunco", placeSlug: "porto-giunco" }],
+  };
+  const afterEdit = {
+    ...initial,
+    activities: [{ time: "17:00", title: "Bevásárlás", place: "", placeSlug: null }],
+  };
+  const before = questionPromptsForContext(buildQuestionContext(initial, weather));
+  const after = questionPromptsForContext(buildQuestionContext(afterEdit, weather));
+  assert.ok(before.includes("Van még értelme strandolni?"));
+  assert.ok(!before.includes("Hova menjünk bevásárolni?"));
+  assert.ok(after.includes("Hova menjünk bevásárolni?"));
+  assert.ok(!after.includes("Van még értelme strandolni?"));
+});
+
 test("the approved twelve-day Timeline yields selected-day-specific prompt sets", () => {
   const trip = JSON.parse(readFileSync(new URL("../../knowledge/trip/trip.public.json", import.meta.url), "utf8")) as {
     days: Array<{ date: string; day: number; weekday: "Sze" | "Csü" | "Pén" | "Szo" | "Vas" | "Hét" | "Kedd"; title: string; subtitle: string }>;
