@@ -18,6 +18,7 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
   const [customQuestion, setCustomQuestion] = useState("");
   const [aiAnswer, setAiAnswer] = useState<{ title: string; body: string } | null>(null);
   const [tripBase, setTripBase] = useState<{ address: string; mapUrl: string } | null>(null);
+  const [tripBaseError, setTripBaseError] = useState<string | null>(null);
   const [isAsking, setIsAsking] = useState(false);
   const answer = useMemo(() => question ? answerQuestion(question, day, weather, events, getShoppingAnswer(question)) : null, [day, events, question, weather]);
   const prompts = useMemo(() => timelineQuestionPrompts(day), [day]);
@@ -26,6 +27,7 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
     setQuestion(value);
     setAiAnswer(null);
     setTripBase(null);
+    setTripBaseError(null);
     const localAnswer = answerQuestion(value, day, weather, events, getShoppingAnswer(value));
     if (isAccommodationQuestion(value)) {
       setIsAsking(true);
@@ -33,7 +35,10 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
         const response = await fetch("/api/trip-base", { cache: "no-store" });
         const payload = await response.json().catch(() => null) as { tripBase?: { address?: string; mapUrl?: string } } | null;
         if (response.ok && payload?.tripBase?.address && payload.tripBase.mapUrl) setTripBase({ address: payload.tripBase.address, mapUrl: payload.tripBase.mapUrl });
-      } catch { /* Keep the verified Trip label if private details are temporarily unavailable. */ }
+        else setTripBaseError("A szállás pontos címe most nem tölthető be.");
+      } catch {
+        setTripBaseError("A szállás pontos címe most nem tölthető be.");
+      }
       finally { setIsAsking(false); }
       return;
     }
@@ -71,6 +76,10 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
         <p className="text-[11px] font-semibold tracking-[.04em] text-deep-sea/45">SZÁLLÁS CÍME</p>
         <p className="mt-1 text-sm leading-[21px] text-deep-sea">{tripBase.address}</p>
         <a href={tripBase.mapUrl} target="_blank" rel="noreferrer" className="mt-3 inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-3 text-sm font-semibold text-deep-sea">Navigáció megnyitása</a>
+      </div> : null}
+      {tripBaseError ? <div className="mt-4 flex items-center justify-between gap-3 rounded-ui-s border border-coral/25 bg-coral/5 p-3.5" role="status">
+        <p className="text-[13px] leading-[19px] text-deep-sea/70">{tripBaseError}</p>
+        <button type="button" onClick={() => void ask(question!)} className="min-h-11 shrink-0 px-1 text-[13px] font-semibold text-deep-sea">Újrapróbálás</button>
       </div> : null}
       {answer.recommendations?.length ? <ul className="mt-4 space-y-2.5" aria-label="Javasolt helyek">
         {answer.recommendations.map((recommendation) => {
