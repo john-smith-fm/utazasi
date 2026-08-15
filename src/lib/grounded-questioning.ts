@@ -6,7 +6,7 @@ const MAX_CONTEXT_BYTES = 16_000;
 // GPT-5 mini can spend part of this allowance on its bounded reasoning before
 // emitting the strict JSON response. The final visible answer remains capped
 // by parseAnswer (90-character title, 700-character body).
-const MAX_OUTPUT_TOKENS = 650;
+const MAX_OUTPUT_TOKENS = 1_000;
 
 export type GroundedQuestionContext = {
   date: string;
@@ -25,7 +25,12 @@ function responseText(body: { output_text?: unknown; output?: Array<{ content?: 
 }
 
 function parseAnswer(value: string, context: GroundedQuestionContext): GroundedQuestionAnswer {
-  const parsed = JSON.parse(value.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "")) as Partial<GroundedQuestionAnswer>;
+  let parsed: Partial<GroundedQuestionAnswer>;
+  try {
+    parsed = JSON.parse(value.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "")) as Partial<GroundedQuestionAnswer>;
+  } catch {
+    throw new Error("Az AI válasza most nem használható. Próbáld újra.");
+  }
   const title = typeof parsed.title === "string" ? parsed.title.trim() : "";
   const body = typeof parsed.body === "string" ? parsed.body.trim() : "";
   const factIds = Array.isArray(parsed.factIds) && parsed.factIds.every((id) => typeof id === "string") ? [...new Set(parsed.factIds)] : [];
@@ -64,7 +69,7 @@ export async function answerGroundedQuestion(question: string, context: Grounded
         store: false,
         max_output_tokens: MAX_OUTPUT_TOKENS,
         reasoning: { effort: "minimal" },
-        text: { format: { type: "json_schema", name: "grounded_trip_answer", strict: true, schema: {
+        text: { verbosity: "low", format: { type: "json_schema", name: "grounded_trip_answer", strict: true, schema: {
           type: "object", additionalProperties: false, required: ["title", "body", "factIds"],
           properties: { title: { type: "string" }, body: { type: "string" }, factIds: { type: "array", minItems: 1, items: { type: "string" } } },
         } } },
