@@ -17,6 +17,7 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
   const [question, setQuestion] = useState<string | null>(null);
   const [customQuestion, setCustomQuestion] = useState("");
   const [aiAnswer, setAiAnswer] = useState<{ title: string; body: string } | null>(null);
+  const [aiError, setAiError] = useState<string | null>(null);
   const [tripBase, setTripBase] = useState<{ address: string; mapUrl: string } | null>(null);
   const [tripBaseError, setTripBaseError] = useState<string | null>(null);
   const [isAsking, setIsAsking] = useState(false);
@@ -27,6 +28,7 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
   async function ask(value: string) {
     setQuestion(value);
     setAiAnswer(null);
+    setAiError(null);
     setTripBase(null);
     setTripBaseError(null);
     const localAnswer = answerQuestionWithContext(value, context, getShoppingAnswer(value));
@@ -49,9 +51,12 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
     setIsAsking(true);
     try {
       const response = await fetch("/api/question", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: value, date: day.date }) });
-      const payload = await response.json().catch(() => null) as { answer?: { title?: string; body?: string } } | null;
+      const payload = await response.json().catch(() => null) as { answer?: { title?: string; body?: string }; error?: unknown } | null;
       if (response.ok && payload?.answer?.title && payload.answer.body) setAiAnswer({ title: payload.answer.title, body: payload.answer.body });
-    } catch { /* The deterministic answer remains a deliberate offline/error fallback. */ }
+      else setAiError(typeof payload?.error === "string" ? payload.error : "Az AI-összefoglaló most nem érhető el.");
+    } catch {
+      setAiError("Az AI-összefoglaló most nem érhető el. Ellenőrizd az internetkapcsolatot, majd próbáld újra.");
+    }
     finally { setIsAsking(false); }
   }
 
@@ -74,6 +79,10 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
     {answer && <section className="mt-5 border-t border-deep-sea/10 pt-5" aria-live="polite">
       <h3 className="text-[17px] font-bold leading-[23px] text-deep-sea">{aiAnswer?.title ?? answer.title}</h3>
       <p className="mt-2 text-sm leading-[21px] text-deep-sea/70">{isAsking ? "Ellenőrzött utazási kontextusból összefoglalom…" : aiAnswer?.body ?? answer.body}</p>
+      {aiError ? <div className="mt-4 flex items-center justify-between gap-3 rounded-ui-s border border-coral/25 bg-coral/5 p-3.5" role="status">
+        <p className="text-[13px] leading-[19px] text-deep-sea/70">{aiError}</p>
+        <button type="button" onClick={() => void ask(question!)} className="min-h-11 shrink-0 px-1 text-[13px] font-semibold text-deep-sea">Újrapróbálás</button>
+      </div> : null}
       {tripBase ? <div className="mt-4 rounded-ui-s border border-deep-sea/10 bg-white/50 p-3.5">
         <p className="text-[11px] font-semibold tracking-[.04em] text-deep-sea/45">SZÁLLÁS CÍME</p>
         <p className="mt-1 text-sm leading-[21px] text-deep-sea">{tripBase.address}</p>
