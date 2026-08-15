@@ -106,12 +106,38 @@ function sameOrHungarianSuffix(value: string, canonical: string) {
   return value === canonical || (canonical.length >= 4 && value.startsWith(canonical));
 }
 
+function canonicalNameTokens(place: Place) {
+  return normalized(place.name).split(/[^a-z0-9]+/).filter(Boolean);
+}
+
+/**
+ * A complete canonical name must outrank a shorter shared fragment. For
+ * example, "Spiaggia di Porto Sa Ruxi" is more specific than the shared
+ * "Porto Sa Ruxi" part in a related parking Place. The final token may carry
+ * a Hungarian suffix ("Ruxin"), but the name still has to occur as one
+ * contiguous phrase.
+ */
+function containsCanonicalName(question: string, place: Place) {
+  const questionTokens = normalized(question).split(/[^a-z0-9]+/).filter(Boolean);
+  const nameTokens = canonicalNameTokens(place);
+  if (!nameTokens.length || nameTokens.length > questionTokens.length) return false;
+
+  return questionTokens.some((_, start) =>
+    nameTokens.every((nameToken, offset) => sameOrHungarianSuffix(questionTokens[start + offset] ?? "", nameToken)),
+  );
+}
+
 /**
  * Resolve only an explicit canonical name or a uniquely matching meaningful
  * name fragment. "Porto" deliberately produces all Porto candidates; it
  * never silently picks the place that happens to be in today's Timeline.
  */
 function placeCandidatesInQuestion(question: string, context: QuestionContext) {
+  const completeNameMatches = context.knownPlaces.filter((place) => containsCanonicalName(question, place));
+  // A full canonical phrase is an intentional disambiguation by the family.
+  // Keep more than one only if the canonical data itself is duplicated.
+  if (completeNameMatches.length) return completeNameMatches;
+
   const questionTokens = questionPlaceTokens(question);
   if (!questionTokens.length) return [];
   const candidates = context.knownPlaces;

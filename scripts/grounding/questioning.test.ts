@@ -232,6 +232,21 @@ test("parking is grounded in the selected-day linked Place", () => {
   assert.deepEqual(answer.sources, ["Place"]);
 });
 
+test("a full canonical Place name outranks a related parking Place", () => {
+  const portoSaRuxi = {
+    sourceId: "test-porto-sa-ruxi", slug: "porto-sa-ruxi", name: "Spiaggia di Porto Sa Ruxi", type: "beach" as const,
+    details: { kind: "beach" as const, access: { parkingNotes: "Parkoló a strand közelében." } },
+  };
+  const parking = {
+    sourceId: "test-parking-porto-sa-ruxi", slug: "parcheggio-porto-sa-ruxi", name: "Parcheggio Porto Sa Ruxi", type: "activity" as const,
+    details: { kind: "generic" as const },
+  };
+  const context = buildQuestionContext(futureBeachDay, weather, [], { places: [portoSaRuxi, parking] });
+  const answer = answerQuestionWithContext("Milyen a parkolás a Spiaggia di Porto Sa Ruxin?", context, null);
+  assert.equal(answer.title, "Spiaggia di Porto Sa Ruxi · parkolás");
+  assert.doesNotMatch(answer.body, /Több hely/);
+});
+
 test("a partial Place name stays ambiguous instead of choosing today's Porto", () => {
   const portoGiunco = {
     sourceId: "test-porto-giunco", slug: "porto-giunco", name: "Spiaggia di Porto Giunco", type: "beach" as const,
