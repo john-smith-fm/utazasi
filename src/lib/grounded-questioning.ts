@@ -1,4 +1,11 @@
 import "server-only";
+import {
+  allowedGroundedFactIds,
+  GroundedAnswerContractError,
+  parseGroundedAnswer,
+  type GroundedQuestionAnswer,
+  type GroundedQuestionContext,
+} from "./grounded-answer-contract";
 
 const RESPONSES_URL = "https://api.openai.com/v1/responses";
 const TIMEOUT_MS = 20_000;
@@ -8,15 +15,7 @@ const MAX_CONTEXT_BYTES = 16_000;
 // while this leaves enough room for the JSON object to be completed.
 const MAX_OUTPUT_TOKENS = 1_400;
 
-export type GroundedQuestionContext = {
-  date: string;
-  dayTitle: string;
-  activities: Array<{ id: string; time: string; title: string; locationName: string | null; placeSlug: string | null }>;
-  events: Array<{ id: string; title: string; startsAt: string; endsAt: string | null; status: "scheduled" | "changed" | "cancelled"; placeSlug: string | null }>;
-  places: Array<{ slug: string; name: string; type: string; locality: string | null; verifiedNote: string | null }>;
-};
-
-export type GroundedQuestionAnswer = { title: string; body: string; factIds: string[] };
+export type { GroundedQuestionAnswer, GroundedQuestionContext } from "./grounded-answer-contract";
 
 function responseText(body: { output_text?: unknown; output?: Array<{ content?: Array<{ type?: string; text?: unknown }> }> }) {
   if (typeof body.output_text === "string") return body.output_text;
@@ -38,28 +37,8 @@ function reportRejectedModelOutput(body: ResponseDiagnostics, error: unknown) {
     responseStatus: typeof body.status === "string" ? body.status : null,
     incompleteReason: typeof body.incomplete_details?.reason === "string" ? body.incomplete_details.reason : null,
     outputTypes: body.output?.map((item) => (typeof item.type === "string" ? item.type : "unknown")) ?? [],
+    validation: error instanceof GroundedAnswerContractError ? { code: error.code, ...error.diagnostics } : null,
   });
-}
-
-function parseAnswer(value: string, context: GroundedQuestionContext): GroundedQuestionAnswer {
-  let parsed: Partial<GroundedQuestionAnswer>;
-  try {
-    parsed = JSON.parse(value.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "")) as Partial<GroundedQuestionAnswer>;
-  } catch {
-    throw new Error("Az AI válasza most nem használható. Próbáld újra.");
-  }
-  const title = typeof parsed.title === "string" ? parsed.title.trim() : "";
-  const body = typeof parsed.body === "string" ? parsed.body.trim() : "";
-  const factIds = Array.isArray(parsed.factIds) && parsed.factIds.every((id) => typeof id === "string") ? [...new Set(parsed.factIds)] : [];
-  const allowed = new Set([
-    ...context.activities.map((activity) => `timeline:${activity.id}`),
-    ...context.events.map((event) => `event:${event.id}`),
-    ...context.places.map((place) => `place:${place.slug}`),
-  ]);
-  if (!title || title.length > 90 || !body || body.length > 700 || !factIds.length || factIds.some((id) => !allowed.has(id))) {
-    throw new Error("Az AI válasza nem kapcsolható kizárólag az ellenőrzött adatokhoz.");
-  }
-  return { title, body, factIds };
 }
 
 /**
@@ -67,10 +46,13 @@ function parseAnswer(value: string, context: GroundedQuestionContext): GroundedQ
  * no database tools and a response is rejected unless every cited fact is an
  * existing Timeline, Event or Place identifier.
  */
-export async function answerGroundedQuestion(question: string, context: GroundedQuestionContext): Promise<GroundedQuestionAnswer> {
+export async function answerGroundedQuestion(question: string, context: GroundedQuestionContext): Promise<GroundedQuestionAnswer | null> {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) throw new Error("Az AI segítség nincs konfigurálva.");
-  const groundedInput = JSON.stringify({ question, context });
+  // `timeline:` / `event:` / `place:` are implementation identifiers, not
+  // derivable from the human-readable context. Supply them explicitly so a
+  // valid structured response can cite a fact without guessing its prefix.
+  const groundedInput = JSON.stringify({ question, context, allowedFactIds: allowedGroundedFactIds(context) });
   if (Buffer.byteLength(groundedInput, "utf8") > MAX_CONTEXT_BYTES) {
     throw new Error("A kérdéshez tartozó ellenőrzött kontextus most túl nagy az AI-összefoglalóhoz.");
   }
@@ -87,15 +69,16 @@ export async function answerGroundedQuestion(question: string, context: Grounded
         max_output_tokens: MAX_OUTPUT_TOKENS,
         reasoning: { effort: "minimal" },
         text: { verbosity: "low", format: { type: "json_schema", name: "grounded_trip_answer", strict: true, schema: {
-          type: "object", additionalProperties: false, required: ["title", "body", "factIds"],
+          type: "object", additionalProperties: false, required: ["status", "title", "body", "factIds"],
           properties: {
+            status: { type: "string", enum: ["grounded", "insufficient_context"] },
             title: { type: "string", maxLength: 70 },
             body: { type: "string", maxLength: 320 },
-            factIds: { type: "array", minItems: 1, maxItems: 3, items: { type: "string" } },
+            factIds: { type: "array", maxItems: 3, items: { type: "string" } },
           },
         } } },
         input: [
-          { role: "system", content: "You are Utazási, a private family travel companion. Answer in Hungarian. Use ONLY the supplied JSON context. Do not infer or invent opening hours, prices, tickets, routes, travel times, weather, availability, or event details. If the context cannot answer, say that clearly. Return exactly one valid JSON object matching the supplied schema: no Markdown, no code fence, no text before or after it. Keep the title under 70 characters, the body to at most two short sentences, and use 1–3 exact factIds from the supplied context for every factual answer." },
+          { role: "system", content: "You are Utazási, a private family travel companion. Answer in Hungarian. Use ONLY the supplied JSON context. Do not infer or invent opening hours, prices, tickets, routes, travel times, weather, availability, or event details. For a factual answer, return status 'grounded', keep the title under 70 characters and the body to at most two short sentences, and cite 1–3 identifiers copied exactly from allowedFactIds. If the supplied context cannot answer, return exactly status 'insufficient_context' with title '', body '', and factIds []. Return exactly one valid JSON object matching the supplied schema: no Markdown, no code fence, no text before or after it." },
           { role: "user", content: groundedInput },
         ],
       }),
@@ -103,7 +86,7 @@ export async function answerGroundedQuestion(question: string, context: Grounded
     const body = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(`Az AI válasz most nem érhető el (${response.status}).`);
     try {
-      return parseAnswer(responseText(body), context);
+      return parseGroundedAnswer(responseText(body), context);
     } catch (error) {
       reportRejectedModelOutput(body as ResponseDiagnostics, error);
       throw error;

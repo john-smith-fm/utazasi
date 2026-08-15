@@ -51,8 +51,12 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
     setIsAsking(true);
     try {
       const response = await fetch("/api/question", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: value, date: day.date }) });
-      const payload = await response.json().catch(() => null) as { answer?: { title?: string; body?: string }; error?: unknown } | null;
+      const payload = await response.json().catch(() => null) as { answer?: { title?: string; body?: string } | null; error?: unknown } | null;
       if (response.ok && payload?.answer?.title && payload.answer.body) setAiAnswer({ title: payload.answer.title, body: payload.answer.body });
+      // An AI `insufficient_context` response is not an application error.
+      // Keep the already-visible deterministic answer, which is intentionally
+      // more useful than a second generic warning card.
+      else if (response.ok && payload?.answer === null) return;
       else setAiError(typeof payload?.error === "string" ? payload.error : "Az AI-összefoglaló most nem érhető el.");
     } catch {
       setAiError("Az AI-összefoglaló most nem érhető el. Ellenőrizd az internetkapcsolatot, majd próbáld újra.");

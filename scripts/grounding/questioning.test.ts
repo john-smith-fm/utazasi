@@ -7,6 +7,7 @@ import { timelineQuestionPrompts } from "../../src/lib/timeline-questioning.ts";
 import { buildQuestionContext, questionPromptsForContext } from "../../src/lib/question-context.ts";
 import { answerQuestionWithContext } from "../../src/lib/questioning-answer.ts";
 import { validPlaceBrowseCategoryForType } from "../../src/lib/place-categories.ts";
+import { GroundedAnswerContractError, parseGroundedAnswer } from "../../src/lib/grounded-answer-contract.ts";
 
 const futureBeachDay = {
   date: "2099-09-03",
@@ -72,6 +73,38 @@ const returnFlightDay = {
     { time: "17:30", title: "Repülő indulása", place: "Cagliari Airport", placeSlug: "cagliari-airport" },
   ],
 };
+
+const aiContext = {
+  date: "2099-09-03",
+  dayTitle: "Strandnap",
+  activities: [{ id: "activity-1", time: "09:00", title: "Strand", locationName: "Porto Giunco", placeSlug: "porto-giunco" }],
+  events: [],
+  places: [{ slug: "porto-giunco", name: "Porto Giunco", type: "beach", locality: "Villasimius", verifiedNote: null }],
+};
+
+test("grounded AI may cite only the explicit allowed fact identifiers", () => {
+  const answer = parseGroundedAnswer(JSON.stringify({
+    status: "grounded",
+    title: "Mai program",
+    body: "09:00-kor strandolás van Porto Giuncón.",
+    factIds: ["timeline:activity-1", "place:porto-giunco"],
+  }), aiContext);
+  assert.equal(answer?.title, "Mai program");
+  assert.deepEqual(answer?.factIds, ["timeline:activity-1", "place:porto-giunco"]);
+});
+
+test("grounded AI cannot cite an identifier that was not provided", () => {
+  assert.throws(() => parseGroundedAnswer(JSON.stringify({
+    status: "grounded",
+    title: "Mai program",
+    body: "09:00-kor strandolás van Porto Giuncón.",
+    factIds: ["activity-1"],
+  }), aiContext), (error: unknown) => error instanceof GroundedAnswerContractError && error.code === "unknown_fact_id");
+});
+
+test("insufficient AI context keeps the deterministic fallback without model prose", () => {
+  assert.equal(parseGroundedAnswer(JSON.stringify({ status: "insufficient_context", title: "", body: "", factIds: [] }), aiContext), null);
+});
 
 test("future selected day resolves its first explicit Timeline item", () => {
   const answer = answerQuestion("Mi a következő program?", futureBeachDay, weather, [], null);
