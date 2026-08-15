@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { ACCESS_COOKIE_NAME, hasValidAccessSession } from "@/lib/access";
 import { answerGroundedQuestion, type GroundedQuestionContext } from "@/lib/grounded-questioning";
 import { getPlaceBySlug } from "@/lib/places";
+import { checkQuestionAIRateLimit } from "@/lib/question-ai-rate-limit";
 import { TIMELINE_TRIP_SLUG, timelineServerClient } from "@/lib/timeline-service";
 
 export const dynamic = "force-dynamic";
@@ -14,10 +15,18 @@ function dayBounds(date: string) {
 }
 
 export async function POST(request: NextRequest) {
-  if (!hasValidAccessSession(request.cookies.get(ACCESS_COOKIE_NAME)?.value)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const accessSession = request.cookies.get(ACCESS_COOKIE_NAME)?.value;
+  if (!hasValidAccessSession(accessSession)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const body = await request.json().catch(() => null) as { question?: unknown; date?: unknown } | null;
   const question = typeof body?.question === "string" ? body.question.trim() : "";
   if (!question || question.length > 500 || !isDate(body?.date)) return NextResponse.json({ error: "Érvénytelen kérdés vagy nap." }, { status: 400 });
+  const rateLimit = checkQuestionAIRateLimit(accessSession!);
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "Az AI-kérdések óránkénti kerete most betelt. A biztos, helyi válaszok ettől még működnek." },
+      { status: 429, headers: { "Retry-After": String(rateLimit.retryAfterSeconds), "Cache-Control": "no-store" } },
+    );
+  }
 
   try {
     const supabase = timelineServerClient();

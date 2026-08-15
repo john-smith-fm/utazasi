@@ -2,6 +2,8 @@ import "server-only";
 
 const RESPONSES_URL = "https://api.openai.com/v1/responses";
 const TIMEOUT_MS = 20_000;
+const MAX_CONTEXT_BYTES = 16_000;
+const MAX_OUTPUT_TOKENS = 280;
 
 export type GroundedQuestionContext = {
   date: string;
@@ -43,6 +45,10 @@ function parseAnswer(value: string, context: GroundedQuestionContext): GroundedQ
 export async function answerGroundedQuestion(question: string, context: GroundedQuestionContext): Promise<GroundedQuestionAnswer> {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) throw new Error("Az AI segítség nincs konfigurálva.");
+  const groundedInput = JSON.stringify({ question, context });
+  if (Buffer.byteLength(groundedInput, "utf8") > MAX_CONTEXT_BYTES) {
+    throw new Error("A kérdéshez tartozó ellenőrzött kontextus most túl nagy az AI-összefoglalóhoz.");
+  }
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
@@ -53,13 +59,14 @@ export async function answerGroundedQuestion(question: string, context: Grounded
       body: JSON.stringify({
         model: process.env.OPENAI_QUESTION_MODEL ?? process.env.OPENAI_RESEARCH_MODEL ?? "gpt-5-mini",
         store: false,
+        max_output_tokens: MAX_OUTPUT_TOKENS,
         text: { format: { type: "json_schema", name: "grounded_trip_answer", strict: true, schema: {
           type: "object", additionalProperties: false, required: ["title", "body", "factIds"],
           properties: { title: { type: "string" }, body: { type: "string" }, factIds: { type: "array", minItems: 1, items: { type: "string" } } },
         } } },
         input: [
           { role: "system", content: "You are Utazási, a private family travel companion. Answer in Hungarian. Use ONLY the supplied JSON context. Do not infer or invent opening hours, prices, tickets, routes, travel times, weather, availability, or event details. If the context cannot answer, say that clearly. Cite every factual statement with the exact factIds supplied in context. Return concise JSON only." },
-          { role: "user", content: JSON.stringify({ question, context }) },
+          { role: "user", content: groundedInput },
         ],
       }),
     });
