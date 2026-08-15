@@ -3,7 +3,10 @@ import "server-only";
 const RESPONSES_URL = "https://api.openai.com/v1/responses";
 const TIMEOUT_MS = 20_000;
 const MAX_CONTEXT_BYTES = 16_000;
-const MAX_OUTPUT_TOKENS = 280;
+// GPT-5 mini can spend part of this allowance on its bounded reasoning before
+// emitting the strict JSON response. The final visible answer remains capped
+// by parseAnswer (90-character title, 700-character body).
+const MAX_OUTPUT_TOKENS = 650;
 
 export type GroundedQuestionContext = {
   date: string;
@@ -60,6 +63,7 @@ export async function answerGroundedQuestion(question: string, context: Grounded
         model: process.env.OPENAI_QUESTION_MODEL ?? process.env.OPENAI_RESEARCH_MODEL ?? "gpt-5-mini",
         store: false,
         max_output_tokens: MAX_OUTPUT_TOKENS,
+        reasoning: { effort: "minimal" },
         text: { format: { type: "json_schema", name: "grounded_trip_answer", strict: true, schema: {
           type: "object", additionalProperties: false, required: ["title", "body", "factIds"],
           properties: { title: { type: "string" }, body: { type: "string" }, factIds: { type: "array", minItems: 1, items: { type: "string" } } },
