@@ -165,6 +165,13 @@ test("canonical Place type adds the right prompt even when the Timeline title is
   assert.ok(questionPromptsForContext(buildQuestionContext(beachDay, null, [], { getPlaceBySlug: resolve, places: [conad, beach] })).includes("Van még értelme strandolni?"));
 });
 
+test("an Event quick question belongs only to the selected day context", () => {
+  const eventDayPrompts = questionPromptsForContext(buildQuestionContext(futureBeachDay, weather, [scheduledEvent]));
+  const otherDayPrompts = questionPromptsForContext(buildQuestionContext({ ...futureBeachDay, date: "2099-09-04" }, weather, []));
+  assert.ok(eventDayPrompts.includes("Mikor kezdődik a mai esemény?"));
+  assert.ok(!otherDayPrompts.includes("Mikor kezdődik a mai esemény?"));
+});
+
 test("the approved twelve-day Timeline yields selected-day-specific prompt sets", () => {
   const trip = JSON.parse(readFileSync(new URL("../../knowledge/trip/trip.public.json", import.meta.url), "utf8")) as {
     days: Array<{ date: string; day: number; weekday: "Sze" | "Csü" | "Pén" | "Szo" | "Vas" | "Hét" | "Kedd"; title: string; subtitle: string }>;
