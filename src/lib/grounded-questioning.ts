@@ -3,10 +3,10 @@ import "server-only";
 const RESPONSES_URL = "https://api.openai.com/v1/responses";
 const TIMEOUT_MS = 20_000;
 const MAX_CONTEXT_BYTES = 16_000;
-// GPT-5 mini can spend part of this allowance on its bounded reasoning before
-// emitting the strict JSON response. The final visible answer remains capped
-// by parseAnswer (90-character title, 700-character body).
-const MAX_OUTPUT_TOKENS = 1_000;
+// GPT-5 mini can spend part of this allowance on bounded reasoning before
+// emitting the strict JSON response. The answer contract below stays small,
+// while this leaves enough room for the JSON object to be completed.
+const MAX_OUTPUT_TOKENS = 1_400;
 
 export type GroundedQuestionContext = {
   date: string;
@@ -22,6 +22,23 @@ function responseText(body: { output_text?: unknown; output?: Array<{ content?: 
   if (typeof body.output_text === "string") return body.output_text;
   for (const item of body.output ?? []) for (const content of item.content ?? []) if (content.type === "output_text" && typeof content.text === "string") return content.text;
   throw new Error("Az AI nem adott feldolgozható választ.");
+}
+
+type ResponseDiagnostics = {
+  status?: unknown;
+  incomplete_details?: { reason?: unknown };
+  output?: Array<{ type?: unknown; content?: Array<{ type?: unknown }> }>;
+};
+
+function reportRejectedModelOutput(body: ResponseDiagnostics, error: unknown) {
+  // Keep production diagnostics useful without logging the family question,
+  // private trip context or the model's raw response.
+  console.warn("[grounded-questioning] Rejected model output", {
+    reason: error instanceof Error ? error.message : "unknown",
+    responseStatus: typeof body.status === "string" ? body.status : null,
+    incompleteReason: typeof body.incomplete_details?.reason === "string" ? body.incomplete_details.reason : null,
+    outputTypes: body.output?.map((item) => (typeof item.type === "string" ? item.type : "unknown")) ?? [],
+  });
 }
 
 function parseAnswer(value: string, context: GroundedQuestionContext): GroundedQuestionAnswer {
@@ -71,16 +88,25 @@ export async function answerGroundedQuestion(question: string, context: Grounded
         reasoning: { effort: "minimal" },
         text: { verbosity: "low", format: { type: "json_schema", name: "grounded_trip_answer", strict: true, schema: {
           type: "object", additionalProperties: false, required: ["title", "body", "factIds"],
-          properties: { title: { type: "string" }, body: { type: "string" }, factIds: { type: "array", minItems: 1, items: { type: "string" } } },
+          properties: {
+            title: { type: "string", maxLength: 70 },
+            body: { type: "string", maxLength: 320 },
+            factIds: { type: "array", minItems: 1, maxItems: 3, items: { type: "string" } },
+          },
         } } },
         input: [
-          { role: "system", content: "You are Utazási, a private family travel companion. Answer in Hungarian. Use ONLY the supplied JSON context. Do not infer or invent opening hours, prices, tickets, routes, travel times, weather, availability, or event details. If the context cannot answer, say that clearly. Cite every factual statement with the exact factIds supplied in context. Return concise JSON only." },
+          { role: "system", content: "You are Utazási, a private family travel companion. Answer in Hungarian. Use ONLY the supplied JSON context. Do not infer or invent opening hours, prices, tickets, routes, travel times, weather, availability, or event details. If the context cannot answer, say that clearly. Return exactly one valid JSON object matching the supplied schema: no Markdown, no code fence, no text before or after it. Keep the title under 70 characters, the body to at most two short sentences, and use 1–3 exact factIds from the supplied context for every factual answer." },
           { role: "user", content: groundedInput },
         ],
       }),
     });
     const body = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(`Az AI válasz most nem érhető el (${response.status}).`);
-    return parseAnswer(responseText(body), context);
+    try {
+      return parseAnswer(responseText(body), context);
+    } catch (error) {
+      reportRejectedModelOutput(body as ResponseDiagnostics, error);
+      throw error;
+    }
   } finally { clearTimeout(timer); }
 }
