@@ -327,6 +327,12 @@ test("event start time comes from a verified event", () => {
   assert.deepEqual(answer.sources, ["Event"]);
 });
 
+test("a named Event resolves through common Hungarian suffixes", () => {
+  const answer = answerQuestion("Mikor kezdődik a koncertre érkezés?", futureBeachDay, weather, [scheduledEvent], null);
+  assert.equal(answer.title, "Helyi koncert");
+  assert.match(answer.body, /Kezdés:/);
+});
+
 test("a generic event question does not choose arbitrarily between multiple Events", () => {
   const answer = answerQuestion("Mikor kezdődik a mai esemény?", futureBeachDay, weather, [
     scheduledEvent,

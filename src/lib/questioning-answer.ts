@@ -42,7 +42,10 @@ function eventAnswer(question: string, events: readonly TripEvent[]): QuestionAn
   // family's own Timeline plan (for example, a scheduled flight home).
   // Only named external-event concepts should enter the Event branch.
   const eventTerms = ["fesztival", "koncert", "felvonulas", "kiallitas", "hajokirandulas", "muzeum"];
-  const namedEventTerms = eventTerms.filter((term) => new RegExp(`\\b${term}\\b`).test(value));
+  // Hungarian questions naturally carry suffixes ("koncertre", "fesztiválon").
+  // Treat those as the same named event without widening matching to unrelated
+  // substrings.
+  const namedEventTerms = eventTerms.filter((term) => new RegExp(`\\b${term}[a-z]*\\b`).test(value));
   const asksEventTime = /\besemeny\b/.test(value) || namedEventTerms.length > 0;
   if (!asksAdmission && !asksFireworks && !asksEventTime) return null;
   if (asksFireworks && !events.some((event) => /tűzijáték|tuzijatek/i.test(event.title))) {
