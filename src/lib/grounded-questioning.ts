@@ -1,7 +1,6 @@
 import "server-only";
 import {
   allowedGroundedFactIds,
-  GroundedAnswerContractError,
   parseGroundedAnswer,
   type GroundedQuestionAnswer,
   type GroundedQuestionContext,
@@ -21,24 +20,6 @@ function responseText(body: { output_text?: unknown; output?: Array<{ content?: 
   if (typeof body.output_text === "string") return body.output_text;
   for (const item of body.output ?? []) for (const content of item.content ?? []) if (content.type === "output_text" && typeof content.text === "string") return content.text;
   throw new Error("Az AI nem adott feldolgozható választ.");
-}
-
-type ResponseDiagnostics = {
-  status?: unknown;
-  incomplete_details?: { reason?: unknown };
-  output?: Array<{ type?: unknown; content?: Array<{ type?: unknown }> }>;
-};
-
-function reportRejectedModelOutput(body: ResponseDiagnostics, error: unknown) {
-  // Keep production diagnostics useful without logging the family question,
-  // private trip context or the model's raw response.
-  console.warn("[grounded-questioning] Rejected model output", {
-    reason: error instanceof Error ? error.message : "unknown",
-    responseStatus: typeof body.status === "string" ? body.status : null,
-    incompleteReason: typeof body.incomplete_details?.reason === "string" ? body.incomplete_details.reason : null,
-    outputTypes: body.output?.map((item) => (typeof item.type === "string" ? item.type : "unknown")) ?? [],
-    validation: error instanceof GroundedAnswerContractError ? { code: error.code, ...error.diagnostics } : null,
-  });
 }
 
 /**
@@ -85,11 +66,6 @@ export async function answerGroundedQuestion(question: string, context: Grounded
     });
     const body = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(`Az AI válasz most nem érhető el (${response.status}).`);
-    try {
-      return parseGroundedAnswer(responseText(body), context);
-    } catch (error) {
-      reportRejectedModelOutput(body as ResponseDiagnostics, error);
-      throw error;
-    }
+    return parseGroundedAnswer(responseText(body), context);
   } finally { clearTimeout(timer); }
 }
