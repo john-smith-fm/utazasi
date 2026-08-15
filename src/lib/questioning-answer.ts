@@ -41,7 +41,9 @@ function eventAnswer(question: string, events: readonly TripEvent[]): QuestionAn
   // A bare "mikor" is not an Event question: it can just as easily mean the
   // family's own Timeline plan (for example, a scheduled flight home).
   // Only named external-event concepts should enter the Event branch.
-  const asksEventTime = /\b(fesztival|esemeny|koncert|felvonulas|kiallitas|hajokirandulas|muzeum)\b/.test(value);
+  const eventTerms = ["fesztival", "koncert", "felvonulas", "kiallitas", "hajokirandulas", "muzeum"];
+  const namedEventTerms = eventTerms.filter((term) => new RegExp(`\\b${term}\\b`).test(value));
+  const asksEventTime = /\besemeny\b/.test(value) || namedEventTerms.length > 0;
   if (!asksAdmission && !asksFireworks && !asksEventTime) return null;
   if (asksFireworks && !events.some((event) => /tűzijáték|tuzijatek/i.test(event.title))) {
     return { title: "Nincs megerősített tűzijáték", body: "A kiválasztott naphoz nincs ellenőrzött tűzijáték-esemény rögzítve. Nem állítok időpontot vagy helyszínt forrás nélkül.", sources: ["Event"] };
@@ -49,7 +51,20 @@ function eventAnswer(question: string, events: readonly TripEvent[]): QuestionAn
   if (asksAdmission) {
     return { title: "A belépőről nincs biztos adat", body: "A jelenlegi ellenőrzött Place- és Event-adatok nem tartalmaznak megbízható belépő- vagy jegyár-információt ehhez a kérdéshez. Nem találgatok.", sources: ["Place", "Event"] };
   }
-  const event = events[0];
+  const activeEvents = events.filter((event) => event.status !== "cancelled");
+  const candidates = namedEventTerms.length
+    // A specifically named cancelled Event remains a useful, grounded answer
+    // ("X · törölve"). Only an unspecified generic event question hides it.
+    ? events.filter((event) => namedEventTerms.some((term) => normalized(event.title).includes(term)))
+    : activeEvents;
+  if (candidates.length > 1) {
+    return {
+      title: "Több rögzített esemény",
+      body: `A kiválasztott naphoz több ellenőrzött esemény tartozik: ${candidates.slice(0, 3).map((event) => event.title).join(", ")}. Írd be, melyikre gondolsz, és nem választok találgatással közülük.`,
+      sources: ["Event"],
+    };
+  }
+  const event = candidates[0];
   if (!event) return { title: "Nincs rögzített esemény", body: "A kiválasztott naphoz jelenleg nincs ellenőrzött, külső esemény rögzítve.", sources: ["Event"] };
   if (event.status === "cancelled") return { title: `${event.title} · törölve`, body: "Az esemény törölt állapotban van. Indulás előtt az eredeti szervezői forrást is ellenőrizd.", sources: ["Event"] };
   const spansWholeDay = Boolean(event.endsAt && new Date(event.startsAt).toDateString() !== new Date(event.endsAt).toDateString());

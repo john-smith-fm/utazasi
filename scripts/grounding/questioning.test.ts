@@ -327,6 +327,16 @@ test("event start time comes from a verified event", () => {
   assert.deepEqual(answer.sources, ["Event"]);
 });
 
+test("a generic event question does not choose arbitrarily between multiple Events", () => {
+  const answer = answerQuestion("Mikor kezdődik a mai esemény?", futureBeachDay, weather, [
+    scheduledEvent,
+    { ...scheduledEvent, id: "00000000-0000-4000-8000-000000000002", title: "Helyi felvonulás", startsAt: "2099-09-03T20:30:00+02:00" },
+  ], null);
+  assert.equal(answer.title, "Több rögzített esemény");
+  assert.match(answer.body, /Helyi koncert/);
+  assert.match(answer.body, /Helyi felvonulás/);
+});
+
 test("a scheduled return flight comes from the selected Timeline day, not the Event branch", () => {
   const answer = answerQuestion("Mikor indul haza a repülő?", returnFlightDay, weather, [], null);
   assert.equal(answer.title, "17:30 · Repülő indulása");
@@ -353,7 +363,7 @@ test("cancelled event is not presented as an active programme", () => {
 });
 
 test("multi-day event does not invent an evening start", () => {
-  const answer = answerQuestion("Mikor kezdődik a fesztivál?", futureBeachDay, weather, [{ ...scheduledEvent, endsAt: "2099-09-05T23:00:00+02:00" }], null);
+  const answer = answerQuestion("Mikor kezdődik a fesztivál?", futureBeachDay, weather, [{ ...scheduledEvent, title: "Helyi fesztivál", endsAt: "2099-09-05T23:00:00+02:00" }], null);
   assert.match(answer.body, /nincs ellenőrzött adatként rögzítve/);
 });
 
