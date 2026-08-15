@@ -77,7 +77,9 @@ export function buildQuestionContext(
 
   if (day.activities.length) capabilities.add("timeline");
   if (day.activities.some(isTimed)) capabilities.add("scheduled-timeline");
-  if (events.length) capabilities.add("event");
+  // A cancelled Event may still surface through Smart Status, but offering a
+  // "when does it start?" prompt for it would be misleading.
+  if (events.some((event) => event.status !== "cancelled")) capabilities.add("event");
   if (weather) capabilities.add("weather");
 
   for (const activity of day.activities) {

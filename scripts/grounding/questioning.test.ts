@@ -172,6 +172,11 @@ test("an Event quick question belongs only to the selected day context", () => {
   assert.ok(!otherDayPrompts.includes("Mikor kezdődik a mai esemény?"));
 });
 
+test("a cancelled Event does not offer a misleading start-time quick question", () => {
+  const prompts = questionPromptsForContext(buildQuestionContext(futureBeachDay, weather, [{ ...scheduledEvent, status: "cancelled" }]));
+  assert.ok(!prompts.includes("Mikor kezdődik a mai esemény?"));
+});
+
 test("the approved twelve-day Timeline yields selected-day-specific prompt sets", () => {
   const trip = JSON.parse(readFileSync(new URL("../../knowledge/trip/trip.public.json", import.meta.url), "utf8")) as {
     days: Array<{ date: string; day: number; weekday: "Sze" | "Csü" | "Pén" | "Szo" | "Vas" | "Hét" | "Kedd"; title: string; subtitle: string }>;
