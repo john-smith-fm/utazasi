@@ -74,5 +74,8 @@ test("the dashboard replacement seed is visibly blocked", async () => {
   assert.match(backup, /A mentés nem kerülhet a Git repóba/);
   assert.match(backup, /flag: "wx"/);
   assert.match(backup, /chmod\(output, 0o600\)/);
+  assert.match(backup, /AbortSignal\.timeout\(BACKUP_REQUEST_TIMEOUT_MS\)/);
+  assert.match(backup, /Supabase mentési kapcsolat 15 másodperc/);
+  assert.match(backup, /Supabase jelenleg nem érhető el a gépről/);
   assert.doesNotMatch(backup, /\.from\([^)]*\)\.(?:insert|update|upsert|delete)\(/);
 });

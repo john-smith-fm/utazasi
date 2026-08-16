@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 
 const TRIP_SLUG = "sardinia-family-2026";
 const REPOSITORY_ROOT = resolve(import.meta.dirname, "..");
+const BACKUP_REQUEST_TIMEOUT_MS = 15_000;
 const args = process.argv.slice(2);
 
 function usage() {
@@ -36,9 +37,32 @@ function requireEnvironment() {
   return { url, key };
 }
 
+async function backupFetch(input, init = {}) {
+  try {
+    return await fetch(input, { ...init, signal: AbortSignal.timeout(BACKUP_REQUEST_TIMEOUT_MS) });
+  } catch (error) {
+    if (error?.name === "TimeoutError") {
+      throw new Error("A Supabase mentési kapcsolat 15 másodperc után sem válaszolt. Ellenőrizd a hálózatot vagy a DNS-t, majd futtasd újra.");
+    }
+    throw error;
+  }
+}
+
+function readableQueryError(error) {
+  const message = error instanceof Error
+    ? error.message
+    : typeof error === "object" && error && "message" in error && typeof error.message === "string"
+      ? error.message
+      : String(error ?? "");
+  if (/fetch failed|network|enotfound|eai_again/i.test(message)) {
+    return "A Supabase jelenleg nem érhető el a gépről. Ellenőrizd a hálózatot vagy a DNS-t, majd futtasd újra a mentést.";
+  }
+  return message || "A Supabase lekérdezése nem sikerült.";
+}
+
 async function selectOrThrow(supabase, table, query) {
   const { data, error } = await query;
-  if (error) throw new Error(`${table}: ${error.message}`);
+  if (error) throw new Error(`${table}: ${readableQueryError(error)}`);
   return data ?? [];
 }
 
@@ -48,7 +72,7 @@ async function readSnapshot(supabase) {
     .select("*")
     .eq("slug", TRIP_SLUG)
     .maybeSingle();
-  if (tripError) throw new Error(`trips: ${tripError.message}`);
+  if (tripError) throw new Error(`trips: ${readableQueryError(tripError)}`);
   if (!trip) throw new Error(`Az utazás nem található: ${TRIP_SLUG}`);
 
   const [days, packingItems, notebookEntries, legacyImports, events, eventSeries, pushSubscriptions] = await Promise.all([
@@ -105,7 +129,10 @@ async function main() {
 
   const output = outputPathFromArgs(args);
   const { url, key } = requireEnvironment();
-  const supabase = createClient(url, key, { auth: { autoRefreshToken: false, persistSession: false } });
+  const supabase = createClient(url, key, {
+    auth: { autoRefreshToken: false, persistSession: false },
+    global: { fetch: backupFetch },
+  });
   const snapshot = await readSnapshot(supabase);
 
   await mkdir(dirname(output), { recursive: true, mode: 0o700 });
