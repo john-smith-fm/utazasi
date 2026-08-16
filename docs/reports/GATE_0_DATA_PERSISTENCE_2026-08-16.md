@@ -13,7 +13,7 @@ Protect manually entered family data before further 1.0 development. Runtime Tim
    - The `seed:supabase:replace-test-day` package command has been removed.
    - Normal `seed:supabase` remains insert-only for Timeline activities.
    - If legacy fixture rows are encountered, the normal seed stops and asks for an explicit reviewed maintenance plan; it never deletes them.
-   - Canonical day metadata is also insert-only, so later family edits to a day title or note cannot be reset from Git.
+   - A normal seed writes the initial days and Timeline only for a newly created Trip. On any later run it does not recreate a family-deleted seeded activity or reset day metadata.
 
 2. **Generic Place-link backfill retired.**
    - `backfill:place-links --apply` now fails before any database configuration or request.

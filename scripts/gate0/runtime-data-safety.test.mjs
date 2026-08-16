@@ -37,6 +37,8 @@ test("the dashboard replacement seed is visibly blocked", async () => {
   assert.match(generator, /historical Dashboard seed is intentionally blocked/i);
   assert.match(sql, /Dashboard seed is intentionally blocked/i);
   assert.doesNotMatch(seed, /\.from\("timeline_activities"\)[\s\S]{0,160}\.delete\(/);
-  assert.match(seed, /upsert\(initialRows, \{ onConflict: "seed_key", ignoreDuplicates: true \}\)/);
-  assert.match(seed, /onConflict: "trip_id,date", ignoreDuplicates: true/);
+  assert.match(seed, /const tripAlreadyExists = Boolean\(existingTrip\)/);
+  assert.match(seed, /if \(!tripAlreadyExists\) \{[\s\S]{0,320}\.insert\(initialRows\)/);
+  assert.doesNotMatch(seed, /\.upsert\(initialRows/);
+  assert.match(seed, /\.upsert\(eventRows, \{ onConflict: "trip_id,canonical_key", ignoreDuplicates: true \}\)/);
 });
