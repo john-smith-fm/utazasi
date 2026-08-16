@@ -40,8 +40,11 @@ test("the dashboard replacement seed is visibly blocked", async () => {
   assert.match(sql, /Dashboard seed is intentionally blocked/i);
   assert.doesNotMatch(seed, /\.from\("timeline_activities"\)[\s\S]{0,160}\.delete\(/);
   assert.match(seed, /const tripAlreadyExists = Boolean\(existingTrip\)/);
+  assert.match(seed, /if \(!tripAlreadyExists\) \{[\s\S]{0,320}\.from\("days"\)[\s\S]{0,160}\.insert\(tripCore\.days\.map/);
+  assert.doesNotMatch(seed, /\.from\("days"\)[\s\S]{0,160}\.(?:update|upsert)\(/);
   assert.match(seed, /if \(!tripAlreadyExists\) \{[\s\S]{0,320}\.insert\(initialRows\)/);
   assert.doesNotMatch(seed, /\.upsert\(initialRows/);
+  assert.doesNotMatch(seed, /\.from\("timeline_activities"\)[\s\S]{0,160}\.(?:update|upsert)\(/);
   assert.match(seed, /\.upsert\(eventRows, \{ onConflict: "trip_id,canonical_key", ignoreDuplicates: true \}\)/);
   assert.match(notebookService, /hasOtherRuntimeData/);
   assert.match(notebookService, /nem kevertük össze őket a már elmentett utazási adatokkal/i);
