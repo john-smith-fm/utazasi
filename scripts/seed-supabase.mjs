@@ -5,7 +5,12 @@ const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 // New Supabase projects use sb_secret_ keys. Keep the legacy variable as a
 // local-only fallback so existing setups do not break during the transition.
 const secretKey = process.env.SUPABASE_SECRET_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY;
-const replaceLegacyTestDay = process.argv.includes("--replace-test-day");
+
+if (process.argv.includes("--replace-test-day")) {
+  throw new Error(
+    "The legacy --replace-test-day command is retired. It is deliberately disabled because it could delete family Timeline data. The normal seed is insert-only.",
+  );
+}
 
 if (!url || !secretKey) {
   throw new Error(
@@ -95,7 +100,9 @@ if (tripError) throw tripError;
 
 const { error: coreDaysError } = await supabase
   .from("days")
-  .upsert(tripCore.days.map((day) => ({ trip_id: trip.id, date: day.date, title: day.title, subtitle: day.subtitle })), { onConflict: "trip_id,date" });
+  // Like Timeline rows, day metadata is initialized once and never reset by a
+  // later Git seed. This preserves future family edits to day titles or notes.
+  .upsert(tripCore.days.map((day) => ({ trip_id: trip.id, date: day.date, title: day.title, subtitle: day.subtitle })), { onConflict: "trip_id,date", ignoreDuplicates: true });
 if (coreDaysError) throw coreDaysError;
 
 const { data: days, error: daysLookupError } = await supabase
@@ -108,32 +115,15 @@ if (daysLookupError) throw daysLookupError;
 const dayIds = new Map((days ?? []).map((day) => [day.date, day.id]));
 if (dayIds.size !== 12) throw new Error("Could not resolve all canonical Trip days after seed.");
 
-if (replaceLegacyTestDay) {
-  const testDayId = dayIds.get("2026-09-03");
-  const { data: removedTestRows, error: removeTestError } = await supabase
-    .from("timeline_activities")
-    .delete()
-    .eq("day_id", testDayId)
-    .select("id");
-  if (removeTestError) throw removeTestError;
-
-  const { data: removedCoreRows, error: removeCoreError } = await supabase
-    .from("timeline_activities")
-    .delete()
-    .in("seed_key", LEGACY_TRIP_CORE_SEED_KEYS)
-    .select("id");
-  if (removeCoreError) throw removeCoreError;
-
-  console.log(`Replaced the Sep 3 test day: removed ${removedTestRows?.length ?? 0} existing activity record(s) and ${removedCoreRows?.length ?? 0} legacy Trip Core marker(s).`);
-} else {
-  const { data: legacyRows, error: legacyLookupError } = await supabase
-    .from("timeline_activities")
-    .select("seed_key")
-    .in("seed_key", [...LEGACY_TEST_SEED_KEYS, ...LEGACY_TRIP_CORE_SEED_KEYS]);
-  if (legacyLookupError) throw legacyLookupError;
-  if ((legacyRows?.length ?? 0) > 0) {
-    throw new Error("Legacy test Timeline data is present. Run `npm run seed:supabase:replace-test-day` once to replace it explicitly; ordinary seed runs never delete or overwrite runtime Timeline data.");
-  }
+const { data: legacyRows, error: legacyLookupError } = await supabase
+  .from("timeline_activities")
+  .select("seed_key")
+  .in("seed_key", [...LEGACY_TEST_SEED_KEYS, ...LEGACY_TRIP_CORE_SEED_KEYS]);
+if (legacyLookupError) throw legacyLookupError;
+if ((legacyRows?.length ?? 0) > 0) {
+  throw new Error(
+    "Legacy test Timeline data is present. It is deliberately not deleted automatically; resolve it with an explicit, reviewed maintenance plan. Ordinary seed runs never delete or overwrite runtime Timeline data.",
+  );
 }
 
 const initialRows = initialTimeline.days.flatMap((day) => day.activities.map((activity) => ({

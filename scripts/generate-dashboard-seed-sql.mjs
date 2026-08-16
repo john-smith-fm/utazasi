@@ -7,7 +7,13 @@ const [trip, timeline, events] = await Promise.all([
 ]);
 
 const payload = JSON.stringify({ trip, timeline, events });
-const sql = `-- Utazási 1.0 — one-time Dashboard seed
+const sql = `-- DEPRECATED — this historical Dashboard seed is intentionally blocked.
+-- It can delete or overwrite runtime Timeline data. Use the insert-only normal seed instead.
+do $$ begin
+  raise exception 'Deprecated: replace-test-day Dashboard seed is disabled to protect family data.';
+end $$;
+
+-- Utazási 1.0 — historical one-time Dashboard seed
 -- Generated from canonical Git JSON. Run in Supabase SQL Editor as postgres.
 -- Requires migrations 001–006 and 008. It is safe to rerun after the first run:
 -- later family edits are never overwritten. The old Sep 3 test day is deleted

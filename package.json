@@ -9,7 +9,6 @@
     "start": "next start",
     "lint": "next lint",
     "seed:supabase": "node --env-file=.env.local scripts/seed-supabase.mjs",
-    "seed:supabase:replace-test-day": "node --env-file=.env.local scripts/seed-supabase.mjs --replace-test-day",
     "seed:supabase:dashboard-sql": "node scripts/generate-dashboard-seed-sql.mjs",
     "import:v19-regional": "node scripts/import-v19-regional-data.mjs",
     "report:route-candidates": "node scripts/report-route-candidates.mjs",
@@ -24,6 +23,7 @@
     "research:apply": "node scripts/research.mjs apply",
     "research:event": "node --env-file=.env.local scripts/research-event.mjs",
     "test:research": "node --test scripts/research/*.test.mjs",
+    "test:gate0": "node --test scripts/gate0/*.test.mjs",
     "test:grounding": "node --no-warnings --experimental-strip-types --test scripts/grounding/*.test.ts"
   },
   "dependencies": {
