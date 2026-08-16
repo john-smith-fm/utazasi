@@ -99,12 +99,13 @@ already contains manually created Notebook records from another device. In
 that situation, an old local browser snapshot could be appended alongside the
 newer server data and appear as a duplicate to the family.
 
-**Gate 0 status: P0 blocker for automatic legacy migration.** Do not clear
-legacy browser storage and do not run a migration against family data until a
-reviewed policy is accepted. The safe follow-up is a non-destructive
-`needs_review` state: retain the local snapshot, do not import automatically
-when server-side Notebook data already exists, and offer an explicitly
-reviewed merge/export path later.
+**P0 repair implemented in code; runtime acceptance still required.** The
+migration now reads the existing Notebook's `legacy_source_id` values first.
+If it finds data that did not originate from this exact browser migration key,
+it returns a non-destructive `409` instead of importing. The browser keeps its
+local snapshot and does not mark the migration complete. A partial earlier
+import from the same browser remains safe to retry. The future reviewed path
+is an explicit merge/export decision, never an automatic overwrite.
 
 ## Seed and import safety matrix
 
@@ -115,7 +116,7 @@ reviewed merge/export path later.
 | Legacy `--replace-test-day` | Nothing | Previously deleted Timeline data | N/A | Critical | Retired; fails before DB access |
 | Generic Place backfill `--apply` | Nothing | Previously could rewrite links | N/A | High | Retired; fails before DB access |
 | Historical Dashboard replacement seed | Nothing | Historical SQL contains replacement statements | N/A | Critical | Blocked before execution |
-| Notebook legacy import | Legacy Packing/Expense/Journal rows | Inserts only | Transport retry-safe | **P0 semantic duplicate risk** | Requires reviewed follow-up |
+| Notebook legacy import | Legacy Packing/Expense/Journal rows | Inserts only | Transport retry-safe | Automatic cross-device merge blocked | Code repair; device acceptance required |
 
 ## Schema and recovery observations
 

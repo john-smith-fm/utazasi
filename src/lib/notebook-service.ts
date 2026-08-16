@@ -140,6 +140,25 @@ export async function importLegacyNotebook(migrationKey: unknown, rawSnapshot: u
   if (existingError) throw existingError;
   if (existing) return { data: { imported: false } };
 
+  // An old browser snapshot must never be silently merged into Notebook data
+  // that was already created on another device. A previous partial import from
+  // this exact device remains safe to retry because its rows carry this key.
+  const [knownPacking, knownEntries] = await Promise.all([
+    supabase.from("packing_items").select("legacy_source_id").eq("trip_id", trip.data),
+    supabase.from("notebook_entries").select("legacy_source_id").eq("trip_id", trip.data),
+  ]);
+  if (knownPacking.error) throw knownPacking.error;
+  if (knownEntries.error) throw knownEntries.error;
+  const sourcePrefix = `${key}:`;
+  const hasOtherRuntimeData = [...(knownPacking.data ?? []), ...(knownEntries.data ?? [])]
+    .some((row) => !row.legacy_source_id?.startsWith(sourcePrefix));
+  if (hasOtherRuntimeData) {
+    return {
+      error: "A régi Jegyzetfüzet-adatok átemelése ellenőrzést igényel. A helyi adatok megmaradtak, és nem kevertük össze őket a már elmentett utazási adatokkal.",
+      status: 409,
+    };
+  }
+
   const packingRows = legacy.data.packing.map((item, position) => ({ trip_id: trip.data, title: text(item?.name, 160), is_packed: Boolean(item?.checked), position, legacy_source_id: `${key}:packing:${position}` })).filter((item) => item.title);
   const entryRows = [
     ...legacy.data.expenses.map((item, index) => ({ trip_id: trip.data, kind: "expense" as const, content: text(item?.name, 2000), amount_eur: Number(item?.amount), occurred_on: item?.date, rating: null, legacy_source_id: `${key}:expense:${index}` })),

@@ -26,11 +26,13 @@ test("the retired generic Place-link backfill cannot mutate runtime data", () =>
 });
 
 test("the dashboard replacement seed is visibly blocked", async () => {
-  const [packageJson, generator, sql, seed] = await Promise.all([
+  const [packageJson, generator, sql, seed, notebookService, legacyMigration] = await Promise.all([
     readFile(new URL("package.json", root), "utf8"),
     readFile(new URL("scripts/generate-dashboard-seed-sql.mjs", root), "utf8"),
     readFile(new URL("supabase/seeds/replace-test-day.sql", root), "utf8"),
     readFile(new URL("scripts/seed-supabase.mjs", root), "utf8"),
+    readFile(new URL("src/lib/notebook-service.ts", root), "utf8"),
+    readFile(new URL("src/lib/notebook-legacy-migration.ts", root), "utf8"),
   ]);
 
   assert.doesNotMatch(packageJson, /seed:supabase:replace-test-day/);
@@ -41,4 +43,7 @@ test("the dashboard replacement seed is visibly blocked", async () => {
   assert.match(seed, /if \(!tripAlreadyExists\) \{[\s\S]{0,320}\.insert\(initialRows\)/);
   assert.doesNotMatch(seed, /\.upsert\(initialRows/);
   assert.match(seed, /\.upsert\(eventRows, \{ onConflict: "trip_id,canonical_key", ignoreDuplicates: true \}\)/);
+  assert.match(notebookService, /hasOtherRuntimeData/);
+  assert.match(notebookService, /nem kevertük össze őket a már elmentett utazási adatokkal/i);
+  assert.match(legacyMigration, /storageSet\(COMPLETED_KEY, true\)/);
 });
