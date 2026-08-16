@@ -36,8 +36,12 @@ test("the dashboard replacement seed is visibly blocked", async () => {
   ]);
 
   assert.doesNotMatch(packageJson, /seed:supabase:replace-test-day/);
-  assert.match(generator, /historical Dashboard seed is intentionally blocked/i);
-  assert.match(sql, /Dashboard seed is intentionally blocked/i);
+  assert.match(generator, /Dashboard SQL seed generation is disabled/i);
+  assert.match(sql, /replace-test-day is disabled/i);
+  assert.doesNotMatch(generator, /delete from public\.timeline_activities/i);
+  assert.doesNotMatch(sql, /delete from public\.timeline_activities/i);
+  assert.doesNotMatch(generator, /on conflict \(slug\) do update/i);
+  assert.doesNotMatch(sql, /on conflict \(slug\) do update/i);
   assert.doesNotMatch(seed, /\.from\("timeline_activities"\)[\s\S]{0,160}\.delete\(/);
   assert.match(seed, /const tripAlreadyExists = Boolean\(existingTrip\)/);
   assert.match(seed, /if \(!tripAlreadyExists\) \{[\s\S]{0,320}\.from\("days"\)[\s\S]{0,160}\.insert\(tripCore\.days\.map/);
