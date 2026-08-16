@@ -49,6 +49,9 @@ test("the dashboard replacement seed is visibly blocked", async () => {
   assert.match(seed, /if \(!tripAlreadyExists\) \{[\s\S]{0,320}\.insert\(initialRows\)/);
   assert.doesNotMatch(seed, /\.upsert\(initialRows/);
   assert.doesNotMatch(seed, /\.from\("timeline_activities"\)[\s\S]{0,160}\.(?:update|upsert)\(/);
+  const existingTripFailure = seed.indexOf("if (existingTripError) throw existingTripError;");
+  const tripCreate = seed.indexOf("if (!trip) {");
+  assert.ok(existingTripFailure >= 0 && tripCreate >= 0 && existingTripFailure < tripCreate, "A Trip lookup failure must stop the seed before any create path.");
   assert.match(seed, /\.upsert\(eventRows, \{ onConflict: "trip_id,canonical_key", ignoreDuplicates: true \}\)/);
   assert.match(notebookService, /hasOtherRuntimeData/);
   assert.match(notebookService, /nem kevertük össze őket a már elmentett utazási adatokkal/i);
