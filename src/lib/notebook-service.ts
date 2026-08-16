@@ -1,6 +1,7 @@
 import "server-only";
 
 import { TIMELINE_TRIP_SLUG, timelineServerClient } from "@/lib/timeline-service";
+import { hasForeignNotebookRuntimeData } from "@/lib/notebook-legacy-safety";
 import type { LegacyNotebookSnapshot, NotebookEntryKind, NotebookEntryRecord, PackingItemRecord } from "@/lib/notebook-types";
 import {
   notebookEntryInput,
@@ -149,9 +150,10 @@ export async function importLegacyNotebook(migrationKey: unknown, rawSnapshot: u
   ]);
   if (knownPacking.error) throw knownPacking.error;
   if (knownEntries.error) throw knownEntries.error;
-  const sourcePrefix = `${key}:`;
-  const hasOtherRuntimeData = [...(knownPacking.data ?? []), ...(knownEntries.data ?? [])]
-    .some((row) => !row.legacy_source_id?.startsWith(sourcePrefix));
+  const hasOtherRuntimeData = hasForeignNotebookRuntimeData(
+    key,
+    [...(knownPacking.data ?? []), ...(knownEntries.data ?? [])].map((row) => row.legacy_source_id),
+  );
   if (hasOtherRuntimeData) {
     return {
       error: "A régi Jegyzetfüzet-adatok átemelése ellenőrzést igényel. A helyi adatok megmaradtak, és nem kevertük össze őket a már elmentett utazási adatokkal.",

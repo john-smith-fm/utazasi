@@ -29,7 +29,7 @@ Protect manually entered family data before further 1.0 development. Runtime Tim
 Passed locally on 2026-08-16:
 
 - `npm run test:gate0` — 3/3
-- Notebook persisted-id contract — 4/4
+- Notebook persisted-id and legacy-import safety — 8/8
 - Question grounding suite — 40/40
 - Production build — successful
 
@@ -158,7 +158,7 @@ records.
 Passed locally after the safety changes:
 
 - Gate 0 safety tests: 3/3
-- Notebook persisted-id contract: 4/4
+- Notebook persisted-id and legacy-import safety: 8/8
 - Question grounding tests: 40/40
 - Production build: successful
 

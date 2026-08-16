@@ -24,6 +24,7 @@
     "research:event": "node --env-file=.env.local scripts/research-event.mjs",
     "test:research": "node --test scripts/research/*.test.mjs",
     "test:gate0": "node --test scripts/gate0/*.test.mjs",
+    "test:notebook": "node --test scripts/notebook/*.test.mjs",
     "test:grounding": "node --no-warnings --experimental-strip-types --test scripts/grounding/*.test.ts"
   },
   "dependencies": {
