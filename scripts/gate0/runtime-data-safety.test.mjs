@@ -25,6 +25,18 @@ test("the retired generic Place-link backfill cannot mutate runtime data", () =>
   assert.match(result.stderr, /retired/i);
 });
 
+test("the runtime backup refuses an unsafe destination before it can read Supabase", () => {
+  const noOutput = run("scripts/backup-runtime-data.mjs");
+  assert.notEqual(noOutput.status, 0);
+  assert.match(noOutput.stderr, /kötelező a --output/i);
+  assert.doesNotMatch(noOutput.stderr, /SUPABASE_SECRET_KEY/i);
+
+  const insideRepository = run("scripts/backup-runtime-data.mjs", "--output", `${process.cwd()}/do-not-create.json`);
+  assert.notEqual(insideRepository.status, 0);
+  assert.match(insideRepository.stderr, /nem kerülhet a Git repóba/i);
+  assert.doesNotMatch(insideRepository.stderr, /SUPABASE_SECRET_KEY/i);
+});
+
 test("the dashboard replacement seed is visibly blocked", async () => {
   const [packageJson, generator, sql, seed, notebookService, legacyMigration, backup] = await Promise.all([
     readFile(new URL("package.json", root), "utf8"),
