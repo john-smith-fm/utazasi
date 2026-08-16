@@ -26,13 +26,14 @@ test("the retired generic Place-link backfill cannot mutate runtime data", () =>
 });
 
 test("the dashboard replacement seed is visibly blocked", async () => {
-  const [packageJson, generator, sql, seed, notebookService, legacyMigration] = await Promise.all([
+  const [packageJson, generator, sql, seed, notebookService, legacyMigration, backup] = await Promise.all([
     readFile(new URL("package.json", root), "utf8"),
     readFile(new URL("scripts/generate-dashboard-seed-sql.mjs", root), "utf8"),
     readFile(new URL("supabase/seeds/replace-test-day.sql", root), "utf8"),
     readFile(new URL("scripts/seed-supabase.mjs", root), "utf8"),
     readFile(new URL("src/lib/notebook-service.ts", root), "utf8"),
     readFile(new URL("src/lib/notebook-legacy-migration.ts", root), "utf8"),
+    readFile(new URL("scripts/backup-runtime-data.mjs", root), "utf8"),
   ]);
 
   assert.doesNotMatch(packageJson, /seed:supabase:replace-test-day/);
@@ -56,4 +57,10 @@ test("the dashboard replacement seed is visibly blocked", async () => {
   assert.match(notebookService, /hasOtherRuntimeData/);
   assert.match(notebookService, /nem kevertük össze őket a már elmentett utazási adatokkal/i);
   assert.match(legacyMigration, /storageSet\(COMPLETED_KEY, true\)/);
+  assert.match(packageJson, /"backup:runtime"/);
+  assert.match(backup, /Read-only snapshot/);
+  assert.match(backup, /A mentés nem kerülhet a Git repóba/);
+  assert.match(backup, /flag: "wx"/);
+  assert.match(backup, /chmod\(output, 0o600\)/);
+  assert.doesNotMatch(backup, /\.from\([^)]*\)\.(?:insert|update|upsert|delete)\(/);
 });

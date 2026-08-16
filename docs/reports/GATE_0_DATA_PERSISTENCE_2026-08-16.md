@@ -139,6 +139,22 @@ is an explicit merge/export decision, never an automatic overwrite.
   procedure on the current Supabase plan.
 - Do not attempt a restore against production as part of this acceptance.
 
+## Read-only recovery snapshot
+
+`npm run backup:runtime -- --output /full/path/outside-the-repository/utazasi-runtime-YYYY-MM-DD.json`
+
+- Reads the canonical runtime Trip, Timeline, Notebook, Events and Push/Watch
+  state through the server-only Supabase credential.
+- Performs **no** insert, update, delete, seed, migration or restore.
+- Refuses to write inside the Git repository, refuses to overwrite an existing
+  file, and sets the created JSON file to owner-only permissions.
+- The snapshot contains private family data. It must stay in an encrypted or
+  otherwise protected local backup location and must never be committed,
+  attached to an issue, or sent to an external service.
+- A restore is intentionally not automated. It remains a separate,
+  record-level, human-approved maintenance action: compare the snapshot to the
+  current runtime data first, then restore only the reviewed records.
+
 ## Acceptance matrix — evidence at this point
 
 `CODE` means inspected; `AUTO` means local automated test; `DEVICE` requires

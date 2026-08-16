@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "seed:supabase": "node --env-file=.env.local scripts/seed-supabase.mjs",
+    "backup:runtime": "node --env-file=.env.local scripts/backup-runtime-data.mjs",
     "seed:supabase:dashboard-sql": "node scripts/generate-dashboard-seed-sql.mjs",
     "import:v19-regional": "node scripts/import-v19-regional-data.mjs",
     "report:route-candidates": "node scripts/report-route-candidates.mjs",
