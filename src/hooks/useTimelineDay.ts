@@ -92,7 +92,10 @@ export function useTimelineDay(selectedDate: string, fallback: HomeDay) {
       } catch (error) {
         if (!active) return;
         const offline = typeof navigator !== "undefined" && !navigator.onLine;
-        const knownDay = cached ? toHomeDay(cached, fallback) : offline ? fallback : emptyDay(fallback);
+        // Trip-core provides only the title/day shell. It must never restore
+        // prototype activities when this specific canonical day was never
+        // successfully fetched and cached on the device.
+        const knownDay = cached ? toHomeDay(cached, fallback) : emptyDay(fallback);
         console.error("Unable to load Timeline data from Supabase.", error);
         setState({ day: knownDay, status: offline ? "offline" : "error", hasRemoteDay: Boolean(cached) });
       }

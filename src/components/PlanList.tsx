@@ -40,9 +40,9 @@ function displayTime(activity: HomeActivity) {
   return activity.time;
 }
 
-function TimelineMessage({ status, onRetry }: { status: TimelineLoadState; onRetry: () => void }) {
+function TimelineMessage({ status, hasCachedDay, onRetry }: { status: TimelineLoadState; hasCachedDay: boolean; onRetry: () => void }) {
   if (status === "loading") return <p className="mb-4 text-center text-[13px] leading-[21px] text-deep-sea/55" role="status">Napi terv betöltése…</p>;
-  if (status === "offline") return <p className="mb-4 text-center text-[13px] leading-[21px] text-deep-sea/55" role="status">Offline · az utolsó ismert napi terv látható.</p>;
+  if (status === "offline") return <p className="mb-4 text-center text-[13px] leading-[21px] text-deep-sea/55" role="status">{hasCachedDay ? "Offline · az utolsó ismert napi terv látható." : "Offline · ezt a napi tervet még nem töltöttük le erre a készülékre."}</p>;
   if (status === "error") return <div className="mb-4 flex items-center justify-between gap-3 rounded-ui-s border border-coral/20 bg-coral/5 px-3 py-2 text-[13px] leading-[18px] text-deep-sea/60" role="alert"><span>A napi terv most nem érhető el.</span><button type="button" onClick={onRetry} className="min-h-11 shrink-0 rounded-ui-s px-2 font-semibold text-deep-sea">Újrapróbálás</button></div>;
   return null;
 }
@@ -188,13 +188,13 @@ function EditableTimelineItem({ activity, conflict, onSelect, onDelete, onPrevie
   </div>;
 }
 
-export function PlanList({ activities, status, canEdit, onRetry, onSelect, onDelete, onTimeChange, onError }: { activities: HomeActivity[]; status: TimelineLoadState; canEdit: boolean; onRetry: () => void; onSelect: (activity: HomeActivity) => void; onDelete: (activity: HomeActivity) => void; onTimeChange: (activity: HomeActivity, time: string) => Promise<void>; onError: (message: string) => void }) {
+export function PlanList({ activities, status, hasCachedDay, canEdit, onRetry, onSelect, onDelete, onTimeChange, onError }: { activities: HomeActivity[]; status: TimelineLoadState; hasCachedDay: boolean; canEdit: boolean; onRetry: () => void; onSelect: (activity: HomeActivity) => void; onDelete: (activity: HomeActivity) => void; onTimeChange: (activity: HomeActivity, time: string) => Promise<void>; onError: (message: string) => void }) {
   const showSkeleton = status === "loading" && activities.length === 0;
   const showEmpty = status === "empty" && activities.length === 0;
   const [previewTimes, setPreviewTimes] = useState<Record<string, string>>({});
 
   return <section aria-label="Napi idővonal" aria-busy={status === "loading"}>
-    <TimelineMessage status={status} onRetry={onRetry} />
+    <TimelineMessage status={status} hasCachedDay={hasCachedDay} onRetry={onRetry} />
     {showSkeleton ? <TimelineSkeleton /> : showEmpty ? <p className="py-10 text-center text-sm leading-[21px] text-deep-sea/60">Erre a napra még nincs program.</p> : <ol className="relative m-0 list-none p-0 before:absolute before:bottom-6 before:left-[55px] before:top-4 before:w-px before:bg-deep-sea/10">
       {activities.map((activity, index) => {
         const travel = activity.kind === "travel";

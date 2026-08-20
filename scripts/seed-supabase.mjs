@@ -5,7 +5,12 @@ const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 // New Supabase projects use sb_secret_ keys. Keep the legacy variable as a
 // local-only fallback so existing setups do not break during the transition.
 const secretKey = process.env.SUPABASE_SECRET_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY;
-const replaceLegacyTestDay = process.argv.includes("--replace-test-day");
+
+if (process.argv.includes("--replace-test-day")) {
+  throw new Error(
+    "The legacy --replace-test-day command is retired. It is deliberately disabled because it could delete family Timeline data. The normal seed is insert-only.",
+  );
+}
 
 if (!url || !secretKey) {
   throw new Error(
@@ -80,23 +85,38 @@ function validateInitialTimeline(document, tripDays, canonicalPlaceSlugs) {
 const canonicalPlaceSlugs = await loadCanonicalPlaceSlugs();
 validateInitialTimeline(initialTimeline, tripCore.days, canonicalPlaceSlugs);
 
-const { data: trip, error: tripError } = await supabase
+const { data: existingTrip, error: existingTripError } = await supabase
   .from("trips")
-  .upsert({
+  .select("id")
+  .eq("slug", tripCore.slug)
+  .maybeSingle();
+if (existingTripError) throw existingTripError;
+
+const tripAlreadyExists = Boolean(existingTrip);
+let trip = existingTrip;
+
+if (!trip) {
+  const { data, error } = await supabase
+  .from("trips")
+  .insert({
     slug: tripCore.slug,
     name: tripCore.name,
     destination: tripCore.destination.name,
     start_date: tripCore.dates.start,
     end_date: tripCore.dates.end,
-  }, { onConflict: "slug" })
+  })
   .select("id")
   .single();
-if (tripError) throw tripError;
+  if (error) throw error;
+  trip = data;
+}
 
-const { error: coreDaysError } = await supabase
-  .from("days")
-  .upsert(tripCore.days.map((day) => ({ trip_id: trip.id, date: day.date, title: day.title, subtitle: day.subtitle })), { onConflict: "trip_id,date" });
-if (coreDaysError) throw coreDaysError;
+if (!tripAlreadyExists) {
+  const { error: coreDaysError } = await supabase
+    .from("days")
+    .insert(tripCore.days.map((day) => ({ trip_id: trip.id, date: day.date, title: day.title, subtitle: day.subtitle })));
+  if (coreDaysError) throw coreDaysError;
+}
 
 const { data: days, error: daysLookupError } = await supabase
   .from("days")
@@ -108,32 +128,15 @@ if (daysLookupError) throw daysLookupError;
 const dayIds = new Map((days ?? []).map((day) => [day.date, day.id]));
 if (dayIds.size !== 12) throw new Error("Could not resolve all canonical Trip days after seed.");
 
-if (replaceLegacyTestDay) {
-  const testDayId = dayIds.get("2026-09-03");
-  const { data: removedTestRows, error: removeTestError } = await supabase
-    .from("timeline_activities")
-    .delete()
-    .eq("day_id", testDayId)
-    .select("id");
-  if (removeTestError) throw removeTestError;
-
-  const { data: removedCoreRows, error: removeCoreError } = await supabase
-    .from("timeline_activities")
-    .delete()
-    .in("seed_key", LEGACY_TRIP_CORE_SEED_KEYS)
-    .select("id");
-  if (removeCoreError) throw removeCoreError;
-
-  console.log(`Replaced the Sep 3 test day: removed ${removedTestRows?.length ?? 0} existing activity record(s) and ${removedCoreRows?.length ?? 0} legacy Trip Core marker(s).`);
-} else {
-  const { data: legacyRows, error: legacyLookupError } = await supabase
-    .from("timeline_activities")
-    .select("seed_key")
-    .in("seed_key", [...LEGACY_TEST_SEED_KEYS, ...LEGACY_TRIP_CORE_SEED_KEYS]);
-  if (legacyLookupError) throw legacyLookupError;
-  if ((legacyRows?.length ?? 0) > 0) {
-    throw new Error("Legacy test Timeline data is present. Run `npm run seed:supabase:replace-test-day` once to replace it explicitly; ordinary seed runs never delete or overwrite runtime Timeline data.");
-  }
+const { data: legacyRows, error: legacyLookupError } = await supabase
+  .from("timeline_activities")
+  .select("seed_key")
+  .in("seed_key", [...LEGACY_TEST_SEED_KEYS, ...LEGACY_TRIP_CORE_SEED_KEYS]);
+if (legacyLookupError) throw legacyLookupError;
+if ((legacyRows?.length ?? 0) > 0) {
+  throw new Error(
+    "Legacy test Timeline data is present. It is deliberately not deleted automatically; resolve it with an explicit, reviewed maintenance plan. Ordinary seed runs never delete or overwrite runtime Timeline data.",
+  );
 }
 
 const initialRows = initialTimeline.days.flatMap((day) => day.activities.map((activity) => ({
@@ -151,12 +154,15 @@ const initialRows = initialTimeline.days.flatMap((day) => day.activities.map((ac
   is_system_generated: false,
 })));
 
-// Initial canonical content is insert-only. Once the family edits an item in
-// the app, a later seed run must never reset it from Git.
-const { error: activityError } = await supabase
-  .from("timeline_activities")
-  .upsert(initialRows, { onConflict: "seed_key", ignoreDuplicates: true });
-if (activityError) throw activityError;
+// Initial canonical content is written only when the Trip is first created.
+// This also preserves an intentional family deletion of an initially seeded
+// activity: a later Git seed cannot recreate it.
+if (!tripAlreadyExists) {
+  const { error: activityError } = await supabase
+    .from("timeline_activities")
+    .insert(initialRows);
+  if (activityError) throw activityError;
+}
 
 const eventSeriesRows = eventSeriesDocument.series.map((series) => ({
   trip_id: trip.id,
@@ -173,7 +179,7 @@ const eventSeriesRows = eventSeriesDocument.series.map((series) => ({
 if (eventSeriesRows.length > 0) {
   const { error: eventSeriesError } = await supabase
     .from("event_series")
-    .upsert(eventSeriesRows, { onConflict: "trip_id,canonical_key" });
+    .upsert(eventSeriesRows, { onConflict: "trip_id,canonical_key", ignoreDuplicates: true });
   if (eventSeriesError) throw eventSeriesError;
 }
 
@@ -198,15 +204,19 @@ const eventRows = eventDocument.events.map((event) => ({
   last_verified_at: event.metadata?.verification?.last_checked ? `${event.metadata.verification.last_checked}T00:00:00+02:00` : null,
 }));
 
-let seededEvents = [];
 if (eventRows.length > 0) {
-  const { data, error: eventError } = await supabase
+  const { error: eventError } = await supabase
     .from("events")
-    .upsert(eventRows, { onConflict: "trip_id,canonical_key" })
-    .select("id, source_url, status, starts_at, place_slug, last_verified_at");
+    .upsert(eventRows, { onConflict: "trip_id,canonical_key", ignoreDuplicates: true });
   if (eventError) throw eventError;
-  seededEvents = data ?? [];
 }
+
+const { data: seededEvents, error: seededEventsLookupError } = await supabase
+  .from("events")
+  .select("id, source_url, status, starts_at, place_slug, last_verified_at")
+  .eq("trip_id", trip.id)
+  .in("canonical_key", eventRows.map((event) => event.canonical_key));
+if (seededEventsLookupError) throw seededEventsLookupError;
 
 // The first verified canonical Event state is a Watch baseline, but a newly
 // discovered Event is not watched until the family explicitly accepts it into
@@ -232,4 +242,4 @@ if (watchBaselines.length > 0) {
   if (watchError) throw watchError;
 }
 
-console.log(`Initialized ${initialRows.length} canonical Timeline activity record(s) across 12 days, plus ${eventSeriesRows.length} event series, ${eventRows.length} concrete event(s) and ${watchBaselines.length} Watch baseline(s). Existing Timeline rows were never overwritten.`);
+console.log(`${tripAlreadyExists ? "Verified" : "Initialized"} the canonical Trip: ${tripAlreadyExists ? "no Timeline or day metadata was changed" : `${initialRows.length} Timeline activity record(s) were created`}; ${eventSeriesRows.length} event series, ${eventRows.length} concrete event(s) and ${watchBaselines.length} Watch baseline(s) were checked without overwriting existing records.`);

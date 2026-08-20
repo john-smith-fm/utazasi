@@ -1,7 +1,7 @@
 "use client";
 
-import type { ChangeEvent, ReactNode, TouchEvent, WheelEvent } from "react";
-import { useEffect, useRef, useState } from "react";
+import type { ReactNode } from "react";
+import { useEffect, useState } from "react";
 import { TabBar } from "@/components/TabBar";
 
 const OFFLINE_ACCESS_KEY = "utazasi-pin-access";
@@ -39,30 +39,16 @@ function AccessLoadingScreen() {
 }
 
 function PinAccessScreen({ configurationError, onUnlocked }: { configurationError: boolean; onUnlocked: () => void }) {
-  const [digits, setDigits] = useState([0, 0, 0, 0]);
-  // The picker starts visually at 0000, but the native numeric field stays
-  // empty so the first typed digit always replaces it on iPhone.
   const [typedPin, setTypedPin] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "error">("idle");
   const [error, setError] = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
 
-  function setDigit(index: number, value: number) {
-    setDigits((current) => {
-      const next = current.map((digit, digitIndex) => digitIndex === index ? (value + 10) % 10 : digit);
-      setTypedPin(next.join(""));
-      return next;
-    });
-    setStatus("idle");
-    setError("");
-  }
-
-  async function submit(pinDigits = digits) {
+  async function submit(pin = typedPin) {
     if (configurationError || status === "submitting") return;
     setStatus("submitting");
     setError("");
     try {
-      const response = await fetch("/api/access/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pin: pinDigits.join("") }) });
+      const response = await fetch("/api/access/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pin }) });
       if (!response.ok) {
         const data = await response.json().catch(() => null) as { error?: string } | null;
         throw new Error(data?.error ?? "Helytelen PIN.");
@@ -70,76 +56,50 @@ function PinAccessScreen({ configurationError, onUnlocked }: { configurationErro
       window.localStorage.setItem(OFFLINE_ACCESS_KEY, "1");
       onUnlocked();
     } catch (caught) {
+      // A failed attempt should leave the keypad ready for a complete new PIN.
+      // Keeping four rejected digits visible made the recovery path unclear on mobile.
+      setTypedPin("");
       setStatus("error");
       setError(caught instanceof Error ? caught.message : "Helytelen PIN.");
-      window.requestAnimationFrame(() => {
-        inputRef.current?.focus();
-        inputRef.current?.select();
-      });
     }
   }
 
-  function onPinInput(event: ChangeEvent<HTMLInputElement>) {
-    const nextText = event.target.value.replace(/\D/g, "").slice(0, 4);
-    const nextDigits = [0, 1, 2, 3].map((index) => Number(nextText[index] ?? 0));
-    setTypedPin(nextText);
-    setDigits(nextDigits);
+  function addDigit(digit: string) {
+    if (configurationError || status === "submitting" || typedPin.length === 4) return;
+    const nextPin = `${typedPin}${digit}`;
+    setTypedPin(nextPin);
     setStatus("idle");
     setError("");
-    if (nextText.length === 4) void submit(nextDigits);
+    // A phone keypad already makes the fourth digit an intentional action.
+    // Do not make the family perform a second, redundant tap to continue.
+    if (nextPin.length === 4) void submit(nextPin);
+  }
+
+  function removeDigit() {
+    if (configurationError || status === "submitting") return;
+    setTypedPin((current) => current.slice(0, -1));
+    setStatus("idle");
+    setError("");
   }
 
   return <main className="relative flex min-h-dvh flex-col overflow-hidden bg-quartz px-5 pb-[calc(30px+env(safe-area-inset-bottom))] pt-[env(safe-area-inset-top)] text-deep-sea">
     <img src="/images/utazasi-pin-logo.svg" alt="" aria-hidden="true" className="pointer-events-none absolute -left-[31vw] top-[7dvh] h-[52vw] min-h-[220px] w-[52vw] min-w-[220px] max-h-[390px] max-w-[390px]" />
-    <div className="flex flex-1 flex-col justify-end pb-[14dvh]">
-      <label className="sr-only" htmlFor="utazasi-pin-input">Négyjegyű PIN-kód</label>
-      <input ref={inputRef} id="utazasi-pin-input" autoFocus disabled={configurationError || status === "submitting"} value={typedPin} onChange={onPinInput} onFocus={(event) => event.currentTarget.select()} inputMode="numeric" type="tel" autoComplete="off" enterKeyHint="done" pattern="[0-9]*" maxLength={4} className="sr-only" />
-      <div className={`mx-auto flex w-full max-w-[365px] gap-2 ${status === "error" ? "motion-safe:animate-[pin-shake_.3s_ease-in-out]" : ""}`} aria-label="Négyjegyű PIN választó">
-        {digits.map((digit, index) => <PinColumn key={index} value={digit} index={index} onChange={setDigit} />)}
+    <div className="relative flex flex-1 flex-col justify-end pb-[max(26px,7dvh)]">
+      <div className="mx-auto w-full max-w-[365px] pb-9 text-center">
+        <p className="text-[12px] font-bold uppercase tracking-[.18em] text-turquoise">Utazási</p>
+        <h1 className="mt-3 text-[31px] font-bold tracking-[-.045em] text-deep-sea">Villasimius</h1>
+        <p className="mt-1 text-[15px] text-deep-sea/55">2026. szeptember 2–13.</p>
       </div>
-      <button type="button" onClick={() => void submit()} disabled={typedPin.length !== 4 || status === "submitting" || configurationError} className="mx-auto mt-10 h-[52px] w-full max-w-[365px] rounded-ui-s border border-coral bg-coral/20 text-[15px] font-bold text-deep-sea shadow-card transition-transform active:scale-[.98] disabled:opacity-45">{status === "submitting" ? "…" : "Megnyitás"}</button>
+      <div className={`mx-auto flex w-full max-w-[365px] justify-center gap-4 ${status === "error" ? "motion-safe:animate-[pin-shake_.3s_ease-in-out]" : ""}`} aria-label="Négyjegyű PIN-kód">
+        {[0, 1, 2, 3].map((index) => <span key={index} aria-hidden="true" className={`h-3 w-3 rounded-full border border-deep-sea/25 transition-colors ${typedPin[index] ? "bg-deep-sea" : "bg-white/55"}`} />)}
+      </div>
+      <p className="mx-auto mt-3 max-w-[365px] text-center text-sm leading-5 text-deep-sea/55">Add meg a négyjegyű PIN-kódot. A negyedik szám után megnyitjuk az utazást.</p>
+      <div className="mx-auto mt-7 grid w-full max-w-[365px] grid-cols-3 gap-2" aria-label="PIN számbillentyűzet">
+        {["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0"].map((digit, index) => digit ? <button key={digit} type="button" onClick={() => addDigit(digit)} disabled={configurationError || status === "submitting"} className="h-[58px] rounded-full text-[24px] font-semibold text-deep-sea transition-colors active:bg-turquoise/15 disabled:opacity-45">{digit}</button> : <span key={`space-${index}`} />)}
+        <button type="button" onClick={removeDigit} disabled={!typedPin.length || configurationError || status === "submitting"} aria-label="Utolsó számjegy törlése" className="h-[58px] rounded-full text-[17px] font-semibold text-deep-sea/70 transition-colors active:bg-turquoise/15 disabled:opacity-30">Törlés</button>
+      </div>
+      <button type="button" onClick={() => void submit()} disabled={typedPin.length !== 4 || status === "submitting" || configurationError} className="mx-auto mt-4 h-[52px] w-full max-w-[365px] rounded-full bg-coral px-5 text-[15px] font-bold text-white shadow-card transition-transform active:scale-[.98] disabled:opacity-45">{status === "submitting" ? "Megnyitás…" : "Megnyitás"}</button>
       <p className="mx-auto mt-3 min-h-5 max-w-[365px] text-center text-sm leading-5 text-coral" role="status" aria-live="polite">{configurationError ? "A PIN hozzáférés még nincs beállítva." : error}</p>
     </div>
   </main>;
-}
-
-function PinColumn({ value, index, onChange }: { value: number; index: number; onChange: (index: number, value: number) => void }) {
-  const touchStart = useRef<number | null>(null);
-  const didSwipe = useRef(false);
-  const before = (value + 9) % 10;
-  const after = (value + 1) % 10;
-
-  function moveBy(delta: number) {
-    if (!delta) return;
-    onChange(index, value + delta);
-  }
-
-  function onTouchStart(event: TouchEvent<HTMLButtonElement>) { touchStart.current = event.touches[0]?.clientY ?? null; }
-  function onTouchEnd(event: TouchEvent<HTMLButtonElement>) {
-    const start = touchStart.current;
-    touchStart.current = null;
-    if (start === null) return;
-    const distance = start - (event.changedTouches[0]?.clientY ?? start);
-    if (Math.abs(distance) >= 14) {
-      didSwipe.current = true;
-      moveBy(Math.round(distance / 28));
-    }
-  }
-  function onWheel(event: WheelEvent<HTMLButtonElement>) { event.preventDefault(); moveBy(event.deltaY > 0 ? 1 : -1); }
-
-  function onClick() {
-    // iOS sends a click after touchend. A vertical swipe must therefore not
-    // also advance the number once more.
-    if (didSwipe.current) {
-      didSwipe.current = false;
-      return;
-    }
-    moveBy(1);
-  }
-
-  return <button type="button" aria-label={`${index + 1}. PIN számjegy: ${value}. Húzással választható.`} onClick={onClick} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} onWheel={onWheel} className="relative h-[130px] flex-1 overflow-hidden rounded-[22px] border border-deep-sea/8 bg-white/55 text-center shadow-[0_8px_20px_rgba(24,50,59,.045)]">
-    <span aria-hidden="true" className="absolute inset-x-0 top-[14px] text-lg font-semibold text-deep-sea/18 blur-[.65px]">{before}</span>
-    <span aria-hidden="true" className="absolute inset-x-0 top-[45px] text-[47px] font-semibold leading-none tracking-[-.05em] text-deep-sea transition-transform duration-200">{value}</span>
-    <span aria-hidden="true" className="absolute inset-x-0 bottom-[12px] text-lg font-semibold text-deep-sea/18 blur-[.65px]">{after}</span>
-  </button>;
 }

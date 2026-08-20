@@ -1,0 +1,22 @@
+{
+  "reportVersion": "1.0",
+  "startedAt": "2026-08-14T18:08:54.073Z",
+  "updatedAt": "2026-08-14T18:08:54.108Z",
+  "mode": "live_proposals_only",
+  "canonicalWrites": false,
+  "supabaseWrites": false,
+  "totalCanonicalPlaces": 138,
+  "selectedPlaces": 1,
+  "completed": [],
+  "skipped": [],
+  "failed": [
+    {
+      "slug": "4-passion-cafe",
+      "message": "OpenAI research kapcsolat nem érhető el: ENOTFOUND"
+    }
+  ],
+  "blocked": {
+    "slug": "4-passion-cafe",
+    "reason": "OpenAI research kapcsolat nem érhető el: ENOTFOUND"
+  }
+}
