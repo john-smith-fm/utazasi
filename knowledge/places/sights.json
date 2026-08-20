@@ -328,7 +328,7 @@
         },
         {
           "source_type": "wikimedia_commons",
-          "url": "https://commons.wikimedia.org/wiki/File:Marina_di_Villasimius_01.jpg",
+          "url": "https://commons.wikimedia.org/wiki/File:Marina_di_Villasimius_05.jpg",
           "supports": [
             "cover_image",
             "place_overview",
@@ -355,8 +355,8 @@
         "Fortezza → Marina walking duration not yet canonicalized."
       ],
       "cover_image": {
-        "asset_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Marina_di_Villasimius_01.jpg",
-        "source_url": "https://commons.wikimedia.org/wiki/File:Marina_di_Villasimius_01.jpg",
+        "asset_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Marina_di_Villasimius_05.jpg",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Marina_di_Villasimius_05.jpg",
         "source_type": "wikimedia_commons",
         "license": "CC BY 3.0",
         "attribution": "Olaf Tausch",
