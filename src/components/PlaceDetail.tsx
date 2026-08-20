@@ -46,7 +46,7 @@ function GenericContactDetails({ place }: { place: Place }) {
   return <section className="border-t border-deep-sea/10 pt-6" aria-labelledby="contact-heading">
     <h2 id="contact-heading" className="text-[17px] font-bold leading-[23px] text-deep-sea">Kapcsolat</h2>
     {place.contact.phones?.length ? <div className="mt-3 flex flex-col items-start gap-2">
-      {place.contact.phones.map((phone) => <a key={phone} href={`tel:${phone.replace(/\s+/g, "")}`} className="inline-flex min-h-11 items-center text-sm font-semibold text-turquoise-dark">{phone}</a>)}
+      {place.contact.phones.map((phone) => <a key={phone} href={`tel:${phone.replace(/\s+/g, "")}`} className="inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">Hívás: {phone}</a>)}
     </div> : null}
     {place.contact.website && <a href={place.contact.website} target="_blank" rel="noreferrer" className="mt-3 inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">Weboldal megnyitása</a>}
   </section>;
@@ -85,7 +85,7 @@ function RestaurantDetails({ place }: { place: Place }) {
     {contact?.phones?.length ? <div className="mt-4">
       <h3 className="text-sm font-semibold leading-5 text-deep-sea">Telefon</h3>
       <div className="mt-1 flex flex-col items-start gap-2">
-        {contact.phones.map((phone) => <a key={phone} href={`tel:${phone.replace(/\s+/g, "")}`} className="inline-flex min-h-11 items-center text-sm font-semibold text-turquoise-dark">{phone}</a>)}
+        {contact.phones.map((phone) => <a key={phone} href={`tel:${phone.replace(/\s+/g, "")}`} className="inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">Hívás: {phone}</a>)}
       </div>
     </div> : null}
     {contact?.website && <a href={contact.website} target="_blank" rel="noreferrer" className="mt-4 inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">Weboldal megnyitása</a>}
@@ -114,7 +114,7 @@ function ShopDetails({ place }: { place: Place }) {
     {shop.phones?.length ? <div className="mt-4">
       <h3 className="text-sm font-semibold leading-5 text-deep-sea">Telefon</h3>
       <div className="mt-1 flex flex-col items-start gap-1">
-        {shop.phones.map((phone) => <a key={phone} href={`tel:${phone.replace(/\s+/g, "")}`} className="inline-flex min-h-11 items-center text-sm font-semibold text-turquoise-dark">{phone}</a>)}
+        {shop.phones.map((phone) => <a key={phone} href={`tel:${phone.replace(/\s+/g, "")}`} className="inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">Hívás: {phone}</a>)}
       </div>
     </div> : null}
     {shop.website && <a href={shop.website} target="_blank" rel="noreferrer" className="mt-4 inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">Weboldal megnyitása</a>}
