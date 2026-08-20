@@ -155,6 +155,39 @@ is an explicit merge/export decision, never an automatic overwrite.
   record-level, human-approved maintenance action: compare the snapshot to the
   current runtime data first, then restore only the reviewed records.
 
+## Daily local backup — opt-in schedule
+
+The project includes a macOS user-level, daily backup option. It is not
+activated automatically: activation is a conscious, local-family decision.
+
+- `npm run backup:schedule -- --install` installs a 03:30 daily LaunchAgent.
+- It invokes the same read-only runtime snapshot script using `.env.local`.
+- Default location: `~/Documents/Codex/Utazasi-backups`; the directory and
+  created JSON snapshots are private to the macOS user.
+- The schedule retains the most recent 14 days. It prunes only files matching
+  its own `utazasi-runtime-*.json` pattern, and **only after** a successful new
+  snapshot. A network/DNS failure therefore leaves every prior backup intact.
+- `npm run backup:schedule -- --status` checks whether the schedule is active;
+  `--uninstall` disables future runs without deleting any snapshot.
+
+This is a local recovery layer, not a replacement for a managed Supabase
+backup/PITR policy. Restore remains deliberately manual and human-approved.
+
+## Gate 1 handoff — PIN acceptance
+
+The PIN server boundary has an automated regression suite (`npm run test:access`)
+for valid/invalid PIN values and valid/tampered/expired sessions. It does not
+replace the iPhone preview acceptance, which must still verify the visual keypad,
+failed-attempt recovery, retry and offline reopening paths.
+
+The private-trip-base payload is covered by `npm run test:trip-base`: without a
+runtime origin it produces no address, and with a valid test origin it produces
+only the intended name, address and navigation link. The API route retains its
+PIN-session check before building that payload. A real-device preview must still
+verify the complete protected request. The production environment variable
+itself remains a manual Vercel configuration check and is never included in a
+test or repository file.
+
 ## Acceptance matrix — evidence at this point
 
 `CODE` means inspected; `AUTO` means local automated test; `DEVICE` requires

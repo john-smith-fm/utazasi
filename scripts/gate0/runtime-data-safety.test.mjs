@@ -37,6 +37,24 @@ test("the runtime backup refuses an unsafe destination before it can read Supaba
   assert.doesNotMatch(insideRepository.stderr, /SUPABASE_SECRET_KEY/i);
 });
 
+test("the scheduled backup defaults outside the repository and never prunes before a new snapshot", async () => {
+  const [scheduled, scheduler] = await Promise.all([
+    readFile(new URL("scripts/backup-runtime-scheduled.mjs", root), "utf8"),
+    readFile(new URL("scripts/configure-runtime-backup-schedule.mjs", root), "utf8"),
+  ]);
+
+  assert.match(scheduled, /Documents", "Codex", "Utazasi-backups/);
+  assert.match(scheduled, /if \(result\.status !== 0\) throw new Error/);
+  assert.ok(scheduled.lastIndexOf("runReadOnlyBackup(output);") < scheduled.lastIndexOf("pruneOnlyExpiredBackups"));
+  assert.match(scheduled, /BACKUP_PREFIX/);
+  assert.match(scheduled, /keepDays \* 24/);
+  assert.match(scheduler, /StartCalendarInterval/);
+  assert.match(scheduler, /scheduleIsLoaded\(\)/);
+  assert.match(scheduler, /<integer>3<\/integer><key>Minute<\/key><integer>30/);
+  assert.match(scheduler, /Umask<\/key><integer>63/);
+  assert.match(scheduler, /--install \| --status \| --uninstall/);
+});
+
 test("the dashboard replacement seed is visibly blocked", async () => {
   const [packageJson, generator, sql, seed, notebookService, legacyMigration, backup] = await Promise.all([
     readFile(new URL("package.json", root), "utf8"),
