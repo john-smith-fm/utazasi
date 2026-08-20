@@ -1,0 +1,9 @@
+{
+  "mode": "enrich",
+  "placeTypes": ["sight"],
+  "geographicScope": {
+    "localities": ["Villasimius"]
+  },
+  "slugs": ["marina-di-villasimius"],
+  "query": "Only enrich verified missing or partial basic, services and family information for Marina di Villasimius. Prefer its official marina, municipality or tourism authority sources. Do not propose mobility duration, distance, parking price, coordinates or a cover image unless directly established by a source."
+}

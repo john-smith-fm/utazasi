@@ -1,0 +1,23 @@
+{
+  "reportVersion": "1.0",
+  "startedAt": "2026-08-14T19:00:21.145Z",
+  "updatedAt": "2026-08-14T19:00:21.147Z",
+  "mode": "live_proposals_only",
+  "canonicalWrites": false,
+  "supabaseWrites": false,
+  "totalCanonicalPlaces": 138,
+  "timelineLinkedCanonicalPlaces": 11,
+  "selectedPlaces": 1,
+  "completed": [],
+  "skipped": [],
+  "failed": [
+    {
+      "slug": "biblioteca-comunale-efisio-melis",
+      "priority": "timeline_linked",
+      "timelineDates": [
+        "2026-09-08"
+      ],
+      "message": "Hiányzik a szerveroldali OPENAI_API_KEY. A kulcsot soha ne add meg NEXT_PUBLIC_ változóként."
+    }
+  ]
+}
