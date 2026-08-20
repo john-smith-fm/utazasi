@@ -33,6 +33,25 @@ function BeachAccessDetails({ place }: { place: Place }) {
   </section>;
 }
 
+function BeachServiceDetails({ place }: { place: Place }) {
+  if (place.details.kind !== "beach" || !place.details.confirmedServices?.length) return null;
+  return <section className="border-t border-deep-sea/10 pt-6" aria-labelledby="beach-services-heading">
+    <h2 id="beach-services-heading" className="text-[17px] font-bold leading-[23px] text-deep-sea">Biztosan elérhető</h2>
+    <p className="mt-3 text-sm leading-[21px] text-deep-sea/70">{place.details.confirmedServices.join(" · ")}</p>
+  </section>;
+}
+
+function GenericContactDetails({ place }: { place: Place }) {
+  if ((place.type === "restaurant" || place.type === "shop") || (!place.contact?.phones?.length && !place.contact?.website)) return null;
+  return <section className="border-t border-deep-sea/10 pt-6" aria-labelledby="contact-heading">
+    <h2 id="contact-heading" className="text-[17px] font-bold leading-[23px] text-deep-sea">Kapcsolat</h2>
+    {place.contact.phones?.length ? <div className="mt-3 flex flex-col items-start gap-2">
+      {place.contact.phones.map((phone) => <a key={phone} href={`tel:${phone.replace(/\s+/g, "")}`} className="inline-flex min-h-11 items-center text-sm font-semibold text-turquoise-dark">{phone}</a>)}
+    </div> : null}
+    {place.contact.website && <a href={place.contact.website} target="_blank" rel="noreferrer" className="mt-3 inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">Weboldal megnyitása</a>}
+  </section>;
+}
+
 function RestaurantDetails({ place }: { place: Place }) {
   if (place.details.kind !== "restaurant") return null;
   const { openingNote, contact } = place.details;
@@ -122,8 +141,10 @@ export function PlaceDetail({ place }: { place: Place }) {
 
     <div className="mt-8 space-y-8">
       <BeachAccessDetails place={place} />
+      <BeachServiceDetails place={place} />
       <RestaurantDetails place={place} />
       <ShopDetails place={place} />
+      <GenericContactDetails place={place} />
       {navigationHref && <a href={navigationHref} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">{directionsHref ? "Navigáció megnyitása" : "Megnyitás Google Térképen"}</a>}
     </div>
   </article>;

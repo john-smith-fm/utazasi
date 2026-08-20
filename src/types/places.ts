@@ -19,6 +19,13 @@ export type PlaceNavigation = {
   directionsUrl?: string;
 };
 
+/** Contact details are rendered only when the canonical Place record contains
+ * an explicit, source-backed value. */
+export type PlaceContact = {
+  phones?: string[];
+  website?: string;
+};
+
 /** Source-backed enrichment kept with the canonical Place, even when the
  * current screen does not yet render every field. */
 export type PlaceIntelligence = {
@@ -66,6 +73,7 @@ export type BeachAccess = {
 export type BeachDetails = {
   kind: "beach";
   access?: BeachAccess;
+  confirmedServices?: string[];
 };
 
 export type RestaurantContact = {
@@ -104,6 +112,7 @@ export type Place = {
   provenance?: PlaceProvenance;
   intelligence?: PlaceIntelligence;
   navigation?: PlaceNavigation;
+  contact?: PlaceContact;
   details: BeachDetails | RestaurantDetails | GenericPlaceDetails;
 };
 

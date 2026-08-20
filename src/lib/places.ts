@@ -77,11 +77,65 @@ const SHOP_DEPARTMENT_LABELS: Record<string, string> = {
   local_products: "Helyi termékek",
 };
 
+const BEACH_SERVICE_LABELS: Record<string, string> = {
+  wc: "Mosdó",
+  shower: "Zuhany",
+  changing_room: "Öltöző",
+  nursery: "Gyerekhelyiség",
+  lifeguard: "Vízi mentő",
+  accessible: "Akadálymentes megközelítés",
+  sunbed_rental: "Napágybérlés",
+  umbrella_rental: "Napernyőbérlés",
+};
+
+function contactFor(raw: UnknownRecord) {
+  const intelligence = isRecord(raw.destination_intelligence) ? raw.destination_intelligence : undefined;
+  const contact = isRecord(raw.contact)
+    ? raw.contact
+    : intelligence && isRecord(intelligence.contact)
+      ? intelligence.contact
+      : undefined;
+  if (!contact) return undefined;
+  const rawPhone = contact.phone ?? contact.phones;
+  const phones = optionalStringArray(rawPhone) ?? (optionalString(rawPhone) ? [optionalString(rawPhone)!] : undefined);
+  const website = optionalString(contact.website);
+  return phones?.length || website ? { phones, website } : undefined;
+}
+
+function beachDetailsFor(raw: UnknownRecord) {
+  const intelligence = isRecord(raw.destination_intelligence) ? raw.destination_intelligence : undefined;
+  const accessRecord = isRecord(raw.access)
+    ? raw.access
+    : intelligence && isRecord(intelligence.access)
+      ? intelligence.access
+      : undefined;
+  const parking = intelligence && isRecord(intelligence.parking) ? intelligence.parking : undefined;
+  const services = intelligence && isRecord(intelligence.services) ? intelligence.services : undefined;
+  const access = accessRecord || parking ? {
+    characteristics: accessRecord ? optionalStringArray(accessRecord.characteristics) : undefined,
+    serpentineRoad: accessRecord ? optionalBoolean(accessRecord.serpentineRoad) : undefined,
+    dirtRoad: accessRecord ? optionalBoolean(accessRecord.dirtRoad) : undefined,
+    mainRoad: accessRecord ? optionalBoolean(accessRecord.mainRoad) : undefined,
+    coastalRoad: accessRecord ? optionalBoolean(accessRecord.coastalRoad) : undefined,
+    parkingNotes: accessRecord ? optionalString(accessRecord.parkingNotes) : optionalString(parking?.notes),
+    notes: accessRecord ? optionalString(accessRecord.notes) : undefined,
+  } : undefined;
+  const confirmedServices = services
+    ? Object.entries(services)
+      .filter(([, value]) => value === true)
+      .map(([key]) => BEACH_SERVICE_LABELS[key])
+      .filter((service): service is string => Boolean(service))
+    : undefined;
+  return {
+    access,
+    confirmedServices: confirmedServices?.length ? [...new Set(confirmedServices)] : undefined,
+  };
+}
+
 function shopDetailsFor(raw: UnknownRecord) {
   const intelligence = isRecord(raw.destination_intelligence) ? raw.destination_intelligence : undefined;
   if (!intelligence) return undefined;
   const openingHours = isRecord(intelligence.opening_hours) ? intelligence.opening_hours : undefined;
-  const contact = isRecord(intelligence.contact) ? intelligence.contact : undefined;
   const services = optionalStringArray(intelligence.services)
     ?.map((service) => SHOP_SERVICE_LABELS[service])
     .filter((service): service is string => Boolean(service));
@@ -94,8 +148,9 @@ function shopDetailsFor(raw: UnknownRecord) {
       .filter((department): department is string => Boolean(department))
     : undefined;
   const family = shopping && isRecord(shopping.family) ? shopping.family : undefined;
-  const phones = contact ? optionalStringArray(contact.phone) ?? (optionalString(contact.phone) ? [optionalString(contact.phone)!] : undefined) : undefined;
-  const website = contact ? optionalString(contact.website) : undefined;
+  const contact = contactFor(raw);
+  const phones = contact?.phones;
+  const website = contact?.website;
   const result = {
     openingHours: openingHours ? formatWeeklyOpeningHours(openingHours.weekly) : undefined,
     openingNote: openingHours ? optionalString(openingHours.seasonal_or_exception_note) : undefined,
@@ -116,7 +171,10 @@ function mapsSearchNavigation(name: string, location?: { locality?: string; addr
 }
 
 function navigationFor(raw: UnknownRecord, name: string, location?: { locality?: string; address?: string }) {
-  return optionalNavigation(raw.google_maps) ?? mapsSearchNavigation(name, location);
+  const intelligence = isRecord(raw.destination_intelligence) ? raw.destination_intelligence : undefined;
+  return optionalNavigation(raw.google_maps)
+    ?? (intelligence ? optionalNavigation(intelligence.google_maps) : undefined)
+    ?? mapsSearchNavigation(name, location);
 }
 
 function provenanceFor(value: unknown) {
@@ -199,16 +257,7 @@ function validateBeaches(source: unknown): BeachPlace[] {
       latitude: optionalNumber(rawLocation.latitude),
       longitude: optionalNumber(rawLocation.longitude),
     } : undefined;
-    const rawAccess = isRecord(raw.access) ? raw.access : undefined;
-    const access = rawAccess ? {
-      characteristics: optionalStringArray(rawAccess.characteristics),
-      serpentineRoad: optionalBoolean(rawAccess.serpentineRoad),
-      dirtRoad: optionalBoolean(rawAccess.dirtRoad),
-      mainRoad: optionalBoolean(rawAccess.mainRoad),
-      coastalRoad: optionalBoolean(rawAccess.coastalRoad),
-      parkingNotes: optionalString(rawAccess.parkingNotes),
-      notes: optionalString(rawAccess.notes),
-    } : undefined;
+    const beachDetails = beachDetailsFor(raw);
 
     return {
       sourceId,
@@ -217,9 +266,10 @@ function validateBeaches(source: unknown): BeachPlace[] {
       type: "beach",
       location,
       navigation: navigationFor(raw, name, location),
+      contact: contactFor(raw),
       provenance: provenanceFor(raw.provenance ?? raw.verification),
       intelligence: intelligenceFor(raw),
-      details: { kind: "beach", access },
+      details: { kind: "beach", ...beachDetails },
     };
   });
 }
@@ -246,9 +296,7 @@ function validateRestaurants(source: unknown): RestaurantPlace[] {
       longitude: optionalNumber(rawLocation.longitude),
     } : undefined;
     const openingHours = isRecord(raw.opening_hours) ? raw.opening_hours : undefined;
-    const contact = isRecord(raw.contact) ? raw.contact : undefined;
-    const phones = contact ? optionalStringArray(contact.phone) : undefined;
-    const website = contact ? optionalString(contact.website) : undefined;
+    const placeContact = contactFor(raw);
     const openingNote = openingHours ? optionalString(openingHours.seasonal_or_exception_note) : undefined;
 
     return {
@@ -258,12 +306,13 @@ function validateRestaurants(source: unknown): RestaurantPlace[] {
       type: "restaurant",
       location,
       navigation: navigationFor(raw, name, location),
+      contact: placeContact,
       provenance: provenanceFor(raw.provenance ?? raw.verification),
       intelligence: intelligenceFor(raw),
       details: {
         kind: "restaurant",
         openingNote,
-        contact: phones || website ? { phones, website } : undefined,
+        contact: placeContact,
       },
     };
   });
@@ -299,6 +348,7 @@ function validateGenericPlaces(source: unknown, type: GenericPlaceType, category
       type,
       location,
       navigation: navigationFor(raw, name, location),
+      contact: contactFor(raw),
       provenance: provenanceFor(raw.provenance ?? raw.verification),
       intelligence: intelligenceFor(raw),
       details: { kind: type, ...(type === "shop" ? { shop: shopDetailsFor(raw) } : {}) },
