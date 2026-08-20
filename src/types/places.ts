@@ -89,6 +89,10 @@ export type RestaurantDetails = {
 
 export type GenericPlaceDetails = {
   kind: Exclude<PlaceType, "beach" | "restaurant">;
+  confirmedServices?: string[];
+  familyInsight?: string;
+  openingHours?: string[];
+  openingNote?: string;
   shop?: {
     openingHours?: string;
     openingNote?: string;

@@ -52,6 +52,25 @@ function GenericContactDetails({ place }: { place: Place }) {
   </section>;
 }
 
+function GenericPlaceInformation({ place }: { place: Place }) {
+  if (place.details.kind === "beach" || place.details.kind === "restaurant" || place.details.kind === "shop") return null;
+  const { confirmedServices, familyInsight, openingHours, openingNote } = place.details;
+  if (!confirmedServices?.length && !familyInsight && !openingHours?.length && !openingNote) return null;
+  return <section className="border-t border-deep-sea/10 pt-6" aria-labelledby="place-information-heading">
+    <h2 id="place-information-heading" className="text-[17px] font-bold leading-[23px] text-deep-sea">A helyről</h2>
+    {familyInsight && <p className="mt-3 text-sm leading-[21px] text-deep-sea/70">{familyInsight}</p>}
+    {confirmedServices?.length ? <div className="mt-4">
+      <h3 className="text-sm font-semibold leading-5 text-deep-sea">Biztosan elérhető</h3>
+      <p className="mt-1 text-sm leading-[21px] text-deep-sea/70">{confirmedServices.join(" · ")}</p>
+    </div> : null}
+    {openingHours?.length ? <div className="mt-4">
+      <h3 className="text-sm font-semibold leading-5 text-deep-sea">Nyitvatartás</h3>
+      <p className="mt-1 text-sm leading-[21px] text-deep-sea/70">{openingHours.join(" · ")}</p>
+      {openingNote && <p className="mt-1 text-xs leading-[18px] text-deep-sea/55">{openingNote}</p>}
+    </div> : null}
+  </section>;
+}
+
 function RestaurantDetails({ place }: { place: Place }) {
   if (place.details.kind !== "restaurant") return null;
   const { openingNote, contact } = place.details;
@@ -144,6 +163,7 @@ export function PlaceDetail({ place }: { place: Place }) {
       <BeachServiceDetails place={place} />
       <RestaurantDetails place={place} />
       <ShopDetails place={place} />
+      <GenericPlaceInformation place={place} />
       <GenericContactDetails place={place} />
       {navigationHref && <a href={navigationHref} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">{directionsHref ? "Navigáció megnyitása" : "Megnyitás Google Térképen"}</a>}
     </div>

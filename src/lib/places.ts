@@ -88,6 +88,19 @@ const BEACH_SERVICE_LABELS: Record<string, string> = {
   umbrella_rental: "Napernyőbérlés",
 };
 
+const GENERIC_SERVICE_LABELS: Record<string, string> = {
+  parking: "Parkolás",
+  prm_assistance: "Akadálymentes segítség",
+  rail_station: "Vasútállomás",
+  wifi: "Wi‑Fi",
+  fuel: "Üzemanyag",
+  commercial_area: "Üzletek",
+  shipyard: "Hajószerviz",
+  wc: "Mosdó",
+  water: "Vízvételi lehetőség",
+  indoor: "Beltéri rész",
+};
+
 function contactFor(raw: UnknownRecord) {
   const intelligence = isRecord(raw.destination_intelligence) ? raw.destination_intelligence : undefined;
   const contact = isRecord(raw.contact)
@@ -161,6 +174,32 @@ function shopDetailsFor(raw: UnknownRecord) {
     familyInsight: family ? optionalString(family.insight) : undefined,
   };
   return Object.values(result).some(Boolean) ? result : undefined;
+}
+
+function genericDetailsFor(raw: UnknownRecord, type: GenericPlaceType) {
+  if (type === "shop") return { kind: type, shop: shopDetailsFor(raw) };
+  const intelligence = isRecord(raw.destination_intelligence) ? raw.destination_intelligence : undefined;
+  const services = intelligence && isRecord(intelligence.services) ? intelligence.services : undefined;
+  const family = intelligence && isRecord(intelligence.family) ? intelligence.family : undefined;
+  const opening = intelligence && isRecord(intelligence.opening_hours) ? intelligence.opening_hours : undefined;
+  const openingHours = opening
+    ? [
+      optionalString(opening.office_daily) ? `Iroda: ${optionalString(opening.office_daily)}` : undefined,
+      optionalString(opening.fuel_daily) ? `Üzemanyag: ${optionalString(opening.fuel_daily)}` : undefined,
+    ].filter((value): value is string => Boolean(value))
+    : undefined;
+  return {
+    kind: type,
+    confirmedServices: services
+      ? Object.entries(services)
+        .filter(([, value]) => value === true)
+        .map(([key]) => GENERIC_SERVICE_LABELS[key])
+        .filter((service): service is string => Boolean(service))
+      : undefined,
+    familyInsight: family ? optionalString(family.insight) : undefined,
+    openingHours: openingHours?.length ? openingHours : undefined,
+    openingNote: opening ? optionalString(opening.notes) : undefined,
+  };
 }
 
 /** A Maps search hand-off is derived only from an already-approved place name
@@ -351,7 +390,7 @@ function validateGenericPlaces(source: unknown, type: GenericPlaceType, category
       contact: contactFor(raw),
       provenance: provenanceFor(raw.provenance ?? raw.verification),
       intelligence: intelligenceFor(raw),
-      details: { kind: type, ...(type === "shop" ? { shop: shopDetailsFor(raw) } : {}) },
+      details: genericDetailsFor(raw, type),
     };
   });
 }
