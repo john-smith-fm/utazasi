@@ -74,6 +74,7 @@ export type BeachDetails = {
   kind: "beach";
   access?: BeachAccess;
   confirmedServices?: string[];
+  familyInsight?: string;
 };
 
 export type RestaurantContact = {

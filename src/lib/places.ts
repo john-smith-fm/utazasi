@@ -124,6 +124,7 @@ function beachDetailsFor(raw: UnknownRecord) {
       : undefined;
   const parking = intelligence && isRecord(intelligence.parking) ? intelligence.parking : undefined;
   const services = intelligence && isRecord(intelligence.services) ? intelligence.services : undefined;
+  const family = intelligence && isRecord(intelligence.family) ? intelligence.family : undefined;
   const access = accessRecord || parking ? {
     characteristics: accessRecord ? optionalStringArray(accessRecord.characteristics) : undefined,
     serpentineRoad: accessRecord ? optionalBoolean(accessRecord.serpentineRoad) : undefined,
@@ -142,6 +143,7 @@ function beachDetailsFor(raw: UnknownRecord) {
   return {
     access,
     confirmedServices: confirmedServices?.length ? [...new Set(confirmedServices)] : undefined,
+    familyInsight: family ? optionalString(family.insight) : undefined,
   };
 }
 

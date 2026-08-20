@@ -41,6 +41,14 @@ function BeachServiceDetails({ place }: { place: Place }) {
   </section>;
 }
 
+function BeachFamilyDetails({ place }: { place: Place }) {
+  if (place.details.kind !== "beach" || !place.details.familyInsight) return null;
+  return <section className="border-t border-deep-sea/10 pt-6" aria-labelledby="beach-family-heading">
+    <h2 id="beach-family-heading" className="text-[17px] font-bold leading-[23px] text-deep-sea">Családdal</h2>
+    <p className="mt-3 text-sm leading-[21px] text-deep-sea/70">{place.details.familyInsight}</p>
+  </section>;
+}
+
 function GenericContactDetails({ place }: { place: Place }) {
   if ((place.type === "restaurant" || place.type === "shop") || (!place.contact?.phones?.length && !place.contact?.website)) return null;
   return <section className="border-t border-deep-sea/10 pt-6" aria-labelledby="contact-heading">
@@ -161,6 +169,7 @@ export function PlaceDetail({ place }: { place: Place }) {
     <div className="mt-8 space-y-8">
       <BeachAccessDetails place={place} />
       <BeachServiceDetails place={place} />
+      <BeachFamilyDetails place={place} />
       <RestaurantDetails place={place} />
       <ShopDetails place={place} />
       <GenericPlaceInformation place={place} />

@@ -60,6 +60,10 @@ test("P0 service and contact facts remain explicit", async () => {
   assert.equal(samBeach.destination_intelligence?.services?.changing_room, true);
   assert.equal(samBeach.destination_intelligence?.services?.nursery, true);
   assert.ok(samBeach.destination_intelligence?.contact?.phone);
+  assert.match(samBeach.destination_intelligence?.family?.insight ?? "", /parkoló/);
+
+  const portoGiunco = bySlug(places, "porto-giunco");
+  assert.match(portoGiunco.destination_intelligence?.family?.insight ?? "", /sekély víz/);
 
   const airport = bySlug(places, "cagliari-airport");
   assert.equal(airport.destination_intelligence?.services?.prm_assistance, true);
