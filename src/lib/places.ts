@@ -117,7 +117,7 @@ function beachDetailsFor(raw: UnknownRecord) {
     dirtRoad: accessRecord ? optionalBoolean(accessRecord.dirtRoad) : undefined,
     mainRoad: accessRecord ? optionalBoolean(accessRecord.mainRoad) : undefined,
     coastalRoad: accessRecord ? optionalBoolean(accessRecord.coastalRoad) : undefined,
-    parkingNotes: accessRecord ? optionalString(accessRecord.parkingNotes) : optionalString(parking?.notes),
+    parkingNotes: (accessRecord ? optionalString(accessRecord.parkingNotes) : undefined) ?? optionalString(parking?.notes),
     notes: accessRecord ? optionalString(accessRecord.notes) : undefined,
   } : undefined;
   const confirmedServices = services
