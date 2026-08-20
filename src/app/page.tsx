@@ -61,7 +61,7 @@ export default function HomePage() {
   // The canonical Timeline lives in Supabase. Trip-core can provide a safe
   // offline day shell, but legacy prototype activities must never reappear.
   const fallbackDay = TRIP_CORE_DAYS.find((item) => item.date === selectedDate) ?? TRIP_CORE_DAYS[0];
-  const { day, status, canWrite, retry } = useTimelineDay(selectedDate, fallbackDay);
+  const { day, status, hasRemoteDay, canWrite, retry } = useTimelineDay(selectedDate, fallbackDay);
   const currentLocation = useCurrentLocationContext();
   const { weather, sea } = useLiveData(currentLocation.context);
   const watchChange = useEventWatch(selectedDate);
@@ -150,7 +150,7 @@ export default function HomePage() {
         <NotificationPreference />
         <TimelineCard day={day} days={TRIP_CORE_DAYS} summary={statusSummary} onSelect={setSelectedDate} />
         <EventSuggestions date={selectedDate} events={events} onAccepted={() => { retry(); showToast("Esemény hozzáadva a napi tervhez"); }} />
-        <section className="mt-8"><PlanList activities={day.activities} status={status} canEdit={canMutate} onRetry={retry} onSelect={(activity) => setEditor({ activity })} onDelete={(activity) => { void remove(activity).catch((caught) => showToast(caught instanceof Error ? caught.message : "A törlés nem sikerült.")); }} onTimeChange={changeStartTime} onError={showToast} /></section>
+        <section className="mt-8"><PlanList activities={day.activities} status={status} hasCachedDay={hasRemoteDay} canEdit={canMutate} onRetry={retry} onSelect={(activity) => setEditor({ activity })} onDelete={(activity) => { void remove(activity).catch((caught) => showToast(caught instanceof Error ? caught.message : "A törlés nem sikerült.")); }} onTimeChange={changeStartTime} onError={showToast} /></section>
         <div aria-hidden="true" className="h-12" />
       </div>
     </main>
