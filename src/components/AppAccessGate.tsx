@@ -70,6 +70,9 @@ function PinAccessScreen({ configurationError, onUnlocked }: { configurationErro
     setTypedPin(nextPin);
     setStatus("idle");
     setError("");
+    // A phone keypad already makes the fourth digit an intentional action.
+    // Do not make the family perform a second, redundant tap to continue.
+    if (nextPin.length === 4) void submit(nextPin);
   }
 
   function removeDigit() {
@@ -90,7 +93,7 @@ function PinAccessScreen({ configurationError, onUnlocked }: { configurationErro
       <div className={`mx-auto flex w-full max-w-[365px] justify-center gap-4 ${status === "error" ? "motion-safe:animate-[pin-shake_.3s_ease-in-out]" : ""}`} aria-label="Négyjegyű PIN-kód">
         {[0, 1, 2, 3].map((index) => <span key={index} aria-hidden="true" className={`h-3 w-3 rounded-full border border-deep-sea/25 transition-colors ${typedPin[index] ? "bg-deep-sea" : "bg-white/55"}`} />)}
       </div>
-      <p className="mx-auto mt-3 max-w-[365px] text-center text-sm leading-5 text-deep-sea/55">Add meg a négyjegyű PIN-kódot, majd nyisd meg az utazást.</p>
+      <p className="mx-auto mt-3 max-w-[365px] text-center text-sm leading-5 text-deep-sea/55">Add meg a négyjegyű PIN-kódot. A negyedik szám után megnyitjuk az utazást.</p>
       <div className="mx-auto mt-7 grid w-full max-w-[365px] grid-cols-3 gap-2" aria-label="PIN számbillentyűzet">
         {["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0"].map((digit, index) => digit ? <button key={digit} type="button" onClick={() => addDigit(digit)} disabled={configurationError || status === "submitting"} className="h-[58px] rounded-full text-[24px] font-semibold text-deep-sea transition-colors active:bg-turquoise/15 disabled:opacity-45">{digit}</button> : <span key={`space-${index}`} />)}
         <button type="button" onClick={removeDigit} disabled={!typedPin.length || configurationError || status === "submitting"} aria-label="Utolsó számjegy törlése" className="h-[58px] rounded-full text-[17px] font-semibold text-deep-sea/70 transition-colors active:bg-turquoise/15 disabled:opacity-30">Törlés</button>
