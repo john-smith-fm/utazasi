@@ -327,6 +327,21 @@ test("a watch change appears only on the Timeline day that accepted its event", 
   assert.match(acceptedDayStatus, /Fontos változás: Invasio Fesztivál időpontja módosult/);
 });
 
+test("a selected-day Watch change takes priority over the next programme and weather", () => {
+  const now = new Date("2099-09-03T07:00:00.000Z");
+  const change = {
+    eventTitle: "Helyi koncert",
+    kind: "status_changed" as const,
+    observedAt: "2099-09-03T06:30:00.000Z",
+    timelineDates: ["2099-09-03"],
+  };
+  const rainyWeather = { ...weather, precipitationState: "rain" as const };
+
+  const status = smartStatusSummary(futureBeachDay, rainyWeather, change, now);
+  assert.match(status, /Fontos változás: Helyi koncert állapota megváltozott/);
+  assert.doesNotMatch(status, /Következő:|Csapadék várható/);
+});
+
 test("live weather never rewrites the status of a different selected Timeline day", () => {
   const now = new Date("2099-09-03T12:00:00.000Z");
   const currentDay = {
