@@ -214,6 +214,13 @@ export function answerQuestionWithContext(
     };
   }
   if (timelineAnswer) return timelineAnswer;
+  if (/mikor.*(indul|induljunk)|mikor.*kell.*indul|mennyi.*ido.*(oda|eljut)/.test(value)) {
+    return {
+      title: "Az indulás ideje még nincs kiszámítható",
+      body: "A kiválasztott naphoz nincs ellenőrzött Mobility-route, ezért nem mondok indulási időt vagy menetidőt. A program helyét a Timeline-ból Mapsben megnyithatod.",
+      sources: ["Timeline", "Mobility"],
+    };
+  }
   if (placeResult) return placeResult;
 
   if (value.includes("strand")) {

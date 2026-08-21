@@ -457,6 +457,13 @@ test("missing mobility route is never converted to a distance or duration", () =
   assert.doesNotMatch(answer.body, /\b\d+\s*(km|perc)\b/i);
 });
 
+test("departure-planning questions state missing Mobility evidence instead of inventing a departure time", () => {
+  const answer = answerQuestion("Mikor kell elindulnunk?", futureBeachDay, weather, [], null);
+  assert.equal(answer.title, "Az indulás ideje még nincs kiszámítható");
+  assert.match(answer.body, /nincs ellenőrzött Mobility-route/);
+  assert.doesNotMatch(answer.body, /\b\d+\s*(km|perc)\b/i);
+});
+
 test("nearest-shop questions are treated as Mobility questions, not shopping rankings", () => {
   const answer = answerQuestion("Milyen messze van a szállásunktól a legközelebbi bolt?", futureBeachDay, weather, [], {
     title: "Nincs ellenőrzött útvonaladat",
