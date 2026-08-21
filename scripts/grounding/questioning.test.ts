@@ -5,6 +5,7 @@ import { answerQuestion } from "../../src/lib/questioning-answer.ts";
 import { smartStatusSummary } from "../../src/lib/smart-status.ts";
 import { timelineQuestionPrompts } from "../../src/lib/timeline-questioning.ts";
 import { buildQuestionContext, questionPromptsForContext } from "../../src/lib/question-context.ts";
+import { detectShoppingIntent } from "../../src/lib/shopping-intent.ts";
 import { answerQuestionWithContext } from "../../src/lib/questioning-answer.ts";
 import { validPlaceBrowseCategoryForType } from "../../src/lib/place-categories.ts";
 import { GroundedAnswerContractError, parseGroundedAnswer } from "../../src/lib/grounded-answer-contract.ts";
@@ -468,6 +469,11 @@ test("a natural restaurant question stays bounded when no verified meal place is
   const answer = answerQuestion("Hol együnk?", futureBeachDay, weather, [], null);
   assert.equal(answer.title, "Étterem még nincs kiválasztva");
   assert.match(answer.body, /nem ajánlok találomra helyet/i);
+});
+
+test("a natural inflected grocery question resolves without confusing dinner with shopping", () => {
+  assert.equal(detectShoppingIntent("Hol vegyünk kaját?"), "daily_groceries");
+  assert.equal(detectShoppingIntent("Hol együnk?"), null);
 });
 
 test("nearest-shop questions are treated as Mobility questions, not shopping rankings", () => {

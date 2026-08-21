@@ -1,7 +1,6 @@
 import shoppingIntelligence from "../../knowledge/shopping-intelligence.json";
 import { getPlaceBySlug } from "./places";
-
-type ShoppingIntent = "arrival_shopping" | "daily_groceries" | "quick_stop" | "local_products" | "baby_products" | "mobility";
+import { detectShoppingIntent, type ShoppingIntent } from "./shopping-intent";
 
 type Candidate = {
   place_slug: string;
@@ -52,37 +51,13 @@ const FACT_LABELS: Record<string, string> = {
   barrier_free: "Akadálymentes hozzáférés",
 };
 
-function normalized(value: string) {
-  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("hu-HU");
-}
-
-function detectIntent(question: string): ShoppingIntent | null {
-  const value = normalized(question);
-  // Families rarely say "élelmiszerbolt". Treat a natural "vegyünk kaját"
-  // phrasing as grocery shopping, but do not turn a generic dinner question
-  // into a supermarket recommendation.
-  const asksToBuyFood = /\b(kaja|elelmet)\b/.test(value) && /\b(veg|vasar|bolt|hova|hol)\w*/.test(value);
-  const hasShoppingWord = /bevasar|bolt|market|elelmiszer|uzlet/.test(value) || asksToBuyFood;
-
-  if (/pelenk|baba|bebi|babatermek/.test(value)) return "baby_products";
-  if (/kerulo|mennyi|milyen messze|legkozeleb|tavolsag|km|perc|utba esik|szallas.*bolt|bolt.*szallas/.test(value) && (/eurospin|crai|conad|mio|isa|market/.test(value) || hasShoppingWord)) return "mobility";
-  if (/helyi.*termek|termek.*helyi|szardin|sardin/.test(value) && hasShoppingWord) return "local_products";
-  if (/(erkez|nagybevasar|nagy bevasar)/.test(value) && hasShoppingWord) return "arrival_shopping";
-  if (/(gyors|gyorsan|ugor)/.test(value) && hasShoppingWord) return "quick_stop";
-  if (/(napi|mindennapi)/.test(value) && hasShoppingWord) return "daily_groceries";
-  // A bare "bevásárlás" is still a valid, broad shopping intent. It uses the
-  // approved daily-groceries profile rather than leaving the picker empty.
-  if (hasShoppingWord) return "daily_groceries";
-  return null;
-}
-
 /**
  * The Timeline place picker uses the same approved Shopping Intelligence
  * profiles as Kérdezési, but exposes candidates rather than a prose answer.
  * Unknown baby-product coverage deliberately returns no shop recommendation.
  */
 export function getShoppingPlaceCandidates(title: string): { recommended: Array<{ place: NonNullable<ReturnType<typeof getPlaceBySlug>>; rationale?: string }>; additional: Array<{ place: NonNullable<ReturnType<typeof getPlaceBySlug>>; rationale?: string }> } | null {
-  const intent = detectIntent(title);
+  const intent = detectShoppingIntent(title);
   if (!intent || intent === "mobility" || intent === "baby_products") return intent === "baby_products" ? { recommended: [], additional: [] } : null;
   const profileName = intent === "arrival_shopping" || intent === "quick_stop" || intent === "local_products" || intent === "daily_groceries"
     ? intent
@@ -196,7 +171,7 @@ const COPY: Record<Exclude<ShoppingIntent, "mobility" | "baby_products">, { titl
  * existing Kérdezési fallback.
  */
 export function getShoppingAnswer(question: string): ShoppingAnswer | null {
-  const intent = detectIntent(question);
+  const intent = detectShoppingIntent(question);
   if (!intent) return null;
   if (intent === "mobility") return mobilityAnswer();
 
