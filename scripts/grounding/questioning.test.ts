@@ -414,6 +414,13 @@ test("a scheduled return flight comes from the selected Timeline day, not the Ev
   assert.deepEqual(answer.sources, ["Timeline"]);
 });
 
+test("a repülőgép wording still resolves the scheduled Timeline flight before Mobility", () => {
+  const answer = answerQuestion("Mikor indul a repülőgép Budapestre?", returnFlightDay, weather, [], null);
+  assert.equal(answer.title, "17:30 · Repülő indulása");
+  assert.match(answer.body, /Cagliari Airport/);
+  assert.deepEqual(answer.sources, ["Timeline"]);
+});
+
 test("unknown fireworks explicitly remains unknown", () => {
   const answer = answerQuestion("Mikor kezdődik a tűzijáték?", futureBeachDay, weather, [], null);
   assert.equal(answer.title, "Nincs megerősített tűzijáték");

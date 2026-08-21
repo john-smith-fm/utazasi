@@ -11,6 +11,10 @@ function normalized(value: string) {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("hu-HU");
 }
 
+// Keep the family wording flexible: both "repülő" and "repülőgép" refer to
+// the explicit, scheduled Timeline flight, never to an estimated airport trip.
+const FLIGHT_QUESTION_PATTERN = /\b(repulo(?:gep)?|repules|jarat|flight)\b/;
+
 function minutes(time: string) {
   const match = /^(\d{1,2}):(\d{2})$/.exec(time);
   if (!match) return null;
@@ -73,7 +77,7 @@ export function getTimelineQuestionAnswer(question: string, day: HomeDay): Timel
 
   // A flight is a scheduled family-plan fact, not an externally watched Event.
   // Resolve it directly from the selected day's Timeline whenever it is named.
-  if (/\b(repulo|jarat|flight)\b/.test(value)) {
+  if (FLIGHT_QUESTION_PATTERN.test(value)) {
     const flight = timed.find(({ activity }) => /repulo|flight|jarat/i.test(normalized(`${activity.title} ${activity.place}`)))?.activity;
     if (flight) {
       return {
