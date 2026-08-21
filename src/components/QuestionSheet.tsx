@@ -13,7 +13,7 @@ import { FORM_CONTROL } from "@/components/formStyles";
 
 
 /** Inline content for the Weather Bar's Kérdezési state — never a modal or sheet. */
-export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; weather: WeatherSnapshot | null; events?: TripEvent[] }) {
+export function QuestionSheet({ day, weather, events = [], tripDays = [], tripStatus = "success", onOpenDay }: { day: HomeDay; weather: WeatherSnapshot | null; events?: TripEvent[]; tripDays?: readonly HomeDay[]; tripStatus?: "loading" | "success" | "empty" | "offline" | "error"; onOpenDay?: (date: string) => void }) {
   const [question, setQuestion] = useState<string | null>(null);
   const [customQuestion, setCustomQuestion] = useState("");
   const [aiAnswer, setAiAnswer] = useState<{ title: string; body: string } | null>(null);
@@ -22,7 +22,7 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
   const [tripBaseError, setTripBaseError] = useState<string | null>(null);
   const [isAsking, setIsAsking] = useState(false);
   const context = useMemo(() => buildQuestionContext(day, weather, events, { getPlaceBySlug, places: getPlaces() }), [day, events, weather]);
-  const answer = useMemo(() => question ? answerQuestionWithContext(question, context, getShoppingAnswer(question)) : null, [context, question]);
+  const answer = useMemo(() => question ? answerQuestionWithContext(question, context, getShoppingAnswer(question), tripDays) : null, [context, question, tripDays]);
   const prompts = useMemo(() => questionPromptsForContext(context), [context]);
 
   async function ask(value: string) {
@@ -31,7 +31,7 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
     setAiError(null);
     setTripBase(null);
     setTripBaseError(null);
-    const localAnswer = answerQuestionWithContext(value, context, getShoppingAnswer(value));
+    const localAnswer = answerQuestionWithContext(value, context, getShoppingAnswer(value), tripDays);
     if (isAccommodationQuestion(value)) {
       setIsAsking(true);
       try {
@@ -48,6 +48,10 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
     // Verified local answers are the source of truth. Do not let a generative
     // summary replace an explicit Timeline, Place, Weather or Shopping answer.
     if (localAnswer.title !== "Erre még nincs biztos válasz") return;
+    // Do not send a potentially cross-day factual question to AI while the
+    // read-only canonical trip context is still arriving. The deterministic
+    // resolver will answer once it is ready; AI never guesses missing plans.
+    if (tripStatus === "loading") return;
     setIsAsking(true);
     try {
       const response = await fetch("/api/question", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: value, date: day.date }) });
@@ -83,6 +87,7 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
     {answer && <section className="mt-5 border-t border-deep-sea/10 pt-5" aria-live="polite">
       <h3 className="text-[17px] font-bold leading-[23px] text-deep-sea">{aiAnswer?.title ?? answer.title}</h3>
       <p className="mt-2 text-sm leading-[21px] text-deep-sea/70">{isAsking ? "Ellenőrzött utazási kontextusból összefoglalom…" : aiAnswer?.body ?? answer.body}</p>
+      {answer.openDayDate && answer.openDayDate !== day.date && onOpenDay ? <button type="button" onClick={() => onOpenDay(answer.openDayDate!)} className="mt-3 inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-3 text-sm font-semibold text-deep-sea">{new Intl.DateTimeFormat("hu-HU", { month: "short", day: "numeric", timeZone: "Europe/Rome" }).format(new Date(`${answer.openDayDate}T12:00:00Z`)).replace(".", ".")} megnyitása</button> : null}
       {aiError ? <div className="mt-4 flex items-center justify-between gap-3 rounded-ui-s border border-coral/25 bg-coral/5 p-3.5" role="status">
         <p className="text-[13px] leading-[19px] text-deep-sea/70">{aiError}</p>
         <button type="button" onClick={() => void ask(question!)} className="min-h-11 shrink-0 px-1 text-[13px] font-semibold text-deep-sea">Újrapróbálás</button>

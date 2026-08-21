@@ -6,7 +6,7 @@ import { storageGet, storageSet } from "@/lib/storage";
 
 export type TimelineLoadState = "loading" | "success" | "empty" | "offline" | "error";
 
-type TimelineActivityResult = {
+export type TimelineActivityResult = {
   id: string;
   start_time: string;
   start_time_precision: "exact" | "approximate" | "period";
@@ -22,7 +22,7 @@ type TimelineActivityResult = {
   created_at: string;
 };
 
-type TimelineDayResult = {
+export type TimelineDayResult = {
   date: string;
   title: string;
   subtitle: string | null;
@@ -35,7 +35,7 @@ type TimelineDayState = {
   hasRemoteDay: boolean;
 };
 
-function toHomeDay(remote: TimelineDayResult, fallback: HomeDay): HomeDay {
+export function timelineDayToHomeDay(remote: TimelineDayResult, fallback: HomeDay): HomeDay {
   const activities: HomeActivity[] = [...remote.activities]
     .sort((left, right) => left.start_time.localeCompare(right.start_time) || left.created_at.localeCompare(right.created_at))
     .map((activity) => ({
@@ -73,7 +73,7 @@ export function useTimelineDay(selectedDate: string, fallback: HomeDay) {
     const cacheKey = `utazasi-timeline-v1:${selectedDate}`;
     const cached = storageGet<TimelineDayResult | null>(cacheKey, null);
 
-    setState({ day: cached ? toHomeDay(cached, fallback) : emptyDay(fallback), status: "loading", hasRemoteDay: Boolean(cached) });
+    setState({ day: cached ? timelineDayToHomeDay(cached, fallback) : emptyDay(fallback), status: "loading", hasRemoteDay: Boolean(cached) });
 
     async function load() {
       try {
@@ -88,14 +88,14 @@ export function useTimelineDay(selectedDate: string, fallback: HomeDay) {
         }
 
         storageSet(cacheKey, day);
-        setState({ day: toHomeDay(day, fallback), status: day.activities.length ? "success" : "empty", hasRemoteDay: true });
+        setState({ day: timelineDayToHomeDay(day, fallback), status: day.activities.length ? "success" : "empty", hasRemoteDay: true });
       } catch (error) {
         if (!active) return;
         const offline = typeof navigator !== "undefined" && !navigator.onLine;
         // Trip-core provides only the title/day shell. It must never restore
         // prototype activities when this specific canonical day was never
         // successfully fetched and cached on the device.
-        const knownDay = cached ? toHomeDay(cached, fallback) : emptyDay(fallback);
+        const knownDay = cached ? timelineDayToHomeDay(cached, fallback) : emptyDay(fallback);
         console.error("Unable to load Timeline data from Supabase.", error);
         setState({ day: knownDay, status: offline ? "offline" : "error", hasRemoteDay: Boolean(cached) });
       }
@@ -106,4 +106,56 @@ export function useTimelineDay(selectedDate: string, fallback: HomeDay) {
   }, [attempt, fallback, selectedDate]);
 
   return { ...state, canWrite: state.hasRemoteDay && state.status !== "offline" && state.status !== "error", retry };
+}
+
+/**
+ * Read-only full-trip context for natural questions. The visible Timeline
+ * remains a single day, while a concrete program or travel question can look
+ * up a scheduled fact elsewhere in the canonical family plan.
+ */
+export function useTripTimeline(fallbackDays: readonly HomeDay[]) {
+  const [days, setDays] = useState<readonly HomeDay[]>([]);
+  const [status, setStatus] = useState<TimelineLoadState>("loading");
+  const [attempt, setAttempt] = useState(0);
+  const retry = useCallback(() => setAttempt((value) => value + 1), []);
+
+  useEffect(() => {
+    let active = true;
+    const cacheKey = "utazasi-timeline-v1:trip";
+    const cached = storageGet<TimelineDayResult[] | null>(cacheKey, null);
+    const project = (remoteDays: readonly TimelineDayResult[]) => remoteDays.map((remote) => {
+      const fallback = fallbackDays.find((day) => day.date === remote.date);
+      return fallback ? timelineDayToHomeDay(remote, fallback) : null;
+    }).filter((day): day is HomeDay => day !== null);
+
+    if (cached) {
+      setDays(project(cached));
+      setStatus("success");
+    } else {
+      setDays([]);
+      setStatus("loading");
+    }
+
+    async function load() {
+      try {
+        const response = await fetch("/api/timeline?scope=trip", { cache: "no-store" });
+        if (!response.ok) throw new Error(`Trip Timeline request failed: ${response.status}`);
+        const payload = await response.json() as { days?: TimelineDayResult[] };
+        const remoteDays = payload.days ?? [];
+        if (!active) return;
+        storageSet(cacheKey, remoteDays);
+        setDays(project(remoteDays));
+        setStatus("success");
+      } catch (error) {
+        if (!active) return;
+        console.error("Unable to load full Timeline context from Supabase.", error);
+        if (!cached) setStatus(typeof navigator !== "undefined" && !navigator.onLine ? "offline" : "error");
+      }
+    }
+
+    void load();
+    return () => { active = false; };
+  }, [attempt, fallbackDays]);
+
+  return { days, status, retry };
 }

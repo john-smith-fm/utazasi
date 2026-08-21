@@ -1,7 +1,7 @@
 import type { HomeDay } from "../data/home-days";
 import type { WeatherSnapshot } from "../types";
 import type { TripEvent } from "./event-types";
-import { getTimelineQuestionAnswer } from "./timeline-questioning.ts";
+import { getTimelineQuestionAnswer, getTripTimelineQuestionAnswer } from "./timeline-questioning.ts";
 import { TRIP_BASE_NAME } from "./trip-base.ts";
 import { buildQuestionContext, type QuestionContext } from "./question-context.ts";
 import type { Place } from "@/types/places";
@@ -20,6 +20,8 @@ export type QuestionAnswer = {
   body: string;
   sources: string[];
   recommendations?: QuestionRecommendation[];
+  /** A cross-day Timeline answer may offer this explicit navigation action. */
+  openDayDate?: string;
 };
 
 type ShoppingAnswer = QuestionAnswer | null;
@@ -219,6 +221,7 @@ export function answerQuestionWithContext(
   question: string,
   context: QuestionContext,
   shoppingAnswer: ShoppingAnswer,
+  tripDays: readonly HomeDay[] = [],
 ): QuestionAnswer {
   const { day, weather, events } = context;
   const value = normalized(question);
@@ -236,6 +239,15 @@ export function answerQuestionWithContext(
     };
   }
   if (timelineAnswer) return timelineAnswer;
+  // A named Place fact is global canonical knowledge. It must win over a
+  // cross-day program lookup for the same words (for example parking at a
+  // beach), while the visible day remains unchanged.
+  if (placeResult) return placeResult;
+  // A concrete program/travel lookup can cross the trip only after the
+  // selected day's deterministic resolver had no explicit answer. Relative
+  // daily questions are rejected by this helper and remain local by design.
+  const tripTimelineAnswer = getTripTimelineQuestionAnswer(question, day, tripDays);
+  if (tripTimelineAnswer) return tripTimelineAnswer;
   if (/mikor.*(indul|induljunk)|mikor.*kell.*indul|mennyi.*ido.*(oda|eljut)/.test(value)) {
     return {
       title: "Az indulás ideje még nincs kiszámítható",
@@ -243,7 +255,6 @@ export function answerQuestionWithContext(
       sources: ["Timeline", "Mobility"],
     };
   }
-  if (placeResult) return placeResult;
   const foodResult = foodAnswer(question, context);
   if (foodResult) return foodResult;
 

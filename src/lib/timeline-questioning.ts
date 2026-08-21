@@ -5,6 +5,7 @@ export type TimelineQuestionAnswer = {
   title: string;
   body: string;
   sources: ["Timeline"];
+  openDayDate?: string;
 };
 
 function normalized(value: string) {
@@ -13,7 +14,11 @@ function normalized(value: string) {
 
 // Keep the family wording flexible: both "repülő" and "repülőgép" refer to
 // the explicit, scheduled Timeline flight, never to an estimated airport trip.
-const FLIGHT_QUESTION_PATTERN = /\b(repulo(?:gep)?|repules|jarat|flight)\b/;
+const FLIGHT_QUESTION_PATTERN = /\b(repul[a-z]*|jarat[a-z]*|flight[a-z]*)\b/;
+
+const STRICT_DAY_PATTERN = /\b(ma|mai|kovetkez|meg|delutan|este)\b/;
+const RETURN_FLIGHT_PATTERN = /\b(haza[a-z]*|hazaut[a-z]*|vissza[a-z]*|budapest[a-z]*)\b/;
+const OUTBOUND_FLIGHT_PATTERN = /\b(szardinia(?:ra|ban)?|cagliari(?:ba|ban)?)\b/;
 
 function minutes(time: string) {
   const match = /^(\d{1,2}):(\d{2})$/.exec(time);
@@ -28,6 +33,97 @@ function orderedTimedActivities(day: HomeDay) {
     .map((activity) => ({ activity, minutes: minutes(activity.time) }))
     .filter((item): item is { activity: HomeActivity; minutes: number } => item.minutes !== null)
     .sort((a, b) => a.minutes - b.minutes);
+}
+
+function dayLabel(day: HomeDay) {
+  const [, month, date] = day.date.split("-");
+  return `Szept. ${Number(month) === 9 ? Number(date) : `${month}.${date}`}.`;
+}
+
+function flightActivity(day: HomeDay) {
+  return orderedTimedActivities(day).find(({ activity }) => /repulo|flight|jarat/i.test(normalized(`${activity.title} ${activity.place}`)))?.activity;
+}
+
+function scheduledActivityMatches(question: string, day: HomeDay) {
+  const value = normalized(question);
+  const isAirportDeparture = /rept/.test(value) && /indul/.test(value);
+  if (isAirportDeparture) {
+    return orderedTimedActivities(day)
+      .map(({ activity }) => activity)
+      .filter((activity) => /indul.*rept|rept.*indul/.test(normalized(`${activity.title} ${activity.place}`)));
+  }
+
+  const stopWords = new Set(["mikor", "megyunk", "megyek", "megy", "lesz", "van", "a", "az", "es", "hova", "hol", "mi", "program", "utazunk"]);
+  const tokens = value.split(/[^a-z0-9]+/).filter((token) => token.length >= 4 && !stopWords.has(token));
+  if (!tokens.length) return [];
+  return orderedTimedActivities(day)
+    .map(({ activity }) => activity)
+    .filter((activity) => {
+      const words = normalized(`${activity.title} ${activity.place}`).split(/[^a-z0-9]+/).filter(Boolean);
+      return tokens.some((token) => words.some((word) =>
+        word.includes(token) || token.includes(word) || (word.length >= 5 && token.length >= 5 && word.slice(0, 5) === token.slice(0, 5)),
+      ));
+    });
+}
+
+/**
+ * Cross-day resolution is deliberately narrow. Relative daily wording never
+ * leaves the selected day; a concrete flight, airport departure, program or
+ * Place-like name may find the one scheduled fact elsewhere in the trip.
+ */
+export function getTripTimelineQuestionAnswer(question: string, selectedDay: HomeDay, tripDays: readonly HomeDay[]): TimelineQuestionAnswer | null {
+  const value = normalized(question);
+  if (!tripDays.length || STRICT_DAY_PATTERN.test(value)) return null;
+
+  if (FLIGHT_QUESTION_PATTERN.test(value)) {
+    const flights = tripDays.flatMap((day) => {
+      const activity = flightActivity(day);
+      return activity ? [{ day, activity }] : [];
+    });
+    const filtered = RETURN_FLIGHT_PATTERN.test(value)
+      ? flights.filter(({ day, activity }) => /haza|vissza|return/.test(normalized(`${day.title} ${activity.title}`)))
+      : OUTBOUND_FLIGHT_PATTERN.test(value)
+        ? flights.filter(({ day, activity }) => /cagliari|szardinia|erkezes/i.test(normalized(`${day.title} ${activity.title} ${activity.place}`)))
+        : flights;
+    const candidates = filtered.length ? filtered : flights;
+    if (candidates.length === 1) {
+      const { day, activity } = candidates[0];
+      return {
+        title: `${dayLabel(day)} · ${activity.time} · ${activity.title}`,
+        body: `${day.title} napján ez a repülő szerepel a Timeline-ban${activity.place ? `: ${activity.place}.` : "."}`,
+        sources: ["Timeline"],
+        openDayDate: day.date,
+      };
+    }
+    if (candidates.length > 1) {
+      return {
+        title: "Több rögzített repülőút",
+        body: candidates.map(({ day, activity }) => `${dayLabel(day)} ${activity.time} · ${activity.title}${activity.place ? ` · ${activity.place}` : ""}`).join("\n"),
+        sources: ["Timeline"],
+      };
+    }
+    return null;
+  }
+
+  const matches = tripDays.flatMap((day) => scheduledActivityMatches(question, day).map((activity) => ({ day, activity })));
+  const unique = [...new Map(matches.map(({ day, activity }) => [`${day.date}:${activity.id ?? `${activity.time}:${activity.title}`}`, { day, activity }])).values()];
+  if (unique.length === 1) {
+    const { day, activity } = unique[0];
+    return {
+      title: `${dayLabel(day)} · ${activity.time} · ${activity.title}`,
+      body: `${day.title} napján ez a programpont szerepel a Timeline-ban${activity.place ? `: ${activity.place}.` : "."}`,
+      sources: ["Timeline"],
+      openDayDate: day.date,
+    };
+  }
+  if (unique.length > 1) {
+    return {
+      title: "Több rögzített programpont",
+      body: unique.slice(0, 4).map(({ day, activity }) => `${dayLabel(day)} ${activity.time} · ${activity.title}${activity.place ? ` · ${activity.place}` : ""}`).join("\n"),
+      sources: ["Timeline"],
+    };
+  }
+  return null;
 }
 
 function romeToday() {
@@ -78,7 +174,7 @@ export function getTimelineQuestionAnswer(question: string, day: HomeDay): Timel
   // A flight is a scheduled family-plan fact, not an externally watched Event.
   // Resolve it directly from the selected day's Timeline whenever it is named.
   if (FLIGHT_QUESTION_PATTERN.test(value)) {
-    const flight = timed.find(({ activity }) => /repulo|flight|jarat/i.test(normalized(`${activity.title} ${activity.place}`)))?.activity;
+    const flight = flightActivity(day);
     if (flight) {
       return {
         title: `${flight.time} · ${flight.title}`,

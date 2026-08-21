@@ -4,6 +4,7 @@ import test from "node:test";
 import { answerQuestion } from "../../src/lib/questioning-answer.ts";
 import { smartStatusSummary } from "../../src/lib/smart-status.ts";
 import { timelineQuestionPrompts } from "../../src/lib/timeline-questioning.ts";
+import { getTripTimelineQuestionAnswer } from "../../src/lib/timeline-questioning.ts";
 import { buildQuestionContext, questionPromptsForContext } from "../../src/lib/question-context.ts";
 import { detectShoppingIntent } from "../../src/lib/shopping-intent.ts";
 import { answerQuestionWithContext } from "../../src/lib/questioning-answer.ts";
@@ -74,6 +75,44 @@ const returnFlightDay = {
     { time: "17:30", title: "Repülő indulása", place: "Cagliari Airport", placeSlug: "cagliari-airport" },
   ],
 };
+
+test("a concrete return-flight question finds the scheduled flight across the trip without changing the selected day", () => {
+  const answer = getTripTimelineQuestionAnswer("Mikor indul haza a repülő Budapestre?", futureBeachDay, [arrivalDay, futureBeachDay, returnFlightDay]);
+  assert.equal(answer?.title, "Szept. 13. · 17:30 · Repülő indulása");
+  assert.equal(answer?.openDayDate, "2099-09-13");
+  assert.match(answer?.body ?? "", /Hazautazás/);
+});
+
+test("a bare flight question lists both outbound and return flights instead of guessing", () => {
+  const answer = getTripTimelineQuestionAnswer("Mikor repülünk?", futureBeachDay, [arrivalDay, futureBeachDay, returnFlightDay]);
+  assert.equal(answer?.title, "Több rögzített repülőút");
+  assert.match(answer?.body ?? "", /Szept\. 2\./);
+  assert.match(answer?.body ?? "", /Szept\. 13\./);
+});
+
+test("a strict daily question never escalates to a different day", () => {
+  assert.equal(getTripTimelineQuestionAnswer("Mi a következő program ma?", futureBeachDay, [arrivalDay, futureBeachDay, returnFlightDay]), null);
+});
+
+test("an explicit airport-departure activity beats any guessed travel calculation", () => {
+  const answer = getTripTimelineQuestionAnswer("Mikor kell indulnunk a reptérre?", futureBeachDay, [arrivalDay, futureBeachDay, returnFlightDay]);
+  assert.equal(answer?.title, "Szept. 13. · 14:30 · Indulás a reptérre");
+  assert.equal(answer?.openDayDate, "2099-09-13");
+  assert.doesNotMatch(answer?.body ?? "", /perc|km/i);
+});
+
+test("a natural Hungarian activity form finds a uniquely scheduled cross-day programme", () => {
+  const gelatoDay = {
+    ...futureBeachDay,
+    date: "2099-09-09",
+    day: 9,
+    title: "Fagyi nap",
+    activities: [{ time: "20:00", title: "Fagyizás", place: "Amore Mio", placeSlug: null }],
+  };
+  const answer = getTripTimelineQuestionAnswer("Mikor megyünk fagyizni az Amore Mióba?", futureBeachDay, [futureBeachDay, gelatoDay]);
+  assert.equal(answer?.title, "Szept. 9. · 20:00 · Fagyizás");
+  assert.equal(answer?.openDayDate, "2099-09-09");
+});
 
 const aiContext = {
   date: "2099-09-03",

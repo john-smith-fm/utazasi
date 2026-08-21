@@ -12,7 +12,7 @@ import { NotificationPreference } from "@/components/NotificationPreference";
 import { EventSuggestions } from "@/components/EventSuggestions";
 import { type HomeActivity } from "@/data/home-days";
 import { TRIP_CORE_DAYS } from "@/data/trip-core";
-import { useTimelineDay } from "@/hooks/useTimelineDay";
+import { useTimelineDay, useTripTimeline } from "@/hooks/useTimelineDay";
 import { useLiveData } from "@/hooks/useLiveData";
 import { useCurrentLocationContext } from "@/hooks/useCurrentLocationContext";
 import { useEventWatch } from "@/hooks/useEventWatch";
@@ -62,6 +62,7 @@ export default function HomePage() {
   // offline day shell, but legacy prototype activities must never reappear.
   const fallbackDay = TRIP_CORE_DAYS.find((item) => item.date === selectedDate) ?? TRIP_CORE_DAYS[0];
   const { day, status, hasRemoteDay, canWrite, retry } = useTimelineDay(selectedDate, fallbackDay);
+  const tripTimeline = useTripTimeline(TRIP_CORE_DAYS);
   const currentLocation = useCurrentLocationContext();
   const { weather, sea } = useLiveData(currentLocation.context);
   const watchChange = useEventWatch(selectedDate);
@@ -107,6 +108,7 @@ export default function HomePage() {
     else await createTimelineActivity(selectedDate, input, requestId);
     setEditor(null);
     retry();
+    tripTimeline.retry();
     showToast("Program mentve");
   }
 
@@ -115,6 +117,7 @@ export default function HomePage() {
     const deleted = await deleteTimelineActivity(activity.id);
     setEditor(null);
     retry();
+    tripTimeline.retry();
     startUndo(toHomeActivity(deleted));
   }
 
@@ -122,6 +125,7 @@ export default function HomePage() {
     if (!activity.id) return;
     await updateTimelineActivity(activity.id, { ...toInput(activity), startTime });
     retry();
+    tripTimeline.retry();
     showToast("Időpont módosítva");
   }
 
@@ -135,6 +139,7 @@ export default function HomePage() {
     try {
       await createTimelineActivity(record.date, toInput(record.activity), record.activity.id);
       retry();
+      tripTimeline.retry();
       showToast("Esemény visszaállítva");
     } catch (caught) {
       showToast(caught instanceof Error ? caught.message : "A visszaállítás nem sikerült.");
@@ -144,12 +149,12 @@ export default function HomePage() {
   return <>
     <Hero />
     <main className="relative z-10 mx-auto -mt-7 max-w-[430px]">
-      <div className="px-5"><StatRow weather={weather} sea={sea} day={day} events={events} /></div>
+      <div className="px-5"><StatRow weather={weather} sea={sea} day={day} events={events} tripDays={tripTimeline.days} tripStatus={tripTimeline.status} onOpenDay={setSelectedDate} /></div>
       <SunCard weather={weather} locationLabel={currentLocation.context.label} deviceState={currentLocation.deviceState} onRequestDeviceLocation={currentLocation.requestDeviceLocation} />
       <div className="px-5">
         <NotificationPreference />
         <TimelineCard day={day} days={TRIP_CORE_DAYS} summary={statusSummary} onSelect={setSelectedDate} />
-        <EventSuggestions date={selectedDate} events={events} onAccepted={() => { retry(); showToast("Esemény hozzáadva a napi tervhez"); }} />
+        <EventSuggestions date={selectedDate} events={events} onAccepted={() => { retry(); tripTimeline.retry(); showToast("Esemény hozzáadva a napi tervhez"); }} />
         <section className="mt-8"><PlanList activities={day.activities} status={status} hasCachedDay={hasRemoteDay} canEdit={canMutate} onRetry={retry} onSelect={(activity) => setEditor({ activity })} onDelete={(activity) => { void remove(activity).catch((caught) => showToast(caught instanceof Error ? caught.message : "A törlés nem sikerült.")); }} onTimeChange={changeStartTime} onError={showToast} /></section>
         <div aria-hidden="true" className="h-12" />
       </div>
