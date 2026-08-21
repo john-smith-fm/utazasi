@@ -67,7 +67,16 @@ async function main() {
   if (args.includes("--print-plist")) return process.stdout.write(plist());
   if (args.includes("--status")) {
     const content = await readFile(PLIST_PATH, "utf8").catch(() => null);
-    process.stdout.write(content ? `Aktív konfiguráció: ${PLIST_PATH}\n` : "Nincs telepített napi Utazási mentés.\n");
+    if (!content) {
+      process.stdout.write("Nincs telepített napi Utazási mentés.\n");
+      return;
+    }
+    if (!scheduleIsLoaded()) {
+      process.stdout.write(`A mentési konfiguráció megvan, de a napi feladat nincs betöltve: ${PLIST_PATH}\nFuttasd újra: npm run backup:schedule -- --install\n`);
+      process.exitCode = 1;
+      return;
+    }
+    process.stdout.write(`Aktív napi Utazási mentés: ${PLIST_PATH}\n`);
     return;
   }
   if (args.includes("--uninstall")) return uninstall();

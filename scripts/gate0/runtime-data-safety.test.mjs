@@ -54,6 +54,8 @@ test("the scheduled backup defaults outside the repository and never prunes befo
   assert.match(scheduler, /<integer>3<\/integer><key>Minute<\/key><integer>30/);
   assert.match(scheduler, /Umask<\/key><integer>63/);
   assert.match(scheduler, /--install \| --status \| --uninstall/);
+  assert.match(scheduler, /A mentési konfiguráció megvan, de a napi feladat nincs betöltve/);
+  assert.match(scheduler, /Aktív napi Utazási mentés/);
   assert.match(health, /Utazasi-backups/);
   assert.match(health, /max-age-hours/);
   assert.match(health, /readdir/);
