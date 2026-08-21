@@ -168,6 +168,9 @@ activated automatically: activation is a conscious, local-family decision.
   its own `utazasi-runtime-*.json` pattern, and **only after** a successful new
   snapshot. A network/DNS failure therefore leaves every prior backup intact.
 - `npm run backup:schedule -- --status` checks whether the schedule is active;
+  `npm run backup:health` separately checks that a non-empty runtime snapshot
+  exists and is no older than 30 hours. It is read-only and does not contact
+  Supabase, so it can also expose a missed backup during a network outage.
   `--uninstall` disables future runs without deleting any snapshot.
 
 This is a local recovery layer, not a replacement for a managed Supabase

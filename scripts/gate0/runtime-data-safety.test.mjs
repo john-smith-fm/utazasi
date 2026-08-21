@@ -38,9 +38,10 @@ test("the runtime backup refuses an unsafe destination before it can read Supaba
 });
 
 test("the scheduled backup defaults outside the repository and never prunes before a new snapshot", async () => {
-  const [scheduled, scheduler] = await Promise.all([
+  const [scheduled, scheduler, health] = await Promise.all([
     readFile(new URL("scripts/backup-runtime-scheduled.mjs", root), "utf8"),
     readFile(new URL("scripts/configure-runtime-backup-schedule.mjs", root), "utf8"),
+    readFile(new URL("scripts/check-runtime-backup-health.mjs", root), "utf8"),
   ]);
 
   assert.match(scheduled, /Documents", "Codex", "Utazasi-backups/);
@@ -53,6 +54,10 @@ test("the scheduled backup defaults outside the repository and never prunes befo
   assert.match(scheduler, /<integer>3<\/integer><key>Minute<\/key><integer>30/);
   assert.match(scheduler, /Umask<\/key><integer>63/);
   assert.match(scheduler, /--install \| --status \| --uninstall/);
+  assert.match(health, /Utazasi-backups/);
+  assert.match(health, /max-age-hours/);
+  assert.match(health, /readdir/);
+  assert.doesNotMatch(health, /fetch|createClient|supabase/i);
 });
 
 test("the dashboard replacement seed is visibly blocked", async () => {
