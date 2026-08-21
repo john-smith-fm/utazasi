@@ -11,6 +11,14 @@ const TYPE_LABEL: Record<PlaceType, string> = {
   other: "Hely",
 };
 
+/** Phone numbers stay available as secondary contact details, rather than
+ * competing with the useful travel actions: navigation and the official site. */
+function PhoneLinks({ phones }: { phones: readonly string[] }) {
+  return <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1">
+    {phones.map((phone) => <a key={phone} href={`tel:${phone.replace(/\s+/g, "")}`} className="inline-flex min-h-8 items-center text-sm leading-5 text-deep-sea/65 underline decoration-deep-sea/25 underline-offset-4">{phone}</a>)}
+  </div>;
+}
+
 function BeachAccessDetails({ place }: { place: Place }) {
   if (place.details.kind !== "beach" || !place.details.access) return null;
   const access = place.details.access;
@@ -53,8 +61,9 @@ function GenericContactDetails({ place }: { place: Place }) {
   if ((place.type === "restaurant" || place.type === "shop") || (!place.contact?.phones?.length && !place.contact?.website)) return null;
   return <section className="border-t border-deep-sea/10 pt-6" aria-labelledby="contact-heading">
     <h2 id="contact-heading" className="text-[17px] font-bold leading-[23px] text-deep-sea">Kapcsolat</h2>
-    {place.contact.phones?.length ? <div className="mt-3 flex flex-col items-start gap-2">
-      {place.contact.phones.map((phone) => <a key={phone} href={`tel:${phone.replace(/\s+/g, "")}`} className="inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">Hívás: {phone}</a>)}
+    {place.contact.phones?.length ? <div className="mt-3">
+      <h3 className="text-sm font-semibold leading-5 text-deep-sea">Telefon</h3>
+      <PhoneLinks phones={place.contact.phones} />
     </div> : null}
     {place.contact.website && <a href={place.contact.website} target="_blank" rel="noreferrer" className="mt-3 inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">Weboldal megnyitása</a>}
   </section>;
@@ -92,9 +101,7 @@ function RestaurantDetails({ place }: { place: Place }) {
     </div>}
     {contact?.phones?.length ? <div className="mt-4">
       <h3 className="text-sm font-semibold leading-5 text-deep-sea">Telefon</h3>
-      <div className="mt-1 flex flex-col items-start gap-2">
-        {contact.phones.map((phone) => <a key={phone} href={`tel:${phone.replace(/\s+/g, "")}`} className="inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">Hívás: {phone}</a>)}
-      </div>
+      <PhoneLinks phones={contact.phones} />
     </div> : null}
     {contact?.website && <a href={contact.website} target="_blank" rel="noreferrer" className="mt-4 inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">Weboldal megnyitása</a>}
   </section>;
@@ -121,9 +128,7 @@ function ShopDetails({ place }: { place: Place }) {
     </div> : null}
     {shop.phones?.length ? <div className="mt-4">
       <h3 className="text-sm font-semibold leading-5 text-deep-sea">Telefon</h3>
-      <div className="mt-1 flex flex-col items-start gap-1">
-        {shop.phones.map((phone) => <a key={phone} href={`tel:${phone.replace(/\s+/g, "")}`} className="inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">Hívás: {phone}</a>)}
-      </div>
+      <PhoneLinks phones={shop.phones} />
     </div> : null}
     {shop.website && <a href={shop.website} target="_blank" rel="noreferrer" className="mt-4 inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">Weboldal megnyitása</a>}
   </section>;
