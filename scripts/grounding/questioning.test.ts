@@ -464,6 +464,12 @@ test("departure-planning questions state missing Mobility evidence instead of in
   assert.doesNotMatch(answer.body, /\b\d+\s*(km|perc)\b/i);
 });
 
+test("a natural restaurant question stays bounded when no verified meal place is selected", () => {
+  const answer = answerQuestion("Hol együnk?", futureBeachDay, weather, [], null);
+  assert.equal(answer.title, "Étterem még nincs kiválasztva");
+  assert.match(answer.body, /nem ajánlok találomra helyet/i);
+});
+
 test("nearest-shop questions are treated as Mobility questions, not shopping rankings", () => {
   const answer = answerQuestion("Milyen messze van a szállásunktól a legközelebbi bolt?", futureBeachDay, weather, [], {
     title: "Nincs ellenőrzött útvonaladat",

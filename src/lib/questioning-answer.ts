@@ -176,6 +176,28 @@ function placeAnswer(question: string, context: QuestionContext): QuestionAnswer
   return { title: `${place.name} · parkolás`, body: note, sources: ["Place"] };
 }
 
+function foodAnswer(question: string, context: QuestionContext): QuestionAnswer | null {
+  const value = normalized(question);
+  if (!/\b(enni|egyunk|etterem|vacsora|ebed)\b/.test(value)) return null;
+
+  const meal = context.day.activities.find((activity) =>
+    /ebed|vacsora|etterem|etkezes/i.test(normalized(`${activity.title} ${activity.place}`)) && Boolean(activity.placeSlug),
+  );
+  if (meal) {
+    return {
+      title: `${meal.time} · ${meal.title}`,
+      body: `A kiválasztott nap Timeline-jában ez az étkezési programpont itt szerepel: ${meal.place}.`,
+      sources: ["Timeline"],
+    };
+  }
+
+  return {
+    title: "Étterem még nincs kiválasztva",
+    body: "A kiválasztott naphoz nincs ellenőrzött étterem vagy étkezési hely rögzítve. Nem ajánlok találomra helyet; a Helyekben vagy a Timeline-ban tudsz választani.",
+    sources: ["Timeline", "Place"],
+  };
+}
+
 /**
  * Deterministic first-pass decision layer. It only consumes already provided
  * canonical context. An LLM may later summarize this output, but must never
@@ -222,6 +244,8 @@ export function answerQuestionWithContext(
     };
   }
   if (placeResult) return placeResult;
+  const foodResult = foodAnswer(question, context);
+  if (foodResult) return foodResult;
 
   if (value.includes("strand")) {
     const plannedBeach = day.activities.find((activity) => /strand/i.test(`${activity.title} ${activity.place}`));
