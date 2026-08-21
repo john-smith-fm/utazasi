@@ -9,7 +9,10 @@ import {
 
 const RESPONSES_URL = "https://api.openai.com/v1/responses";
 const TIMEOUT_MS = 30_000;
-const MAX_OUTPUT_TOKENS = 1_100;
+// Web search can require an internal reasoning/tool round before the short,
+// structured user-facing answer. Keep the visible schema concise, but leave
+// enough output budget for that work so the response is not cut off early.
+const MAX_OUTPUT_TOKENS = 2_400;
 
 type ProviderResponse = {
   output_text?: unknown;
@@ -83,7 +86,6 @@ export async function answerResearchedQuestion(question: string, context: Ground
         model: process.env.OPENAI_QUESTION_RESEARCH_MODEL ?? process.env.OPENAI_RESEARCH_MODEL ?? "gpt-5-mini",
         store: false,
         max_output_tokens: MAX_OUTPUT_TOKENS,
-        reasoning: { effort: "minimal" },
         tool_choice: "required",
         tools: [{ type: "web_search", search_context_size: "medium", user_location: { type: "approximate", country: "IT", city: "Villasimius", timezone: "Europe/Rome" } }],
         include: ["web_search_call.action.sources"],
