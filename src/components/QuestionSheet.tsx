@@ -10,13 +10,14 @@ import { answerQuestionWithContext, isAccommodationQuestion } from "@/lib/questi
 import { getPlaceBySlug, getPlaces } from "@/lib/places";
 import { Icon } from "./Icon";
 import { FORM_CONTROL } from "@/components/formStyles";
+import type { ResearchSource } from "@/lib/researched-question-contract";
 
 
 /** Inline content for the Weather Bar's Kérdezési state — never a modal or sheet. */
 export function QuestionSheet({ day, weather, events = [], tripDays = [], tripStatus = "success", onOpenDay }: { day: HomeDay; weather: WeatherSnapshot | null; events?: TripEvent[]; tripDays?: readonly HomeDay[]; tripStatus?: "loading" | "success" | "empty" | "offline" | "error"; onOpenDay?: (date: string) => void }) {
   const [question, setQuestion] = useState<string | null>(null);
   const [customQuestion, setCustomQuestion] = useState("");
-  const [aiAnswer, setAiAnswer] = useState<{ title: string; body: string } | null>(null);
+  const [aiAnswer, setAiAnswer] = useState<{ title: string; body: string; sources?: ResearchSource[] } | null>(null);
   const [aiError, setAiError] = useState<string | null>(null);
   const [tripBase, setTripBase] = useState<{ address: string; mapUrl: string } | null>(null);
   const [tripBaseError, setTripBaseError] = useState<string | null>(null);
@@ -55,8 +56,8 @@ export function QuestionSheet({ day, weather, events = [], tripDays = [], tripSt
     setIsAsking(true);
     try {
       const response = await fetch("/api/question", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: value, date: day.date }) });
-      const payload = await response.json().catch(() => null) as { answer?: { title?: string; body?: string } | null; error?: unknown } | null;
-      if (response.ok && payload?.answer?.title && payload.answer.body) setAiAnswer({ title: payload.answer.title, body: payload.answer.body });
+      const payload = await response.json().catch(() => null) as { answer?: { title?: string; body?: string; sources?: ResearchSource[] } | null; error?: unknown } | null;
+      if (response.ok && payload?.answer?.title && payload.answer.body) setAiAnswer({ title: payload.answer.title, body: payload.answer.body, sources: Array.isArray(payload.answer.sources) ? payload.answer.sources : undefined });
       // An AI `insufficient_context` response is not an application error.
       // Keep the already-visible deterministic answer, which is intentionally
       // more useful than a second generic warning card.
@@ -91,6 +92,12 @@ export function QuestionSheet({ day, weather, events = [], tripDays = [], tripSt
       {aiError ? <div className="mt-4 flex items-center justify-between gap-3 rounded-ui-s border border-coral/25 bg-coral/5 p-3.5" role="status">
         <p className="text-[13px] leading-[19px] text-deep-sea/70">{aiError}</p>
         <button type="button" onClick={() => void ask(question!)} className="min-h-11 shrink-0 px-1 text-[13px] font-semibold text-deep-sea">Újrapróbálás</button>
+      </div> : null}
+      {aiAnswer?.sources?.length ? <div className="mt-4 rounded-ui-s border border-deep-sea/10 bg-white/50 p-3.5">
+        <p className="text-[11px] font-semibold tracking-[.04em] text-deep-sea/45">KUTATÁSI FORRÁSOK</p>
+        <ul className="mt-2 space-y-2">
+          {aiAnswer.sources.map((source) => <li key={source.url}><a href={source.url} target="_blank" rel="noreferrer" className="text-[13px] font-semibold leading-[19px] text-turquoise-dark underline decoration-turquoise/35 underline-offset-4">{source.title}</a></li>)}
+        </ul>
       </div> : null}
       {tripBase ? <div className="mt-4 rounded-ui-s border border-deep-sea/10 bg-white/50 p-3.5">
         <p className="text-[11px] font-semibold tracking-[.04em] text-deep-sea/45">SZÁLLÁS CÍME</p>

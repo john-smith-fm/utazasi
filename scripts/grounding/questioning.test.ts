@@ -10,6 +10,7 @@ import { detectShoppingIntent } from "../../src/lib/shopping-intent.ts";
 import { answerQuestionWithContext } from "../../src/lib/questioning-answer.ts";
 import { validPlaceBrowseCategoryForType } from "../../src/lib/place-categories.ts";
 import { GroundedAnswerContractError, parseGroundedAnswer } from "../../src/lib/grounded-answer-contract.ts";
+import { ResearchedQuestionContractError, parseResearchedQuestionAnswer } from "../../src/lib/researched-question-contract.ts";
 
 const futureBeachDay = {
   date: "2099-09-03",
@@ -157,6 +158,23 @@ test("grounded AI cannot cite an identifier that was not provided", () => {
     body: "09:00-kor strandolás van Porto Giuncón.",
     factIds: ["activity-1"],
   }), aiContext), (error: unknown) => error instanceof GroundedAnswerContractError && error.code === "unknown_fact_id");
+});
+
+test("web research answer may cite only URLs returned by its web-search call", () => {
+  const sources = [{ url: "https://example.com/marduk", title: "Marduk source" }];
+  const answer = parseResearchedQuestionAnswer(JSON.stringify({
+    status: "answered", title: "Talált adat", body: "Forrásolt válasz.", sourceUrls: ["https://example.com/marduk"],
+  }), sources);
+  assert.equal(answer?.sources[0]?.title, "Marduk source");
+  assert.throws(() => parseResearchedQuestionAnswer(JSON.stringify({
+    status: "answered", title: "Talált adat", body: "Forrásolt válasz.", sourceUrls: ["https://not-returned.example/marduk"],
+  }), sources), ResearchedQuestionContractError);
+});
+
+test("insufficient live research evidence does not manufacture a fallback answer", () => {
+  assert.equal(parseResearchedQuestionAnswer(JSON.stringify({
+    status: "insufficient_evidence", title: "", body: "", sourceUrls: [],
+  }), []), null);
 });
 
 test("insufficient AI context keeps the deterministic fallback without model prose", () => {

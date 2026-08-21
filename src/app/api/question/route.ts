@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ACCESS_COOKIE_NAME, hasValidAccessSession } from "@/lib/access";
-import { answerGroundedQuestion, type GroundedQuestionContext } from "@/lib/grounded-questioning";
+import type { GroundedQuestionContext } from "@/lib/grounded-questioning";
+import { answerResearchedQuestion } from "@/lib/live-question-research";
 import { getPlaceBySlug } from "@/lib/places";
-import { checkQuestionAIRateLimit } from "@/lib/question-ai-rate-limit";
+import { checkQuestionResearchRateLimit } from "@/lib/question-ai-rate-limit";
 import { TIMELINE_TRIP_SLUG, timelineServerClient } from "@/lib/timeline-service";
 
 export const dynamic = "force-dynamic";
@@ -20,10 +21,10 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null) as { question?: unknown; date?: unknown } | null;
   const question = typeof body?.question === "string" ? body.question.trim() : "";
   if (!question || question.length > 500 || !isDate(body?.date)) return NextResponse.json({ error: "Érvénytelen kérdés vagy nap." }, { status: 400 });
-  const rateLimit = checkQuestionAIRateLimit(accessSession!);
+  const rateLimit = checkQuestionResearchRateLimit(accessSession!);
   if (!rateLimit.allowed) {
     return NextResponse.json(
-      { error: "Az AI-kérdések óránkénti kerete most betelt. A biztos, helyi válaszok ettől még működnek." },
+      { error: "Az AI-kutatás óránkénti kerete most betelt. A biztos, helyi válaszok ettől még működnek." },
       { status: 429, headers: { "Retry-After": String(rateLimit.retryAfterSeconds), "Cache-Control": "no-store" } },
     );
   }
@@ -54,7 +55,7 @@ export async function POST(request: NextRequest) {
         return [{ slug: place.slug, name: place.name, type: place.type, locality: place.location?.locality ?? null, verifiedNote: note }];
       }),
     };
-    const answer = await answerGroundedQuestion(question, context);
+    const answer = await answerResearchedQuestion(question, context);
     return NextResponse.json({ answer }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Az AI válasz most nem elérhető.";
