@@ -86,7 +86,7 @@ export function QuestionSheet({ day, weather, events = [], tripDays = [], tripSt
     </form>
     {answer && <section className="mt-5 border-t border-deep-sea/10 pt-5" aria-live="polite">
       <h3 className="text-[17px] font-bold leading-[23px] text-deep-sea">{aiAnswer?.title ?? answer.title}</h3>
-      <p className="mt-2 text-sm leading-[21px] text-deep-sea/70">{isAsking ? "Ellenőrzött utazási kontextusból összefoglalom…" : aiAnswer?.body ?? answer.body}</p>
+      <p className="mt-2 whitespace-pre-line text-sm leading-[21px] text-deep-sea/70">{isAsking ? "Ellenőrzött utazási kontextusból összefoglalom…" : aiAnswer?.body ?? answer.body}</p>
       {answer.openDayDate && answer.openDayDate !== day.date && onOpenDay ? <button type="button" onClick={() => onOpenDay(answer.openDayDate!)} className="mt-3 inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-3 text-sm font-semibold text-deep-sea">{new Intl.DateTimeFormat("hu-HU", { month: "short", day: "numeric", timeZone: "Europe/Rome" }).format(new Date(`${answer.openDayDate}T12:00:00Z`)).replace(".", ".")} megnyitása</button> : null}
       {aiError ? <div className="mt-4 flex items-center justify-between gap-3 rounded-ui-s border border-coral/25 bg-coral/5 p-3.5" role="status">
         <p className="text-[13px] leading-[19px] text-deep-sea/70">{aiError}</p>

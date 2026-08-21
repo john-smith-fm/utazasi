@@ -59,8 +59,11 @@ function scheduledActivityMatches(question: string, day: HomeDay) {
   return orderedTimedActivities(day)
     .map(({ activity }) => activity)
     .filter((activity) => {
-      const words = normalized(`${activity.title} ${activity.place}`).split(/[^a-z0-9]+/).filter(Boolean);
-      return tokens.some((token) => words.some((word) =>
+      // Every meaningful term in a concrete Place/programme question must
+      // match. Matching only one term made "Porto Sa Ruxi" accidentally pick
+      // unrelated activities through tiny words such as "a".
+      const words = normalized(`${activity.title} ${activity.place}`).split(/[^a-z0-9]+/).filter((word) => word.length >= 3);
+      return tokens.every((token) => words.some((word) =>
         word.includes(token) || token.includes(word) || (word.length >= 5 && token.length >= 5 && word.slice(0, 5) === token.slice(0, 5)),
       ));
     });

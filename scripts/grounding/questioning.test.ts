@@ -114,6 +114,23 @@ test("a natural Hungarian activity form finds a uniquely scheduled cross-day pro
   assert.equal(answer?.openDayDate, "2099-09-09");
 });
 
+test("concrete multi-word Place lookup never matches an unrelated activity through a short filler word", () => {
+  const portoDay = {
+    ...futureBeachDay,
+    date: "2099-09-06",
+    day: 6,
+    title: "Porto Sa Ruxi",
+    activities: [{ time: "08:00", title: "Strand", place: "Spiaggia di Porto Sa Ruxi", placeSlug: "porto-sa-ruxi" }],
+  };
+  const airportDay = {
+    ...returnFlightDay,
+    activities: [{ time: "14:45", title: "Indulás a reptérre", place: "Cagliari Airport", placeSlug: "cagliari-airport" }],
+  };
+  const answer = getTripTimelineQuestionAnswer("Mikor megyünk a Porto Sa Ruxira?", futureBeachDay, [futureBeachDay, portoDay, airportDay]);
+  assert.equal(answer?.title, "Szept. 6. · 08:00 · Strand");
+  assert.doesNotMatch(answer?.body ?? "", /Cagliari Airport/);
+});
+
 const aiContext = {
   date: "2099-09-03",
   dayTitle: "Strandnap",
