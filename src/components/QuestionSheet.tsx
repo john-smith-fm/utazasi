@@ -100,6 +100,7 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
         {answer.recommendations.map((recommendation) => {
           const place = getPlaceBySlug(recommendation.placeSlug);
           const imageSrc = place?.media?.[0]?.src ?? place?.intelligence?.coverImage?.assetUrl;
+          const mapUrl = place?.navigation?.directionsUrl ?? place?.navigation?.mapsUrl;
           return <li key={recommendation.placeSlug}>
           <a href={recommendation.placeDetailHref} className="group flex gap-3 rounded-ui-s border border-deep-sea/10 bg-white/50 p-3.5 outline-none transition-colors hover:bg-white/80 focus-visible:ring-2 focus-visible:ring-turquoise-dark">
             {imageSrc ? <img src={imageSrc} alt="" loading="lazy" decoding="async" className="mt-0.5 h-[68px] w-[68px] shrink-0 rounded-ui-s object-cover" /> : null}
@@ -116,6 +117,10 @@ export function QuestionSheet({ day, weather, events = [] }: { day: HomeDay; wea
             {recommendation.uncertainty ? <p className="mt-2 text-[12px] leading-[18px] text-deep-sea/50">Korlát · {recommendation.uncertainty}</p> : null}
             </div>
           </a>
+          {mapUrl ? <a href={mapUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex min-h-11 items-center gap-1.5 px-1 text-[13px] font-semibold text-turquoise-dark underline decoration-turquoise/35 underline-offset-4">
+            <Icon aria-hidden="true" name="map-pin" size={16} />
+            Navigáció megnyitása
+          </a> : null}
         </li>;
         })}
       </ul> : null}
