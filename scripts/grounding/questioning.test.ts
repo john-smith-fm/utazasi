@@ -171,6 +171,17 @@ test("web research answer may cite only URLs returned by its web-search call", (
   }), sources), ResearchedQuestionContractError);
 });
 
+test("web research answer accepts a concise multi-place answer but rejects an oversized one", () => {
+  const sources = [{ url: "https://example.com/shops", title: "Helyi üzletek" }];
+  const accepted = parseResearchedQuestionAnswer(JSON.stringify({
+    status: "answered", title: "Helyi sörös helyek", body: "a".repeat(1_400), sourceUrls: ["https://example.com/shops"],
+  }), sources);
+  assert.equal(accepted?.body.length, 1_400);
+  assert.throws(() => parseResearchedQuestionAnswer(JSON.stringify({
+    status: "answered", title: "Túl hosszú", body: "a".repeat(1_401), sourceUrls: ["https://example.com/shops"],
+  }), sources), ResearchedQuestionContractError);
+});
+
 test("insufficient live research evidence does not manufacture a fallback answer", () => {
   assert.equal(parseResearchedQuestionAnswer(JSON.stringify({
     status: "insufficient_evidence", title: "", body: "", sourceUrls: [],

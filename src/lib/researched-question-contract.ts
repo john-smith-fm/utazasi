@@ -48,7 +48,7 @@ export function parseResearchedQuestionAnswer(value: string, providerSources: re
   const sourceByUrl = new Map(providerSources.map((source) => [source.url, source]));
   const sources = requestedUrls.map((url) => sourceByUrl.get(url)).filter((source): source is ResearchSource => Boolean(source));
 
-  if (!title || title.length > 90 || !body || body.length > 700 || !requestedUrls.length || sources.length !== requestedUrls.length || sources.length > 4) {
+  if (!title || title.length > 90 || !body || body.length > 1_400 || !requestedUrls.length || sources.length !== requestedUrls.length || sources.length > 4) {
     throw new ResearchedQuestionContractError("A kutatási válasz nem kapcsolható ellenőrzött forrásokhoz.");
   }
   return { title, body, sources };

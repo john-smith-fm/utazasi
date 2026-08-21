@@ -8,11 +8,14 @@ import {
 } from "./researched-question-contract";
 
 const RESPONSES_URL = "https://api.openai.com/v1/responses";
-const TIMEOUT_MS = 30_000;
+// A source-backed local answer often needs more than one web query. This is
+// intentionally below the route's platform ceiling, so the client gets a
+// bounded failure rather than an abruptly terminated response.
+const TIMEOUT_MS = 55_000;
 // Web search can require an internal reasoning/tool round before the short,
 // structured user-facing answer. Keep the visible schema concise, but leave
 // enough output budget for that work so the response is not cut off early.
-const MAX_OUTPUT_TOKENS = 2_400;
+const MAX_OUTPUT_TOKENS = 4_000;
 
 type ProviderResponse = {
   output_text?: unknown;
@@ -94,14 +97,14 @@ export async function answerResearchedQuestion(question: string, context: Ground
           properties: {
             status: { type: "string", enum: ["answered", "insufficient_evidence"] },
             title: { type: "string", maxLength: 90 },
-            body: { type: "string", maxLength: 600 },
+            body: { type: "string", maxLength: 1_400 },
             sourceUrls: { type: "array", maxItems: 4, items: { type: "string" } },
           },
         } } },
         input: [
           {
             role: "system",
-            content: "You are the read-only web research layer of Utazási, a private family travel companion. Answer in Hungarian. Use web search and return only the required JSON. First respect the supplied selected-day Timeline; it is private schedule context, not a web source. Then research the user's missing travel fact. Never invent a departure time, travel duration, price, stock, opening status, event, route, or availability. A named product or brand (for example Marduk beer) may be claimed available only if a business-specific web source explicitly supports it. If no such source exists, say so plainly; you may separately mention a venue only if its own source verifies the relevant general profile. For a 'belefér?' question, use an explicit Timeline time window and sourced opening-hours facts, but do not estimate travel duration when no verified route is supplied. For future selected dates, do not describe a business as currently open or closed. Each factual answer must cite 1–4 exact URLs returned by your web search in sourceUrls. If the evidence is insufficient, return status insufficient_evidence and empty title, body and sourceUrls. Never expose or request a private accommodation address.",
+            content: "You are the read-only web research layer of Utazási, a private family travel companion. Answer in Hungarian. Use web search and return only the required JSON. First respect the supplied selected-day Timeline; it is private schedule context, not a web source. Then research the user's missing travel fact. For a local product, venue, bus, market or practical-travel question, search the exact user terms plus the locality and at least one relevant local category or source before deciding evidence is insufficient. Do not stop after an unrelated or broad result. Never invent a departure time, travel duration, price, stock, opening status, event, route, or availability. A named product or brand (for example Marduk beer) may be claimed available only if a business-specific web source explicitly supports it. If no exact product source exists, say that plainly, but still give 2–4 useful nearby alternatives when each venue's own source supports its relevant general profile (for example craft beer, enoteca, Sardinian products, or beer bar). Include the concrete venue name, locality or address when sourced, and explain the distinction between verified venue profile and unverified current product stock. Do not suggest a webshop when the user asks where to go locally. For a 'belefér?' question, use an explicit Timeline time window and sourced opening-hours facts, but do not estimate travel duration when no verified route is supplied. For future selected dates, do not describe a business as currently open or closed. Each factual answer must cite 1–4 exact URLs returned by your web search in sourceUrls. If the evidence is insufficient, return status insufficient_evidence and empty title, body and sourceUrls. Never expose or request a private accommodation address.",
           },
           { role: "user", content: researchInput(question, context) },
         ],
