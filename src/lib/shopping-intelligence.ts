@@ -58,7 +58,11 @@ function normalized(value: string) {
 
 function detectIntent(question: string): ShoppingIntent | null {
   const value = normalized(question);
-  const hasShoppingWord = /bevasar|bolt|market|elelmiszer|uzlet/.test(value);
+  // Families rarely say "élelmiszerbolt". Treat a natural "vegyünk kaját"
+  // phrasing as grocery shopping, but do not turn a generic dinner question
+  // into a supermarket recommendation.
+  const asksToBuyFood = /\b(kaja|elelmet)\b/.test(value) && /\b(veg|vasar|bolt|hova|hol)\w*/.test(value);
+  const hasShoppingWord = /bevasar|bolt|market|elelmiszer|uzlet/.test(value) || asksToBuyFood;
 
   if (/pelenk|baba|bebi|babatermek/.test(value)) return "baby_products";
   if (/kerulo|mennyi|milyen messze|legkozeleb|tavolsag|km|perc|utba esik|szallas.*bolt|bolt.*szallas/.test(value) && (/eurospin|crai|conad|mio|isa|market/.test(value) || hasShoppingWord)) return "mobility";
