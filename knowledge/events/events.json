@@ -1,6 +1,6 @@
 {
-  "version": "1.0",
-  "updated_at": "2026-08-08",
+  "version": "2.0",
+  "updated_at": "2026-08-22",
   "source_dataset": "utazasi_data_codex_v1.4",
   "rules": [
     "Az Event külön entitás a Place-től.",
@@ -8,5 +8,60 @@
     "A többnapos fesztivál vagy programsorozat a knowledge/events/event-series.json fájlban él.",
     "A place_slug csak ismert helyazonosság esetén tölthető ki."
   ],
-  "events": []
+  "events": [
+    {
+      "id": "event_b_come_bambini_2026_09_03",
+      "title": "B come bambini",
+      "starts_at": "2026-09-03T21:30:00+02:00",
+      "ends_at": null,
+      "source_url": "user-provided Villasimius Turismo / Comune di Villasimius 2026 event poster",
+      "organizer": null,
+      "place_slug": null,
+      "metadata": { "category": "children", "location": { "city": "Villasimius", "venue": "Piazza Gramsci" } }
+    },
+    {
+      "id": "event_festival_fortezza_2026_09_04",
+      "title": "Festival della Fortezza — Maluf System: Suoni dal mondo arabo e tunisino",
+      "starts_at": "2026-09-04T21:00:00+02:00",
+      "ends_at": null,
+      "source_url": "https://www.ivenerdiallafortezza.it/festival-2026/",
+      "organizer": null,
+      "place_slug": "fortezza-vecchia",
+      "metadata": {
+        "category": "concert_culture",
+        "location": { "city": "Villasimius", "venue": "Fortezza Vecchia" },
+        "admission": "free_until_capacity"
+      }
+    },
+    {
+      "id": "event_first_time_in_villa_2026_09_05",
+      "title": "First time in Villa — prima serata (14–18 anni)",
+      "starts_at": "2026-09-05T21:30:00+02:00",
+      "ends_at": null,
+      "source_url": "user-provided Villasimius Turismo / Comune di Villasimius 2026 event poster",
+      "organizer": null,
+      "place_slug": null,
+      "metadata": { "category": "youth", "location": { "city": "Villasimius", "venue": "Lo Sciabecco" } }
+    },
+    {
+      "id": "event_villa_music_festival_2026_09_12",
+      "title": "Villa Music Festival",
+      "starts_at": "2026-09-12T21:30:00+02:00",
+      "ends_at": null,
+      "source_url": "user-provided Villasimius Turismo / Comune di Villasimius 2026 event poster",
+      "organizer": null,
+      "place_slug": null,
+      "metadata": { "category": "music", "location": { "city": "Villasimius", "venue": "Piazza Hack" } }
+    },
+    {
+      "id": "event_nicola_agus_2026_09_13",
+      "title": "Nicola Agus — Voci & Suoni dal Mare",
+      "starts_at": "2026-09-13T21:30:00+02:00",
+      "ends_at": null,
+      "source_url": "user-provided Villasimius Turismo / Comune di Villasimius 2026 event poster",
+      "organizer": null,
+      "place_slug": null,
+      "metadata": { "category": "music_culture", "location": { "city": "Villasimius", "venue": "Piazza Gramsci" } }
+    }
+  ]
 }

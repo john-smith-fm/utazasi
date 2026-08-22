@@ -1,8 +1,8 @@
 {
-  "version": "1.9",
+  "version": "2.0",
   "category": "shops",
   "source_dataset": "utazasi-complete-regional-data-v1.9",
-  "updated_at": "2026-08-07",
+  "updated_at": "2026-08-22",
   "change_log": [
     "Első kanonikus shop-javaslatcsomag: supermarket és pharmacy fókusz, 9 rekord."
   ],
@@ -1470,6 +1470,124 @@
         "maps_url": "https://www.google.com/maps/search/?api=1&query=Supermercati+ISA+Via+del+Mare+116+Villasimius",
         "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Supermercati+ISA+Via+del+Mare+116+Villasimius&travelmode=driving",
         "match_status": "search_query_link"
+      }
+    },
+    {
+      "id": "place_shop_coop_villasimius",
+      "slug": "coop-villasimius",
+      "name": "Coop Villasimius",
+      "category": "shop",
+      "subcategory": "supermarket",
+      "location": {
+        "country": "Olaszország",
+        "region": "Szardínia",
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via Giovanni Pascoli, snc",
+        "latitude": 39.149722,
+        "longitude": 9.516194
+      },
+      "verification": {
+        "status": "verified_official",
+        "last_checked": "2026-08-22",
+        "sources": [
+          "https://www.coopsardegna.it/punto-vendita-villasimius/"
+        ]
+      },
+      "destination_intelligence": {
+        "opening_hours": {
+          "timezone": "Europe/Rome",
+          "weekly": {
+            "monday": [{ "open": "08:00", "close": "20:00" }],
+            "tuesday": [{ "open": "08:00", "close": "20:00" }],
+            "wednesday": [{ "open": "08:00", "close": "20:00" }],
+            "thursday": [{ "open": "08:00", "close": "20:00" }],
+            "friday": [{ "open": "08:00", "close": "20:00" }],
+            "saturday": [{ "open": "08:00", "close": "20:00" }],
+            "sunday": [{ "open": "08:00", "close": "20:00" }]
+          }
+        },
+        "services": [
+          "served_butcher",
+          "served_deli",
+          "served_fish_counter",
+          "electronic_payments",
+          "meal_vouchers"
+        ]
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Coop+Villasimius+Via+Giovanni+Pascoli"
+      }
+    },
+    {
+      "id": "place_shop_bottega_sapori_villasimius",
+      "slug": "la-bottega-dei-sapori-villasimius",
+      "name": "La Bottega dei Sapori",
+      "category": "shop",
+      "subcategory": "grocery",
+      "location": {
+        "country": "Olaszország",
+        "region": "Szardínia",
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via del Mare 116"
+      },
+      "contact": {
+        "phone": ["+39 346 134 4193"]
+      },
+      "verification": {
+        "status": "verified_official_tourism",
+        "last_checked": "2026-08-22",
+        "sources": ["https://www.villasimiusturismo.it/supermarket/"]
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=La+Bottega+dei+Sapori+Villasimius"
+      }
+    },
+    {
+      "id": "place_shop_sfizi_pane_villasimius",
+      "slug": "sfizi-di-pane-e-non-villasimius",
+      "name": "Sfizi di Pane e non…",
+      "category": "shop",
+      "subcategory": "minimarket",
+      "location": {
+        "country": "Olaszország",
+        "region": "Szardínia",
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via degli Oleandri 8/c"
+      },
+      "contact": {
+        "phone": ["+39 070 332 6676", "+39 338 123 1048"]
+      },
+      "verification": {
+        "status": "verified_official_tourism",
+        "last_checked": "2026-08-22",
+        "sources": ["https://www.villasimiusturismo.it/supermarket/"]
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Sfizi+di+Pane+e+non+Villasimius"
+      }
+    },
+    {
+      "id": "place_shop_market_ariete_villasimius",
+      "slug": "market-ariete-villasimius",
+      "name": "Market Ariete",
+      "category": "shop",
+      "subcategory": "grocery",
+      "location": {
+        "country": "Olaszország",
+        "region": "Szardínia",
+        "city": "Villasimius",
+        "address": "SP17, Villaggio dei Mandorli"
+      },
+      "verification": {
+        "status": "verified_official_tourism",
+        "last_checked": "2026-08-22",
+        "sources": ["https://www.villasimiusturismo.it/supermarket/"]
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Market+Ariete+Villasimius"
       }
     }
   ]
