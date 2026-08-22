@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { eventOccursOnDate } from "@/lib/event-date";
 import { storageGet, storageSet } from "@/lib/storage";
 import type { TripEvent } from "@/lib/event-types";
 
@@ -9,17 +10,23 @@ function toTripEvent(event: ApiEvent): TripEvent { return { id: event.id, title:
 
 /** Reads selected-day Events through the same PIN-protected server boundary as Timeline. */
 export function useTripEvents(date: string) {
-  const [events, setEvents] = useState<TripEvent[]>([]);
+  const [loaded, setLoaded] = useState<{ date: string; events: TripEvent[] }>({ date: "", events: [] });
   useEffect(() => {
     let active = true;
     const key = `utazasi-events-v1:${date}`;
     const cached = storageGet<TripEvent[]>(key, []);
-    setEvents(cached);
+    // Older app versions cached every preceding one-time Event under the
+    // selected day. Revalidate the local cache before it reaches the UI.
+    const cachedForDate = cached.filter((event) => eventOccursOnDate({ starts_at: event.startsAt, ends_at: event.endsAt }, date));
+    if (cachedForDate.length !== cached.length) storageSet(key, cachedForDate);
+    setLoaded({ date, events: cachedForDate });
     void fetch(`/api/events?date=${encodeURIComponent(date)}`, { cache: "no-store" })
       .then(async (response) => response.ok ? response.json() as Promise<{ events: ApiEvent[] }> : { events: [] })
-      .then(({ events: remote }) => { if (active) { const next = remote.map(toTripEvent); storageSet(key, next); setEvents(next); } })
+      .then(({ events: remote }) => { if (active) { const next = remote.map(toTripEvent); storageSet(key, next); setLoaded({ date, events: next }); } })
       .catch(() => { /* Offline retains the last known Event list. */ });
     return () => { active = false; };
   }, [date]);
-  return events;
+  // React renders once before an effect can load the newly selected day. Do
+  // not let the previous day's Event cards flash during that render.
+  return loaded.date === date ? loaded.events : [];
 }
