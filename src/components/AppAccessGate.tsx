@@ -35,7 +35,14 @@ export function AppAccessGate({ children }: { children: ReactNode }) {
 }
 
 function AccessLoadingScreen() {
-  return <main className="grid min-h-dvh place-items-center bg-quartz"><span className="h-2 w-2 rounded-full bg-coral motion-safe:animate-pulse" aria-label="Belépés ellenőrzése" /></main>;
+  return <main className="relative flex min-h-dvh flex-col overflow-hidden bg-quartz px-5 pb-[calc(30px+env(safe-area-inset-bottom))] pt-[env(safe-area-inset-top)] text-deep-sea">
+    <img src="/images/utazasi-pin-logo.svg" alt="" aria-hidden="true" className="pointer-events-none absolute -left-[31vw] top-[7dvh] h-[52vw] min-h-[220px] w-[52vw] min-w-[220px] max-h-[390px] max-w-[390px]" />
+    <div className="relative flex flex-1 flex-col items-center justify-end pb-[max(26px,7dvh)] text-center">
+      <p className="text-[12px] font-bold uppercase tracking-[.18em] text-turquoise">Utazási</p>
+      <p className="mt-3 text-[15px] text-deep-sea/55" role="status" aria-live="polite">Az utazás megnyitása…</p>
+      <span aria-hidden="true" className="mt-5 h-2 w-2 rounded-full bg-coral" />
+    </div>
+  </main>;
 }
 
 function PinAccessScreen({ configurationError, onUnlocked }: { configurationError: boolean; onUnlocked: () => void }) {
