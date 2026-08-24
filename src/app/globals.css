@@ -38,7 +38,7 @@ body {
   align-items: flex-end;
   gap: 0;
   overflow-x: auto;
-  margin-bottom: -1px;
+  margin-bottom: 0;
   min-height: 44px;
   padding: 0;
   scrollbar-width: none;
@@ -65,26 +65,8 @@ body {
 .folder-tab:focus-visible { box-shadow: 0 0 0 2px #2E8A93; }
 
 .folder-tab--active {
-  z-index: 1;
-  min-height: 44px;
   color: #F18C79;
-  border: 1px solid rgb(24 50 59 / 0.20);
-  border-bottom-color: transparent;
-}
-
-.folder-tab--active::after {
-  position: absolute;
-  z-index: 1;
-  right: -1px;
-  bottom: -2px;
-  left: -1px;
-  height: 3px;
-  background: #F8F7F3;
-  content: "";
-}
-
-.folder-tab--active::before {
-  display: none;
+  font-weight: 700;
 }
 
 .folder-tabs--places .folder-tab {
@@ -93,15 +75,13 @@ body {
 
 .folder-content-surface {
   min-height: 1px;
-  border: 1px solid rgb(24 50 59 / 0.20);
-  border-radius: 0 0 0 24px;
   background: transparent;
   box-shadow: none;
-  padding: 14px 14px;
+  padding: 16px 14px;
 }
 
 .folder-content-surface--places {
-  padding: 14px 12px 4px;
+  padding: 16px 12px 4px;
 }
 
 .editor-soft-sheet {
