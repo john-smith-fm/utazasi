@@ -171,7 +171,7 @@ export function NotebookShell() {
   const expenses = data.entries.filter((entry) => entry.kind === "expense");
   const total = useMemo(() => expenses.reduce((sum, entry) => sum + (entry.amountEur ?? 0), 0), [expenses]);
   const packed = data.packing.filter((item) => item.isPacked).length;
-  return <section className="mt-6" aria-label="Jegyzetfüzet tartalma">
+  return <section aria-label="Jegyzetfüzet tartalma">
     <FolderTabs items={TABS} activeId={tab} onChange={changeTab} ariaLabel="Jegyzetfüzet kategóriák" />
     {message ? <div className="mt-4 flex items-center justify-between gap-3 rounded-ui-s border border-coral/25 bg-coral/5 px-3.5 py-3 text-sm text-deep-sea/75"><span>{message}</span><button onClick={() => { setMessage(null); void load(); }} className="min-h-11 shrink-0 font-semibold text-deep-sea">Újrapróbálás</button></div> : null}
     {status === "offline" ? <p className="mt-4 text-sm text-deep-sea/60">Offline módban az utoljára betöltött Jegyzetfüzet látható. Módosítás most nem menthető.</p> : null}
