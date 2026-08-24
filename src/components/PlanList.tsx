@@ -178,7 +178,7 @@ function EditableTimelineItem({ activity, conflict, onSelect, onDelete, onPrevie
   }
 
   return <div className="relative overflow-hidden">
-    <button type="button" onClick={() => onDelete(activity)} className="absolute inset-y-0 right-0 grid w-[84px] place-items-center bg-error/15 text-[13px] font-semibold text-error" aria-label={`${activity.title} törlése`}>Törlés</button>
+    <button type="button" onClick={() => onDelete(activity)} className="absolute inset-y-0 right-0 grid w-[84px] place-items-center bg-error text-[13px] font-semibold text-white" aria-label={`${activity.title} törlése`}>Törlés</button>
     <div role="button" tabIndex={0} aria-label={`${activity.title} szerkesztése`} onKeyDown={keyDown} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd} onClick={() => { if (suppressClick.current) { suppressClick.current = false; return; } onSelect(activity); }} className="relative cursor-pointer touch-pan-y bg-quartz outline-none transition-transform duration-200 focus-visible:ring-2 focus-visible:ring-turquoise-dark" style={{ transform: `translateX(${offset}px)`, transitionDuration: start.current ? "0ms" : undefined }}>
       <div className="relative pr-11">
         <TimelineContent activity={activity} conflict={conflict} />

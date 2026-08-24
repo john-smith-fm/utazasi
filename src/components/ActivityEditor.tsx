@@ -180,7 +180,7 @@ export function ActivityEditor({ activity, onClose, onSave, onDelete }: {
         <Field label="Megjegyzés"><textarea maxLength={1000} value={input.description} onChange={(event) => update("description", event.target.value)} className={`${FORM_TEXTAREA} w-full px-4 py-3`} /></Field>
       </div>
       {error && <p className="mt-5 text-sm leading-[21px] text-error" role="alert">{error}</p>}
-      {editing && <div className="mt-auto pt-10"><button type="button" onClick={() => void remove()} disabled={action !== "idle"} className="min-h-11 w-full rounded-ui-s border border-error/30 bg-error/10 px-4 text-[15px] font-semibold text-error disabled:opacity-45">{action === "deleting" ? "…" : "Program törlése"}</button></div>}
+      {editing && <div className="mt-auto pt-10"><button type="button" onClick={() => void remove()} disabled={action !== "idle"} className="min-h-11 w-full rounded-full bg-error px-4 text-[15px] font-semibold text-white disabled:opacity-45">{action === "deleting" ? "…" : "Program törlése"}</button></div>}
     </form>
   </section>;
 }
