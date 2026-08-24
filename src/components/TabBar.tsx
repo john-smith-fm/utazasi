@@ -15,7 +15,7 @@ export function TabBar() {
 
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-[30] flex border-t px-1 pb-[calc(8px+env(safe-area-inset-bottom))] pt-2 backdrop-blur-glass"
+      className="fixed inset-x-0 bottom-0 z-[30] flex border-t px-1 pb-[env(safe-area-inset-bottom)] pt-2 backdrop-blur-glass"
       style={{
         backgroundColor: "rgba(255,255,255,0.65)",
         borderColor: "rgba(255,255,255,0.55)",
