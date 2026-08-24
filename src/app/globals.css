@@ -69,19 +69,11 @@ body {
   font-weight: 700;
 }
 
-.folder-tabs--places .folder-tab {
-  font-size: 13px;
-}
-
 .folder-content-surface {
   min-height: 1px;
   background: transparent;
   box-shadow: none;
   padding: 16px 14px;
-}
-
-.folder-content-surface--places {
-  padding: 16px 12px 4px;
 }
 
 .editor-soft-sheet {
