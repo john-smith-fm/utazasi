@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PlaceListItem } from "@/components/PlaceListItem";
 import { FolderTabs } from "@/components/FolderTabs";
+import { Icon } from "@/components/Icon";
 import {
   DEFAULT_PLACE_BROWSE_CATEGORY,
   isPlaceBrowseCategory,
@@ -53,9 +54,11 @@ export function PlacesBrowser() {
 
   return (
     <main className="mx-auto max-w-[430px] px-5 pb-[calc(112px+env(safe-area-inset-bottom))]">
-      <header className="pb-1 pt-[calc(env(safe-area-inset-top)+20px)]">
-        <p className="mb-1.5 text-[13px] font-semibold uppercase tracking-[0.08em] text-turquoise-dark">Villasimius környéke</p>
-        <h1 className="text-[32px] font-semibold tracking-[-0.03em] text-deep-sea">Helyek</h1>
+      <header className="flex justify-center pb-1 pt-[calc(env(safe-area-inset-top)+20px)]">
+        <h1 className="flex items-center gap-2 text-[28px] font-semibold tracking-[-0.03em] text-turquoise">
+          <Icon name="map-pin" size={27} strokeWidth={2} aria-hidden="true" />
+          Helyek
+        </h1>
       </header>
 
       <div className="mt-5"><FolderTabs items={PLACE_BROWSE_CATEGORIES} activeId={categoryId} onChange={changeCategory} ariaLabel="Helytípusok" variant="places" /></div>
