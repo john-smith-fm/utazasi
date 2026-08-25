@@ -65,7 +65,7 @@ function GenericContactDetails({ place }: { place: Place }) {
       <h3 className="text-sm font-semibold leading-5 text-deep-sea">Telefon</h3>
       <PhoneLinks phones={place.contact.phones} />
     </div> : null}
-    {place.contact.website && <a href={place.contact.website} target="_blank" rel="noreferrer" className="mt-3 inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">Weboldal megnyitása</a>}
+    {place.contact.website && <a href={place.contact.website} target="_blank" rel="noreferrer" className="mt-3 inline-flex min-h-11 items-center rounded-full bg-turquoise px-4 text-sm font-semibold text-white">Weboldal megnyitása</a>}
   </section>;
 }
 
@@ -103,7 +103,7 @@ function RestaurantDetails({ place }: { place: Place }) {
       <h3 className="text-sm font-semibold leading-5 text-deep-sea">Telefon</h3>
       <PhoneLinks phones={contact.phones} />
     </div> : null}
-    {contact?.website && <a href={contact.website} target="_blank" rel="noreferrer" className="mt-4 inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">Weboldal megnyitása</a>}
+    {contact?.website && <a href={contact.website} target="_blank" rel="noreferrer" className="mt-4 inline-flex min-h-11 items-center rounded-full bg-turquoise px-4 text-sm font-semibold text-white">Weboldal megnyitása</a>}
   </section>;
 }
 
@@ -130,7 +130,7 @@ function ShopDetails({ place }: { place: Place }) {
       <h3 className="text-sm font-semibold leading-5 text-deep-sea">Telefon</h3>
       <PhoneLinks phones={shop.phones} />
     </div> : null}
-    {shop.website && <a href={shop.website} target="_blank" rel="noreferrer" className="mt-4 inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">Weboldal megnyitása</a>}
+    {shop.website && <a href={shop.website} target="_blank" rel="noreferrer" className="mt-4 inline-flex min-h-11 items-center rounded-full bg-turquoise px-4 text-sm font-semibold text-white">Weboldal megnyitása</a>}
   </section>;
 }
 
@@ -179,7 +179,7 @@ export function PlaceDetail({ place }: { place: Place }) {
       <ShopDetails place={place} />
       <GenericPlaceInformation place={place} />
       <GenericContactDetails place={place} />
-      {navigationHref && <a href={navigationHref} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-4 text-sm font-semibold text-deep-sea">{directionsHref ? "Navigáció megnyitása" : "Megnyitás Google Térképen"}</a>}
+      {navigationHref && <a href={navigationHref} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center rounded-full bg-turquoise px-4 text-sm font-semibold text-white">{directionsHref ? "Navigáció megnyitása" : "Megnyitás Google Térképen"}</a>}
     </div>
   </article>;
 }
