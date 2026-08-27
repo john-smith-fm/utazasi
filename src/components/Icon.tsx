@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  ArrowLeft,
   ArrowUp,
   ArrowUpRight,
   Baby,
@@ -33,6 +34,7 @@ import {
 } from "lucide-react";
 
 const icons: Record<string, LucideIcon> = {
+  "arrow-left": ArrowLeft,
   "arrow-up": ArrowUp,
   "arrow-up-right": ArrowUpRight,
   baby: Baby,
