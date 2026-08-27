@@ -42,14 +42,14 @@ export function StatRow({ weather, sea, day, events = [], tripDays = [], tripSta
         <strong className="text-sm tracking-[-.02em] text-deep-sea">Kérdezési</strong>
       </div>
       <QuestionSheet day={day} weather={weather} events={events} tripDays={tripDays} tripStatus={tripStatus} onOpenDay={onOpenDay} />
-    </section> : <button type="button" aria-label="Kérdezési megnyitása" aria-expanded="false" onClick={() => setMode("questions")} className="relative z-[2] flex w-full items-stretch rounded-[22px] border py-2 pl-1.5 text-left" style={glass}>
+    </section> : <button type="button" aria-label="Kérdezési megnyitása" aria-expanded="false" onClick={() => setMode("questions")} className="group relative z-[2] flex w-full items-stretch rounded-[22px] border py-2 pl-1.5 text-left focus-visible:ring-2 focus-visible:ring-turquoise-dark" style={glass}>
       <span className={`grid min-w-0 flex-1 ${sea !== null ? "grid-cols-4" : "grid-cols-3"}`}>
         <Metric icon="sun" value={weather ? `${weather.temp}°` : "—"} />
         {sea !== null && <Metric icon="waves" value={`${sea}°`} bordered />}
         <Metric icon="wind" value={weather ? `${weather.wind} km/h` : "—"} bordered />
         <Metric icon="cloud-sun" value={condition} bordered />
       </span>
-      <span aria-hidden="true" className="mr-1.5 grid h-9 w-9 shrink-0 place-items-center rounded-full border border-deep-sea/15 bg-white/60 text-deep-sea transition-colors"><Icon name="circle-help" size={18} strokeWidth={1.8} /></span>
+      <span aria-hidden="true" className="mr-3 grid h-9 w-9 shrink-0 place-items-center text-deep-sea transition-colors group-hover:text-turquoise-dark"><Icon name="circle-help" size={18} strokeWidth={1.8} /></span>
     </button>}
   </section>;
 }
