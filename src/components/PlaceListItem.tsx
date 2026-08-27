@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Place, PlaceType } from "@/types/places";
 
 const TYPE_LABEL: Record<PlaceType, string> = {
@@ -27,5 +28,5 @@ export function PlaceListItem({ place, href }: { place: Place; href?: string }) 
   </>;
 
   const className = "block min-h-11 border-b border-deep-sea/10 py-5 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-turquoise-dark";
-  return href ? <a href={href} className={className}>{content}</a> : <article className={className}>{content}</article>;
+  return href ? <Link href={href} className={className}>{content}</Link> : <article className={className}>{content}</article>;
 }
