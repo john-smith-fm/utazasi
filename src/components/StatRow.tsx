@@ -13,7 +13,11 @@ function Metric({ icon, value, bordered = false }: { icon: string; value: string
 export function StatRow({ weather, sea, day, events = [], tripDays = [], tripStatus = "success", onOpenDay }: { weather: WeatherSnapshot | null; sea: number | null; day: HomeDay; events?: TripEvent[]; tripDays?: readonly HomeDay[]; tripStatus?: "loading" | "success" | "empty" | "offline" | "error"; onOpenDay?: (date: string) => void }) {
   const [mode, setMode] = useState<"weather" | "questions">("weather");
   const questionPanelRef = useRef<HTMLElement>(null);
-  const condition = weather?.precipitationState === "rain" ? "Esős" : weather ? "Napos" : "—";
+  const weatherIcon = weather?.condition === "clear" ? "sun"
+    : weather?.condition === "partly-cloudy" ? "cloud-sun"
+      : weather?.condition === "cloudy" ? "cloud"
+        : weather?.condition === "rain" || weather?.precipitationState === "rain" ? "cloud-rain"
+          : "cloud-sun";
   const questionMode = mode === "questions";
 
   useEffect(() => {
@@ -43,11 +47,10 @@ export function StatRow({ weather, sea, day, events = [], tripDays = [], tripSta
       </div>
       <QuestionSheet day={day} weather={weather} events={events} tripDays={tripDays} tripStatus={tripStatus} onOpenDay={onOpenDay} />
     </section> : <button type="button" aria-label="Kérdezési megnyitása" aria-expanded="false" onClick={() => setMode("questions")} className="group relative z-[2] flex w-full items-stretch rounded-[22px] border py-2 pl-1.5 text-left focus-visible:ring-2 focus-visible:ring-turquoise-dark" style={glass}>
-      <span className={`grid min-w-0 flex-1 pr-12 ${sea !== null ? "grid-cols-4" : "grid-cols-3"}`}>
-        <Metric icon="sun" value={weather ? `${weather.temp}°` : "—"} />
+      <span className={`grid min-w-0 flex-1 pr-12 ${sea !== null ? "grid-cols-3" : "grid-cols-2"}`}>
+        <Metric icon={weatherIcon} value={weather ? `${weather.temp}°` : "—"} />
         {sea !== null && <Metric icon="waves" value={`${sea}°`} bordered />}
         <Metric icon="wind" value={weather ? `${weather.wind} km/h` : "—"} bordered />
-        <Metric icon="cloud-sun" value={condition} bordered />
       </span>
       <span aria-hidden="true" className="pointer-events-none absolute right-3 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full border border-deep-sea/15 bg-white/60 text-[19px] font-semibold leading-none text-deep-sea transition-colors group-hover:bg-white group-hover:text-turquoise-dark">?</span>
     </button>}

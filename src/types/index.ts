@@ -88,6 +88,7 @@ export interface WeatherSnapshot {
   sunrise: string;
   sunset: string;
   precipitationState: "dry" | "rain" | "unknown";
+  condition: "clear" | "partly-cloudy" | "cloudy" | "rain" | "unknown";
   seaTemperature: number | null;
   fetchedAt: string;
   stale: boolean;

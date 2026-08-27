@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { TRIP_RUNTIME } from "@/data/trip-core";
-import { formatProviderTime, precipitationStateForMillimeters, type WeatherContext } from "@/lib/weather-context";
+import { formatProviderTime, precipitationStateForMillimeters, weatherConditionForCode, type WeatherContext } from "@/lib/weather-context";
 
 export const revalidate = 900;
 
@@ -9,12 +9,13 @@ const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const COORDINATE_PATTERN = /^-?\d{1,3}(?:\.\d+)?$/;
 
 type ForecastResponse = {
-  current?: { temperature_2m?: number; wind_speed_10m?: number; precipitation?: number };
+  current?: { temperature_2m?: number; wind_speed_10m?: number; precipitation?: number; weather_code?: number };
   daily?: {
     time: string[];
     temperature_2m_max: number[];
     temperature_2m_min: number[];
     precipitation_sum: number[];
+    weather_code: number[];
     wind_speed_10m_max: number[];
     sunrise: string[];
     sunset: string[];
@@ -55,7 +56,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Érvénytelen helykoordináta." }, { status: 400 });
   }
   const shared = `latitude=${lat}&longitude=${lon}&timezone=${encodeURIComponent(TRIP_RUNTIME.timezone)}`;
-  const forecastUrl = `https://api.open-meteo.com/v1/forecast?${shared}&start_date=${requestedDate}&end_date=${requestedDate}&current=temperature_2m,wind_speed_10m,precipitation&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max,sunrise,sunset`;
+  const forecastUrl = `https://api.open-meteo.com/v1/forecast?${shared}&start_date=${requestedDate}&end_date=${requestedDate}&current=temperature_2m,wind_speed_10m,precipitation,weather_code&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weather_code,wind_speed_10m_max,sunrise,sunset`;
   const marineUrl = `https://marine-api.open-meteo.com/v1/marine?${shared}&current=sea_surface_temperature`;
 
   try {
@@ -74,6 +75,7 @@ export async function GET(request: NextRequest) {
       airTemperature: Math.round(isToday ? forecast.current?.temperature_2m ?? dailyTemperature : dailyTemperature),
       windKmh: Math.round(isToday ? forecast.current?.wind_speed_10m ?? daily.wind_speed_10m_max[index] : daily.wind_speed_10m_max[index]),
       precipitationState: precipitationStateForMillimeters(isToday ? forecast.current?.precipitation ?? daily.precipitation_sum[index] : daily.precipitation_sum[index]),
+      condition: weatherConditionForCode(isToday ? forecast.current?.weather_code ?? daily.weather_code[index] : daily.weather_code[index]),
       seaTemperature: typeof marine?.current?.sea_surface_temperature === "number" ? Math.round(marine.current.sea_surface_temperature) : null,
       sunrise: formatProviderTime(daily.sunrise[index]),
       sunset: formatProviderTime(daily.sunset[index]),

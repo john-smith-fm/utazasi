@@ -5,6 +5,7 @@ type WeatherResponse = {
   airTemperature: number;
   windKmh: number;
   precipitationState: WeatherSnapshot["precipitationState"];
+  condition: WeatherSnapshot["condition"];
   seaTemperature: number | null;
   sunrise: string | null;
   sunset: string | null;
@@ -39,6 +40,7 @@ export async function fetchWeather(date: string, location?: WeatherLocation): Pr
       sunrise: data.sunrise ?? "—",
       sunset: data.sunset ?? "—",
       precipitationState: data.precipitationState,
+      condition: data.condition,
       seaTemperature: location?.seaRelevant === false ? null : data.seaTemperature,
       fetchedAt: data.fetchedAt,
       stale: data.stale,
