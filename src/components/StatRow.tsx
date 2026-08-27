@@ -38,7 +38,7 @@ export function StatRow({ weather, sea, day, events = [], tripDays = [], tripSta
   return <section aria-label="Időjárás és utazási segítség">
     {questionMode ? <section ref={questionPanelRef} className="relative z-[2] w-full overflow-hidden rounded-[22px] border" style={glass}>
       <div className="relative flex min-h-[52px] items-center justify-center px-14">
-        <button type="button" aria-label="Kérdezési bezárása" onClick={() => setMode("weather")} className="absolute left-3 grid h-9 w-9 place-items-center rounded-full border border-deep-sea/15 bg-white/60 text-deep-sea transition-colors hover:bg-white focus-visible:ring-2 focus-visible:ring-turquoise-dark"><Icon name="x" size={17} aria-hidden="true" /></button>
+        <button type="button" aria-label="Kérdezési bezárása" onClick={() => setMode("weather")} className="absolute right-3 grid h-9 w-9 place-items-center rounded-full border border-deep-sea/15 bg-white/60 text-deep-sea transition-colors hover:bg-white focus-visible:ring-2 focus-visible:ring-turquoise-dark"><Icon name="x" size={17} aria-hidden="true" /></button>
         <strong className="text-sm tracking-[-.02em] text-deep-sea">Kérdezési</strong>
       </div>
       <QuestionSheet day={day} weather={weather} events={events} tripDays={tripDays} tripStatus={tripStatus} onOpenDay={onOpenDay} />
@@ -49,7 +49,7 @@ export function StatRow({ weather, sea, day, events = [], tripDays = [], tripSta
         <Metric icon="wind" value={weather ? `${weather.wind} km/h` : "—"} bordered />
         <Metric icon="cloud-sun" value={condition} bordered />
       </span>
-      <span aria-hidden="true" className="grid w-9 shrink-0 place-items-center text-deep-sea/45"><Icon name="circle-help" size={18} strokeWidth={1.8} /></span>
+      <span aria-hidden="true" className="mr-1.5 grid h-9 w-9 shrink-0 place-items-center rounded-full border border-deep-sea/15 bg-white/60 text-deep-sea transition-colors"><Icon name="circle-help" size={18} strokeWidth={1.8} /></span>
     </button>}
   </section>;
 }
