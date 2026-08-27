@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { HomeDay } from "@/data/home-days";
 import type { WeatherSnapshot } from "@/types";
 import type { TripEvent } from "@/lib/event-types";
@@ -12,12 +12,35 @@ function Metric({ icon, value, bordered = false }: { icon: string; value: string
 
 export function StatRow({ weather, sea, day, events = [], tripDays = [], tripStatus = "success", onOpenDay }: { weather: WeatherSnapshot | null; sea: number | null; day: HomeDay; events?: TripEvent[]; tripDays?: readonly HomeDay[]; tripStatus?: "loading" | "success" | "empty" | "offline" | "error"; onOpenDay?: (date: string) => void }) {
   const [mode, setMode] = useState<"weather" | "questions">("weather");
+  const questionPanelRef = useRef<HTMLElement>(null);
   const condition = weather?.precipitationState === "rain" ? "Esős" : weather ? "Napos" : "—";
   const questionMode = mode === "questions";
 
+  useEffect(() => {
+    if (!questionMode) return;
+
+    function closeWhenOutside(event: PointerEvent) {
+      if (!questionPanelRef.current?.contains(event.target as Node)) setMode("weather");
+    }
+
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") setMode("weather");
+    }
+
+    document.addEventListener("pointerdown", closeWhenOutside);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeWhenOutside);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [questionMode]);
+
   return <section aria-label="Időjárás és utazási segítség">
-    {questionMode ? <section className="relative z-[2] w-full overflow-hidden rounded-[22px] border" style={glass}>
-      <button type="button" aria-label="Vissza az időjáráshoz" aria-expanded="true" onClick={() => setMode("weather")} className="flex min-h-[52px] w-full items-center justify-center px-5 text-left"><strong className="text-sm tracking-[-.02em] text-deep-sea">Kérdezési</strong></button>
+    {questionMode ? <section ref={questionPanelRef} className="relative z-[2] w-full overflow-hidden rounded-[22px] border" style={glass}>
+      <div className="relative flex min-h-[52px] items-center justify-center px-14">
+        <button type="button" aria-label="Kérdezési bezárása" onClick={() => setMode("weather")} className="absolute left-3 grid h-9 w-9 place-items-center rounded-full border border-deep-sea/15 bg-white/60 text-deep-sea transition-colors hover:bg-white focus-visible:ring-2 focus-visible:ring-turquoise-dark"><Icon name="x" size={17} aria-hidden="true" /></button>
+        <strong className="text-sm tracking-[-.02em] text-deep-sea">Kérdezési</strong>
+      </div>
       <QuestionSheet day={day} weather={weather} events={events} tripDays={tripDays} tripStatus={tripStatus} onOpenDay={onOpenDay} />
     </section> : <button type="button" aria-label="Kérdezési megnyitása" aria-expanded="false" onClick={() => setMode("questions")} className="relative z-[2] flex w-full items-stretch rounded-[22px] border py-2 pl-1.5 text-left" style={glass}>
       <span className={`grid min-w-0 flex-1 ${sea !== null ? "grid-cols-4" : "grid-cols-3"}`}>
