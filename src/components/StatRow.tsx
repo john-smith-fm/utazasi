@@ -49,7 +49,7 @@ export function StatRow({ weather, sea, day, events = [], tripDays = [], tripSta
         <Metric icon="wind" value={weather ? `${weather.wind} km/h` : "—"} bordered />
         <Metric icon="cloud-sun" value={condition} bordered />
       </span>
-      <span aria-hidden="true" className="pointer-events-none absolute right-3 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full border border-deep-sea/15 bg-white/60 text-deep-sea transition-colors group-hover:bg-white group-hover:text-turquoise-dark"><Icon name="circle-help" size={18} strokeWidth={1.8} /></span>
+      <span aria-hidden="true" className="pointer-events-none absolute right-3 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full border border-deep-sea/15 bg-white/60 text-[19px] font-semibold leading-none text-deep-sea transition-colors group-hover:bg-white group-hover:text-turquoise-dark">?</span>
     </button>}
   </section>;
 }
