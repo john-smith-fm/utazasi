@@ -1014,7 +1014,56 @@
         ],
         "source_refs": [
           "C03"
-        ]
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "municipal",
+          "url": "https://www.comune.villaputzu.ca.it/modules.php?cid=57&name=Pagine&pa=showpage&pid=41",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "partial",
+        "mobility": "partial",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Current operation and hours need verification."
+      ],
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Via+Nazion+Ale+Villaputzu"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "gelateria",
+          "region_id": "region-06-villaputzu",
+          "details": {
+            "kind": "cafe_gelateria",
+            "food": {
+              "profiles": [
+                "coffee",
+                "gelato",
+                "quick_stop"
+              ]
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Via+Nazion+Ale+Villaputzu"
       }
     },
     {
@@ -1104,7 +1153,9 @@
       "verification": {
         "status": "verified_maps_business",
         "last_checked": "2026-08-22",
-        "sources": ["Google Maps / local business result"]
+        "sources": [
+          "Google Maps / local business result"
+        ]
       },
       "google_maps": {
         "maps_url": "https://www.google.com/maps/search/?api=1&query=Gelateria+Amai+Villasimius"
@@ -1124,12 +1175,16 @@
         "address": "Via Vittorio Emanuele II 50"
       },
       "contact": {
-        "phone": ["+39 070 451 9199"]
+        "phone": [
+          "+39 070 451 9199"
+        ]
       },
       "verification": {
         "status": "verified_maps_business",
         "last_checked": "2026-08-22",
-        "sources": ["Google Maps / local business result"]
+        "sources": [
+          "Google Maps / local business result"
+        ]
       },
       "google_maps": {
         "maps_url": "https://www.google.com/maps/search/?api=1&query=Pasticceria+Marci+Cristina+Villasimius"

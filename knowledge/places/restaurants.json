@@ -994,11 +994,68 @@
         "status": "verified_official",
         "last_checked": "2026-08-07",
         "sources": [
-          "https://www.ristorantelavelavillasimius.it/"
+          "https://www.ristorantelavelavillasimius.it/",
+          "https://www.spiaggevillasimius.it/ristoranti-e-locali-tipici"
         ],
         "source_refs": [
           "R01"
-        ]
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "provenance": [
+        {
+          "source_type": "local_directory",
+          "url": "https://www.spiaggevillasimius.it/ristoranti-e-locali-tipici",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "missing",
+        "mobility": "partial",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Current hours unknown."
+      ],
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=La+Vela+Via+degli+Oleandri+12+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": null,
+          "details": {
+            "kind": "restaurant_pizzeria",
+            "food": {
+              "profiles": [
+                "dinner"
+              ],
+              "cuisine": [
+                "italian",
+                "pizza"
+              ]
+            }
+          },
+          "insights": {
+            "tags": [
+              "near_daily_parking"
+            ],
+            "confidence": "medium"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=La+Vela+Via+degli+Oleandri+12+Villasimius"
       }
     },
     {
@@ -1679,12 +1736,67 @@
         ],
         "source_refs": [
           "R07"
-        ]
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
       },
       "contact": {
         "phone": [
           "+39 070 791338"
         ]
+      },
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.villasimiusturismo.it/dove-mangiare/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "missing",
+        "mobility": "missing",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Current hours unknown."
+      ],
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Sa+Tankitta+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "restaurant",
+          "region_id": null,
+          "details": {
+            "kind": "restaurant_pizzeria",
+            "food": {
+              "profiles": [
+                "lunch",
+                "dinner"
+              ],
+              "cuisine": [
+                "italian",
+                "pizza"
+              ]
+            }
+          },
+          "insights": {
+            "tags": [],
+            "confidence": "low"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Sa+Tankitta+Villasimius"
       }
     },
     {

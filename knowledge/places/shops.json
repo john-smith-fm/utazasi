@@ -659,18 +659,91 @@
       "category": "shop",
       "subcategory": "pharmacy",
       "location": {
-        "city": "Villasimius"
+        "city": "Villasimius",
+        "address": "Via del Mare 37"
       },
       "verification": {
         "status": "verified_official_identity",
         "last_checked": "2026-08-07",
         "sources": [
-          "https://www.farmaciasimius.com/"
+          "https://www.farmaciasimius.com/",
+          "https://www.farmaciasimius.it/",
+          "https://www.villasimiusturismo.it/farmacie-e-medici/"
         ],
         "source_refs": [
           "SH06"
         ],
         "uncertainty_note": "Pontos cím/nyitvatartás nincs kanonizálva a korábbi forrásütközés miatt."
+      },
+      "provenance": [
+        {
+          "source_type": "official",
+          "url": "https://www.farmaciasimius.it/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "hours",
+            "services",
+            "baby_products"
+          ]
+        },
+        {
+          "source_type": "official_tourism",
+          "url": "https://www.villasimiusturismo.it/farmacie-e-medici/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "address",
+            "phone",
+            "type"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "complete",
+        "mobility": "missing",
+        "family": "complete",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Confirm holiday duty rota when needed."
+      ],
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Farmacia+Simius+Via+del+Mare+37+Villasimius"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "pharmacy_drugstore",
+          "region_id": null,
+          "details": {
+            "kind": "pharmacy",
+            "health": {
+              "profiles": [
+                "medicines",
+                "baby_products",
+                "sun_care",
+                "diagnostics"
+              ],
+              "opening_hours": "Mon-Fri 09:00-13:00, 16:00-20:00; Sat 09:30-12:30; Sun closed",
+              "phone": "+39 340 214 0226"
+            }
+          },
+          "insights": {
+            "tags": [
+              "baby_emergency",
+              "sun_care"
+            ],
+            "confidence": "high"
+          }
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Farmacia+Simius+Via+del+Mare+37+Villasimius"
       }
     },
     {
@@ -1498,13 +1571,48 @@
         "opening_hours": {
           "timezone": "Europe/Rome",
           "weekly": {
-            "monday": [{ "open": "08:00", "close": "20:00" }],
-            "tuesday": [{ "open": "08:00", "close": "20:00" }],
-            "wednesday": [{ "open": "08:00", "close": "20:00" }],
-            "thursday": [{ "open": "08:00", "close": "20:00" }],
-            "friday": [{ "open": "08:00", "close": "20:00" }],
-            "saturday": [{ "open": "08:00", "close": "20:00" }],
-            "sunday": [{ "open": "08:00", "close": "20:00" }]
+            "monday": [
+              {
+                "open": "08:00",
+                "close": "20:00"
+              }
+            ],
+            "tuesday": [
+              {
+                "open": "08:00",
+                "close": "20:00"
+              }
+            ],
+            "wednesday": [
+              {
+                "open": "08:00",
+                "close": "20:00"
+              }
+            ],
+            "thursday": [
+              {
+                "open": "08:00",
+                "close": "20:00"
+              }
+            ],
+            "friday": [
+              {
+                "open": "08:00",
+                "close": "20:00"
+              }
+            ],
+            "saturday": [
+              {
+                "open": "08:00",
+                "close": "20:00"
+              }
+            ],
+            "sunday": [
+              {
+                "open": "08:00",
+                "close": "20:00"
+              }
+            ]
           }
         },
         "services": [
@@ -1533,12 +1641,16 @@
         "address": "Via del Mare 116"
       },
       "contact": {
-        "phone": ["+39 346 134 4193"]
+        "phone": [
+          "+39 346 134 4193"
+        ]
       },
       "verification": {
         "status": "verified_official_tourism",
         "last_checked": "2026-08-22",
-        "sources": ["https://www.villasimiusturismo.it/supermarket/"]
+        "sources": [
+          "https://www.villasimiusturismo.it/supermarket/"
+        ]
       },
       "google_maps": {
         "maps_url": "https://www.google.com/maps/search/?api=1&query=La+Bottega+dei+Sapori+Villasimius"
@@ -1558,12 +1670,17 @@
         "address": "Via degli Oleandri 8/c"
       },
       "contact": {
-        "phone": ["+39 070 332 6676", "+39 338 123 1048"]
+        "phone": [
+          "+39 070 332 6676",
+          "+39 338 123 1048"
+        ]
       },
       "verification": {
         "status": "verified_official_tourism",
         "last_checked": "2026-08-22",
-        "sources": ["https://www.villasimiusturismo.it/supermarket/"]
+        "sources": [
+          "https://www.villasimiusturismo.it/supermarket/"
+        ]
       },
       "google_maps": {
         "maps_url": "https://www.google.com/maps/search/?api=1&query=Sfizi+di+Pane+e+non+Villasimius"
@@ -1584,10 +1701,385 @@
       "verification": {
         "status": "verified_official_tourism",
         "last_checked": "2026-08-22",
-        "sources": ["https://www.villasimiusturismo.it/supermarket/"]
+        "sources": [
+          "https://www.villasimiusturismo.it/supermarket/"
+        ]
       },
       "google_maps": {
         "maps_url": "https://www.google.com/maps/search/?api=1&query=Market+Ariete+Villasimius"
+      }
+    },
+    {
+      "id": "place_shop_tigo_prodotti_sardi",
+      "slug": "tigo-prodotti-sardi-villasimius",
+      "name": "Tigo Prodotti Sardi",
+      "category": "shop",
+      "subcategory": "bakery_enoteca_deli",
+      "location": {
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via Umberto I 154/A"
+      },
+      "description": "Kovászos kenyér, bor, kézműves sör, méz, mostarda, sottoli, felvágottak és szardíniai termékek. A Gustando i Sapori di Sardegna névváltozattal egy címhez kötött, ezért egyetlen rekord.",
+      "aliases": [
+        "Gustando i Sapori di Sardegna",
+        "Gustando"
+      ],
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-27",
+        "sources": [
+          "https://www.villasimiusturismo.it/supermarket/",
+          "https://www.villasimiusturismo.it/via-umberto-il-cuore-di-villasimius/"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_koros_enoteca",
+      "slug": "koros-enoteca-villasimius",
+      "name": "Koros Enoteca",
+      "category": "shop",
+      "subcategory": "enoteca_local_products",
+      "location": {
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Piazza Generale Incani 13"
+      },
+      "description": "Szardíniai borok, sajtok, felvágottak és helyi termékek; kisebb helyi termelők válogatott kínálata.",
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-27",
+        "sources": [
+          "https://www.villasimiusturismo.it/supermarket/",
+          "https://www.villasimiusturismo.it/via-umberto-il-cuore-di-villasimius/"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_i_piaceri_dellisola",
+      "slug": "i-piaceri-dellisola-villasimius",
+      "name": "I Piaceri dell'Isola",
+      "category": "shop",
+      "subcategory": "enoteca_local_products",
+      "location": {
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via del Mare 31"
+      },
+      "description": "Enoteca és szardíniai gasztronómiai termékbolt; étel–bor párosításban és borajándék választásában is segít.",
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-27",
+        "sources": [
+          "https://ipiaceridellisola.it/chi-siamo/"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_meigamma",
+      "slug": "meigamma-villasimius",
+      "name": "Meigamma Società Agricola",
+      "category": "shop",
+      "subcategory": "winery_farm_shop",
+      "location": {
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via Cagliari 27"
+      },
+      "description": "Helyi borászat és termelői bolt saját borral, olívaolajjal, mézzel és más mezőgazdasági termékekkel.",
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-27",
+        "sources": [
+          "https://www.viteevite.it/i-produttori-2025/meigamma/"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_il_regalo",
+      "slug": "il-regalo-villasimius",
+      "name": "Il Regalo",
+      "category": "shop",
+      "subcategory": "souvenir_ceramics_hardware",
+      "location": {
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via del Mare 19"
+      },
+      "description": "Szardíniai kerámiák és szuvenírek mellett barkács-, háztartási, elektromos, grillezési és telefonos kellékeket is árusító praktikus szaküzlet.",
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-27",
+        "sources": [
+          "https://sannafabrizio.wixsite.com/ilregalo-villasimius"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_idea_mare_bijoux",
+      "slug": "idea-mare-bijoux-villasimius",
+      "name": "Idea Mare bijoux",
+      "category": "shop",
+      "subcategory": "souvenir_handicraft",
+      "location": {
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via del Mare 12"
+      },
+      "description": "Szuvenír-, kézműves- és bizsuüzlet a központi esti bevásárlóutcában.",
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-27",
+        "sources": [
+          "https://www.villasimiusturismo.it/artigianato-e-souvenir/"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_anna_segreto",
+      "slug": "anna-segreto-villasimius",
+      "name": "Anna Segreto",
+      "category": "shop",
+      "subcategory": "textile_handicraft",
+      "location": {
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via del Mare 51"
+      },
+      "description": "Szardíniai textilkézműves üzlet.",
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-27",
+        "sources": [
+          "https://www.villasimiusturismo.it/artigianato-e-souvenir/"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_terry_artigianato_tessile",
+      "slug": "terry-artigianato-tessile-villasimius",
+      "name": "Terry Artigianato Tessile Sardo",
+      "category": "shop",
+      "subcategory": "textile_handicraft",
+      "location": {
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via Umberto I 145"
+      },
+      "description": "Hagyományos szardíniai textilkézműves termékek.",
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-27",
+        "sources": [
+          "https://www.villasimiusturismo.it/artigianato-e-souvenir/"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_trade_winds_surf_shop",
+      "slug": "trade-winds-surf-shop-villasimius",
+      "name": "Trade Winds Surf Shop",
+      "category": "shop",
+      "subcategory": "surf_beach_equipment",
+      "location": {
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via Guglielmo Marconi 38"
+      },
+      "description": "Szörf-, sport- és szabadidős felszerelések, valamint beachwear.",
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-27",
+        "sources": [
+          "https://villasimiusardegna.it/shopping/"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_tempo_libero",
+      "slug": "tempo-libero-villasimius",
+      "name": "Tempo Libero",
+      "category": "shop",
+      "subcategory": "clothing_beachwear",
+      "location": {
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via del Mare 32"
+      },
+      "description": "Ruházati és nyári/beachwear szaküzlet.",
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-27",
+        "sources": [
+          "https://villasimiusardegna.it/shopping/"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_sundek",
+      "slug": "sundek-villasimius",
+      "name": "Sundek Villasimius",
+      "category": "shop",
+      "subcategory": "beachwear",
+      "location": {
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via Umberto I 9"
+      },
+      "description": "Fürdőruha és beachwear.",
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-27",
+        "sources": [
+          "https://www.villasimiusturismo.it/supermarket/",
+          "https://www.villasimiusturismo.it/via-umberto-il-cuore-di-villasimius/"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_calzedonia",
+      "slug": "calzedonia-villasimius",
+      "name": "Calzedonia Villasimius",
+      "category": "shop",
+      "subcategory": "beachwear",
+      "location": {
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via Umberto I 22"
+      },
+      "description": "Fürdőruha, beachwear és alapruházati kiegészítők.",
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-27",
+        "sources": [
+          "https://www.villasimiusturismo.it/supermarket/",
+          "https://www.villasimiusturismo.it/via-umberto-il-cuore-di-villasimius/"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_salinas",
+      "slug": "salinas-villasimius",
+      "name": "Salinas Villasimius",
+      "category": "shop",
+      "subcategory": "beachwear_fashion",
+      "location": {
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via Umberto I 35"
+      },
+      "description": "Nyári divat- és beachwear üzlet.",
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-27",
+        "sources": [
+          "https://www.villasimiusturismo.it/supermarket/",
+          "https://www.villasimiusturismo.it/via-umberto-il-cuore-di-villasimius/"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_baccusardus_wine_shop",
+      "slug": "baccusardus-wine-shop-villasimius",
+      "name": "Baccusardus Wine Shop & Souvenirs",
+      "category": "shop",
+      "subcategory": "wine_shop_souvenir",
+      "location": {
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via del Mare"
+      },
+      "description": "Borbolt, helyi termékek és ajándékok; a Baccusardus étterem/wine bar rekordjától külön üzlettípus.",
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-27",
+        "sources": [
+          "https://www.villasimiusturismo.it/supermarket/",
+          "https://www.villasimiusturismo.it/via-umberto-il-cuore-di-villasimius/"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_colline_del_vento",
+      "slug": "colline-del-vento-villasimius",
+      "name": "Colline del Vento",
+      "category": "shop",
+      "subcategory": "winery_wine_shop",
+      "location": {
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via Umberto I 18"
+      },
+      "description": "Helyi bortermelő és borértékesítő.",
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-27",
+        "sources": [
+          "https://villasimiusardegna.it/shopping/"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_enobottega_madre_terra",
+      "slug": "enobottega-madre-terra-villasimius",
+      "name": "Enobottega Madre Terra",
+      "category": "shop",
+      "subcategory": "enoteca_local_products",
+      "location": {
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": null
+      },
+      "description": "Enoteca és helyi termékbolt Villasimiusban.",
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-27",
+        "sources": [
+          "https://www.villasimiusturismo.it/supermarket/",
+          "https://www.villasimiusturismo.it/via-umberto-il-cuore-di-villasimius/"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_semplice_deli",
+      "slug": "semplice-deli-villasimius",
+      "name": "Semplice Deli Gastronomia Villasimius",
+      "category": "shop",
+      "subcategory": "deli_gastronomia",
+      "location": {
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": null
+      },
+      "description": "Kis delikát és készétel/gasztronómiai üzlet.",
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-27",
+        "sources": [
+          "https://www.villasimiusturismo.it/supermarket/",
+          "https://www.villasimiusturismo.it/via-umberto-il-cuore-di-villasimius/"
+        ]
+      }
+    },
+    {
+      "id": "place_shop_elettronica",
+      "slug": "elettronica-villasimius",
+      "name": "Elettronica Villasimius",
+      "category": "shop",
+      "subcategory": "electronics_practical",
+      "location": {
+        "city": "Villasimius",
+        "postal_code": "09049",
+        "address": "Via Emilio Lussu 38/A"
+      },
+      "description": "Telefonos és elektronikai kellékekhez használható praktikus szaküzlet.",
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-27",
+        "sources": [
+          "https://www.villasimiusturismo.it/supermarket/",
+          "https://www.villasimiusturismo.it/via-umberto-il-cuore-di-villasimius/"
+        ]
       }
     }
   ]

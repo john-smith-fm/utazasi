@@ -302,8 +302,10 @@
         "sources": [
           "https://comune.castiadas.su.it/it/page/il-mare",
           "https://www.sardiniamagazine.com/en/cala-pira/",
-          "https://www.sardegnatoujours.com/cala-pira/"
-        ]
+          "https://www.sardegnatoujours.com/cala-pira/",
+          "https://castiadasturismo.com/en/home/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
       },
       "provenance": [
         {
@@ -353,6 +355,16 @@
           "source_reliability": "B",
           "evidence_confidence": "high_historical_medium_current",
           "freshness": "historical"
+        },
+        {
+          "source_type": "official_tourism",
+          "url": "https://castiadasturismo.com/en/home/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "name",
+            "municipality",
+            "beach"
+          ]
         }
       ],
       "coverage": {
@@ -368,7 +380,8 @@
         "Stroller/accessibility not confirmed.",
         "2026 September parking tariff not confirmed.",
         "Current beach layout should not be inferred from the 2008 cover image; it is identity/context evidence only.",
-        "trip-base route missing."
+        "trip-base route missing.",
+        "Verify parking, access, toilets and seasonal services."
       ],
       "cover_image": {
         "asset_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Cala_Pira_-_panoramio_-_gian_luca_bucci.jpg",
@@ -433,13 +446,24 @@
           "shallow_water": null,
           "wind_exposure": null,
           "natural_shade": null
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "beach",
+          "region_id": "region-02-solanas-cala-pira",
+          "details": {
+            "kind": "beach",
+            "services": {}
+          },
+          "insights": null
         }
       },
       "google_maps": {
         "place_id": "ChIJ0y94qovp4BIR_yLDpJGvK_g",
         "maps_url": "https://www.google.com/maps/search/?api=1&query=Cala+Pira%2C+Castiadas",
         "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Cala+Pira%2C+Castiadas&travelmode=driving"
-      }
+      },
+      "subcategory": "beach"
     },
     {
       "id": "place_beach_spiaggia_di_cala_pira",
@@ -511,7 +535,8 @@
       "name": "Spiaggia di Cala Sinzias",
       "category": "beach",
       "location": {
-        "city": "Castiadas"
+        "city": "Castiadas",
+        "address": "Cala Sinzias"
       },
       "coverage_area": "Solanas-Villaputzu",
       "access": {
@@ -521,11 +546,64 @@
         "status": "verified_official",
         "last_checked": "2026-08-07",
         "sources": [
-          "https://www.sardegnaturismo.it/it/esplora/cala-sinzias"
+          "https://www.sardegnaturismo.it/it/esplora/cala-sinzias",
+          "https://castiadasturismo.com/en/sea-and-beaches/cala-sinzias/"
         ],
         "source_refs": [
           "B03"
-        ]
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "subcategory": "beach",
+      "provenance": [
+        {
+          "source_type": "official_tourism",
+          "url": "https://castiadasturismo.com/en/sea-and-beaches/cala-sinzias/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "location",
+            "sand",
+            "length",
+            "services"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "complete",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Parking, toilets and exact operators need verification."
+      ],
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia+Cala+Sinzias"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "beach",
+          "region_id": "region-03-cala-sinzias-capo-ferrato",
+          "details": {
+            "kind": "beach",
+            "beach": {
+              "sand": "fine white",
+              "length": "about 2 km"
+            },
+            "services": {
+              "beach_establishments": "confirmed",
+              "lunch_dinner": "confirmed",
+              "water_sports": "confirmed"
+            }
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia+Cala+Sinzias"
       }
     },
     {
@@ -633,11 +711,56 @@
       "name": "Spiaggia di Costa Rei",
       "category": "beach",
       "location": {
-        "city": "Costa Rei"
+        "city": "Costa Rei",
+        "address": "Costa Rei"
       },
       "coverage_area": "Solanas-Villaputzu",
       "verification": {
-        "status": "planned"
+        "status": "planned",
+        "sources": [
+          "https://www.muraverawelcome.com/en/"
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "subcategory": "beach",
+      "provenance": [
+        {
+          "source_type": "official_tourism_area",
+          "url": "https://www.muraverawelcome.com/en/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "area",
+            "beach"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "partial",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "partial",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Split into named access zones during deeper build."
+      ],
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia+Costa+Rei"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "beach",
+          "region_id": "region-04-costa-rei",
+          "details": {
+            "kind": "beach"
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia+Costa+Rei"
       }
     },
     {
@@ -757,18 +880,60 @@
       "name": "Spiaggia di Piscina Rei",
       "category": "beach",
       "location": {
-        "city": "Costa Rei"
+        "city": "Costa Rei",
+        "address": "Piscina Rei"
       },
       "coverage_area": "Solanas-Villaputzu",
       "verification": {
         "status": "verified_official",
         "last_checked": "2026-08-07",
         "sources": [
-          "https://www.sardegnaturismo.it/it/esplora/piscina-rei"
+          "https://www.sardegnaturismo.it/it/esplora/piscina-rei",
+          "https://www.muraverawelcome.com/en/"
         ],
         "source_refs": [
           "B04"
-        ]
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+      },
+      "subcategory": "beach",
+      "provenance": [
+        {
+          "source_type": "official_tourism_area",
+          "url": "https://www.muraverawelcome.com/en/",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "area"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "partial",
+        "services": "missing",
+        "mobility": "missing",
+        "family": "partial",
+        "evidence": "partial",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Parking, access and services unknown."
+      ],
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia+Piscina+Rei"
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "beach",
+          "region_id": "region-04-costa-rei",
+          "details": {
+            "kind": "beach"
+          },
+          "insights": null
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia+Piscina+Rei"
       }
     },
     {
@@ -1003,11 +1168,13 @@
           "https://www.sardegnaturismo.it/en/explore/porto-sa-ruxi",
           "https://www.villasimiusturismo.it/la-spiaggia-di-porto-sa-ruxi/",
           "https://www.villasimiusturismo.it/come-muoversi/",
-          "https://www.sardiniamagazine.com/en/porto-sa-ruxi/"
+          "https://www.sardiniamagazine.com/en/porto-sa-ruxi/",
+          "https://villasimiussrl.it/zf/index.php/trasparenza/index/visualizza-documento-generico/categoria/295/documento/298"
         ],
         "source_refs": [
           "B02"
-        ]
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
       },
       "provenance": [
         {
@@ -1045,6 +1212,15 @@
             "access"
           ],
           "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "municipal_contract",
+          "url": "https://villasimiussrl.it/zf/index.php/trasparenza/index/visualizza-documento-generico/categoria/295/documento/298",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "parking",
+            "2026 tariff"
+          ]
         }
       ],
       "coverage": {
@@ -1059,7 +1235,8 @@
         "WC/shower not confirmed.",
         "Stroller/accessibility not confirmed.",
         "Legally reusable cover image missing.",
-        "trip-base route missing."
+        "trip-base route missing.",
+        "Potential duplicate of v1.7 canonical record: merge by slug/name before import."
       ],
       "cover_image": null,
       "checked_at": "2026-08-10",
@@ -1102,13 +1279,27 @@
           "shallow_water": true,
           "wind_exposure": "maestralétól védett",
           "natural_shade": null
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "beach",
+          "region_id": "region-02-solanas-cala-pira",
+          "details": {
+            "kind": "beach",
+            "parking": {
+              "paid": "confirmed",
+              "price_2026": "car EUR 12 full day; EUR 6 after 16:00"
+            }
+          },
+          "insights": null
         }
       },
       "google_maps": {
         "place_id": "ChIJg7einJ3E4BIRO8Ly51l-MrE",
         "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia+di+Porto+Sa+Ruxi%2C+Villasimius",
         "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Spiaggia+di+Porto+Sa+Ruxi%2C+Villasimius&travelmode=driving"
-      }
+      },
+      "subcategory": "beach"
     },
     {
       "id": "place_beach_spiaggia_porto_sa_ruxi",
@@ -1467,11 +1658,13 @@
         "sources": [
           "https://www.sardegnaturismo.it/it/esplora/solanas",
           "https://commons.wikimedia.org/wiki/File:Solanas_beach_in_Sardinia_-_Flickr_-_david.orban.jpg",
-          "https://www.tripadvisor.co.uk/Attraction_Review-g1509101-d4832768-Reviews-Spiaggia_di_Solanas-Sinnai_Province_of_Cagliari_Sardinia.html"
+          "https://www.tripadvisor.co.uk/Attraction_Review-g1509101-d4832768-Reviews-Spiaggia_di_Solanas-Sinnai_Province_of_Cagliari_Sardinia.html",
+          "https://en.wikipedia.org/wiki/Solanas"
         ],
         "source_refs": [
           "B01"
-        ]
+        ],
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
       },
       "provenance": [
         {
@@ -1501,6 +1694,15 @@
             "family_insight"
           ],
           "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "tourism_reference",
+          "url": "https://en.wikipedia.org/wiki/Solanas",
+          "checked_at": "2026-08-11",
+          "supports": [
+            "location",
+            "seasonal_services"
+          ]
         }
       ],
       "coverage": {
@@ -1514,7 +1716,8 @@
       "open_questions": [
         "Official WC/parking details should be rechecked near travel date.",
         "Stroller/accessibility not confirmed.",
-        "trip-base route missing."
+        "trip-base route missing.",
+        "Verify 2026 operators, parking and toilets."
       ],
       "cover_image": {
         "asset_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Solanas_beach_in_Sardinia_-_Flickr_-_david.orban.jpg",
@@ -1564,13 +1767,27 @@
           "shallow_water": true,
           "wind_exposure": null,
           "natural_shade": null
+        },
+        "regional_import": {
+          "package": "utazasi-complete-regional-data-v1.9",
+          "source_type": "beach",
+          "region_id": "region-02-solanas-cala-pira",
+          "details": {
+            "kind": "beach",
+            "services": {
+              "seasonal_bars": "confirmed",
+              "water_sports": "confirmed"
+            }
+          },
+          "insights": null
         }
       },
       "google_maps": {
         "place_id": "ChIJJYaNCQDF4BIRXEjtV4IjX5U",
         "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia+di+Solanas%2C+Sardinia",
         "directions_url": "https://www.google.com/maps/dir/?api=1&destination=Spiaggia+di+Solanas%2C+Sardinia&travelmode=driving"
-      }
+      },
+      "subcategory": "beach"
     },
     {
       "id": "place_beach_spiaggia_di_solanas",
