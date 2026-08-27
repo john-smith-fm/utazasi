@@ -7,8 +7,8 @@ import { TabBar } from "@/components/TabBar";
 const OFFLINE_ACCESS_KEY = "utazasi-pin-access";
 type AccessState = "loading" | "locked" | "unlocked" | "configuration-error";
 
-export function AppAccessGate({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<AccessState>("loading");
+export function AppAccessGate({ children, initialAuthenticated = false }: { children: ReactNode; initialAuthenticated?: boolean }) {
+  const [state, setState] = useState<AccessState>(() => initialAuthenticated ? "unlocked" : "loading");
 
   useEffect(() => {
     let active = true;
