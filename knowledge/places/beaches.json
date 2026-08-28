@@ -20,14 +20,15 @@
       "location": {
         "city": "Castiadas",
         "address": "Cala Monte Turno",
-        "latitude": null,
-        "longitude": null
+        "latitude": 39.20738177934256,
+        "longitude": 9.564781069947044
       },
       "verification": {
         "status": "partial",
-        "last_checked": null,
+        "last_checked": "2026-08-28",
         "sources": [
-          "https://castiadasturismo.com/en/discover-castiadas/sea-and-beaches/"
+          "https://castiadasturismo.com/en/discover-castiadas/sea-and-beaches/",
+          "https://www.sardiniacoasttocoast.it/beach/cala-monte-turno/"
         ],
         "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
       },
@@ -40,6 +41,17 @@
             "name",
             "location",
             "beach"
+          ]
+        },
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/cala-monte-turno/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
           ]
         }
       ],
@@ -55,7 +67,7 @@
         "Access, parking and services unknown."
       ],
       "cover_image": null,
-      "checked_at": null,
+      "checked_at": "2026-08-28",
       "destination_intelligence": {
         "google_maps": {
           "maps_url": "https://www.google.com/maps/search/?api=1&query=Cala+Monte+Turno+Castiadas"
@@ -68,6 +80,12 @@
             "kind": "beach"
           },
           "insights": null
+        },
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 263,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
         }
       },
       "google_maps": {
@@ -83,14 +101,15 @@
       "location": {
         "city": "Castiadas",
         "address": "Sant’Elmo",
-        "latitude": null,
-        "longitude": null
+        "latitude": 39.21755413808544,
+        "longitude": 9.567596298710477
       },
       "verification": {
         "status": "partial",
-        "last_checked": null,
+        "last_checked": "2026-08-28",
         "sources": [
-          "https://castiadasturismo.com/en/discover-castiadas/sea-and-beaches/"
+          "https://castiadasturismo.com/en/discover-castiadas/sea-and-beaches/",
+          "https://www.sardiniacoasttocoast.it/beach/santelmo/"
         ],
         "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
       },
@@ -103,6 +122,17 @@
             "name",
             "location",
             "shore_character"
+          ]
+        },
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/santelmo/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
           ]
         }
       ],
@@ -118,7 +148,7 @@
         "Access, parking and services unknown."
       ],
       "cover_image": null,
-      "checked_at": null,
+      "checked_at": "2026-08-28",
       "destination_intelligence": {
         "google_maps": {
           "maps_url": "https://www.google.com/maps/search/?api=1&query=Cala+Sant%27Elmo+Castiadas"
@@ -134,6 +164,12 @@
             }
           },
           "insights": null
+        },
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 700,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
         }
       },
       "google_maps": {
@@ -303,7 +339,8 @@
           "https://comune.castiadas.su.it/it/page/il-mare",
           "https://www.sardiniamagazine.com/en/cala-pira/",
           "https://www.sardegnatoujours.com/cala-pira/",
-          "https://castiadasturismo.com/en/home/"
+          "https://castiadasturismo.com/en/home/",
+          "https://www.sardiniacoasttocoast.it/beach/cala-pira/"
         ],
         "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
       },
@@ -364,6 +401,17 @@
             "name",
             "municipality",
             "beach"
+          ]
+        },
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/cala-pira/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
           ]
         }
       ],
@@ -445,7 +493,11 @@
           "water_entry": null,
           "shallow_water": null,
           "wind_exposure": null,
-          "natural_shade": null
+          "natural_shade": null,
+          "shore_type": "sandy",
+          "length_m": 404,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
         },
         "regional_import": {
           "package": "utazasi-complete-regional-data-v1.9",
@@ -536,7 +588,9 @@
       "category": "beach",
       "location": {
         "city": "Castiadas",
-        "address": "Cala Sinzias"
+        "address": "Cala Sinzias",
+        "latitude": 39.194974,
+        "longitude": 9.562648
       },
       "coverage_area": "Solanas-Villaputzu",
       "access": {
@@ -547,7 +601,8 @@
         "last_checked": "2026-08-07",
         "sources": [
           "https://www.sardegnaturismo.it/it/esplora/cala-sinzias",
-          "https://castiadasturismo.com/en/sea-and-beaches/cala-sinzias/"
+          "https://castiadasturismo.com/en/sea-and-beaches/cala-sinzias/",
+          "https://www.sardiniacoasttocoast.it/beach/cala-sinzias/"
         ],
         "source_refs": [
           "B03"
@@ -565,6 +620,17 @@
             "sand",
             "length",
             "services"
+          ]
+        },
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/cala-sinzias/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
           ]
         }
       ],
@@ -600,11 +666,18 @@
             }
           },
           "insights": null
+        },
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 808,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
         }
       },
       "google_maps": {
         "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia+Cala+Sinzias"
-      }
+      },
+      "checked_at": "2026-08-28"
     },
     {
       "id": "place_beach_spiaggia_cala_sinzias",
@@ -685,12 +758,40 @@
       "name": "Spiaggia di Campulongu",
       "category": "beach",
       "location": {
-        "city": "Villasimius"
+        "city": "Villasimius",
+        "latitude": 39.128657,
+        "longitude": 9.506369
       },
       "coverage_area": "Solanas-Villaputzu",
       "verification": {
-        "status": "planned"
-      }
+        "status": "planned",
+        "sources": [
+          "https://www.sardiniacoasttocoast.it/beach/campulongu/"
+        ],
+        "last_checked": "2026-08-28"
+      },
+      "destination_intelligence": {
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 964,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/campulongu/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "checked_at": "2026-08-28"
     },
     {
       "id": "place_beach_colostrai",
@@ -698,12 +799,40 @@
       "name": "Spiaggia di Colostrai",
       "category": "beach",
       "location": {
-        "city": "Muravera"
+        "city": "Muravera",
+        "latitude": 39.35439218599941,
+        "longitude": 9.597732692113285
       },
       "coverage_area": "Solanas-Villaputzu",
       "verification": {
-        "status": "planned"
-      }
+        "status": "planned",
+        "sources": [
+          "https://www.sardiniacoasttocoast.it/beach/colostrai/"
+        ],
+        "last_checked": "2026-08-28"
+      },
+      "destination_intelligence": {
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 1025,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/colostrai/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "checked_at": "2026-08-28"
     },
     {
       "id": "place_beach_costa_rei",
@@ -712,15 +841,19 @@
       "category": "beach",
       "location": {
         "city": "Costa Rei",
-        "address": "Costa Rei"
+        "address": "Costa Rei",
+        "latitude": 39.250777,
+        "longitude": 9.574466
       },
       "coverage_area": "Solanas-Villaputzu",
       "verification": {
         "status": "planned",
         "sources": [
-          "https://www.muraverawelcome.com/en/"
+          "https://www.muraverawelcome.com/en/",
+          "https://www.sardiniacoasttocoast.it/beach/costa-rei/"
         ],
-        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
+        "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek.",
+        "last_checked": "2026-08-28"
       },
       "subcategory": "beach",
       "provenance": [
@@ -731,6 +864,17 @@
           "supports": [
             "area",
             "beach"
+          ]
+        },
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/costa-rei/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
           ]
         }
       ],
@@ -757,11 +901,18 @@
             "kind": "beach"
           },
           "insights": null
+        },
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 1288,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
         }
       },
       "google_maps": {
         "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia+Costa+Rei"
-      }
+      },
+      "checked_at": "2026-08-28"
     },
     {
       "id": "place_beach_spiaggia_costa_rei",
@@ -831,12 +982,40 @@
       "name": "Spiaggia di Feraxi",
       "category": "beach",
       "location": {
-        "city": "Muravera"
+        "city": "Muravera",
+        "latitude": 39.31783071111652,
+        "longitude": 9.60510977902479
       },
       "coverage_area": "Solanas-Villaputzu",
       "verification": {
-        "status": "planned"
-      }
+        "status": "planned",
+        "sources": [
+          "https://www.sardiniacoasttocoast.it/beach/spiaggia-di-feraxi/"
+        ],
+        "last_checked": "2026-08-28"
+      },
+      "destination_intelligence": {
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 2505,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/spiaggia-di-feraxi/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "checked_at": "2026-08-28"
     },
     {
       "id": "place_beach_monte_turno",
@@ -857,7 +1036,9 @@
       "name": "Spiaggia di Murtas",
       "category": "beach",
       "location": {
-        "city": "Villaputzu"
+        "city": "Villaputzu",
+        "latitude": 39.5394182082902,
+        "longitude": 9.638541588075142
       },
       "coverage_area": "Solanas-Villaputzu",
       "access": {
@@ -867,12 +1048,35 @@
         "status": "verified_official_access_restriction",
         "last_checked": "2026-08-07",
         "sources": [
-          "https://www.sardegnaturismo.it/en/explore/murtas"
+          "https://www.sardegnaturismo.it/en/explore/murtas",
+          "https://www.sardiniacoasttocoast.it/beach/spiaggia-di-murtas-iba-manna/"
         ],
         "source_refs": [
           "B07"
         ]
-      }
+      },
+      "destination_intelligence": {
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 5978,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/spiaggia-di-murtas-iba-manna/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "checked_at": "2026-08-28"
     },
     {
       "id": "place_beach_piscina_rei",
@@ -881,7 +1085,9 @@
       "category": "beach",
       "location": {
         "city": "Costa Rei",
-        "address": "Piscina Rei"
+        "address": "Piscina Rei",
+        "latitude": 39.2694144065082,
+        "longitude": 9.584280725639719
       },
       "coverage_area": "Solanas-Villaputzu",
       "verification": {
@@ -889,7 +1095,8 @@
         "last_checked": "2026-08-07",
         "sources": [
           "https://www.sardegnaturismo.it/it/esplora/piscina-rei",
-          "https://www.muraverawelcome.com/en/"
+          "https://www.muraverawelcome.com/en/",
+          "https://www.sardiniacoasttocoast.it/beach/piscina-rei/"
         ],
         "source_refs": [
           "B04"
@@ -904,6 +1111,17 @@
           "checked_at": "2026-08-11",
           "supports": [
             "area"
+          ]
+        },
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/piscina-rei/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
           ]
         }
       ],
@@ -930,11 +1148,18 @@
             "kind": "beach"
           },
           "insights": null
+        },
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 1859,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
         }
       },
       "google_maps": {
         "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia+Piscina+Rei"
-      }
+      },
+      "checked_at": "2026-08-28"
     },
     {
       "id": "place_beach_spiaggia_piscina_rei",
@@ -1003,7 +1228,9 @@
       "name": "Spiaggia di Porto Corallo",
       "category": "beach",
       "location": {
-        "city": "Villaputzu"
+        "city": "Villaputzu",
+        "latitude": 39.437112151630295,
+        "longitude": 9.63462568113675
       },
       "coverage_area": "Solanas-Villaputzu",
       "access": {
@@ -1013,12 +1240,35 @@
         "status": "verified_official",
         "last_checked": "2026-08-07",
         "sources": [
-          "https://www.sardegnaturismo.it/it/esplora/porto-corallo"
+          "https://www.sardegnaturismo.it/it/esplora/porto-corallo",
+          "https://www.sardiniacoasttocoast.it/beach/spiaggia-di-porto-corallo/"
         ],
         "source_refs": [
           "B06"
         ]
-      }
+      },
+      "destination_intelligence": {
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 516,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/spiaggia-di-porto-corallo/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "checked_at": "2026-08-28"
     },
     {
       "id": "place_beach_porto_giunco",
@@ -1039,7 +1289,8 @@
         "last_checked": "2026-08-10",
         "sources": [
           "https://www.villasimiusturismo.it/la-spiaggia-di-porto-giunco/",
-          "https://commons.wikimedia.org/wiki/File:Beach_of_the_Tower_of_Porto_Giunco_(Spiaggia_di_Porto_Giunco)_in_Sardinia,_Italy_(48402631107).jpg"
+          "https://commons.wikimedia.org/wiki/File:Beach_of_the_Tower_of_Porto_Giunco_(Spiaggia_di_Porto_Giunco)_in_Sardinia,_Italy_(48402631107).jpg",
+          "https://www.sardiniacoasttocoast.it/beach/porto-giunco/"
         ]
       },
       "provenance": [
@@ -1071,6 +1322,17 @@
             "cover_image"
           ],
           "checked_at": "2026-08-10"
+        },
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/porto-giunco/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
         }
       ],
       "coverage": {
@@ -1134,7 +1396,11 @@
           "water_entry": "sekély",
           "shallow_water": true,
           "wind_exposure": null,
-          "natural_shade": null
+          "natural_shade": null,
+          "shore_type": "sandy",
+          "length_m": 1047,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
         }
       },
       "google_maps": {
@@ -1169,7 +1435,8 @@
           "https://www.villasimiusturismo.it/la-spiaggia-di-porto-sa-ruxi/",
           "https://www.villasimiusturismo.it/come-muoversi/",
           "https://www.sardiniamagazine.com/en/porto-sa-ruxi/",
-          "https://villasimiussrl.it/zf/index.php/trasparenza/index/visualizza-documento-generico/categoria/295/documento/298"
+          "https://villasimiussrl.it/zf/index.php/trasparenza/index/visualizza-documento-generico/categoria/295/documento/298",
+          "https://www.sardiniacoasttocoast.it/beach/porto-sa-ruxi/"
         ],
         "source_refs": [
           "B02"
@@ -1220,6 +1487,17 @@
           "supports": [
             "parking",
             "2026 tariff"
+          ]
+        },
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/porto-sa-ruxi/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
           ]
         }
       ],
@@ -1278,7 +1556,11 @@
           "water_entry": "sekély",
           "shallow_water": true,
           "wind_exposure": "maestralétól védett",
-          "natural_shade": null
+          "natural_shade": null,
+          "shore_type": "sandy",
+          "length_m": 482,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
         },
         "regional_import": {
           "package": "utazasi-complete-regional-data-v1.9",
@@ -1373,12 +1655,40 @@
       "name": "Spiaggia di Porto Tramatzu",
       "category": "beach",
       "location": {
-        "city": "Villaputzu"
+        "city": "Villaputzu",
+        "latitude": 39.448412,
+        "longitude": 9.639478
       },
       "coverage_area": "Solanas-Villaputzu",
       "verification": {
-        "status": "planned"
-      }
+        "status": "planned",
+        "sources": [
+          "https://www.sardiniacoasttocoast.it/beach/porto-tramatzu-di-villaputzu/"
+        ],
+        "last_checked": "2026-08-28"
+      },
+      "destination_intelligence": {
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 457,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/porto-tramatzu-di-villaputzu/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "checked_at": "2026-08-28"
     },
     {
       "id": "place_beach_punta_molentis",
@@ -1386,12 +1696,40 @@
       "name": "Spiaggia di Punta Molentis",
       "category": "beach",
       "location": {
-        "city": "Villasimius"
+        "city": "Villasimius",
+        "latitude": 39.133552,
+        "longitude": 9.556455
       },
       "coverage_area": "Solanas-Villaputzu",
       "verification": {
-        "status": "planned"
-      }
+        "status": "planned",
+        "sources": [
+          "https://www.sardiniacoasttocoast.it/beach/punta-molentis/"
+        ],
+        "last_checked": "2026-08-28"
+      },
+      "destination_intelligence": {
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 103,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/punta-molentis/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "checked_at": "2026-08-28"
     },
     {
       "id": "place_beach_san_pietro",
@@ -1399,12 +1737,40 @@
       "name": "Spiaggia di San Pietro",
       "category": "beach",
       "location": {
-        "city": "Castiadas"
+        "city": "Castiadas",
+        "latitude": 39.20086,
+        "longitude": 9.563043
       },
       "coverage_area": "Solanas-Villaputzu",
       "verification": {
-        "status": "planned"
-      }
+        "status": "planned",
+        "sources": [
+          "https://www.sardiniacoasttocoast.it/beach/marina-di-san-pietro/"
+        ],
+        "last_checked": "2026-08-28"
+      },
+      "destination_intelligence": {
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 841,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/marina-di-san-pietro/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "checked_at": "2026-08-28"
     },
     {
       "id": "place_beach_spiaggia_santa_giusta_castiadas",
@@ -1415,14 +1781,15 @@
       "location": {
         "city": "Castiadas",
         "address": "Santa Giusta",
-        "latitude": null,
-        "longitude": null
+        "latitude": 39.23593713054339,
+        "longitude": 9.570764024758548
       },
       "verification": {
         "status": "partial",
-        "last_checked": null,
+        "last_checked": "2026-08-28",
         "sources": [
-          "https://castiadasturismo.com/en/discover-castiadas/sea-and-beaches/"
+          "https://castiadasturismo.com/en/discover-castiadas/sea-and-beaches/",
+          "https://www.sardiniacoasttocoast.it/beach/spiaggia-di-santa-giusta-scoglio-di-peppino/"
         ],
         "uncertainty_note": "A v1.9 regionális import részleges rekord; a nyitott kérdések változatlanul érvényesek."
       },
@@ -1435,6 +1802,17 @@
             "name",
             "location",
             "Scoglio di Peppino"
+          ]
+        },
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/spiaggia-di-santa-giusta-scoglio-di-peppino/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
           ]
         }
       ],
@@ -1450,7 +1828,7 @@
         "Access, parking and services unknown."
       ],
       "cover_image": null,
-      "checked_at": null,
+      "checked_at": "2026-08-28",
       "destination_intelligence": {
         "google_maps": {
           "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia+Santa+Giusta+Castiadas"
@@ -1466,6 +1844,12 @@
             }
           },
           "insights": null
+        },
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 145,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
         }
       },
       "google_maps": {
@@ -1628,12 +2012,40 @@
       "name": "Spiaggia di Simius",
       "category": "beach",
       "location": {
-        "city": "Villasimius"
+        "city": "Villasimius",
+        "latitude": 39.12515307846348,
+        "longitude": 9.526782283127725
       },
       "coverage_area": "Solanas-Villaputzu",
       "verification": {
-        "status": "planned"
-      }
+        "status": "planned",
+        "sources": [
+          "https://www.sardiniacoasttocoast.it/beach/simius/"
+        ],
+        "last_checked": "2026-08-28"
+      },
+      "destination_intelligence": {
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 1159,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/simius/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "checked_at": "2026-08-28"
     },
     {
       "id": "place_beach_solanas",
@@ -1659,7 +2071,8 @@
           "https://www.sardegnaturismo.it/it/esplora/solanas",
           "https://commons.wikimedia.org/wiki/File:Solanas_beach_in_Sardinia_-_Flickr_-_david.orban.jpg",
           "https://www.tripadvisor.co.uk/Attraction_Review-g1509101-d4832768-Reviews-Spiaggia_di_Solanas-Sinnai_Province_of_Cagliari_Sardinia.html",
-          "https://en.wikipedia.org/wiki/Solanas"
+          "https://en.wikipedia.org/wiki/Solanas",
+          "https://www.sardiniacoasttocoast.it/beach/solanas/"
         ],
         "source_refs": [
           "B01"
@@ -1702,6 +2115,17 @@
           "supports": [
             "location",
             "seasonal_services"
+          ]
+        },
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/solanas/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
           ]
         }
       ],
@@ -1766,7 +2190,11 @@
           "water_entry": "enyhén lejtő",
           "shallow_water": true,
           "wind_exposure": null,
-          "natural_shade": null
+          "natural_shade": null,
+          "shore_type": "sandy",
+          "length_m": 926,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
         },
         "regional_import": {
           "package": "utazasi-complete-regional-data-v1.9",
@@ -1861,7 +2289,9 @@
       "name": "Spiaggia di Torre Salinas",
       "category": "beach",
       "location": {
-        "city": "Muravera"
+        "city": "Muravera",
+        "latitude": 39.36756,
+        "longitude": 9.600502
       },
       "coverage_area": "Solanas-Villaputzu",
       "access": {
@@ -1871,11 +2301,1054 @@
         "status": "verified_official",
         "last_checked": "2026-08-07",
         "sources": [
-          "https://www.sardegnaturismo.it/it/esplora/torre-salinas"
+          "https://www.sardegnaturismo.it/it/esplora/torre-salinas",
+          "https://www.sardiniacoasttocoast.it/beach/spiaggia-di-torre-salinas/"
         ],
         "source_refs": [
           "B05"
         ]
+      },
+      "destination_intelligence": {
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 985,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/spiaggia-di-torre-salinas/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "checked_at": "2026-08-28"
+    },
+    {
+      "id": "place_beach_su_cannisoni",
+      "slug": "su-cannisoni",
+      "name": "Su Cannisoni",
+      "category": "beach",
+      "subcategory": "beach",
+      "location": {
+        "city": "Castiadas",
+        "latitude": 39.221146980693256,
+        "longitude": 9.5688550209076
+      },
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-28",
+        "sources": [
+          "https://www.sardiniacoasttocoast.it/beach/su-cannisoni/"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/su-cannisoni/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "identity",
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "missing",
+        "mobility": "partial",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Parking, toilets and seasonal services need independent verification."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-28",
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Su%20Cannisoni%2C%20Castiadas"
+        },
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 375,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Su%20Cannisoni%2C%20Castiadas"
+      }
+    },
+    {
+      "id": "place_beach_baccu_mandara",
+      "slug": "baccu-mandara",
+      "name": "Baccu Mandara",
+      "category": "beach",
+      "subcategory": "beach",
+      "location": {
+        "city": "Maracalagonis",
+        "latitude": 39.16198199318271,
+        "longitude": 9.385483818559056
+      },
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-28",
+        "sources": [
+          "https://www.sardiniacoasttocoast.it/beach/baccu-mandara/"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/baccu-mandara/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "identity",
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "missing",
+        "mobility": "partial",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Parking, toilets and seasonal services need independent verification."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-28",
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Baccu%20Mandara%2C%20Maracalagonis"
+        },
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 513,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Baccu%20Mandara%2C%20Maracalagonis"
+      }
+    },
+    {
+      "id": "place_beach_caletta_di_baccu_mandara",
+      "slug": "caletta-di-baccu-mandara",
+      "name": "Caletta di Baccu Mandara",
+      "category": "beach",
+      "subcategory": "beach",
+      "location": {
+        "city": "Maracalagonis",
+        "latitude": 39.158558274290044,
+        "longitude": 9.38720234543803
+      },
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-28",
+        "sources": [
+          "https://www.sardiniacoasttocoast.it/beach/caletta-di-baccu-mandara/"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/caletta-di-baccu-mandara/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "identity",
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "missing",
+        "mobility": "partial",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Parking, toilets and seasonal services need independent verification."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-28",
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Caletta%20di%20Baccu%20Mandara%2C%20Maracalagonis"
+        },
+        "beach": {
+          "shore_type": "pebbly",
+          "length_m": 59,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Caletta%20di%20Baccu%20Mandara%2C%20Maracalagonis"
+      }
+    },
+    {
+      "id": "place_beach_cala_sa_figu",
+      "slug": "cala-sa-figu",
+      "name": "Cala Sa Figu",
+      "category": "beach",
+      "subcategory": "beach",
+      "location": {
+        "city": "Muravera",
+        "latitude": 39.307242961680686,
+        "longitude": 9.62019030751349
+      },
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-28",
+        "sources": [
+          "https://www.sardiniacoasttocoast.it/beach/cala-sa-figu/"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/cala-sa-figu/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "identity",
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "missing",
+        "mobility": "partial",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Parking, toilets and seasonal services need independent verification."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-28",
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Cala%20Sa%20Figu%2C%20Muravera"
+        },
+        "beach": {
+          "shore_type": "pebbly",
+          "length_m": 223,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Cala%20Sa%20Figu%2C%20Muravera"
+      }
+    },
+    {
+      "id": "place_beach_caletta_feraxi",
+      "slug": "caletta-feraxi",
+      "name": "Caletta Feraxi",
+      "category": "beach",
+      "subcategory": "beach",
+      "location": {
+        "city": "Muravera",
+        "latitude": 39.315323383756116,
+        "longitude": 9.60775703469975
+      },
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-28",
+        "sources": [
+          "https://www.sardiniacoasttocoast.it/beach/caletta-feraxi/"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/caletta-feraxi/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "identity",
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "missing",
+        "mobility": "partial",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Parking, toilets and seasonal services need independent verification."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-28",
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Caletta%20Feraxi%2C%20Muravera"
+        },
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 128,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Caletta%20Feraxi%2C%20Muravera"
+      }
+    },
+    {
+      "id": "place_beach_spiaggia_capo_ferrato",
+      "slug": "spiaggia-capo-ferrato",
+      "name": "Capo Ferrato",
+      "category": "beach",
+      "subcategory": "beach",
+      "location": {
+        "city": "Muravera",
+        "latitude": 39.29504027081024,
+        "longitude": 9.60802186400651
+      },
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-28",
+        "sources": [
+          "https://www.sardiniacoasttocoast.it/beach/capo-ferrato/"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/capo-ferrato/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "identity",
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "missing",
+        "mobility": "partial",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Parking, toilets and seasonal services need independent verification."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-28",
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Capo%20Ferrato%2C%20Muravera"
+        },
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 513,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Capo%20Ferrato%2C%20Muravera"
+      }
+    },
+    {
+      "id": "place_beach_is_perdigonis",
+      "slug": "is-perdigonis",
+      "name": "Is Perdigonis",
+      "category": "beach",
+      "subcategory": "beach",
+      "location": {
+        "city": "Muravera",
+        "latitude": 39.379411,
+        "longitude": 9.60424
+      },
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-28",
+        "sources": [
+          "https://www.sardiniacoasttocoast.it/beach/is-perdigonis/"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/is-perdigonis/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "identity",
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "missing",
+        "mobility": "partial",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Parking, toilets and seasonal services need independent verification."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-28",
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Is%20Perdigonis%2C%20Muravera"
+        },
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 1422,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Is%20Perdigonis%2C%20Muravera"
+      }
+    },
+    {
+      "id": "place_beach_porto_pirastu",
+      "slug": "porto-pirastu",
+      "name": "Porto Pirastu",
+      "category": "beach",
+      "subcategory": "beach",
+      "location": {
+        "city": "Muravera",
+        "latitude": 39.29731436204408,
+        "longitude": 9.612423100341646
+      },
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-28",
+        "sources": [
+          "https://www.sardiniacoasttocoast.it/beach/porto-pirastu/"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/porto-pirastu/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "identity",
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "missing",
+        "mobility": "partial",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Parking, toilets and seasonal services need independent verification."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-28",
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Porto%20Pirastu%2C%20Muravera"
+        },
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 163,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Porto%20Pirastu%2C%20Muravera"
+      }
+    },
+    {
+      "id": "place_beach_cala_pisanu",
+      "slug": "cala-pisanu",
+      "name": "Cala Pisanu",
+      "category": "beach",
+      "subcategory": "beach",
+      "location": {
+        "city": "Solanas (Sinnai)",
+        "latitude": 39.12741972984207,
+        "longitude": 9.441108674243877
+      },
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-28",
+        "sources": [
+          "https://www.sardiniacoasttocoast.it/beach/cala-pisanu/"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/cala-pisanu/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "identity",
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "missing",
+        "mobility": "partial",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Parking, toilets and seasonal services need independent verification."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-28",
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Cala%20Pisanu%2C%20Solanas%20(Sinnai)"
+        },
+        "beach": {
+          "shore_type": "pebbly",
+          "length_m": 209,
+          "land_access": "hard",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Cala%20Pisanu%2C%20Solanas%20(Sinnai)"
+      }
+    },
+    {
+      "id": "place_beach_spiaggia_di_murtas_padru",
+      "slug": "spiaggia-di-murtas-padru",
+      "name": "Spiaggia di Murtas (Padru)",
+      "category": "beach",
+      "subcategory": "beach",
+      "location": {
+        "city": "Villaputzu",
+        "latitude": 39.515575158259686,
+        "longitude": 9.63227093939591
+      },
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-28",
+        "sources": [
+          "https://www.sardiniacoasttocoast.it/beach/spiaggia-di-murtas-padru/"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/spiaggia-di-murtas-padru/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "identity",
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "missing",
+        "mobility": "partial",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Parking, toilets and seasonal services need independent verification."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-28",
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia%20di%20Murtas%20(Padru)%2C%20Villaputzu"
+        },
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 1516,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia%20di%20Murtas%20(Padru)%2C%20Villaputzu"
+      }
+    },
+    {
+      "id": "place_beach_spiaggia_di_murtas_torre",
+      "slug": "spiaggia-di-murtas-torre",
+      "name": "Spiaggia di Murtas (Torre)",
+      "category": "beach",
+      "subcategory": "beach",
+      "location": {
+        "city": "Villaputzu",
+        "latitude": 39.54697545654026,
+        "longitude": 9.645123512484705
+      },
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-28",
+        "sources": [
+          "https://www.sardiniacoasttocoast.it/beach/spiaggia-di-murtas-torre/"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/spiaggia-di-murtas-torre/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "identity",
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "missing",
+        "mobility": "partial",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Parking, toilets and seasonal services need independent verification."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-28",
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia%20di%20Murtas%20(Torre)%2C%20Villaputzu"
+        },
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 386,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia%20di%20Murtas%20(Torre)%2C%20Villaputzu"
+      }
+    },
+    {
+      "id": "place_beach_cala_caterina",
+      "slug": "cala-caterina",
+      "name": "Cala Caterina",
+      "category": "beach",
+      "subcategory": "beach",
+      "location": {
+        "city": "Villasimius",
+        "latitude": 39.106609,
+        "longitude": 9.510343
+      },
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-28",
+        "sources": [
+          "https://www.sardiniacoasttocoast.it/beach/cala-caterina/"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/cala-caterina/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "identity",
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "missing",
+        "mobility": "partial",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Parking, toilets and seasonal services need independent verification."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-28",
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Cala%20Caterina%2C%20Villasimius"
+        },
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 109,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Cala%20Caterina%2C%20Villasimius"
+      }
+    },
+    {
+      "id": "place_beach_campus",
+      "slug": "campus",
+      "name": "Campus",
+      "category": "beach",
+      "subcategory": "beach",
+      "location": {
+        "city": "Villasimius",
+        "latitude": 39.135771,
+        "longitude": 9.484722
+      },
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-28",
+        "sources": [
+          "https://www.sardiniacoasttocoast.it/beach/campus/"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/campus/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "identity",
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "missing",
+        "mobility": "partial",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Parking, toilets and seasonal services need independent verification."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-28",
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Campus%2C%20Villasimius"
+        },
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 576,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Campus%2C%20Villasimius"
+      }
+    },
+    {
+      "id": "place_beach_capo_carbonara_cava_usai",
+      "slug": "capo-carbonara-cava-usai",
+      "name": "Capo Carbonara (Cava Usai)",
+      "category": "beach",
+      "subcategory": "beach",
+      "location": {
+        "city": "Villasimius",
+        "latitude": 39.10607,
+        "longitude": 9.518415
+      },
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-28",
+        "sources": [
+          "https://www.sardiniacoasttocoast.it/beach/capo-carbonara-cava-usai/"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/capo-carbonara-cava-usai/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "identity",
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "missing",
+        "mobility": "partial",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Parking, toilets and seasonal services need independent verification."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-28",
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Capo%20Carbonara%20(Cava%20Usai)%2C%20Villasimius"
+        },
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 170,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Capo%20Carbonara%20(Cava%20Usai)%2C%20Villasimius"
+      }
+    },
+    {
+      "id": "place_beach_is_traias",
+      "slug": "is-traias",
+      "name": "Is Traias",
+      "category": "beach",
+      "subcategory": "beach",
+      "location": {
+        "city": "Villasimius",
+        "latitude": 39.130348,
+        "longitude": 9.534772
+      },
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-28",
+        "sources": [
+          "https://www.sardiniacoasttocoast.it/beach/is-traias/"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/is-traias/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "identity",
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "missing",
+        "mobility": "partial",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Parking, toilets and seasonal services need independent verification."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-28",
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Is%20Traias%2C%20Villasimius"
+        },
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 155,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Is%20Traias%2C%20Villasimius"
+      }
+    },
+    {
+      "id": "place_beach_spiaggia_del_riso",
+      "slug": "spiaggia-del-riso",
+      "name": "Spiaggia del Riso",
+      "category": "beach",
+      "subcategory": "beach",
+      "location": {
+        "city": "Villasimius",
+        "latitude": 39.120077,
+        "longitude": 9.509216
+      },
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-28",
+        "sources": [
+          "https://www.sardiniacoasttocoast.it/beach/spiaggia-del-riso/"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/spiaggia-del-riso/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "identity",
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "missing",
+        "mobility": "partial",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Parking, toilets and seasonal services need independent verification."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-28",
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia%20del%20Riso%2C%20Villasimius"
+        },
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 229,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia%20del%20Riso%2C%20Villasimius"
+      }
+    },
+    {
+      "id": "place_beach_spiaggia_di_santo_stefano",
+      "slug": "spiaggia-di-santo-stefano",
+      "name": "Spiaggia di Santo Stefano",
+      "category": "beach",
+      "subcategory": "beach",
+      "location": {
+        "city": "Villasimius",
+        "latitude": 39.109909,
+        "longitude": 9.504926
+      },
+      "verification": {
+        "status": "web_verified",
+        "last_checked": "2026-08-28",
+        "sources": [
+          "https://www.sardiniacoasttocoast.it/beach/spiaggia-di-santo-stefano/"
+        ]
+      },
+      "provenance": [
+        {
+          "source_type": "specialist_beach_directory",
+          "url": "https://www.sardiniacoasttocoast.it/beach/spiaggia-di-santo-stefano/",
+          "checked_at": "2026-08-28",
+          "supports": [
+            "identity",
+            "coordinates",
+            "shore_type",
+            "length_m",
+            "land_access"
+          ]
+        }
+      ],
+      "coverage": {
+        "basic": "complete",
+        "services": "missing",
+        "mobility": "partial",
+        "family": "missing",
+        "evidence": "complete",
+        "photos": "missing"
+      },
+      "open_questions": [
+        "Parking, toilets and seasonal services need independent verification."
+      ],
+      "cover_image": null,
+      "checked_at": "2026-08-28",
+      "destination_intelligence": {
+        "google_maps": {
+          "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia%20di%20Santo%20Stefano%2C%20Villasimius"
+        },
+        "beach": {
+          "shore_type": "sandy",
+          "length_m": 202,
+          "land_access": "easy",
+          "source_label": "Sardinia Coast to Coast"
+        }
+      },
+      "google_maps": {
+        "maps_url": "https://www.google.com/maps/search/?api=1&query=Spiaggia%20di%20Santo%20Stefano%2C%20Villasimius"
       }
     }
   ]
