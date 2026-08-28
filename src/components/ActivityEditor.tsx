@@ -1,10 +1,12 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import type { HomeActivity } from "@/data/home-days";
 import type { TimelineActivityInput } from "@/lib/timeline-types";
-import { getPlaces } from "@/lib/places";
+import { getPlaceBySlug, getPlaces } from "@/lib/places";
 import { contextualPlaceSuggestionsFor } from "@/lib/contextual-place-suggestions";
+import { placeBrowseCategoryForType } from "@/lib/place-categories";
 import { TRIP_BASE_NAME, TRIP_BASE_SLUG } from "@/lib/trip-base";
 import type { Place, PlaceType } from "@/types/places";
 import { FORM_CONTROL, FORM_TEXTAREA } from "@/components/formStyles";
@@ -73,6 +75,7 @@ export function ActivityEditor({ activity, onClose, onSave, onDelete }: {
   onSave: (input: TimelineActivityInput, requestId?: string) => Promise<void>;
   onDelete?: () => Promise<void>;
 }) {
+  const router = useRouter();
   const [input, setInput] = useState(() => initialInput(activity));
   const [action, setAction] = useState<ActionState>("idle");
   const [error, setError] = useState("");
@@ -100,12 +103,32 @@ export function ActivityEditor({ activity, onClose, onSave, onDelete }: {
     setShowSuggestions(false);
   }
 
+  function openPlaceDetails(slug: string) {
+    const place = getPlaceBySlug(slug);
+    if (!place) return;
+    setShowSuggestions(false);
+    router.push(`/places/${place.slug}?category=${placeBrowseCategoryForType(place.type)}`);
+  }
+
   function suggestionButton(place: LocationSuggestion) {
-    return <li key={place.slug} role="option" aria-selected={input.placeSlug === place.slug}>
-      <button type="button" onMouseDown={(event) => event.preventDefault()} onClick={() => selectPlace(place)} className="min-h-11 w-full px-4 py-2 text-left outline-none transition-colors hover:bg-sand focus-visible:bg-sand">
+    const canonicalPlace = getPlaceBySlug(place.slug);
+    return <li key={place.slug} role="option" aria-selected={input.placeSlug === place.slug} className="flex min-h-11 items-stretch">
+      <button type="button" onMouseDown={(event) => event.preventDefault()} onClick={() => selectPlace(place)} className="min-h-11 min-w-0 flex-1 px-4 py-2 text-left outline-none transition-colors hover:bg-sand focus-visible:bg-sand">
         <span className="block text-[15px] font-semibold leading-5 text-deep-sea">{place.name}</span>
         {place.rationale ? <span className="mt-0.5 block text-[13px] leading-[18px] text-deep-sea/60">{place.rationale}</span> : place.meta && <span className="mt-0.5 block text-[13px] leading-[18px] text-deep-sea/60">{place.meta}</span>}
       </button>
+      {canonicalPlace && <button
+        type="button"
+        aria-label={`${canonicalPlace.name} adatlapjának megnyitása`}
+        title="Hely adatlapjának megnyitása"
+        onMouseDown={(event) => event.preventDefault()}
+        onClick={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          openPlaceDetails(canonicalPlace.slug);
+        }}
+        className="my-2 mr-3 flex size-8 shrink-0 items-center justify-center rounded-full border border-turquoise/45 text-[14px] font-bold leading-none text-turquoise-dark transition-colors hover:bg-turquoise hover:text-white focus-visible:bg-turquoise focus-visible:text-white"
+      >i</button>}
     </li>;
   }
 
