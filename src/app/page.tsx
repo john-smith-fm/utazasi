@@ -54,6 +54,7 @@ function toHomeActivity(activity: TimelineActivityRecord): HomeActivity {
 export default function HomePage() {
   const [selectedDate, setSelectedDate] = useState(TRIP_CORE_DAYS[1].date);
   const [editor, setEditor] = useState<EditorState>(null);
+  const [pendingEditorId, setPendingEditorId] = useState<string | null>(null);
   const [toast, setToast] = useState<ToastState>(null);
   const undoActivity = useRef<UndoRecord | null>(null);
   const undoTimer = useRef<number | null>(null);
@@ -71,11 +72,26 @@ export default function HomePage() {
   const statusSummary = smartStatusSummary(day, weather, watchChange);
 
   useEffect(() => {
-    const requestedDate = new URLSearchParams(window.location.search).get("day");
+    const params = new URLSearchParams(window.location.search);
+    const requestedDate = params.get("day");
     if (requestedDate && TRIP_CORE_DAYS.some((item) => item.date === requestedDate)) {
       setSelectedDate(requestedDate);
     }
+    const requestedEditorId = params.get("edit");
+    if (requestedEditorId) setPendingEditorId(requestedEditorId);
   }, []);
+
+  useEffect(() => {
+    if (!pendingEditorId || !hasRemoteDay) return;
+    const activity = day.activities.find((item) => item.id === pendingEditorId);
+    if (!activity) return;
+    setEditor({ activity });
+    setPendingEditorId(null);
+    const params = new URLSearchParams(window.location.search);
+    params.delete("edit");
+    const query = params.toString();
+    window.history.replaceState(null, "", `${window.location.pathname}${query ? `?${query}` : ""}`);
+  }, [day.activities, hasRemoteDay, pendingEditorId]);
 
   useEffect(() => () => {
     if (undoTimer.current) window.clearTimeout(undoTimer.current);
@@ -160,7 +176,7 @@ export default function HomePage() {
       </div>
     </main>
     <button type="button" disabled={!canMutate} onClick={() => setEditor({})} aria-label="Új program hozzáadása" className="fixed bottom-[calc(88px+env(safe-area-inset-bottom))] right-5 z-40 grid h-[54px] w-[54px] place-items-center rounded-full bg-turquoise text-white transition-transform active:scale-95 disabled:opacity-50"><Icon name="plus" size={24} strokeWidth={2} /></button>
-    {editor && <ActivityEditor key={editor.activity?.id ?? "new"} activity={editor.activity} onClose={() => setEditor(null)} onSave={save} onDelete={editor.activity ? () => remove(editor.activity!) : undefined} />}
+    {editor && <ActivityEditor key={editor.activity?.id ?? "new"} activity={editor.activity} returnTo={editor.activity?.id ? `/?day=${selectedDate}&edit=${encodeURIComponent(editor.activity.id)}` : undefined} onClose={() => setEditor(null)} onSave={save} onDelete={editor.activity ? () => remove(editor.activity!) : undefined} />}
     {toast && <div className="fixed bottom-[calc(88px+env(safe-area-inset-bottom))] left-5 right-[86px] z-50 flex min-h-11 items-center justify-between gap-3 rounded-ui-s bg-deep-sea px-3 py-2 text-[13px] font-medium text-white shadow-[0_6px_20px_rgba(24,50,59,.18)]" role="status"><span>{toast.message}</span>{toast.undo && <button type="button" onClick={() => void undo()} className="min-h-11 shrink-0 px-1 font-semibold text-turquoise">Visszavonás</button>}</div>}
   </>;
 }

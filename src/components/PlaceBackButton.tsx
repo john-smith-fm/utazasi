@@ -4,14 +4,15 @@ import { useRouter } from "next/navigation";
 import { Icon } from "@/components/Icon";
 
 /**
- * A Place-adatlapot több felület is megnyithatja. A böngészőelőzmény
- * megtartása visszaadja például a nyitott Timeline-szerkesztőt is.
+ * Timeline-ból nyitva explicit visszatérési cím érkezik, így a szerkesztő
+ * állapota nem függ a böngésző route-cache-étől.
  */
-export function PlaceBackButton({ fallbackHref, label }: { fallbackHref: string; label: string }) {
+export function PlaceBackButton({ fallbackHref, returnTo, label }: { fallbackHref: string; returnTo?: string; label: string }) {
   const router = useRouter();
 
   function goBack() {
-    if (window.history.length > 1) router.back();
+    if (returnTo) router.push(returnTo);
+    else if (window.history.length > 1) router.back();
     else router.push(fallbackHref);
   }
 

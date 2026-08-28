@@ -69,8 +69,9 @@ function matchingLocations(query: string): readonly LocationSuggestion[] {
   ];
 }
 
-export function ActivityEditor({ activity, onClose, onSave, onDelete }: {
+export function ActivityEditor({ activity, returnTo, onClose, onSave, onDelete }: {
   activity?: HomeActivity;
+  returnTo?: string;
   onClose: () => void;
   onSave: (input: TimelineActivityInput, requestId?: string) => Promise<void>;
   onDelete?: () => Promise<void>;
@@ -107,7 +108,9 @@ export function ActivityEditor({ activity, onClose, onSave, onDelete }: {
     const place = getPlaceBySlug(slug);
     if (!place) return;
     setShowSuggestions(false);
-    router.push(`/places/${place.slug}?category=${placeBrowseCategoryForType(place.type)}`);
+    const query = new URLSearchParams({ category: placeBrowseCategoryForType(place.type) });
+    if (returnTo) query.set("returnTo", returnTo);
+    router.push(`/places/${place.slug}?${query}`);
   }
 
   function suggestionButton(place: LocationSuggestion) {
