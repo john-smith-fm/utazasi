@@ -113,8 +113,8 @@ export function ActivityEditor({ activity, onClose, onSave, onDelete }: {
   function suggestionButton(place: LocationSuggestion) {
     const canonicalPlace = getPlaceBySlug(place.slug);
     return <li key={place.slug} role="option" aria-selected={input.placeSlug === place.slug} className="flex min-h-11 items-stretch">
-      <button type="button" onMouseDown={(event) => event.preventDefault()} onClick={() => selectPlace(place)} className="min-h-11 min-w-0 flex-1 px-4 py-2 text-left outline-none transition-colors hover:bg-sand focus-visible:bg-sand">
-        <span className="block text-[15px] font-semibold leading-5 text-deep-sea">{place.name}</span>
+      <button type="button" onMouseDown={(event) => event.preventDefault()} onClick={() => selectPlace(place)} className="group min-h-11 min-w-0 flex-1 px-4 py-2 text-left outline-none">
+        <span className="block text-[15px] font-semibold leading-5 text-deep-sea transition-colors group-hover:text-turquoise-dark group-focus-visible:text-turquoise-dark">{place.name}</span>
         {place.rationale ? <span className="mt-0.5 block text-[13px] leading-[18px] text-deep-sea/60">{place.rationale}</span> : place.meta && <span className="mt-0.5 block text-[13px] leading-[18px] text-deep-sea/60">{place.meta}</span>}
       </button>
       {canonicalPlace && <button
