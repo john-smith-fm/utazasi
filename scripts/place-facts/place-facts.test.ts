@@ -9,6 +9,7 @@ import {
   getBeachPartFacts,
   getGenericPlaceCardFacts,
   getGenericAccessFacts,
+  getPlaceFamilyFacts,
   getParkingCardFacts,
   getRestaurantCardFacts,
   getShopCardFacts,
@@ -108,4 +109,22 @@ test("a látnivaló megközelítése csak meglévő, strukturált access tények
     details: { kind: "sight", access: { steps: true, stroller: "limited" } },
   };
   assert.deepEqual(getGenericAccessFacts(sight), ["Lépcsős megközelítés", "Babakocsival korlátozott"]);
+});
+
+test("a családi alkalmasság csak expliciten rögzített tényből jelenik meg", () => {
+  const familyBeach: Place = {
+    sourceId: "family-beach", slug: "family-beach", name: "Családi strand", type: "beach",
+    details: { kind: "beach", familyFacts: ["Kisgyerekkel is alkalmas"] },
+  };
+  const shortVisitSight: Place = {
+    sourceId: "short-visit", slug: "short-visit", name: "Rövid látogatás", type: "sight",
+    details: { kind: "sight", familyFacts: ["Rövid látogatás kisgyerekkel is lehetséges"] },
+  };
+  const unknown: Place = {
+    sourceId: "unknown", slug: "unknown", name: "Ismeretlen", type: "playground",
+    details: { kind: "playground" },
+  };
+  assert.deepEqual(getPlaceFamilyFacts(familyBeach), ["Kisgyerekkel is alkalmas"]);
+  assert.deepEqual(getPlaceFamilyFacts(shortVisitSight), ["Rövid látogatás kisgyerekkel is lehetséges"]);
+  assert.deepEqual(getPlaceFamilyFacts(unknown), []);
 });

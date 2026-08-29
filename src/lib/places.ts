@@ -154,6 +154,19 @@ function accessFactsFor(accessRecord: UnknownRecord | undefined): PlaceAccess | 
   return Object.values(result).some((value) => Array.isArray(value) ? value.length > 0 : Boolean(value)) ? result : undefined;
 }
 
+/** Keep only source-confirmed family suitability. This is deliberately not
+ * inferred from beach type, services, or the presence of a playground. */
+function familyFactsFor(familyRecord: UnknownRecord | undefined) {
+  if (!familyRecord) return undefined;
+  const toddlerFriendly = familyRecord.toddler_friendly;
+  const facts = toddlerFriendly === true
+    ? ["Kisgyerekkel is alkalmas"]
+    : toddlerFriendly === "short_visit_possible"
+      ? ["Rövid látogatás kisgyerekkel is lehetséges"]
+      : [];
+  return facts.length ? facts : undefined;
+}
+
 function beachDetailsFor(raw: UnknownRecord) {
   const intelligence = isRecord(raw.destination_intelligence) ? raw.destination_intelligence : undefined;
   const beach = intelligence && isRecord(intelligence.beach) ? intelligence.beach : undefined;
@@ -196,6 +209,7 @@ function beachDetailsFor(raw: UnknownRecord) {
       notes: optionalString(parking.notes),
     } : undefined,
     confirmedServices: confirmedServices?.length ? [...new Set(confirmedServices)] : undefined,
+    familyFacts: familyFactsFor(family),
     familyInsight: family ? optionalString(family.insight) : undefined,
   };
 }
@@ -289,6 +303,7 @@ function genericDetailsFor(raw: UnknownRecord, type: GenericPlaceType) {
         .map(([key]) => GENERIC_SERVICE_LABELS[key])
         .filter((service): service is string => Boolean(service))
       : undefined,
+    familyFacts: familyFactsFor(family),
     familyInsight: family ? optionalString(family.insight) : undefined,
     openingHours: openingHours?.length ? openingHours : undefined,
     openingNote: opening ? optionalString(opening.notes) : undefined,

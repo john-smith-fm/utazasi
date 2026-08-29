@@ -1,5 +1,5 @@
 import type { Place, PlaceType } from "@/types/places";
-import { getBeachAccessFacts, getBeachParkingFacts, getBeachPartFacts, getGenericAccessFacts } from "@/lib/place-facts";
+import { getBeachAccessFacts, getBeachParkingFacts, getBeachPartFacts, getGenericAccessFacts, getPlaceFamilyFacts } from "@/lib/place-facts";
 
 const TYPE_LABEL: Record<PlaceType, string> = {
   beach: "Strand",
@@ -61,10 +61,11 @@ function BeachServiceDetails({ place }: { place: Place }) {
 }
 
 function BeachFamilyDetails({ place }: { place: Place }) {
-  if (place.details.kind !== "beach" || !place.details.familyInsight) return null;
+  if (place.details.kind !== "beach" || (!place.details.familyFacts?.length && !place.details.familyInsight)) return null;
   return <section className="border-t border-deep-sea/10 pt-6" aria-labelledby="beach-family-heading">
     <h2 id="beach-family-heading" className="text-[17px] font-bold leading-[23px] text-deep-sea">Családdal</h2>
-    <p className="mt-3 text-sm leading-[21px] text-deep-sea/70">{place.details.familyInsight}</p>
+    {place.details.familyFacts?.length ? <p className="mt-3 text-sm leading-[21px] text-deep-sea/70">{place.details.familyFacts.join(" · ")}</p> : null}
+    {place.details.familyInsight ? <p className="mt-3 text-sm leading-[21px] text-deep-sea/70">{place.details.familyInsight}</p> : null}
   </section>;
 }
 
@@ -84,10 +85,10 @@ function GenericPlaceInformation({ place }: { place: Place }) {
   if (place.details.kind === "beach" || place.details.kind === "restaurant" || place.details.kind === "shop") return null;
   const { food, parking, confirmedServices, familyInsight, openingHours, openingNote } = place.details;
   const accessFacts = getGenericAccessFacts(place);
-  if (!accessFacts.length && !parking?.available && !parking?.paid && !parking?.chargingWindow && !parking?.price && !food?.mealProfiles?.length && !food?.cuisine?.length && !confirmedServices?.length && !familyInsight && !openingHours?.length && !openingNote) return null;
+  const familyFacts = getPlaceFamilyFacts(place);
+  if (!accessFacts.length && !parking?.available && !parking?.paid && !parking?.chargingWindow && !parking?.price && !food?.mealProfiles?.length && !food?.cuisine?.length && !confirmedServices?.length && !familyFacts.length && !familyInsight && !openingHours?.length && !openingNote) return null;
   return <section className="border-t border-deep-sea/10 pt-6" aria-labelledby="place-information-heading">
     <h2 id="place-information-heading" className="text-[17px] font-bold leading-[23px] text-deep-sea">A helyről</h2>
-    {familyInsight && <p className="mt-3 text-sm leading-[21px] text-deep-sea/70">{familyInsight}</p>}
     {parking?.available || parking?.paid || parking?.chargingWindow || parking?.price ? <div className="mt-4">
       <h3 className="text-sm font-semibold leading-5 text-deep-sea">Parkolás</h3>
       <p className="mt-1 text-sm leading-[21px] text-deep-sea/70">{[
@@ -109,6 +110,11 @@ function GenericPlaceInformation({ place }: { place: Place }) {
     {confirmedServices?.length ? <div className="mt-4">
       <h3 className="text-sm font-semibold leading-5 text-deep-sea">Biztosan elérhető</h3>
       <p className="mt-1 text-sm leading-[21px] text-deep-sea/70">{confirmedServices.join(" · ")}</p>
+    </div> : null}
+    {familyFacts.length || familyInsight ? <div className="mt-4">
+      <h3 className="text-sm font-semibold leading-5 text-deep-sea">Családdal</h3>
+      {familyFacts.length ? <p className="mt-1 text-sm leading-[21px] text-deep-sea/70">{familyFacts.join(" · ")}</p> : null}
+      {familyInsight ? <p className="mt-1 text-sm leading-[21px] text-deep-sea/70">{familyInsight}</p> : null}
     </div> : null}
     {openingHours?.length ? <div className="mt-4">
       <h3 className="text-sm font-semibold leading-5 text-deep-sea">Nyitvatartás</h3>

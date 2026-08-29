@@ -98,6 +98,8 @@ export type BeachDetails = {
   access?: BeachAccess;
   parking?: BeachParking;
   confirmedServices?: string[];
+  /** Explicit canonical family suitability only. Missing means unknown. */
+  familyFacts?: string[];
   familyInsight?: string;
 };
 
@@ -130,6 +132,8 @@ export type GenericPlaceDetails = {
     cuisine?: string[];
   };
   confirmedServices?: string[];
+  /** Explicit canonical family suitability only. Missing means unknown. */
+  familyFacts?: string[];
   familyInsight?: string;
   openingHours?: string[];
   openingNote?: string;

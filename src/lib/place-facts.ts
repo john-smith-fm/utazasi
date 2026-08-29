@@ -82,6 +82,13 @@ export function getGenericAccessFacts(place: Place) {
   return getAccessFacts(place.details.access);
 }
 
+/** Family facts originate only from an explicit canonical family field. */
+export function getPlaceFamilyFacts(place: Place) {
+  if (place.details.kind === "beach") return place.details.familyFacts ?? [];
+  if (place.details.kind === "restaurant" || place.details.kind === "shop") return [];
+  return place.details.familyFacts ?? [];
+}
+
 export function getBeachParkingFacts(place: Place) {
   const details = beachDetails(place);
   if (!details?.parking) return [];
