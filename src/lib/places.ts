@@ -195,6 +195,7 @@ function beachDetailsFor(raw: UnknownRecord) {
     : undefined;
   return {
     shoreType,
+    shoreDescription: beach ? optionalString(beach.shore) : undefined,
     lengthM: beach ? optionalNumber(beach.length_m) : undefined,
     landAccess,
     waterEntry: beach ? optionalString(beach.water_entry) : undefined,

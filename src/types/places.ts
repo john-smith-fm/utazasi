@@ -90,6 +90,8 @@ export type BeachParking = {
 export type BeachDetails = {
   kind: "beach";
   shoreType?: "sandy" | "pebbly" | "rocky";
+  /** Verbatim, source-backed description of the shore surface. */
+  shoreDescription?: string;
   lengthM?: number;
   landAccess?: "easy" | "moderate" | "hard" | "no_access";
   waterEntry?: string;

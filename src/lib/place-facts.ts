@@ -48,6 +48,7 @@ export function getBeachPartFacts(place: Place) {
   if (!details) return [];
   return [
     formatShoreType(details.shoreType),
+    details.shoreDescription,
     formatBeachLength(details.lengthM),
     details.waterEntry,
     details.shallowWater === true ? "Sekély víz" : undefined,

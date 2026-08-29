@@ -24,6 +24,7 @@ const portoGiunco: Place = {
   details: {
     kind: "beach",
     shoreType: "sandy",
+    shoreDescription: "Finom fehér homok",
     lengthM: 1047,
     landAccess: "easy",
     waterEntry: "Fokozatos vízbelépés",
@@ -47,6 +48,7 @@ test("a strandkártya csak rendelkezésre álló alap-tényeket mutat", () => {
 test("a part, megközelítés és parkolás tényblokkjai külön maradnak", () => {
   assert.deepEqual(getBeachPartFacts(portoGiunco), [
     "Homokos",
+    "Finom fehér homok",
     "1,05 km",
     "Fokozatos vízbelépés",
     "Sekély víz",
