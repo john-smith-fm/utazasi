@@ -21,7 +21,7 @@ import { createTimelineActivity, deleteTimelineActivity, updateTimelineActivity 
 import type { TimelineActivityInput, TimelineActivityRecord } from "@/lib/timeline-types";
 import { smartStatusSummary } from "@/lib/smart-status";
 
-type EditorState = { activity?: HomeActivity } | null;
+type EditorState = { activity?: HomeActivity; draft?: TimelineActivityInput; draftId?: string } | null;
 type ToastState = { message: string; undo?: boolean } | null;
 type UndoRecord = { activity: HomeActivity; date: string };
 
@@ -49,6 +49,22 @@ function toHomeActivity(activity: TimelineActivityRecord): HomeActivity {
     kind: activity.kind,
     isSystemGenerated: activity.is_system_generated,
   };
+}
+
+function draftFromSession(id: string): TimelineActivityInput | null {
+  try {
+    const key = `utazasi:timeline-editor-draft:${id}`;
+    const raw = sessionStorage.getItem(key);
+    if (!raw) return null;
+    const value = JSON.parse(raw) as Partial<TimelineActivityInput>;
+    if (typeof value.title !== "string" || typeof value.startTime !== "string" || typeof value.durationMinutes !== "number" || typeof value.locationName !== "string" || typeof value.description !== "string") return null;
+    if (value.placeSlug !== null && typeof value.placeSlug !== "string") return null;
+    const draft = { title: value.title, startTime: value.startTime, durationMinutes: value.durationMinutes, locationName: value.locationName, placeSlug: value.placeSlug, description: value.description };
+    sessionStorage.removeItem(key);
+    return draft;
+  } catch {
+    return null;
+  }
 }
 
 export default function HomePage() {
@@ -79,6 +95,14 @@ export default function HomePage() {
     }
     const requestedEditorId = params.get("edit");
     if (requestedEditorId) setPendingEditorId(requestedEditorId);
+    const requestedDraftId = params.get("draft");
+    if (requestedDraftId && !requestedEditorId) {
+      const draft = draftFromSession(requestedDraftId);
+      if (draft) setEditor({ draft, draftId: requestedDraftId });
+      params.delete("draft");
+      const query = params.toString();
+      window.history.replaceState(null, "", `${window.location.pathname}${query ? `?${query}` : ""}`);
+    }
   }, []);
 
   useEffect(() => {
@@ -176,7 +200,7 @@ export default function HomePage() {
       </div>
     </main>
     <button type="button" disabled={!canMutate} onClick={() => setEditor({})} aria-label="Új program hozzáadása" className="fixed bottom-[calc(88px+env(safe-area-inset-bottom))] right-5 z-40 grid h-[54px] w-[54px] place-items-center rounded-full bg-turquoise text-white transition-transform active:scale-95 disabled:opacity-50"><Icon name="plus" size={24} strokeWidth={2} /></button>
-    {editor && <ActivityEditor key={editor.activity?.id ?? "new"} activity={editor.activity} returnTo={editor.activity?.id ? `/?day=${selectedDate}&edit=${encodeURIComponent(editor.activity.id)}` : undefined} onClose={() => setEditor(null)} onSave={save} onDelete={editor.activity ? () => remove(editor.activity!) : undefined} />}
+    {editor && <ActivityEditor key={editor.activity?.id ?? editor.draftId ?? "new"} activity={editor.activity} draft={editor.draft} draftId={editor.draftId} returnBaseHref={`/?day=${selectedDate}`} onClose={() => setEditor(null)} onSave={save} onDelete={editor.activity ? () => remove(editor.activity!) : undefined} />}
     {toast && <div className="fixed bottom-[calc(88px+env(safe-area-inset-bottom))] left-5 right-[86px] z-50 flex min-h-11 items-center justify-between gap-3 rounded-ui-s bg-deep-sea px-3 py-2 text-[13px] font-medium text-white shadow-[0_6px_20px_rgba(24,50,59,.18)]" role="status"><span>{toast.message}</span>{toast.undo && <button type="button" onClick={() => void undo()} className="min-h-11 shrink-0 px-1 font-semibold text-turquoise">Visszavonás</button>}</div>}
   </>;
 }

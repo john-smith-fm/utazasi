@@ -13,7 +13,8 @@ import { FORM_CONTROL, FORM_TEXTAREA } from "@/components/formStyles";
 
 type ActionState = "idle" | "saving" | "deleting";
 
-function initialInput(activity?: HomeActivity): TimelineActivityInput {
+function initialInput(activity?: HomeActivity, draft?: TimelineActivityInput): TimelineActivityInput {
+  if (draft) return draft;
   return {
     title: activity?.title ?? "",
     startTime: activity?.time || "09:00",
@@ -69,20 +70,23 @@ function matchingLocations(query: string): readonly LocationSuggestion[] {
   ];
 }
 
-export function ActivityEditor({ activity, returnTo, onClose, onSave, onDelete }: {
+export function ActivityEditor({ activity, draft, draftId, returnBaseHref, onClose, onSave, onDelete }: {
   activity?: HomeActivity;
-  returnTo?: string;
+  draft?: TimelineActivityInput;
+  draftId?: string;
+  returnBaseHref: string;
   onClose: () => void;
   onSave: (input: TimelineActivityInput, requestId?: string) => Promise<void>;
   onDelete?: () => Promise<void>;
 }) {
   const router = useRouter();
-  const [input, setInput] = useState(() => initialInput(activity));
+  const [input, setInput] = useState(() => initialInput(activity, draft));
   const [action, setAction] = useState<ActionState>("idle");
   const [error, setError] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const editing = Boolean(activity?.id);
   const createRequestId = useRef<string | null>(null);
+  const editorDraftId = useRef(draftId ?? crypto.randomUUID());
   const suggestions = useMemo(() => matchingLocations(input.locationName), [input.locationName]);
   const contextualSuggestions = useMemo(() => contextualPlaceSuggestionsFor(input.title), [input.title]);
   const shouldShowContextualSuggestions = showSuggestions && !input.locationName.trim() && Boolean(contextualSuggestions.intent);
@@ -108,8 +112,15 @@ export function ActivityEditor({ activity, returnTo, onClose, onSave, onDelete }
     const place = getPlaceBySlug(slug);
     if (!place) return;
     setShowSuggestions(false);
+    const returnUrl = new URL(returnBaseHref, window.location.origin);
+    if (activity?.id) {
+      returnUrl.searchParams.set("edit", activity.id);
+    } else {
+      sessionStorage.setItem(`utazasi:timeline-editor-draft:${editorDraftId.current}`, JSON.stringify(input));
+      returnUrl.searchParams.set("draft", editorDraftId.current);
+    }
     const query = new URLSearchParams({ category: placeBrowseCategoryForType(place.type) });
-    if (returnTo) query.set("returnTo", returnTo);
+    query.set("returnTo", `${returnUrl.pathname}${returnUrl.search}`);
     router.push(`/places/${place.slug}?${query}`);
   }
 
