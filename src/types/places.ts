@@ -70,9 +70,26 @@ export type BeachAccess = {
   notes?: string;
 };
 
+/** Directly mapped from the canonical destination_intelligence.parking
+ * record. Omitted values mean that the canonical source does not confirm it. */
+export type BeachParking = {
+  available?: boolean;
+  paid?: boolean;
+  seasonal?: boolean;
+  walkDistanceM?: number;
+  notes?: string;
+};
+
 export type BeachDetails = {
   kind: "beach";
+  shoreType?: "sandy" | "pebbly" | "rocky";
+  lengthM?: number;
+  landAccess?: "easy" | "moderate" | "hard" | "no_access";
+  waterEntry?: string;
+  shallowWater?: boolean;
+  windExposure?: string;
   access?: BeachAccess;
+  parking?: BeachParking;
   confirmedServices?: string[];
   familyInsight?: string;
 };

@@ -1,4 +1,5 @@
 import type { Place, PlaceType } from "@/types/places";
+import { getBeachAccessFacts, getBeachParkingFacts, getBeachPartFacts } from "@/lib/place-facts";
 
 const TYPE_LABEL: Record<PlaceType, string> = {
   beach: "Strand",
@@ -20,17 +21,8 @@ function PhoneLinks({ phones }: { phones: readonly string[] }) {
 }
 
 function BeachAccessDetails({ place }: { place: Place }) {
-  if (place.details.kind !== "beach" || !place.details.access) return null;
-  const access = place.details.access;
-  const facts = [
-    access.characteristics?.join(" · "),
-    access.serpentineRoad ? "Szerpentines megközelítés" : undefined,
-    access.dirtRoad ? "Földutas megközelítés" : undefined,
-    access.mainRoad ? "Főúti megközelítés" : undefined,
-    access.coastalRoad ? "Part menti útvonal" : undefined,
-    access.parkingNotes,
-    access.notes,
-  ].filter(Boolean);
+  if (place.details.kind !== "beach") return null;
+  const facts = getBeachAccessFacts(place);
 
   if (facts.length === 0) return null;
   return <section className="border-t border-deep-sea/10 pt-6" aria-labelledby="access-heading">
@@ -41,10 +33,29 @@ function BeachAccessDetails({ place }: { place: Place }) {
   </section>;
 }
 
+function BeachPartDetails({ place }: { place: Place }) {
+  if (place.details.kind !== "beach") return null;
+  const facts = getBeachPartFacts(place);
+  if (!facts.length) return null;
+  return <section className="border-t border-deep-sea/10 pt-6" aria-labelledby="beach-heading">
+    <h2 id="beach-heading" className="text-[17px] font-bold leading-[23px] text-deep-sea">Part</h2>
+    <p className="mt-3 text-sm leading-[21px] text-deep-sea/70">{facts.join(" · ")}</p>
+  </section>;
+}
+
+function BeachParkingDetails({ place }: { place: Place }) {
+  if (place.details.kind !== "beach") return null;
+  const facts = getBeachParkingFacts(place);
+  return <section className="border-t border-deep-sea/10 pt-6" aria-labelledby="parking-heading">
+    <h2 id="parking-heading" className="text-[17px] font-bold leading-[23px] text-deep-sea">Parkolás</h2>
+    <p className="mt-3 text-sm leading-[21px] text-deep-sea/70">{facts.length ? facts.join(" · ") : "Parkoló elérhetősége még nincs ellenőrizve."}</p>
+  </section>;
+}
+
 function BeachServiceDetails({ place }: { place: Place }) {
   if (place.details.kind !== "beach" || !place.details.confirmedServices?.length) return null;
   return <section className="border-t border-deep-sea/10 pt-6" aria-labelledby="beach-services-heading">
-    <h2 id="beach-services-heading" className="text-[17px] font-bold leading-[23px] text-deep-sea">Biztosan elérhető</h2>
+    <h2 id="beach-services-heading" className="text-[17px] font-bold leading-[23px] text-deep-sea">Szolgáltatások</h2>
     <p className="mt-3 text-sm leading-[21px] text-deep-sea/70">{place.details.confirmedServices.join(" · ")}</p>
   </section>;
 }
@@ -172,7 +183,9 @@ export function PlaceDetail({ place }: { place: Place }) {
     </section>}
 
     <div className="mt-8 space-y-8">
+      <BeachPartDetails place={place} />
       <BeachAccessDetails place={place} />
+      <BeachParkingDetails place={place} />
       <BeachServiceDetails place={place} />
       <BeachFamilyDetails place={place} />
       <RestaurantDetails place={place} />

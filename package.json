@@ -33,6 +33,7 @@
     "test:access": "node --no-warnings --experimental-strip-types --test scripts/access/*.test.mjs",
     "test:trip-base": "node --no-warnings --experimental-strip-types --test scripts/trip-base/*.test.mjs",
     "test:place-experience": "node --test scripts/place-experience/*.test.mjs",
+    "test:place-facts": "node --no-warnings --experimental-strip-types --test scripts/place-facts/*.test.ts",
     "test:grounding": "node --no-warnings --experimental-strip-types --test scripts/grounding/*.test.ts"
   },
   "dependencies": {

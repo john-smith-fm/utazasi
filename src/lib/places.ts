@@ -7,7 +7,7 @@ import shopsJson from "../../knowledge/places/shops.json";
 import otherJson from "../../knowledge/places/other.json";
 import parkingJson from "../../knowledge/places/parking.json";
 import slugAliasesJson from "../../knowledge/places/slug-aliases.json";
-import type { BeachPlace, Place, PlaceType, RestaurantPlace } from "@/types/places";
+import type { BeachDetails, BeachPlace, Place, PlaceType, RestaurantPlace } from "@/types/places";
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -86,6 +86,11 @@ const BEACH_SERVICE_LABELS: Record<string, string> = {
   accessible: "Akadálymentes megközelítés",
   sunbed_rental: "Napágybérlés",
   umbrella_rental: "Napernyőbérlés",
+  bar: "Büfé",
+  restaurant_nearby: "Közeli étterem",
+  water_sports: "Vízi sport",
+  pedalo: "Vízibicikli",
+  canoe: "Kenu",
 };
 
 const GENERIC_SERVICE_LABELS: Record<string, string> = {
@@ -117,6 +122,7 @@ function contactFor(raw: UnknownRecord) {
 
 function beachDetailsFor(raw: UnknownRecord) {
   const intelligence = isRecord(raw.destination_intelligence) ? raw.destination_intelligence : undefined;
+  const beach = intelligence && isRecord(intelligence.beach) ? intelligence.beach : undefined;
   const accessRecord = isRecord(raw.access)
     ? raw.access
     : intelligence && isRecord(intelligence.access)
@@ -125,6 +131,12 @@ function beachDetailsFor(raw: UnknownRecord) {
   const parking = intelligence && isRecord(intelligence.parking) ? intelligence.parking : undefined;
   const services = intelligence && isRecord(intelligence.services) ? intelligence.services : undefined;
   const family = intelligence && isRecord(intelligence.family) ? intelligence.family : undefined;
+  const shoreType: BeachDetails["shoreType"] = beach && (beach.shore_type === "sandy" || beach.shore_type === "pebbly" || beach.shore_type === "rocky")
+    ? beach.shore_type
+    : undefined;
+  const landAccess: BeachDetails["landAccess"] = beach && (beach.land_access === "easy" || beach.land_access === "moderate" || beach.land_access === "hard" || beach.land_access === "no_access")
+    ? beach.land_access
+    : undefined;
   const access = accessRecord || parking ? {
     characteristics: accessRecord ? optionalStringArray(accessRecord.characteristics) : undefined,
     serpentineRoad: accessRecord ? optionalBoolean(accessRecord.serpentineRoad) : undefined,
@@ -141,7 +153,20 @@ function beachDetailsFor(raw: UnknownRecord) {
       .filter((service): service is string => Boolean(service))
     : undefined;
   return {
+    shoreType,
+    lengthM: beach ? optionalNumber(beach.length_m) : undefined,
+    landAccess,
+    waterEntry: beach ? optionalString(beach.water_entry) : undefined,
+    shallowWater: beach ? optionalBoolean(beach.shallow_water) : undefined,
+    windExposure: beach ? optionalString(beach.wind_exposure) : undefined,
     access,
+    parking: parking ? {
+      available: optionalBoolean(parking.available),
+      paid: optionalBoolean(parking.paid),
+      seasonal: optionalBoolean(parking.seasonal),
+      walkDistanceM: optionalNumber(parking.walk_distance_m),
+      notes: optionalString(parking.notes),
+    } : undefined,
     confirmedServices: confirmedServices?.length ? [...new Set(confirmedServices)] : undefined,
     familyInsight: family ? optionalString(family.insight) : undefined,
   };
