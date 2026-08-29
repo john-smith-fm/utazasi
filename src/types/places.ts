@@ -109,6 +109,14 @@ export type RestaurantDetails = {
 
 export type GenericPlaceDetails = {
   kind: Exclude<PlaceType, "beach" | "restaurant">;
+  /** Source-backed parking facts for a dedicated parking Place. Strings stay
+   * verbatim when the canonical source gives a tariff or charging window. */
+  parking?: {
+    available?: boolean;
+    paid?: boolean;
+    chargingWindow?: string;
+    price?: string;
+  };
   food?: {
     mealProfiles?: string[];
     cuisine?: string[];

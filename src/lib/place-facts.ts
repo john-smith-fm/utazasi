@@ -98,9 +98,23 @@ export function getShopCardFacts(place: Place) {
   return (place.details.shop?.confirmedDepartments ?? []).slice(0, 3);
 }
 
+/** Dedicated parking records retain their confirmed tariff context without
+ * claiming a price when the canonical source omitted one. */
+export function getParkingCardFacts(place: Place) {
+  if (place.details.kind !== "parking") return [];
+  const parking = place.details.parking;
+  if (!parking) return [];
+  return [
+    parking.paid === true ? "Fizetős" : undefined,
+    parking.chargingWindow,
+  ].filter((fact): fact is string => Boolean(fact));
+}
+
 /** Other place categories expose only their explicitly confirmed services. */
 export function getGenericPlaceCardFacts(place: Place) {
   if (place.details.kind === "beach" || place.details.kind === "restaurant" || place.details.kind === "shop") return [];
+  const parkingFacts = getParkingCardFacts(place);
+  if (parkingFacts.length) return parkingFacts;
   const foodFacts = [
     ...(place.details.food?.mealProfiles ?? []).slice(0, 2),
     ...(place.details.food?.cuisine ?? []).slice(0, 1),

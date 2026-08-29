@@ -8,6 +8,7 @@ import {
   getBeachParkingFacts,
   getBeachPartFacts,
   getGenericPlaceCardFacts,
+  getParkingCardFacts,
   getRestaurantCardFacts,
   getShopCardFacts,
 } from "../../src/lib/place-facts.ts";
@@ -83,4 +84,13 @@ test("a kávézó kártyája a kanonikus étkezési profilokat részesíti előn
     details: { kind: "cafe", food: { mealProfiles: ["Kávé", "Italok", "Kikötői megálló"] }, confirmedServices: ["Parkolás"] },
   };
   assert.deepEqual(getGenericPlaceCardFacts(cafe), ["Kávé", "Italok"]);
+});
+
+test("a parkoló kártyája csak megerősített parkolási tényeket mutat", () => {
+  const parking: Place = {
+    sourceId: "ex-esmas", slug: "ex-esmas", name: "Parcheggio Ex Esmas", type: "parking",
+    details: { kind: "parking", parking: { available: true, paid: true, chargingWindow: "24 óra", price: "2026-os tarifa: első óra 1,50 €" } },
+  };
+  assert.deepEqual(getParkingCardFacts(parking), ["Fizetős", "24 óra"]);
+  assert.deepEqual(getGenericPlaceCardFacts(parking), ["Fizetős", "24 óra"]);
 });

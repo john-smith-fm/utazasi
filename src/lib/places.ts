@@ -202,6 +202,21 @@ function foodFactsFor(raw: UnknownRecord) {
   };
 }
 
+function parkingFactsFor(raw: UnknownRecord) {
+  const intelligence = isRecord(raw.destination_intelligence) ? raw.destination_intelligence : undefined;
+  const regionalImport = intelligence && isRecord(intelligence.regional_import) ? intelligence.regional_import : undefined;
+  const regionalDetails = regionalImport && isRecord(regionalImport.details) ? regionalImport.details : undefined;
+  const parking = regionalDetails && isRecord(regionalDetails.parking) ? regionalDetails.parking : undefined;
+  if (!parking) return undefined;
+  const result = {
+    available: parking.available === "confirmed" ? true : undefined,
+    paid: parking.paid === "confirmed" ? true : undefined,
+    chargingWindow: optionalString(parking.charging_window),
+    price: optionalString(parking.price),
+  };
+  return Object.values(result).some(Boolean) ? result : undefined;
+}
+
 function shopDetailsFor(raw: UnknownRecord) {
   const intelligence = isRecord(raw.destination_intelligence) ? raw.destination_intelligence : undefined;
   if (!intelligence) return undefined;
@@ -240,6 +255,7 @@ function genericDetailsFor(raw: UnknownRecord, type: GenericPlaceType) {
   const family = intelligence && isRecord(intelligence.family) ? intelligence.family : undefined;
   const opening = intelligence && isRecord(intelligence.opening_hours) ? intelligence.opening_hours : undefined;
   const food = foodFactsFor(raw);
+  const parking = type === "parking" ? parkingFactsFor(raw) : undefined;
   const openingHours = opening
     ? [
       optionalString(opening.office_daily) ? `Iroda: ${optionalString(opening.office_daily)}` : undefined,
@@ -248,6 +264,7 @@ function genericDetailsFor(raw: UnknownRecord, type: GenericPlaceType) {
     : undefined;
   return {
     kind: type,
+    parking,
     food: food.mealProfiles?.length || food.cuisine?.length ? food : undefined,
     confirmedServices: services
       ? Object.entries(services)
