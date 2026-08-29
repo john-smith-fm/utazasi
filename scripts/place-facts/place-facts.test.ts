@@ -3,6 +3,7 @@ import test from "node:test";
 import type { Place } from "../../src/types/places.ts";
 import {
   formatBeachLength,
+  formatBeachLengthLabel,
   formatMarketSchedule,
   getBeachAccessFacts,
   getBeachCardFacts,
@@ -40,6 +41,20 @@ test("strandhossz magyar, kereshető tényként formázódik", () => {
   assert.equal(formatBeachLength(209), "209 m");
   assert.equal(formatBeachLength(1047), "1,05 km");
   assert.equal(formatBeachLength(undefined), undefined);
+  assert.equal(formatBeachLengthLabel("about 2 km"), "Kb. 2 km");
+});
+
+test("a minősített, nem numerikus strandhossz is megmarad, pontosság színlelése nélkül", () => {
+  const calaSinzias: Place = {
+    sourceId: "cala-sinzias", slug: "cala-sinzias", name: "Cala Sinzias", type: "beach",
+    details: {
+      kind: "beach", shoreType: "sandy", shoreDescription: "fine white", lengthLabel: "about 2 km",
+      parking: { paid: true, price: "car EUR 12 full day; EUR 6 after 16:00" },
+      confirmedServices: ["Strandlétesítmények", "Ebéd/vacsora", "Vízi sport"],
+    },
+  };
+  assert.deepEqual(getBeachCardFacts(calaSinzias), ["Homokos", "Kb. 2 km"]);
+  assert.deepEqual(getBeachParkingFacts(calaSinzias), ["Fizetős", "car EUR 12 full day; EUR 6 after 16:00"]);
 });
 
 test("a strandkártya csak rendelkezésre álló alap-tényeket mutat", () => {

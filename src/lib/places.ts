@@ -87,7 +87,10 @@ const BEACH_SERVICE_LABELS: Record<string, string> = {
   sunbed_rental: "Napágybérlés",
   umbrella_rental: "Napernyőbérlés",
   bar: "Büfé",
+  seasonal_bars: "Szezonális büfé",
+  beach_establishments: "Strandlétesítmények",
   restaurant_nearby: "Közeli étterem",
+  lunch_dinner: "Ebéd/vacsora",
   water_sports: "Vízi sport",
   pedalo: "Vízibicikli",
   canoe: "Kenu",
@@ -195,45 +198,69 @@ function familyFactsFor(familyRecord: UnknownRecord | undefined) {
 
 function beachDetailsFor(raw: UnknownRecord) {
   const intelligence = isRecord(raw.destination_intelligence) ? raw.destination_intelligence : undefined;
+  const regionalImport = intelligence && isRecord(intelligence.regional_import) ? intelligence.regional_import : undefined;
+  const regionalDetails = regionalImport && isRecord(regionalImport.details) ? regionalImport.details : undefined;
   const beach = intelligence && isRecord(intelligence.beach) ? intelligence.beach : undefined;
+  const importedBeach = regionalDetails && isRecord(regionalDetails.beach) ? regionalDetails.beach : undefined;
   const accessRecord = isRecord(raw.access)
     ? raw.access
     : intelligence && isRecord(intelligence.access)
       ? intelligence.access
       : undefined;
   const parking = intelligence && isRecord(intelligence.parking) ? intelligence.parking : undefined;
+  const importedParking = regionalDetails && isRecord(regionalDetails.parking) ? regionalDetails.parking : undefined;
   const services = intelligence && isRecord(intelligence.services) ? intelligence.services : undefined;
+  const importedServices = regionalDetails && isRecord(regionalDetails.services) ? regionalDetails.services : undefined;
   const family = intelligence && isRecord(intelligence.family) ? intelligence.family : undefined;
+  const importedSand = optionalString(importedBeach?.sand);
   const shoreType: BeachDetails["shoreType"] = beach && (beach.shore_type === "sandy" || beach.shore_type === "pebbly" || beach.shore_type === "rocky")
     ? beach.shore_type
-    : undefined;
+    : importedSand && /sand/i.test(importedSand) ? "sandy" : undefined;
   const landAccess: BeachDetails["landAccess"] = beach && (beach.land_access === "easy" || beach.land_access === "moderate" || beach.land_access === "hard" || beach.land_access === "no_access")
     ? beach.land_access
     : undefined;
   const baseAccess = accessFactsFor(accessRecord);
   const parkingNotes = baseAccess?.parkingNotes ?? optionalString(parking?.notes);
   const access: BeachAccess | undefined = baseAccess || parkingNotes ? { ...baseAccess, parkingNotes } : undefined;
-  const confirmedServices = services
-    ? Object.entries(services)
-      .filter(([, value]) => value === true)
+  const confirmedServices = [services, importedServices]
+    .filter((record): record is UnknownRecord => Boolean(record))
+    .flatMap((record) => Object.entries(record)
+      .filter(([, value]) => value === true || value === "confirmed")
       .map(([key]) => BEACH_SERVICE_LABELS[key])
       .filter((service): service is string => Boolean(service))
-    : undefined;
+    );
+  const shoreDescription = (beach ? optionalString(beach.shore) : undefined)
+    ?? (importedBeach ? optionalString(importedBeach.shore) ?? importedSand : undefined);
+  const parkingAvailable = (parking ? optionalBoolean(parking.available) ?? (parking.available === "confirmed" ? true : undefined) : undefined)
+    ?? (importedParking ? optionalBoolean(importedParking.available) ?? (importedParking.available === "confirmed" ? true : undefined) : undefined);
+  const parkingPaid = (parking ? optionalBoolean(parking.paid) ?? (parking.paid === "confirmed" ? true : undefined) : undefined)
+    ?? (importedParking ? optionalBoolean(importedParking.paid) ?? (importedParking.paid === "confirmed" ? true : undefined) : undefined);
+  const parkingSeasonal = (parking ? optionalBoolean(parking.seasonal) ?? (parking.seasonal === "confirmed" ? true : undefined) : undefined)
+    ?? (importedParking ? optionalBoolean(importedParking.seasonal) ?? (importedParking.seasonal === "confirmed" ? true : undefined) : undefined);
+  const parkingWalkDistanceM = (parking ? optionalNumber(parking.walk_distance_m) : undefined)
+    ?? (importedParking ? optionalNumber(importedParking.walk_distance_m) : undefined);
+  const parkingPrice = (parking ? optionalString(parking.price) ?? optionalString(parking.price_2026) : undefined)
+    ?? (importedParking ? optionalString(importedParking.price) ?? optionalString(importedParking.price_2026) : undefined);
+  const parkingNotesValue = (parking ? optionalString(parking.notes) : undefined)
+    ?? (importedParking ? optionalString(importedParking.notes) : undefined);
+  const hasParkingFacts = Boolean(parkingAvailable || parkingPaid || parkingSeasonal || parkingWalkDistanceM || parkingPrice || parkingNotesValue);
   return {
     shoreType,
-    shoreDescription: beach ? optionalString(beach.shore) : undefined,
+    shoreDescription,
     lengthM: beach ? optionalNumber(beach.length_m) : undefined,
+    lengthLabel: importedBeach ? optionalString(importedBeach.length) : undefined,
     landAccess,
     waterEntry: beach ? optionalString(beach.water_entry) : undefined,
     shallowWater: beach ? optionalBoolean(beach.shallow_water) : undefined,
     windExposure: beach ? optionalString(beach.wind_exposure) : undefined,
     access,
-    parking: parking ? {
-      available: optionalBoolean(parking.available),
-      paid: optionalBoolean(parking.paid),
-      seasonal: optionalBoolean(parking.seasonal),
-      walkDistanceM: optionalNumber(parking.walk_distance_m),
-      notes: optionalString(parking.notes),
+    parking: hasParkingFacts ? {
+      available: parkingAvailable,
+      paid: parkingPaid,
+      seasonal: parkingSeasonal,
+      walkDistanceM: parkingWalkDistanceM,
+      price: parkingPrice,
+      notes: parkingNotesValue,
     } : undefined,
     confirmedServices: confirmedServices?.length ? [...new Set(confirmedServices)] : undefined,
     familyFacts: familyFactsFor(family),

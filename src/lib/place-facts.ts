@@ -27,6 +27,13 @@ export function formatBeachLength(lengthM: BeachDetails["lengthM"]) {
   return `${(lengthM / 1_000).toLocaleString("hu-HU", { maximumFractionDigits: 2 })} km`;
 }
 
+/** Some verified sources publish only a qualified length (for example
+ * "about 2 km"). Keep the qualification instead of inventing a precise size. */
+export function formatBeachLengthLabel(lengthLabel: BeachDetails["lengthLabel"]) {
+  if (!lengthLabel) return undefined;
+  return lengthLabel.replace(/^about\s+/i, "Kb. ");
+}
+
 export function formatLandAccess(value: BeachDetails["landAccess"]) {
   return value ? LAND_ACCESS_LABELS[value] : undefined;
 }
@@ -38,7 +45,7 @@ export function getBeachCardFacts(place: Place) {
   if (!details) return [];
   return [
     formatShoreType(details.shoreType),
-    formatBeachLength(details.lengthM),
+    formatBeachLength(details.lengthM) ?? formatBeachLengthLabel(details.lengthLabel),
     formatLandAccess(details.landAccess),
   ].filter((fact): fact is string => Boolean(fact));
 }
@@ -49,7 +56,7 @@ export function getBeachPartFacts(place: Place) {
   return [
     formatShoreType(details.shoreType),
     details.shoreDescription,
-    formatBeachLength(details.lengthM),
+    formatBeachLength(details.lengthM) ?? formatBeachLengthLabel(details.lengthLabel),
     details.waterEntry,
     details.shallowWater === true ? "Sekély víz" : undefined,
     details.windExposure,
@@ -99,6 +106,7 @@ export function getBeachParkingFacts(place: Place) {
     parking.paid === true ? "Fizetős" : parking.paid === false ? "Ingyenes" : undefined,
     parking.seasonal === true ? "Szezonális" : undefined,
     typeof parking.walkDistanceM === "number" ? `${Math.round(parking.walkDistanceM)} m gyalog` : undefined,
+    parking.price,
     parking.notes,
   ].filter((fact): fact is string => Boolean(fact));
 }

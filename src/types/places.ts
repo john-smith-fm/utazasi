@@ -84,6 +84,8 @@ export type BeachParking = {
   paid?: boolean;
   seasonal?: boolean;
   walkDistanceM?: number;
+  /** A source-backed tariff may be descriptive or approximate, so it stays text. */
+  price?: string;
   notes?: string;
 };
 
@@ -93,6 +95,8 @@ export type BeachDetails = {
   /** Verbatim, source-backed description of the shore surface. */
   shoreDescription?: string;
   lengthM?: number;
+  /** Verbatim, source-backed length when the source does not provide an exact number. */
+  lengthLabel?: string;
   landAccess?: "easy" | "moderate" | "hard" | "no_access";
   waterEntry?: string;
   shallowWater?: boolean;
