@@ -1,4 +1,4 @@
-import type { BeachDetails, Place } from "../types/places";
+import type { BeachDetails, Place, PlaceAccess } from "../types/places";
 
 const SHORE_TYPE_LABELS: Record<NonNullable<BeachDetails["shoreType"]>, string> = {
   sandy: "Homokos",
@@ -55,12 +55,8 @@ export function getBeachPartFacts(place: Place) {
   ].filter((fact): fact is string => Boolean(fact));
 }
 
-export function getBeachAccessFacts(place: Place) {
-  const details = beachDetails(place);
-  if (!details) return [];
-  const access = details.access;
+function getAccessFacts(access: PlaceAccess | undefined) {
   return [
-    formatLandAccess(details.landAccess),
     access?.characteristics?.join(" · "),
     access?.serpentineRoad ? "Szerpentines megközelítés" : undefined,
     access?.dirtRoad ? "Földutas megközelítés" : undefined,
@@ -73,6 +69,17 @@ export function getBeachAccessFacts(place: Place) {
     access?.roadNotes,
     access?.notes,
   ].filter((fact): fact is string => Boolean(fact));
+}
+
+export function getBeachAccessFacts(place: Place) {
+  const details = beachDetails(place);
+  if (!details) return [];
+  return [formatLandAccess(details.landAccess), ...getAccessFacts(details.access)];
+}
+
+export function getGenericAccessFacts(place: Place) {
+  if (place.details.kind === "beach" || place.details.kind === "restaurant" || place.details.kind === "shop") return [];
+  return getAccessFacts(place.details.access);
 }
 
 export function getBeachParkingFacts(place: Place) {

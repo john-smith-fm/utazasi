@@ -60,7 +60,8 @@ export type PlaceIntelligence = {
   details?: Record<string, unknown>;
 };
 
-export type BeachAccess = {
+/** Access facts shared by beaches, sights and other Place categories. */
+export type PlaceAccess = {
   characteristics?: string[];
   serpentineRoad?: boolean;
   dirtRoad?: boolean;
@@ -73,6 +74,8 @@ export type BeachAccess = {
   parkingNotes?: string;
   notes?: string;
 };
+
+export type BeachAccess = PlaceAccess;
 
 /** Directly mapped from the canonical destination_intelligence.parking
  * record. Omitted values mean that the canonical source does not confirm it. */
@@ -121,6 +124,7 @@ export type GenericPlaceDetails = {
     chargingWindow?: string;
     price?: string;
   };
+  access?: PlaceAccess;
   food?: {
     mealProfiles?: string[];
     cuisine?: string[];

@@ -8,6 +8,7 @@ import {
   getBeachParkingFacts,
   getBeachPartFacts,
   getGenericPlaceCardFacts,
+  getGenericAccessFacts,
   getParkingCardFacts,
   getRestaurantCardFacts,
   getShopCardFacts,
@@ -99,4 +100,12 @@ test("a parkoló kártyája csak megerősített parkolási tényeket mutat", () 
   };
   assert.deepEqual(getParkingCardFacts(parking), ["Fizetős", "24 óra"]);
   assert.deepEqual(getGenericPlaceCardFacts(parking), ["Fizetős", "24 óra"]);
+});
+
+test("a látnivaló megközelítése csak meglévő, strukturált access tényeket mutat", () => {
+  const sight: Place = {
+    sourceId: "fortezza", slug: "fortezza", name: "Fortezza Vecchia", type: "sight",
+    details: { kind: "sight", access: { steps: true, stroller: "limited" } },
+  };
+  assert.deepEqual(getGenericAccessFacts(sight), ["Lépcsős megközelítés", "Babakocsival korlátozott"]);
 });

@@ -1,5 +1,5 @@
 import type { Place, PlaceType } from "@/types/places";
-import { getBeachAccessFacts, getBeachParkingFacts, getBeachPartFacts } from "@/lib/place-facts";
+import { getBeachAccessFacts, getBeachParkingFacts, getBeachPartFacts, getGenericAccessFacts } from "@/lib/place-facts";
 
 const TYPE_LABEL: Record<PlaceType, string> = {
   beach: "Strand",
@@ -83,7 +83,8 @@ function GenericContactDetails({ place }: { place: Place }) {
 function GenericPlaceInformation({ place }: { place: Place }) {
   if (place.details.kind === "beach" || place.details.kind === "restaurant" || place.details.kind === "shop") return null;
   const { food, parking, confirmedServices, familyInsight, openingHours, openingNote } = place.details;
-  if (!parking?.available && !parking?.paid && !parking?.chargingWindow && !parking?.price && !food?.mealProfiles?.length && !food?.cuisine?.length && !confirmedServices?.length && !familyInsight && !openingHours?.length && !openingNote) return null;
+  const accessFacts = getGenericAccessFacts(place);
+  if (!accessFacts.length && !parking?.available && !parking?.paid && !parking?.chargingWindow && !parking?.price && !food?.mealProfiles?.length && !food?.cuisine?.length && !confirmedServices?.length && !familyInsight && !openingHours?.length && !openingNote) return null;
   return <section className="border-t border-deep-sea/10 pt-6" aria-labelledby="place-information-heading">
     <h2 id="place-information-heading" className="text-[17px] font-bold leading-[23px] text-deep-sea">A helyről</h2>
     {familyInsight && <p className="mt-3 text-sm leading-[21px] text-deep-sea/70">{familyInsight}</p>}
@@ -95,6 +96,10 @@ function GenericPlaceInformation({ place }: { place: Place }) {
         parking.chargingWindow,
         parking.price,
       ].filter(Boolean).join(" · ")}</p>
+    </div> : null}
+    {accessFacts.length ? <div className="mt-4">
+      <h3 className="text-sm font-semibold leading-5 text-deep-sea">Megközelítés</h3>
+      <p className="mt-1 text-sm leading-[21px] text-deep-sea/70">{accessFacts.join(" · ")}</p>
     </div> : null}
     {food?.mealProfiles?.length || food?.cuisine?.length ? <div className="mt-4">
       <h3 className="text-sm font-semibold leading-5 text-deep-sea">Kínálat</h3>

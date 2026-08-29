@@ -7,7 +7,7 @@ import shopsJson from "../../knowledge/places/shops.json";
 import otherJson from "../../knowledge/places/other.json";
 import parkingJson from "../../knowledge/places/parking.json";
 import slugAliasesJson from "../../knowledge/places/slug-aliases.json";
-import type { BeachAccess, BeachDetails, BeachPlace, Place, PlaceType, RestaurantPlace } from "@/types/places";
+import type { BeachAccess, BeachDetails, BeachPlace, Place, PlaceAccess, PlaceType, RestaurantPlace } from "@/types/places";
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -133,6 +133,27 @@ function contactFor(raw: UnknownRecord) {
   return phones?.length || website ? { phones, website } : undefined;
 }
 
+function accessFactsFor(accessRecord: UnknownRecord | undefined): PlaceAccess | undefined {
+  if (!accessRecord) return undefined;
+  const stroller: PlaceAccess["stroller"] = accessRecord.stroller === "possible" || accessRecord.stroller === "limited"
+    ? accessRecord.stroller
+    : undefined;
+  const result: PlaceAccess = {
+    characteristics: optionalStringArray(accessRecord.characteristics),
+    serpentineRoad: optionalBoolean(accessRecord.serpentineRoad),
+    dirtRoad: optionalBoolean(accessRecord.dirtRoad),
+    mainRoad: optionalBoolean(accessRecord.mainRoad),
+    coastalRoad: optionalBoolean(accessRecord.coastalRoad),
+    steps: optionalBoolean(accessRecord.steps),
+    stroller,
+    accessible: optionalBoolean(accessRecord.accessible),
+    roadNotes: optionalString(accessRecord.road_notes) ?? optionalString(accessRecord.roadNotes),
+    parkingNotes: optionalString(accessRecord.parkingNotes),
+    notes: optionalString(accessRecord.notes),
+  };
+  return Object.values(result).some((value) => Array.isArray(value) ? value.length > 0 : Boolean(value)) ? result : undefined;
+}
+
 function beachDetailsFor(raw: UnknownRecord) {
   const intelligence = isRecord(raw.destination_intelligence) ? raw.destination_intelligence : undefined;
   const beach = intelligence && isRecord(intelligence.beach) ? intelligence.beach : undefined;
@@ -150,22 +171,9 @@ function beachDetailsFor(raw: UnknownRecord) {
   const landAccess: BeachDetails["landAccess"] = beach && (beach.land_access === "easy" || beach.land_access === "moderate" || beach.land_access === "hard" || beach.land_access === "no_access")
     ? beach.land_access
     : undefined;
-  const stroller: BeachAccess["stroller"] = accessRecord && (accessRecord.stroller === "possible" || accessRecord.stroller === "limited")
-    ? accessRecord.stroller
-    : undefined;
-  const access = accessRecord || parking ? {
-    characteristics: accessRecord ? optionalStringArray(accessRecord.characteristics) : undefined,
-    serpentineRoad: accessRecord ? optionalBoolean(accessRecord.serpentineRoad) : undefined,
-    dirtRoad: accessRecord ? optionalBoolean(accessRecord.dirtRoad) : undefined,
-    mainRoad: accessRecord ? optionalBoolean(accessRecord.mainRoad) : undefined,
-    coastalRoad: accessRecord ? optionalBoolean(accessRecord.coastalRoad) : undefined,
-    steps: accessRecord ? optionalBoolean(accessRecord.steps) : undefined,
-    stroller,
-    accessible: accessRecord ? optionalBoolean(accessRecord.accessible) : undefined,
-    roadNotes: accessRecord ? (optionalString(accessRecord.road_notes) ?? optionalString(accessRecord.roadNotes)) : undefined,
-    parkingNotes: (accessRecord ? optionalString(accessRecord.parkingNotes) : undefined) ?? optionalString(parking?.notes),
-    notes: accessRecord ? optionalString(accessRecord.notes) : undefined,
-  } : undefined;
+  const baseAccess = accessFactsFor(accessRecord);
+  const parkingNotes = baseAccess?.parkingNotes ?? optionalString(parking?.notes);
+  const access: BeachAccess | undefined = baseAccess || parkingNotes ? { ...baseAccess, parkingNotes } : undefined;
   const confirmedServices = services
     ? Object.entries(services)
       .filter(([, value]) => value === true)
@@ -258,6 +266,7 @@ function shopDetailsFor(raw: UnknownRecord) {
 function genericDetailsFor(raw: UnknownRecord, type: GenericPlaceType) {
   if (type === "shop") return { kind: type, shop: shopDetailsFor(raw) };
   const intelligence = isRecord(raw.destination_intelligence) ? raw.destination_intelligence : undefined;
+  const accessRecord = intelligence && isRecord(intelligence.access) ? intelligence.access : undefined;
   const services = intelligence && isRecord(intelligence.services) ? intelligence.services : undefined;
   const family = intelligence && isRecord(intelligence.family) ? intelligence.family : undefined;
   const opening = intelligence && isRecord(intelligence.opening_hours) ? intelligence.opening_hours : undefined;
@@ -272,6 +281,7 @@ function genericDetailsFor(raw: UnknownRecord, type: GenericPlaceType) {
   return {
     kind: type,
     parking,
+    access: accessFactsFor(accessRecord),
     food: food.mealProfiles?.length || food.cuisine?.length ? food : undefined,
     confirmedServices: services
       ? Object.entries(services)
