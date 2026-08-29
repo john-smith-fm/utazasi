@@ -354,7 +354,14 @@ function shopDetailsFor(raw: UnknownRecord) {
 function genericDetailsFor(raw: UnknownRecord, type: GenericPlaceType) {
   if (type === "shop") return { kind: type, shop: shopDetailsFor(raw) };
   const intelligence = isRecord(raw.destination_intelligence) ? raw.destination_intelligence : undefined;
-  const accessRecord = intelligence && isRecord(intelligence.access) ? intelligence.access : undefined;
+  // Older canonical Place records store access directly on the record, while
+  // newer enrichment packages keep it under destination_intelligence. Both
+  // are source-backed representations of the same fact family.
+  const accessRecord = isRecord(raw.access)
+    ? raw.access
+    : intelligence && isRecord(intelligence.access)
+      ? intelligence.access
+      : undefined;
   const services = intelligence && isRecord(intelligence.services) ? intelligence.services : undefined;
   const family = intelligence && isRecord(intelligence.family) ? intelligence.family : undefined;
   const opening = intelligence && isRecord(intelligence.opening_hours) ? intelligence.opening_hours : undefined;

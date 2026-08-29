@@ -131,6 +131,14 @@ test("a látnivaló megközelítése csak meglévő, strukturált access tények
   assert.deepEqual(getGenericAccessFacts(sight), ["Lépcsős megközelítés", "Babakocsival korlátozott"]);
 });
 
+test("a látnivaló szabad szöveges, forrásból származó megközelítési megjegyzése megmarad", () => {
+  const sight: Place = {
+    sourceId: "cuili-piras", slug: "cuili-piras", name: "Cuili Piras", type: "sight",
+    details: { kind: "sight", access: { notes: "Kb. 20 perc gyaloglás egy nehéz, meredek ösvényen." } },
+  };
+  assert.deepEqual(getGenericAccessFacts(sight), ["Kb. 20 perc gyaloglás egy nehéz, meredek ösvényen."]);
+});
+
 test("a családi alkalmasság csak expliciten rögzített tényből jelenik meg", () => {
   const familyBeach: Place = {
     sourceId: "family-beach", slug: "family-beach", name: "Családi strand", type: "beach",
