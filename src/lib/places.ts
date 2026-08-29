@@ -126,6 +126,15 @@ const FOOD_SERVICE_LABELS: Record<string, string> = {
   outdoor_seating: "Kültéri ülőhely",
   vegan_options: "Vegán lehetőség",
   gluten_free: "Gluténmentes lehetőség",
+  gluten_free_options: "Gluténmentes lehetőség",
+};
+
+const MARKET_PROFILE_LABELS: Record<string, string> = {
+  groceries: "Élelmiszer",
+  fruit_vegetables: "Zöldség-gyümölcs",
+  fish: "Hal",
+  local_products: "Helyi termékek",
+  household: "Háztartási cikkek",
 };
 
 const HEALTH_PROFILE_LABELS: Record<string, string> = {
@@ -260,6 +269,23 @@ function foodFactsFor(raw: UnknownRecord) {
   };
 }
 
+/** Weekly-market data is imported as a separate structured record. Keep the
+ * supplied schedule verbatim and surface only recognized product profiles. */
+function marketFactsFor(raw: UnknownRecord) {
+  const intelligence = isRecord(raw.destination_intelligence) ? raw.destination_intelligence : undefined;
+  const regionalImport = intelligence && isRecord(intelligence.regional_import) ? intelligence.regional_import : undefined;
+  const regionalDetails = regionalImport && isRecord(regionalImport.details) ? regionalImport.details : undefined;
+  const market = regionalDetails && isRecord(regionalDetails.market) ? regionalDetails.market : undefined;
+  if (!market) return undefined;
+  const profiles = optionalStringArray(market.profiles)
+    ?.map((profile) => MARKET_PROFILE_LABELS[profile])
+    .filter((profile): profile is string => Boolean(profile));
+  const schedule = optionalString(market.schedule);
+  return schedule || profiles?.length
+    ? { schedule, profiles: profiles?.length ? [...new Set(profiles)] : undefined }
+    : undefined;
+}
+
 function parkingFactsFor(raw: UnknownRecord) {
   const intelligence = isRecord(raw.destination_intelligence) ? raw.destination_intelligence : undefined;
   const regionalImport = intelligence && isRecord(intelligence.regional_import) ? intelligence.regional_import : undefined;
@@ -333,6 +359,7 @@ function genericDetailsFor(raw: UnknownRecord, type: GenericPlaceType) {
   const family = intelligence && isRecord(intelligence.family) ? intelligence.family : undefined;
   const opening = intelligence && isRecord(intelligence.opening_hours) ? intelligence.opening_hours : undefined;
   const food = foodFactsFor(raw);
+  const market = marketFactsFor(raw);
   const parking = type === "parking" ? parkingFactsFor(raw) : undefined;
   const openingHours = opening
     ? [
@@ -344,7 +371,8 @@ function genericDetailsFor(raw: UnknownRecord, type: GenericPlaceType) {
     kind: type,
     parking,
     access: accessFactsFor(accessRecord),
-    food: food.mealProfiles?.length || food.cuisine?.length ? food : undefined,
+    food: food.mealProfiles?.length || food.cuisine?.length || food.confirmedServices?.length || food.openingHours ? food : undefined,
+    market,
     confirmedServices: services
       ? Object.entries(services)
         .filter(([, value]) => value === true)

@@ -135,6 +135,13 @@ export type GenericPlaceDetails = {
   food?: {
     mealProfiles?: string[];
     cuisine?: string[];
+    confirmedServices?: string[];
+    openingHours?: string;
+  };
+  /** Explicit weekly-market facts from the canonical regional import. */
+  market?: {
+    schedule?: string;
+    profiles?: string[];
   };
   confirmedServices?: string[];
   /** Explicit canonical family suitability only. Missing means unknown. */

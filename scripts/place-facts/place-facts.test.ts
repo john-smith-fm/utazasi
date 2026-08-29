@@ -3,6 +3,7 @@ import test from "node:test";
 import type { Place } from "../../src/types/places.ts";
 import {
   formatBeachLength,
+  formatMarketSchedule,
   getBeachAccessFacts,
   getBeachCardFacts,
   getBeachParkingFacts,
@@ -102,6 +103,15 @@ test("a kávézó kártyája a kanonikus étkezési profilokat részesíti előn
     details: { kind: "cafe", food: { mealProfiles: ["Kávé", "Italok", "Kikötői megálló"] }, confirmedServices: ["Parkolás"] },
   };
   assert.deepEqual(getGenericPlaceCardFacts(cafe), ["Kávé", "Italok"]);
+});
+
+test("a piac kártyája a rögzített időpontot és kínálatot mutatja", () => {
+  const market: Place = {
+    sourceId: "mercato-villasimius", slug: "mercato-villasimius", name: "Heti piac", type: "other",
+    details: { kind: "other", market: { schedule: "Saturday 08:00-13:00", profiles: ["Élelmiszer", "Zöldség-gyümölcs", "Hal"] } },
+  };
+  assert.equal(formatMarketSchedule("Saturday 08:00-13:00"), "Szombat 08:00–13:00");
+  assert.deepEqual(getGenericPlaceCardFacts(market), ["Szombat 08:00–13:00", "Élelmiszer", "Zöldség-gyümölcs"]);
 });
 
 test("a parkoló kártyája csak megerősített parkolási tényeket mutat", () => {

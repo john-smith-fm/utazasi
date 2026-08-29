@@ -131,6 +131,25 @@ export function getParkingCardFacts(place: Place) {
   ].filter((fact): fact is string => Boolean(fact));
 }
 
+const MARKET_WEEKDAY_LABELS: Record<string, string> = {
+  Monday: "Hétfő",
+  Tuesday: "Kedd",
+  Wednesday: "Szerda",
+  Thursday: "Csütörtök",
+  Friday: "Péntek",
+  Saturday: "Szombat",
+  Sunday: "Vasárnap",
+};
+
+/** Localize only an unambiguous weekday and time-range presentation; the
+ * canonical market schedule itself stays untouched in the Place model. */
+export function formatMarketSchedule(schedule?: string) {
+  if (!schedule) return undefined;
+  return schedule
+    .replace(/^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\b/, (weekday) => MARKET_WEEKDAY_LABELS[weekday] ?? weekday)
+    .replace(/(\d{2}:\d{2})-(\d{2}:\d{2})/g, "$1–$2");
+}
+
 /** Other place categories expose only their explicitly confirmed services. */
 export function getGenericPlaceCardFacts(place: Place) {
   if (place.details.kind === "beach" || place.details.kind === "restaurant" || place.details.kind === "shop") return [];
@@ -140,5 +159,10 @@ export function getGenericPlaceCardFacts(place: Place) {
     ...(place.details.food?.mealProfiles ?? []).slice(0, 2),
     ...(place.details.food?.cuisine ?? []).slice(0, 1),
   ];
-  return foodFacts.length ? foodFacts : (place.details.confirmedServices ?? []).slice(0, 3);
+  if (foodFacts.length) return foodFacts;
+  const marketFacts = [
+    formatMarketSchedule(place.details.market?.schedule),
+    ...(place.details.market?.profiles ?? []),
+  ].filter((fact): fact is string => Boolean(fact));
+  return marketFacts.length ? marketFacts.slice(0, 3) : (place.details.confirmedServices ?? []).slice(0, 3);
 }
