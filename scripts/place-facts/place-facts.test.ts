@@ -76,3 +76,11 @@ test("az egyéb helyek kártyája csak megerősített szolgáltatásokat mutat",
   };
   assert.deepEqual(getGenericPlaceCardFacts(playground), ["Mosdó", "Parkolás", "Vízvételi lehetőség"]);
 });
+
+test("a kávézó kártyája a kanonikus étkezési profilokat részesíti előnyben", () => {
+  const cafe: Place = {
+    sourceId: "bar-le-palme", slug: "bar-le-palme", name: "Bar Le Palme", type: "cafe",
+    details: { kind: "cafe", food: { mealProfiles: ["Kávé", "Italok", "Kikötői megálló"] }, confirmedServices: ["Parkolás"] },
+  };
+  assert.deepEqual(getGenericPlaceCardFacts(cafe), ["Kávé", "Italok"]);
+});

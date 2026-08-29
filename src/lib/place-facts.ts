@@ -101,5 +101,9 @@ export function getShopCardFacts(place: Place) {
 /** Other place categories expose only their explicitly confirmed services. */
 export function getGenericPlaceCardFacts(place: Place) {
   if (place.details.kind === "beach" || place.details.kind === "restaurant" || place.details.kind === "shop") return [];
-  return (place.details.confirmedServices ?? []).slice(0, 3);
+  const foodFacts = [
+    ...(place.details.food?.mealProfiles ?? []).slice(0, 2),
+    ...(place.details.food?.cuisine ?? []).slice(0, 1),
+  ];
+  return foodFacts.length ? foodFacts : (place.details.confirmedServices ?? []).slice(0, 3);
 }

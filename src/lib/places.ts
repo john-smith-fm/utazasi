@@ -111,11 +111,12 @@ const RESTAURANT_PROFILE_LABELS: Record<string, string> = {
   beach_lunch: "Strandebéd", dinner: "Vacsora", quick_dinner: "Gyors vacsora",
   casual_dinner: "Laza vacsora", quick_meal: "Gyors étkezés", aperitivo: "Aperitivo",
   coffee: "Kávé", drinks: "Italok", wine: "Bor", pizza: "Pizza", bar: "Bár", takeaway: "Elvitel",
+  quick_stop: "Gyors megálló", marina_stop: "Kikötői megálló", beach_stop: "Strand melletti megálló",
 };
 
 const CUISINE_LABELS: Record<string, string> = {
   seafood: "Tengeri", grill: "Grill", sardinian: "Szardíniai", street_food: "Street food",
-  italian: "Olasz", pizza: "Pizza", casual: "Laza", poke: "Poke", healthy: "Egészségtudatos",
+  italian: "Olasz", pizza: "Pizza", casual: "Laza", poke: "Poke", healthy: "Egészségtudatos", bakery: "Pékség",
 };
 
 function contactFor(raw: UnknownRecord) {
@@ -184,7 +185,7 @@ function beachDetailsFor(raw: UnknownRecord) {
   };
 }
 
-function restaurantFactsFor(raw: UnknownRecord) {
+function foodFactsFor(raw: UnknownRecord) {
   const intelligence = isRecord(raw.destination_intelligence) ? raw.destination_intelligence : undefined;
   const regionalImport = intelligence && isRecord(intelligence.regional_import) ? intelligence.regional_import : undefined;
   const regionalDetails = regionalImport && isRecord(regionalImport.details) ? regionalImport.details : undefined;
@@ -238,6 +239,7 @@ function genericDetailsFor(raw: UnknownRecord, type: GenericPlaceType) {
   const services = intelligence && isRecord(intelligence.services) ? intelligence.services : undefined;
   const family = intelligence && isRecord(intelligence.family) ? intelligence.family : undefined;
   const opening = intelligence && isRecord(intelligence.opening_hours) ? intelligence.opening_hours : undefined;
+  const food = foodFactsFor(raw);
   const openingHours = opening
     ? [
       optionalString(opening.office_daily) ? `Iroda: ${optionalString(opening.office_daily)}` : undefined,
@@ -246,6 +248,7 @@ function genericDetailsFor(raw: UnknownRecord, type: GenericPlaceType) {
     : undefined;
   return {
     kind: type,
+    food: food.mealProfiles?.length || food.cuisine?.length ? food : undefined,
     confirmedServices: services
       ? Object.entries(services)
         .filter(([, value]) => value === true)
@@ -406,7 +409,7 @@ function validateRestaurants(source: unknown): RestaurantPlace[] {
       intelligence: intelligenceFor(raw),
       details: {
         kind: "restaurant",
-        ...restaurantFactsFor(raw),
+        ...foodFactsFor(raw),
         openingNote,
         contact: placeContact,
       },

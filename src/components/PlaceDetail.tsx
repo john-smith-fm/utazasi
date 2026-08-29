@@ -82,11 +82,16 @@ function GenericContactDetails({ place }: { place: Place }) {
 
 function GenericPlaceInformation({ place }: { place: Place }) {
   if (place.details.kind === "beach" || place.details.kind === "restaurant" || place.details.kind === "shop") return null;
-  const { confirmedServices, familyInsight, openingHours, openingNote } = place.details;
-  if (!confirmedServices?.length && !familyInsight && !openingHours?.length && !openingNote) return null;
+  const { food, confirmedServices, familyInsight, openingHours, openingNote } = place.details;
+  if (!food?.mealProfiles?.length && !food?.cuisine?.length && !confirmedServices?.length && !familyInsight && !openingHours?.length && !openingNote) return null;
   return <section className="border-t border-deep-sea/10 pt-6" aria-labelledby="place-information-heading">
     <h2 id="place-information-heading" className="text-[17px] font-bold leading-[23px] text-deep-sea">A helyről</h2>
     {familyInsight && <p className="mt-3 text-sm leading-[21px] text-deep-sea/70">{familyInsight}</p>}
+    {food?.mealProfiles?.length || food?.cuisine?.length ? <div className="mt-4">
+      <h3 className="text-sm font-semibold leading-5 text-deep-sea">Kínálat</h3>
+      {food.mealProfiles?.length ? <p className="mt-1 text-sm leading-[21px] text-deep-sea/70">{food.mealProfiles.join(" · ")}</p> : null}
+      {food.cuisine?.length ? <p className="mt-1 text-sm leading-[21px] text-deep-sea/70">{food.cuisine.join(" · ")}</p> : null}
+    </div> : null}
     {confirmedServices?.length ? <div className="mt-4">
       <h3 className="text-sm font-semibold leading-5 text-deep-sea">Biztosan elérhető</h3>
       <p className="mt-1 text-sm leading-[21px] text-deep-sea/70">{confirmedServices.join(" · ")}</p>
