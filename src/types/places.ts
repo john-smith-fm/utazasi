@@ -66,6 +66,10 @@ export type BeachAccess = {
   dirtRoad?: boolean;
   mainRoad?: boolean;
   coastalRoad?: boolean;
+  steps?: boolean;
+  stroller?: "possible" | "limited";
+  accessible?: boolean;
+  roadNotes?: string;
   parkingNotes?: string;
   notes?: string;
 };

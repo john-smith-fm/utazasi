@@ -7,7 +7,7 @@ import shopsJson from "../../knowledge/places/shops.json";
 import otherJson from "../../knowledge/places/other.json";
 import parkingJson from "../../knowledge/places/parking.json";
 import slugAliasesJson from "../../knowledge/places/slug-aliases.json";
-import type { BeachDetails, BeachPlace, Place, PlaceType, RestaurantPlace } from "@/types/places";
+import type { BeachAccess, BeachDetails, BeachPlace, Place, PlaceType, RestaurantPlace } from "@/types/places";
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -150,12 +150,19 @@ function beachDetailsFor(raw: UnknownRecord) {
   const landAccess: BeachDetails["landAccess"] = beach && (beach.land_access === "easy" || beach.land_access === "moderate" || beach.land_access === "hard" || beach.land_access === "no_access")
     ? beach.land_access
     : undefined;
+  const stroller: BeachAccess["stroller"] = accessRecord && (accessRecord.stroller === "possible" || accessRecord.stroller === "limited")
+    ? accessRecord.stroller
+    : undefined;
   const access = accessRecord || parking ? {
     characteristics: accessRecord ? optionalStringArray(accessRecord.characteristics) : undefined,
     serpentineRoad: accessRecord ? optionalBoolean(accessRecord.serpentineRoad) : undefined,
     dirtRoad: accessRecord ? optionalBoolean(accessRecord.dirtRoad) : undefined,
     mainRoad: accessRecord ? optionalBoolean(accessRecord.mainRoad) : undefined,
     coastalRoad: accessRecord ? optionalBoolean(accessRecord.coastalRoad) : undefined,
+    steps: accessRecord ? optionalBoolean(accessRecord.steps) : undefined,
+    stroller,
+    accessible: accessRecord ? optionalBoolean(accessRecord.accessible) : undefined,
+    roadNotes: accessRecord ? (optionalString(accessRecord.road_notes) ?? optionalString(accessRecord.roadNotes)) : undefined,
     parkingNotes: (accessRecord ? optionalString(accessRecord.parkingNotes) : undefined) ?? optionalString(parking?.notes),
     notes: accessRecord ? optionalString(accessRecord.notes) : undefined,
   } : undefined;

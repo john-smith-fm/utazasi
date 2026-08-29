@@ -66,6 +66,11 @@ export function getBeachAccessFacts(place: Place) {
     access?.dirtRoad ? "Földutas megközelítés" : undefined,
     access?.mainRoad ? "Főúti megközelítés" : undefined,
     access?.coastalRoad ? "Part menti útvonal" : undefined,
+    access?.steps ? "Lépcsős megközelítés" : undefined,
+    access?.stroller === "possible" ? "Babakocsival használható" : undefined,
+    access?.stroller === "limited" ? "Babakocsival korlátozott" : undefined,
+    access?.accessible ? "Akadálymentes megközelítés" : undefined,
+    access?.roadNotes,
     access?.notes,
   ].filter((fact): fact is string => Boolean(fact));
 }

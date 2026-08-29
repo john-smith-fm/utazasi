@@ -27,7 +27,7 @@ const portoGiunco: Place = {
     waterEntry: "Fokozatos vízbelépés",
     shallowWater: true,
     windExposure: "Szeles időben hullámos lehet",
-    access: { mainRoad: true },
+    access: { mainRoad: true, stroller: "possible", accessible: true, roadNotes: "Rövid, burkolt bekötőút." },
     parking: { available: true, paid: true, seasonal: true, walkDistanceM: 50 },
   },
 };
@@ -50,7 +50,13 @@ test("a part, megközelítés és parkolás tényblokkjai külön maradnak", () 
     "Sekély víz",
     "Szeles időben hullámos lehet",
   ]);
-  assert.deepEqual(getBeachAccessFacts(portoGiunco), ["Könnyű megközelítés", "Főúti megközelítés"]);
+  assert.deepEqual(getBeachAccessFacts(portoGiunco), [
+    "Könnyű megközelítés",
+    "Főúti megközelítés",
+    "Babakocsival használható",
+    "Akadálymentes megközelítés",
+    "Rövid, burkolt bekötőút.",
+  ]);
   assert.deepEqual(getBeachParkingFacts(portoGiunco), ["Parkoló elérhető", "Fizetős", "Szezonális", "50 m gyalog"]);
 });
 
