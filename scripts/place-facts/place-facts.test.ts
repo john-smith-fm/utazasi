@@ -7,6 +7,7 @@ import {
   getBeachCardFacts,
   getBeachParkingFacts,
   getBeachPartFacts,
+  getGenericPlaceCardFacts,
   getRestaurantCardFacts,
   getShopCardFacts,
 } from "../../src/lib/place-facts.ts";
@@ -66,4 +67,12 @@ test("a boltkártya csak megerősített termékköröket mutat", () => {
     details: { kind: "shop", shop: { confirmedDepartments: ["Pékség", "Halpult", "Helyi termékek", "Borválaszték"] } },
   };
   assert.deepEqual(getShopCardFacts(shop), ["Pékség", "Halpult", "Helyi termékek"]);
+});
+
+test("az egyéb helyek kártyája csak megerősített szolgáltatásokat mutat", () => {
+  const playground: Place = {
+    sourceId: "parco-bussi", slug: "parco-bussi", name: "Parco Bussi", type: "playground",
+    details: { kind: "playground", confirmedServices: ["Mosdó", "Parkolás", "Vízvételi lehetőség", "Beltéri rész"] },
+  };
+  assert.deepEqual(getGenericPlaceCardFacts(playground), ["Mosdó", "Parkolás", "Vízvételi lehetőség"]);
 });

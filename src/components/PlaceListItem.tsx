@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Place, PlaceType } from "@/types/places";
-import { getBeachCardFacts, getRestaurantCardFacts, getShopCardFacts } from "@/lib/place-facts";
+import { getBeachCardFacts, getGenericPlaceCardFacts, getRestaurantCardFacts, getShopCardFacts } from "@/lib/place-facts";
 
 const TYPE_LABEL: Record<PlaceType, string> = {
   beach: "Strand",
@@ -24,7 +24,8 @@ export function PlaceListItem({ place, href }: { place: Place; href?: string }) 
   const beachFacts = getBeachCardFacts(place);
   const restaurantFacts = getRestaurantCardFacts(place);
   const shopFacts = getShopCardFacts(place);
-  const inlineFacts = beachFacts.length ? beachFacts : restaurantFacts.length ? restaurantFacts : shopFacts;
+  const genericFacts = getGenericPlaceCardFacts(place);
+  const inlineFacts = beachFacts.length ? beachFacts : restaurantFacts.length ? restaurantFacts : shopFacts.length ? shopFacts : genericFacts;
   const content = <>
     <p className="text-[20px] font-bold leading-[26px] tracking-[-0.02em] text-deep-sea">{place.name}</p>
     {meta && <p className="mt-1 text-sm leading-5 text-deep-sea/60">{meta}</p>}

@@ -97,3 +97,9 @@ export function getShopCardFacts(place: Place) {
   if (place.details.kind !== "shop") return [];
   return (place.details.shop?.confirmedDepartments ?? []).slice(0, 3);
 }
+
+/** Other place categories expose only their explicitly confirmed services. */
+export function getGenericPlaceCardFacts(place: Place) {
+  if (place.details.kind === "beach" || place.details.kind === "restaurant" || place.details.kind === "shop") return [];
+  return (place.details.confirmedServices ?? []).slice(0, 3);
+}
