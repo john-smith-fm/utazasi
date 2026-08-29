@@ -127,12 +127,13 @@ const RESTAURANT_PROFILE_LABELS: Record<string, string> = {
   beach_lunch: "Strandebéd", dinner: "Vacsora", quick_dinner: "Gyors vacsora",
   casual_dinner: "Laza vacsora", quick_meal: "Gyors étkezés", aperitivo: "Aperitivo",
   coffee: "Kávé", drinks: "Italok", wine: "Bor", pizza: "Pizza", bar: "Bár", takeaway: "Elvitel",
+  gelato: "Fagylalt", dessert: "Desszert",
   quick_stop: "Gyors megálló", marina_stop: "Kikötői megálló", beach_stop: "Strand melletti megálló",
 };
 
 const CUISINE_LABELS: Record<string, string> = {
   seafood: "Tengeri", grill: "Grill", sardinian: "Szardíniai", street_food: "Street food",
-  italian: "Olasz", pizza: "Pizza", casual: "Laza", poke: "Poke", healthy: "Egészségtudatos", bakery: "Pékség",
+  italian: "Olasz", pizza: "Pizza", casual: "Laza", poke: "Poke", healthy: "Egészségtudatos", bakery: "Pékség", burgers: "Burger",
 };
 
 const FOOD_SERVICE_LABELS: Record<string, string> = {

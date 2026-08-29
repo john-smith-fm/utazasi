@@ -128,6 +128,14 @@ test("a kávézó kártyája a kanonikus étkezési profilokat részesíti előn
   assert.deepEqual(getGenericPlaceCardFacts(cafe), ["Kávé", "Italok"]);
 });
 
+test("az importált fagyi- és burgerprofilok is a rövid, helyi címkét kapják", () => {
+  const gelateria: Place = {
+    sourceId: "il-prato-verde", slug: "il-prato-verde", name: "Il Prato Verde", type: "cafe",
+    details: { kind: "cafe", food: { mealProfiles: ["Fagylalt", "Kávé", "Desszert"] } },
+  };
+  assert.deepEqual(getGenericPlaceCardFacts(gelateria), ["Fagylalt", "Kávé"]);
+});
+
 test("a piac kártyája a rögzített időpontot és kínálatot mutatja", () => {
   const market: Place = {
     sourceId: "mercato-villasimius", slug: "mercato-villasimius", name: "Heti piac", type: "other",
