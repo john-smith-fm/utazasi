@@ -107,6 +107,19 @@ const GENERIC_SERVICE_LABELS: Record<string, string> = {
   wc: "Mosdó",
   water: "Vízvételi lehetőség",
   indoor: "Beltéri rész",
+  walk: "Sétány",
+  boat_mooring: "Hajókikötő",
+  pharmacy: "Gyógyszertár",
+  atm: "Bankautomata",
+  supermarket_nearby: "Közeli szupermarket",
+  supermarket: "Szupermarket",
+  restaurants: "Éttermek",
+  restaurant_bar: "Étterem és bár",
+  gelateria: "Fagylaltozó",
+  fish_shop: "Halbolt",
+  rotisserie: "Grill és készételek",
+  pastry: "Cukrászda",
+  tourist_services: "Turisztikai szolgáltatások",
 };
 
 const RESTAURANT_PROFILE_LABELS: Record<string, string> = {
@@ -390,6 +403,9 @@ function genericDetailsFor(raw: UnknownRecord, type: GenericPlaceType) {
       ? intelligence.access
       : undefined;
   const services = intelligence && isRecord(intelligence.services) ? intelligence.services : undefined;
+  const regionalImport = intelligence && isRecord(intelligence.regional_import) ? intelligence.regional_import : undefined;
+  const regionalDetails = regionalImport && isRecord(regionalImport.details) ? regionalImport.details : undefined;
+  const importedServices = regionalDetails && isRecord(regionalDetails.services) ? regionalDetails.services : undefined;
   const family = intelligence && isRecord(intelligence.family) ? intelligence.family : undefined;
   const opening = intelligence && isRecord(intelligence.opening_hours) ? intelligence.opening_hours : undefined;
   const food = foodFactsFor(raw);
@@ -407,12 +423,13 @@ function genericDetailsFor(raw: UnknownRecord, type: GenericPlaceType) {
     access: accessFactsFor(accessRecord),
     food: food.mealProfiles?.length || food.cuisine?.length || food.confirmedServices?.length || food.openingHours ? food : undefined,
     market,
-    confirmedServices: services
-      ? Object.entries(services)
-        .filter(([, value]) => value === true)
+    confirmedServices: [services, importedServices]
+      .filter((record): record is UnknownRecord => Boolean(record))
+      .flatMap((record) => Object.entries(record)
+        .filter(([, value]) => value === true || value === "confirmed")
         .map(([key]) => GENERIC_SERVICE_LABELS[key])
         .filter((service): service is string => Boolean(service))
-      : undefined,
+      ),
     familyFacts: familyFactsFor(family),
     familyInsight: family ? optionalString(family.insight) : undefined,
     openingHours: openingHours?.length ? openingHours : undefined,

@@ -112,6 +112,14 @@ test("az egyéb helyek kártyája csak megerősített szolgáltatásokat mutat",
   assert.deepEqual(getGenericPlaceCardFacts(playground), ["Mosdó", "Parkolás", "Vízvételi lehetőség"]);
 });
 
+test("a regionális szolgáltatóközpontok forrásból megerősített szolgáltatásai röviden listázhatók", () => {
+  const serviceCentre: Place = {
+    sourceId: "piazza-italia", slug: "piazza-italia", name: "Piazza Italia", type: "other",
+    details: { kind: "other", confirmedServices: ["Gyógyszertár", "Bankautomata", "Közeli szupermarket", "Éttermek"] },
+  };
+  assert.deepEqual(getGenericPlaceCardFacts(serviceCentre), ["Gyógyszertár", "Bankautomata", "Közeli szupermarket"]);
+});
+
 test("a kávézó kártyája a kanonikus étkezési profilokat részesíti előnyben", () => {
   const cafe: Place = {
     sourceId: "bar-le-palme", slug: "bar-le-palme", name: "Bar Le Palme", type: "cafe",
