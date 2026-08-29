@@ -106,6 +106,18 @@ const GENERIC_SERVICE_LABELS: Record<string, string> = {
   indoor: "Beltéri rész",
 };
 
+const RESTAURANT_PROFILE_LABELS: Record<string, string> = {
+  breakfast: "Reggeli", brunch: "Brunch", lunch: "Ebéd", quick_lunch: "Gyors ebéd",
+  beach_lunch: "Strandebéd", dinner: "Vacsora", quick_dinner: "Gyors vacsora",
+  casual_dinner: "Laza vacsora", quick_meal: "Gyors étkezés", aperitivo: "Aperitivo",
+  coffee: "Kávé", drinks: "Italok", wine: "Bor", pizza: "Pizza", bar: "Bár", takeaway: "Elvitel",
+};
+
+const CUISINE_LABELS: Record<string, string> = {
+  seafood: "Tengeri", grill: "Grill", sardinian: "Szardíniai", street_food: "Street food",
+  italian: "Olasz", pizza: "Pizza", casual: "Laza", poke: "Poke", healthy: "Egészségtudatos",
+};
+
 function contactFor(raw: UnknownRecord) {
   const intelligence = isRecord(raw.destination_intelligence) ? raw.destination_intelligence : undefined;
   const contact = isRecord(raw.contact)
@@ -169,6 +181,23 @@ function beachDetailsFor(raw: UnknownRecord) {
     } : undefined,
     confirmedServices: confirmedServices?.length ? [...new Set(confirmedServices)] : undefined,
     familyInsight: family ? optionalString(family.insight) : undefined,
+  };
+}
+
+function restaurantFactsFor(raw: UnknownRecord) {
+  const intelligence = isRecord(raw.destination_intelligence) ? raw.destination_intelligence : undefined;
+  const regionalImport = intelligence && isRecord(intelligence.regional_import) ? intelligence.regional_import : undefined;
+  const regionalDetails = regionalImport && isRecord(regionalImport.details) ? regionalImport.details : undefined;
+  const food = regionalDetails && isRecord(regionalDetails.food) ? regionalDetails.food : undefined;
+  const mealProfiles = food
+    ? optionalStringArray(food.profiles)?.map((profile) => RESTAURANT_PROFILE_LABELS[profile]).filter((value): value is string => Boolean(value))
+    : undefined;
+  const cuisine = food
+    ? optionalStringArray(food.cuisine)?.map((value) => CUISINE_LABELS[value]).filter((value): value is string => Boolean(value))
+    : undefined;
+  return {
+    mealProfiles: mealProfiles?.length ? [...new Set(mealProfiles)] : undefined,
+    cuisine: cuisine?.length ? [...new Set(cuisine)] : undefined,
   };
 }
 
@@ -377,6 +406,7 @@ function validateRestaurants(source: unknown): RestaurantPlace[] {
       intelligence: intelligenceFor(raw),
       details: {
         kind: "restaurant",
+        ...restaurantFactsFor(raw),
         openingNote,
         contact: placeContact,
       },

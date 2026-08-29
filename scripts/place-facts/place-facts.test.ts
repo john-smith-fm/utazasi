@@ -7,6 +7,7 @@ import {
   getBeachCardFacts,
   getBeachParkingFacts,
   getBeachPartFacts,
+  getRestaurantCardFacts,
 } from "../../src/lib/place-facts.ts";
 
 const portoGiunco: Place = {
@@ -48,4 +49,12 @@ test("a part, megközelítés és parkolás tényblokkjai külön maradnak", () 
   ]);
   assert.deepEqual(getBeachAccessFacts(portoGiunco), ["Könnyű megközelítés", "Főúti megközelítés"]);
   assert.deepEqual(getBeachParkingFacts(portoGiunco), ["Parkoló elérhető", "Fizetős", "Szezonális", "50 m gyalog"]);
+});
+
+test("az étteremkártya rövid, ellenőrzött kínálati tényeket mutat", () => {
+  const restaurant: Place = {
+    sourceId: "b-steak", slug: "b-steak", name: "B-Steak", type: "restaurant",
+    details: { kind: "restaurant", mealProfiles: ["Gyors vacsora", "Vacsora"], cuisine: ["Grill", "Street food"] },
+  };
+  assert.deepEqual(getRestaurantCardFacts(restaurant), ["Gyors vacsora", "Vacsora", "Grill"]);
 });

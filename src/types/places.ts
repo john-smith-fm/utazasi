@@ -101,6 +101,8 @@ export type RestaurantContact = {
 
 export type RestaurantDetails = {
   kind: "restaurant";
+  mealProfiles?: string[];
+  cuisine?: string[];
   openingNote?: string;
   contact?: RestaurantContact;
 };

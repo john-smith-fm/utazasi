@@ -82,3 +82,12 @@ export function getBeachParkingFacts(place: Place) {
     parking.notes,
   ].filter((fact): fact is string => Boolean(fact));
 }
+
+/** Short, fact-only summary for restaurant list rows. */
+export function getRestaurantCardFacts(place: Place) {
+  if (place.details.kind !== "restaurant") return [];
+  return [
+    ...(place.details.mealProfiles ?? []).slice(0, 2),
+    ...(place.details.cuisine ?? []).slice(0, 1),
+  ];
+}

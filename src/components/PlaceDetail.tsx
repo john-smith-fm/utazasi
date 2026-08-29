@@ -101,11 +101,16 @@ function GenericPlaceInformation({ place }: { place: Place }) {
 
 function RestaurantDetails({ place }: { place: Place }) {
   if (place.details.kind !== "restaurant") return null;
-  const { openingNote, contact } = place.details;
-  if (!openingNote && !contact?.website && !contact?.phones?.length) return null;
+  const { mealProfiles, cuisine, openingNote, contact } = place.details;
+  if (!mealProfiles?.length && !cuisine?.length && !openingNote && !contact?.website && !contact?.phones?.length) return null;
 
   return <section className="border-t border-deep-sea/10 pt-6" aria-labelledby="restaurant-information-heading">
     <h2 id="restaurant-information-heading" className="text-[17px] font-bold leading-[23px] text-deep-sea">Étterem információk</h2>
+    {mealProfiles?.length || cuisine?.length ? <div className="mt-3">
+      <h3 className="text-sm font-semibold leading-5 text-deep-sea">Kínálat</h3>
+      {mealProfiles?.length ? <p className="mt-1 text-sm leading-[21px] text-deep-sea/70">{mealProfiles.join(" · ")}</p> : null}
+      {cuisine?.length ? <p className="mt-1 text-sm leading-[21px] text-deep-sea/70">{cuisine.join(" · ")}</p> : null}
+    </div> : null}
     {openingNote && <div className="mt-3">
       <h3 className="text-sm font-semibold leading-5 text-deep-sea">Nyitvatartás</h3>
       <p className="mt-1 text-sm leading-[21px] text-deep-sea/70">{openingNote}</p>
