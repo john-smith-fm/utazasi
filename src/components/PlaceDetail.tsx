@@ -172,6 +172,11 @@ function ShopDetails({ place }: { place: Place }) {
       <h3 className="text-sm font-semibold leading-5 text-deep-sea">Szolgáltatások</h3>
       <p className="mt-1 text-sm leading-[21px] text-deep-sea/70">{shop.services.join(" · ")}</p>
     </div> : null}
+    {shop.health?.profiles?.length || shop.health?.openingHours ? <div className="mt-4">
+      <h3 className="text-sm font-semibold leading-5 text-deep-sea">Gyógyszertár információk</h3>
+      {shop.health.profiles?.length ? <p className="mt-1 text-sm leading-[21px] text-deep-sea/70">{shop.health.profiles.join(" · ")}</p> : null}
+      {shop.health.openingHours ? <p className="mt-1 text-sm leading-[21px] text-deep-sea/70">{shop.health.openingHours}</p> : null}
+    </div> : null}
     {shop.phones?.length ? <div className="mt-4">
       <h3 className="text-sm font-semibold leading-5 text-deep-sea">Telefon</h3>
       <PhoneLinks phones={shop.phones} />

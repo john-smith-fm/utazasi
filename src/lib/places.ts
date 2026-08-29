@@ -128,6 +128,14 @@ const FOOD_SERVICE_LABELS: Record<string, string> = {
   gluten_free: "Gluténmentes lehetőség",
 };
 
+const HEALTH_PROFILE_LABELS: Record<string, string> = {
+  medicines: "Gyógyszerek",
+  baby_products: "Babaápolás",
+  sun_care: "Napvédelem",
+  diagnostics: "Diagnosztika",
+  personal_care: "Személyes ápolás",
+};
+
 function contactFor(raw: UnknownRecord) {
   const intelligence = isRecord(raw.destination_intelligence) ? raw.destination_intelligence : undefined;
   const contact = isRecord(raw.contact)
@@ -267,6 +275,23 @@ function parkingFactsFor(raw: UnknownRecord) {
   return Object.values(result).some(Boolean) ? result : undefined;
 }
 
+function healthFactsFor(raw: UnknownRecord) {
+  const intelligence = isRecord(raw.destination_intelligence) ? raw.destination_intelligence : undefined;
+  const regionalImport = intelligence && isRecord(intelligence.regional_import) ? intelligence.regional_import : undefined;
+  const regionalDetails = regionalImport && isRecord(regionalImport.details) ? regionalImport.details : undefined;
+  const health = regionalDetails && isRecord(regionalDetails.health) ? regionalDetails.health : undefined;
+  if (!health) return undefined;
+  const profiles = optionalStringArray(health.profiles)
+    ?.map((profile) => HEALTH_PROFILE_LABELS[profile])
+    .filter((profile): profile is string => Boolean(profile));
+  const rawOpeningHours = optionalString(health.opening_hours);
+  const openingHours = rawOpeningHours === "unknown" ? undefined : rawOpeningHours;
+  const phone = optionalString(health.phone);
+  return profiles?.length || openingHours || phone
+    ? { profiles: profiles?.length ? [...new Set(profiles)] : undefined, openingHours, phone }
+    : undefined;
+}
+
 function shopDetailsFor(raw: UnknownRecord) {
   const intelligence = isRecord(raw.destination_intelligence) ? raw.destination_intelligence : undefined;
   if (!intelligence) return undefined;
@@ -283,16 +308,18 @@ function shopDetailsFor(raw: UnknownRecord) {
       .filter((department): department is string => Boolean(department))
     : undefined;
   const family = shopping && isRecord(shopping.family) ? shopping.family : undefined;
+  const health = healthFactsFor(raw);
   const contact = contactFor(raw);
-  const phones = contact?.phones;
+  const phones = contact?.phones ?? (health?.phone ? [health.phone] : undefined);
   const website = contact?.website;
   const result = {
-    openingHours: openingHours ? formatWeeklyOpeningHours(openingHours.weekly) : undefined,
+    openingHours: openingHours ? formatWeeklyOpeningHours(openingHours.weekly) : health?.openingHours,
     openingNote: openingHours ? optionalString(openingHours.seasonal_or_exception_note) : undefined,
     phones,
     website,
     services: services?.length ? [...new Set(services)] : undefined,
     confirmedDepartments: confirmedDepartments?.length ? [...new Set(confirmedDepartments)] : undefined,
+    health: health ? { profiles: health.profiles, openingHours: health.openingHours } : undefined,
     familyInsight: family ? optionalString(family.insight) : undefined,
   };
   return Object.values(result).some(Boolean) ? result : undefined;

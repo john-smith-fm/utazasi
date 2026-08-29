@@ -80,6 +80,14 @@ test("a boltkártya csak megerősített termékköröket mutat", () => {
   assert.deepEqual(getShopCardFacts(shop), ["Pékség", "Halpult", "Helyi termékek"]);
 });
 
+test("a gyógyszertárkártya csak rögzített egészségügyi profilokat mutat", () => {
+  const pharmacy: Place = {
+    sourceId: "farmacia-simius", slug: "farmacia-simius", name: "Farmacia Simius", type: "shop",
+    details: { kind: "shop", shop: { health: { profiles: ["Gyógyszerek", "Babaápolás", "Napvédelem"] } } },
+  };
+  assert.deepEqual(getShopCardFacts(pharmacy), ["Gyógyszerek", "Babaápolás", "Napvédelem"]);
+});
+
 test("az egyéb helyek kártyája csak megerősített szolgáltatásokat mutat", () => {
   const playground: Place = {
     sourceId: "parco-bussi", slug: "parco-bussi", name: "Parco Bussi", type: "playground",

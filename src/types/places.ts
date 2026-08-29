@@ -149,6 +149,10 @@ export type GenericPlaceDetails = {
     website?: string;
     services?: string[];
     confirmedDepartments?: string[];
+    health?: {
+      profiles?: string[];
+      openingHours?: string;
+    };
     familyInsight?: string;
   };
 };

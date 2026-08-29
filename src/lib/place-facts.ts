@@ -115,7 +115,8 @@ export function getRestaurantCardFacts(place: Place) {
 /** A shop's confirmed departments are safe, compact list facts. */
 export function getShopCardFacts(place: Place) {
   if (place.details.kind !== "shop") return [];
-  return (place.details.shop?.confirmedDepartments ?? []).slice(0, 3);
+  const departments = place.details.shop?.confirmedDepartments ?? [];
+  return departments.length ? departments.slice(0, 3) : (place.details.shop?.health?.profiles ?? []).slice(0, 3);
 }
 
 /** Dedicated parking records retain their confirmed tariff context without
