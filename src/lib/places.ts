@@ -119,6 +119,15 @@ const CUISINE_LABELS: Record<string, string> = {
   italian: "Olasz", pizza: "Pizza", casual: "Laza", poke: "Poke", healthy: "Egészségtudatos", bakery: "Pékség",
 };
 
+const FOOD_SERVICE_LABELS: Record<string, string> = {
+  reservation: "Foglalás elérhető",
+  walk_in: "Bejelentkezés nélkül is",
+  takeaway: "Elvitel",
+  outdoor_seating: "Kültéri ülőhely",
+  vegan_options: "Vegán lehetőség",
+  gluten_free: "Gluténmentes lehetőség",
+};
+
 function contactFor(raw: UnknownRecord) {
   const intelligence = isRecord(raw.destination_intelligence) ? raw.destination_intelligence : undefined;
   const contact = isRecord(raw.contact)
@@ -226,9 +235,20 @@ function foodFactsFor(raw: UnknownRecord) {
   const cuisine = food
     ? optionalStringArray(food.cuisine)?.map((value) => CUISINE_LABELS[value]).filter((value): value is string => Boolean(value))
     : undefined;
+  const confirmedServices = food
+    ? Object.entries(food)
+      .filter(([key, value]) => (value === "confirmed" || value === "available") && FOOD_SERVICE_LABELS[key])
+      .map(([key]) => FOOD_SERVICE_LABELS[key])
+    : undefined;
+  const rawOpeningHours = food ? optionalString(food.opening_hours) : undefined;
+  const openingHours = rawOpeningHours === "conflicting_sources" || rawOpeningHours === "unknown"
+    ? undefined
+    : rawOpeningHours;
   return {
     mealProfiles: mealProfiles?.length ? [...new Set(mealProfiles)] : undefined,
     cuisine: cuisine?.length ? [...new Set(cuisine)] : undefined,
+    confirmedServices: confirmedServices?.length ? [...new Set(confirmedServices)] : undefined,
+    openingHours,
   };
 }
 
@@ -446,6 +466,7 @@ function validateRestaurants(source: unknown): RestaurantPlace[] {
     const openingHours = isRecord(raw.opening_hours) ? raw.opening_hours : undefined;
     const placeContact = contactFor(raw);
     const openingNote = openingHours ? optionalString(openingHours.seasonal_or_exception_note) : undefined;
+    const food = foodFactsFor(raw);
 
     return {
       sourceId,
@@ -459,7 +480,7 @@ function validateRestaurants(source: unknown): RestaurantPlace[] {
       intelligence: intelligenceFor(raw),
       details: {
         kind: "restaurant",
-        ...foodFactsFor(raw),
+        ...food,
         openingNote,
         contact: placeContact,
       },

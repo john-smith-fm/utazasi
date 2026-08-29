@@ -67,7 +67,7 @@ test("a part, megközelítés és parkolás tényblokkjai külön maradnak", () 
 test("az étteremkártya rövid, ellenőrzött kínálati tényeket mutat", () => {
   const restaurant: Place = {
     sourceId: "b-steak", slug: "b-steak", name: "B-Steak", type: "restaurant",
-    details: { kind: "restaurant", mealProfiles: ["Gyors vacsora", "Vacsora"], cuisine: ["Grill", "Street food"] },
+    details: { kind: "restaurant", mealProfiles: ["Gyors vacsora", "Vacsora"], cuisine: ["Grill", "Street food"], confirmedServices: ["Foglalás elérhető"] },
   };
   assert.deepEqual(getRestaurantCardFacts(restaurant), ["Gyors vacsora", "Vacsora", "Grill"]);
 });

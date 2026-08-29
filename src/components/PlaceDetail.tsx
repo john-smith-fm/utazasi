@@ -126,8 +126,8 @@ function GenericPlaceInformation({ place }: { place: Place }) {
 
 function RestaurantDetails({ place }: { place: Place }) {
   if (place.details.kind !== "restaurant") return null;
-  const { mealProfiles, cuisine, openingNote, contact } = place.details;
-  if (!mealProfiles?.length && !cuisine?.length && !openingNote && !contact?.website && !contact?.phones?.length) return null;
+  const { mealProfiles, cuisine, confirmedServices, openingHours, openingNote, contact } = place.details;
+  if (!mealProfiles?.length && !cuisine?.length && !confirmedServices?.length && !openingHours && !openingNote && !contact?.website && !contact?.phones?.length) return null;
 
   return <section className="border-t border-deep-sea/10 pt-6" aria-labelledby="restaurant-information-heading">
     <h2 id="restaurant-information-heading" className="text-[17px] font-bold leading-[23px] text-deep-sea">Étterem információk</h2>
@@ -136,10 +136,15 @@ function RestaurantDetails({ place }: { place: Place }) {
       {mealProfiles?.length ? <p className="mt-1 text-sm leading-[21px] text-deep-sea/70">{mealProfiles.join(" · ")}</p> : null}
       {cuisine?.length ? <p className="mt-1 text-sm leading-[21px] text-deep-sea/70">{cuisine.join(" · ")}</p> : null}
     </div> : null}
-    {openingNote && <div className="mt-3">
+    {openingHours || openingNote ? <div className="mt-3">
       <h3 className="text-sm font-semibold leading-5 text-deep-sea">Nyitvatartás</h3>
-      <p className="mt-1 text-sm leading-[21px] text-deep-sea/70">{openingNote}</p>
-    </div>}
+      {openingHours ? <p className="mt-1 text-sm leading-[21px] text-deep-sea/70">{openingHours}</p> : null}
+      {openingNote ? <p className="mt-1 text-xs leading-[18px] text-deep-sea/55">{openingNote}</p> : null}
+    </div> : null}
+    {confirmedServices?.length ? <div className="mt-4">
+      <h3 className="text-sm font-semibold leading-5 text-deep-sea">Szolgáltatások</h3>
+      <p className="mt-1 text-sm leading-[21px] text-deep-sea/70">{confirmedServices.join(" · ")}</p>
+    </div> : null}
     {contact?.phones?.length ? <div className="mt-4">
       <h3 className="text-sm font-semibold leading-5 text-deep-sea">Telefon</h3>
       <PhoneLinks phones={contact.phones} />

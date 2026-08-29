@@ -114,6 +114,9 @@ export type RestaurantDetails = {
   kind: "restaurant";
   mealProfiles?: string[];
   cuisine?: string[];
+  /** Directly confirmed operational details from the canonical food record. */
+  confirmedServices?: string[];
+  openingHours?: string;
   openingNote?: string;
   contact?: RestaurantContact;
 };
