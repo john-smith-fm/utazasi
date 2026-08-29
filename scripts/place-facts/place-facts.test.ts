@@ -8,6 +8,7 @@ import {
   getBeachParkingFacts,
   getBeachPartFacts,
   getRestaurantCardFacts,
+  getShopCardFacts,
 } from "../../src/lib/place-facts.ts";
 
 const portoGiunco: Place = {
@@ -57,4 +58,12 @@ test("az étteremkártya rövid, ellenőrzött kínálati tényeket mutat", () =
     details: { kind: "restaurant", mealProfiles: ["Gyors vacsora", "Vacsora"], cuisine: ["Grill", "Street food"] },
   };
   assert.deepEqual(getRestaurantCardFacts(restaurant), ["Gyors vacsora", "Vacsora", "Grill"]);
+});
+
+test("a boltkártya csak megerősített termékköröket mutat", () => {
+  const shop: Place = {
+    sourceId: "conad-city", slug: "conad-city", name: "Conad City", type: "shop",
+    details: { kind: "shop", shop: { confirmedDepartments: ["Pékség", "Halpult", "Helyi termékek", "Borválaszték"] } },
+  };
+  assert.deepEqual(getShopCardFacts(shop), ["Pékség", "Halpult", "Helyi termékek"]);
 });

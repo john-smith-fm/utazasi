@@ -91,3 +91,9 @@ export function getRestaurantCardFacts(place: Place) {
     ...(place.details.cuisine ?? []).slice(0, 1),
   ];
 }
+
+/** A shop's confirmed departments are safe, compact list facts. */
+export function getShopCardFacts(place: Place) {
+  if (place.details.kind !== "shop") return [];
+  return (place.details.shop?.confirmedDepartments ?? []).slice(0, 3);
+}
