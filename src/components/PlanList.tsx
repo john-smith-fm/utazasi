@@ -177,8 +177,8 @@ function EditableTimelineItem({ activity, conflict, onSelect, onDelete, onPrevie
   }
 
   return <div className="relative overflow-hidden">
-    <button type="button" onClick={() => onDelete(activity)} className="absolute inset-0 flex items-center justify-end bg-error pr-4 text-[13px] font-semibold text-white" aria-label={`${activity.title} törlése`}>Törlés</button>
-    <div role="button" tabIndex={0} aria-label={`${activity.title} szerkesztése`} onKeyDown={keyDown} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd} onClick={() => { if (suppressClick.current) { suppressClick.current = false; return; } onSelect(activity); }} className="relative cursor-pointer touch-pan-y bg-quartz outline-none transition-transform duration-200 focus-visible:ring-2 focus-visible:ring-turquoise-dark" style={{ transform: `translateX(${offset}px)`, transitionDuration: start.current ? "0ms" : undefined }}>
+    <button type="button" onClick={() => onDelete(activity)} className="absolute inset-0 flex items-center justify-end rounded-l-full bg-error pr-4 text-[13px] font-semibold text-white" aria-label={`${activity.title} törlése`}>Törlés</button>
+    <div role="button" tabIndex={0} aria-label={`${activity.title} szerkesztése`} onKeyDown={keyDown} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd} onClick={() => { if (suppressClick.current) { suppressClick.current = false; return; } onSelect(activity); }} className="relative cursor-pointer touch-pan-y bg-quartz outline-none transition-transform duration-200 ease-out [will-change:transform] focus-visible:ring-2 focus-visible:ring-turquoise-dark" style={{ transform: `translateX(${offset}px)`, transitionDuration: start.current ? "0ms" : undefined }}>
       <div className="relative pr-11">
         <TimelineContent activity={activity} conflict={conflict} />
         <DragHandle activity={activity} onPreview={onPreview} onCommit={(time) => onTimeChange(activity, time)} onError={onError} />

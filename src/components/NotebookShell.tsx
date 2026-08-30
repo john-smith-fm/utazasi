@@ -131,8 +131,8 @@ function SwipeRow({ label, onSelect, onDelete, disabled = false, children }: { l
   }
 
   return <div className="relative overflow-hidden">
-    <button type="button" disabled={disabled} onClick={onDelete} aria-label={`${label} törlése`} className="absolute inset-0 flex items-center justify-end bg-error pr-4 text-xs font-semibold text-white disabled:opacity-50">Törlés</button>
-    <div role="button" tabIndex={disabled ? -1 : 0} aria-label={`${label} szerkesztése`} onKeyDown={keyDown} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd} onClick={() => { if (suppressClickRef.current) { suppressClickRef.current = false; return; } if (!disabled) onSelect(); }} className="relative cursor-pointer touch-pan-y bg-quartz outline-none transition-transform duration-200 focus-visible:ring-2 focus-visible:ring-turquoise-dark disabled:cursor-default" style={{ transform: `translateX(${offset}px)` }}>{children}</div>
+    <button type="button" disabled={disabled} onClick={onDelete} aria-label={`${label} törlése`} className="absolute inset-0 flex items-center justify-end rounded-l-full bg-error pr-4 text-xs font-semibold text-white disabled:opacity-50">Törlés</button>
+    <div role="button" tabIndex={disabled ? -1 : 0} aria-label={`${label} szerkesztése`} onKeyDown={keyDown} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd} onClick={() => { if (suppressClickRef.current) { suppressClickRef.current = false; return; } if (!disabled) onSelect(); }} className="relative cursor-pointer touch-pan-y bg-quartz outline-none transition-transform duration-200 ease-out [will-change:transform] focus-visible:ring-2 focus-visible:ring-turquoise-dark disabled:cursor-default" style={{ transform: `translateX(${offset}px)`, transitionDuration: startRef.current ? "0ms" : undefined }}>{children}</div>
   </div>;
 }
 
