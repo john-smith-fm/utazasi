@@ -11,6 +11,7 @@ import { answerQuestionWithContext } from "../../src/lib/questioning-answer.ts";
 import { validPlaceBrowseCategoryForType } from "../../src/lib/place-categories.ts";
 import { GroundedAnswerContractError, parseGroundedAnswer } from "../../src/lib/grounded-answer-contract.ts";
 import { ResearchedQuestionContractError, parseResearchedQuestionAnswer } from "../../src/lib/researched-question-contract.ts";
+import { getPlaceQuestionFacts } from "../../src/lib/place-question-facts.ts";
 
 const futureBeachDay = {
   date: "2099-09-03",
@@ -149,6 +150,14 @@ test("grounded AI may cite only the explicit allowed fact identifiers", () => {
   }), aiContext);
   assert.equal(answer?.title, "Mai program");
   assert.deepEqual(answer?.factIds, ["timeline:activity-1", "place:porto-giunco"]);
+});
+
+test("grounded AI may cite an individual Place fact supplied in its context", () => {
+  const context = { ...aiContext, places: [{ ...aiContext.places[0], facts: [{ id: "place:porto-giunco:length", key: "length", label: "Strandhossz", value: "1,05 km" }] }] };
+  const answer = parseGroundedAnswer(JSON.stringify({
+    status: "grounded", title: "Porto Giunco hossza", body: "Az ellenőrzött strandhossz 1,05 km.", factIds: ["place:porto-giunco:length"],
+  }), context);
+  assert.deepEqual(answer?.factIds, ["place:porto-giunco:length"]);
 });
 
 test("grounded AI cannot cite an identifier that was not provided", () => {
@@ -396,6 +405,54 @@ test("a full unambiguous canonical Place can answer even if it is not today's ac
   const answer = answerQuestionWithContext("Milyen a parkolás Cala Pirán?", context, null);
   assert.equal(answer.title, "Cala Pira · parkolás");
   assert.match(answer.body, /ellenőrzött parkoló/);
+});
+
+test("a linked beach exposes its exact canonical length through the shared Place facts", () => {
+  const portoGiunco = {
+    sourceId: "test-porto-giunco", slug: "porto-giunco", name: "Spiaggia di Porto Giunco", type: "beach" as const,
+    details: { kind: "beach" as const, shoreType: "sandy" as const, lengthM: 1047, landAccess: "easy" as const, confirmedServices: ["Mosdó", "Zuhany"] },
+  };
+  const context = buildQuestionContext(
+    { ...futureBeachDay, activities: [{ time: "09:00", title: "Strand", place: portoGiunco.name, placeSlug: portoGiunco.slug }] },
+    weather, [], { getPlaceBySlug: (slug) => slug === portoGiunco.slug ? portoGiunco : undefined, places: [portoGiunco] },
+  );
+  const answer = answerQuestionWithContext("Milyen hosszú a Spiaggia di Porto Giunco?", context, null);
+  assert.equal(answer.title, "Spiaggia di Porto Giunco · strandhossz");
+  assert.match(answer.body, /1,05 km|1.05 km/);
+  assert.deepEqual(answer.sources, ["Place"]);
+  assert.ok(getPlaceQuestionFacts(portoGiunco).some((fact) => fact.id === "place:porto-giunco:length" && fact.value.includes("km")));
+});
+
+test("shared Place facts answer a service question without inventing missing services", () => {
+  const beach = {
+    sourceId: "test-service-beach", slug: "test-service-beach", name: "Teszt strand", type: "beach" as const,
+    details: { kind: "beach" as const, confirmedServices: ["Mosdó", "Zuhany"] },
+  };
+  const context = buildQuestionContext(futureBeachDay, weather, [], { places: [beach] });
+  const answer = answerQuestionWithContext("Van mosdó a Teszt strandon?", context, null);
+  assert.equal(answer.title, "Teszt strand · szolgáltatás");
+  assert.match(answer.body, /Mosdó/);
+  assert.doesNotMatch(answer.body, /Büfé/);
+});
+
+test("longest beach comparison ignores qualified-only lengths instead of inventing precision", () => {
+  const exact = { sourceId: "exact", slug: "exact", name: "Pontos strand", type: "beach" as const, details: { kind: "beach" as const, lengthM: 1047 } };
+  const qualified = { sourceId: "qualified", slug: "qualified", name: "Közelítő strand", type: "beach" as const, details: { kind: "beach" as const, lengthLabel: "about 2 km" } };
+  const context = buildQuestionContext(futureBeachDay, weather, [], { places: [exact, qualified] });
+  const answer = answerQuestionWithContext("Melyik a leghosszabb strand?", context, null);
+  assert.equal(answer.title, "Pontos strand · leghosszabb rögzített strand");
+  assert.match(answer.body, /1047 m/);
+  assert.doesNotMatch(answer.body, /2000/);
+});
+
+test("beach threshold comparison uses only exact numeric lengths", () => {
+  const long = { sourceId: "long", slug: "long", name: "Hosszú strand", type: "beach" as const, details: { kind: "beach" as const, lengthM: 1200 } };
+  const short = { sourceId: "short", slug: "short", name: "Rövid strand", type: "beach" as const, details: { kind: "beach" as const, lengthM: 800 } };
+  const context = buildQuestionContext(futureBeachDay, weather, [], { places: [long, short] });
+  const answer = answerQuestionWithContext("Mely strandok hosszabbak 1 km-nél?", context, null);
+  assert.equal(answer.title, "1 km-nél hosszabb strandok");
+  assert.match(answer.body, /Hosszú strand/);
+  assert.doesNotMatch(answer.body, /Rövid strand/);
 });
 
 test("a watch change appears only on the Timeline day that accepted its event", () => {

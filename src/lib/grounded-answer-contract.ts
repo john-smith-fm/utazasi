@@ -3,7 +3,10 @@ export type GroundedQuestionContext = {
   dayTitle: string;
   activities: Array<{ id: string; time: string; title: string; locationName: string | null; placeSlug: string | null }>;
   events: Array<{ id: string; title: string; startsAt: string; endsAt: string | null; status: "scheduled" | "changed" | "cancelled"; placeSlug: string | null }>;
-  places: Array<{ slug: string; name: string; type: string; locality: string | null; verifiedNote: string | null }>;
+  places: Array<{
+    slug: string; name: string; type: string; locality: string | null; verifiedNote: string | null;
+    facts?: Array<{ id: string; key: string; label: string; value: string }>;
+  }>;
 };
 
 export type GroundedQuestionAnswer = { title: string; body: string; factIds: string[] };
@@ -31,6 +34,7 @@ export function allowedGroundedFactIds(context: GroundedQuestionContext) {
     ...context.activities.map((activity) => `timeline:${activity.id}`),
     ...context.events.map((event) => `event:${event.id}`),
     ...context.places.map((place) => `place:${place.slug}`),
+    ...context.places.flatMap((place) => place.facts?.map((fact) => fact.id) ?? []),
   ];
 }
 

@@ -3,6 +3,7 @@ import { ACCESS_COOKIE_NAME, hasValidAccessSession } from "@/lib/access";
 import type { GroundedQuestionContext } from "@/lib/grounded-questioning";
 import { answerResearchedQuestion } from "@/lib/live-question-research";
 import { getPlaceBySlug } from "@/lib/places";
+import { getPlaceQuestionFacts } from "@/lib/place-question-facts";
 import { checkQuestionResearchRateLimit } from "@/lib/question-ai-rate-limit";
 import { TIMELINE_TRIP_SLUG, timelineServerClient } from "@/lib/timeline-service";
 
@@ -53,7 +54,7 @@ export async function POST(request: NextRequest) {
         const place = getPlaceBySlug(slug);
         if (!place) return [];
         const note = place.provenance?.uncertaintyNote ?? place.provenance?.reviewStatus ?? null;
-        return [{ slug: place.slug, name: place.name, type: place.type, locality: place.location?.locality ?? null, verifiedNote: note }];
+        return [{ slug: place.slug, name: place.name, type: place.type, locality: place.location?.locality ?? null, verifiedNote: note, facts: getPlaceQuestionFacts(place) }];
       }),
     };
     const answer = await answerResearchedQuestion(question, context);

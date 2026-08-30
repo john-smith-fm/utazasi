@@ -63,6 +63,7 @@ function researchInput(question: string, context: GroundedQuestionContext) {
       activities: context.activities.map(({ time, title, locationName }) => ({ time, title, locationName })),
       events: context.events.map(({ title, startsAt, endsAt, status }) => ({ title, startsAt, endsAt, status })),
     },
+    linkedPlaces: context.places.map(({ slug, name, type, locality, facts }) => ({ slug, name, type, locality, facts: facts ?? [] })),
     nowInRome: new Intl.DateTimeFormat("sv-SE", {
       timeZone: "Europe/Rome", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false,
     }).format(new Date()).replace(" ", "T"),

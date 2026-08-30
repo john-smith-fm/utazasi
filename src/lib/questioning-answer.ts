@@ -5,6 +5,7 @@ import { getTimelineQuestionAnswer, getTripTimelineQuestionAnswer } from "./time
 import { TRIP_BASE_NAME } from "./trip-base.ts";
 import { buildQuestionContext, type QuestionContext } from "./question-context.ts";
 import type { Place } from "@/types/places";
+import { getPlaceQuestionFacts } from "./place-question-facts.ts";
 
 export type QuestionRecommendation = {
   placeSlug: string;
@@ -149,6 +150,94 @@ function placeCandidatesInQuestion(question: string, context: QuestionContext) {
   });
 }
 
+function uniquePlaces(places: readonly Place[]) {
+  return [...new Map(places.map((place) => [place.slug, place])).values()];
+}
+
+type PlaceFactTopic = "length" | "shore" | "access" | "water" | "service" | "family" | "food" | "market" | "opening";
+
+/**
+ * Classify the kind of fact, not a named phrase or individual Place. This
+ * keeps the resolver extensible: an added beach or service is automatically
+ * answerable without creating another intent branch.
+ */
+function requestedPlaceFactTopic(value: string): PlaceFactTopic | null {
+  if (/hossz|kilometer|\bkm\b|meter|\bm\b.*strand|leghosszabb/.test(value)) return "length";
+  if (/homok|kavics|szikla|parttip|milyen.*part/.test(value)) return "shore";
+  if (/megkozel|babakocsi|akadalyment|lepcso|foldut|szerpentin/.test(value)) return "access";
+  if (/vizbelep|sekely|szel|viz/.test(value)) return "water";
+  if (/wc|mosdo|zuhany|bufe|aranyek|vizisport|kano|vizibicikli|szolgaltatas/.test(value)) return "service";
+  if (/gyerek|kisgyerek|csalad/.test(value)) return "family";
+  if (/konyha|reggeli|ebed|vacsora|aperitivo|elvitel|foglalas|vegan|gluten/.test(value)) return "food";
+  if (/piac|vasar/.test(value)) return "market";
+  if (/nyitvatart|mikor.*nyit|mikor.*zar/.test(value)) return "opening";
+  return null;
+}
+
+function requestedLengthThreshold(value: string) {
+  const match = value.match(/(\d+(?:[.,]\d+)?)\s*(km|kilometer|m)\b/);
+  if (!match || !/hosszabb|hossz.*mint|felett|nagyobb/.test(value)) return undefined;
+  const amount = Number(match[1].replace(",", "."));
+  if (!Number.isFinite(amount) || amount <= 0) return undefined;
+  return match[2] === "m" ? amount : amount * 1_000;
+}
+
+function structuredPlaceAnswer(question: string, context: QuestionContext): QuestionAnswer | null {
+  const topic = requestedPlaceFactTopic(normalized(question));
+  if (!topic) return null;
+
+  const explicitlyNamed = placeCandidatesInQuestion(question, context);
+  const linked = context.linkedPlaces.map((entry) => entry.place);
+  const normalizedQuestion = normalized(question);
+  const lengthThreshold = topic === "length" ? requestedLengthThreshold(normalizedQuestion) : undefined;
+  const asksBeachComparison = topic === "length" && (/mely|leghosszabb|ossz.*strand/.test(normalizedQuestion) || lengthThreshold !== undefined);
+  const candidates = asksBeachComparison
+    ? context.knownPlaces.filter((place) => place.details.kind === "beach")
+    : explicitlyNamed.length ? explicitlyNamed : questionPlaceTokens(question).length ? [] : linked;
+  const places = uniquePlaces(candidates);
+
+  if (places.length > 1 && !asksBeachComparison) {
+    return {
+      title: "Több hely is megfelel",
+      body: `A kérdés több helyre is utalhat: ${places.slice(0, 3).map((place) => place.name).join(", ")}. Írd be a teljes helynevet, és nem választok találgatással közülük.`,
+      sources: ["Place"],
+    };
+  }
+
+  if (asksBeachComparison) {
+    const measured = places.flatMap((place) =>
+      place.details.kind === "beach" && typeof place.details.lengthM === "number"
+        ? [{ place, lengthM: place.details.lengthM }]
+        : [],
+    );
+    if (!measured.length) return { title: "Nincs összehasonlítható strandhossz", body: "A kanonikus Place-adatokban nincs pontos, ellenőrzött strandhossz ehhez az összehasonlításhoz.", sources: ["Place"] };
+    if (lengthThreshold !== undefined) {
+      const matches = measured.filter((candidate) => candidate.lengthM > lengthThreshold);
+      const thresholdLabel = lengthThreshold >= 1_000 ? `${lengthThreshold / 1_000} km` : `${lengthThreshold} m`;
+      if (!matches.length) return { title: `Nincs ${thresholdLabel}-nél hosszabb rögzített strand`, body: "Csak a pontos, numerikus hosszal ellenőrzött strandokat hasonlítom össze.", sources: ["Place"] };
+      return { title: `${thresholdLabel}-nél hosszabb strandok`, body: matches.map((candidate) => `${candidate.place.name} · ${Math.round(candidate.lengthM)} m`).join("\n"), sources: ["Place"] };
+    }
+    const longest = measured.reduce((current, candidate) => candidate.lengthM > current.lengthM ? candidate : current);
+    return { title: `${longest.place.name} · leghosszabb rögzített strand`, body: `Ellenőrzött hossz: ${Math.round(longest.lengthM)} m. Csak a pontos, numerikus hosszal rögzített strandokat hasonlítom össze.`, sources: ["Place"] };
+  }
+
+  const place = places[0];
+  if (!place) return null;
+  const facts = getPlaceQuestionFacts(place).filter((fact) => fact.key === topic);
+  if (!facts.length) {
+    return {
+      title: `${place.name} · nincs ellenőrzött adat`,
+      body: `Ehhez a helyhez nincs ellenőrzött ${topic === "length" ? "strandhossz" : "részletes"} információ rögzítve. Nem következtetek a hely típusából vagy más Place-ekből.`,
+      sources: ["Place"],
+    };
+  }
+  return {
+    title: `${place.name} · ${facts[0].label.toLocaleLowerCase("hu-HU")}`,
+    body: facts.map((fact) => fact.value).join(" · "),
+    sources: ["Place"],
+  };
+}
+
 function placeAnswer(question: string, context: QuestionContext): QuestionAnswer | null {
   const value = normalized(question);
   if (!/parkolas|parkolo/.test(value)) return null;
@@ -243,6 +332,8 @@ export function answerQuestionWithContext(
   // cross-day program lookup for the same words (for example parking at a
   // beach), while the visible day remains unchanged.
   if (placeResult) return placeResult;
+  const structuredPlaceResult = structuredPlaceAnswer(question, context);
+  if (structuredPlaceResult) return structuredPlaceResult;
   // A concrete program/travel lookup can cross the trip only after the
   // selected day's deterministic resolver had no explicit answer. Relative
   // daily questions are rejected by this helper and remain local by design.
