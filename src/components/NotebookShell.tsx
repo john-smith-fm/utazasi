@@ -263,7 +263,7 @@ export function NotebookShell() {
       } else {
         const { value } = record;
         const item = await request("POST", { resource: "packing", data: { title: value.title, isPacked: value.isPacked, position: value.position } }) as unknown as PackingItemRecord;
-        setNotebook({ ...data, packing: [...data.packing, item].sort((left, right) => left.position - right.position) });
+        setNotebook({ ...data, packing: [item, ...data.packing] });
       }
       setMessage(null);
     } catch (error) { setMessage(error instanceof Error ? error.message : "A visszaállítás nem sikerült."); }

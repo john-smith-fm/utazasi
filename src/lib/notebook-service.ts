@@ -49,7 +49,10 @@ export async function readNotebook(): Promise<ServiceResult<{ packing: PackingIt
   if ("error" in trip) return trip;
   const supabase = timelineServerClient();
   const [packing, entries] = await Promise.all([
-    supabase.from("packing_items").select("id, title, is_packed, position, created_at, updated_at").eq("trip_id", trip.data).order("position").order("created_at"),
+    // Packing has no manual drag ordering in the UI. Created-at descending
+    // keeps a newly added item at the top after both an immediate update and
+    // a reload, without mutating any existing family data.
+    supabase.from("packing_items").select("id, title, is_packed, position, created_at, updated_at").eq("trip_id", trip.data).order("created_at", { ascending: false }),
     supabase.from("notebook_entries").select("id, kind, content, amount_eur, occurred_on, rating, created_at, updated_at").eq("trip_id", trip.data).order("occurred_on", { ascending: false }).order("created_at", { ascending: false }),
   ]);
   if (packing.error) throw packing.error;
