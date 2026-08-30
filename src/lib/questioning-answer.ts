@@ -182,6 +182,84 @@ function requestedLengthThreshold(value: string) {
   return match[2] === "m" ? amount : amount * 1_000;
 }
 
+type BeachFilters = {
+  shoreType?: "sandy" | "pebbly" | "rocky";
+  landAccess?: "easy" | "moderate" | "hard" | "no_access";
+};
+
+/**
+ * These are property constraints, not named question intents. A new beach
+ * with the same canonical values becomes filterable automatically.
+ */
+function requestedBeachFilters(value: string): BeachFilters {
+  const filters: BeachFilters = {};
+  if (/homok/.test(value)) filters.shoreType = "sandy";
+  else if (/kavics/.test(value)) filters.shoreType = "pebbly";
+  else if (/szikla|koves/.test(value)) filters.shoreType = "rocky";
+
+  if (/konny.*megkozel|konnyu.*megkozel/.test(value)) filters.landAccess = "easy";
+  else if (/nehez.*megkozel/.test(value)) filters.landAccess = "hard";
+  else if (/kozepes.*megkozel/.test(value)) filters.landAccess = "moderate";
+  return filters;
+}
+
+function requestedServiceNeed(value: string) {
+  if (/\b(wc|mosdo)\b/.test(value)) return /\b(wc|mosdo)\b/;
+  if (/napernyo/.test(value)) return /napernyo/;
+  if (/zuhany/.test(value)) return /zuhany/;
+  if (/bufe/.test(value)) return /bufe/;
+  if (/kano/.test(value)) return /kano/;
+  if (/vizibicikli/.test(value)) return /vizibicikli/;
+  return null;
+}
+
+function beachFilterAnswer(filters: BeachFilters, context: QuestionContext): QuestionAnswer | null {
+  if (!filters.shoreType && !filters.landAccess) return null;
+  const matches = context.knownPlaces.filter((place) => {
+    if (place.details.kind !== "beach") return false;
+    return (!filters.shoreType || place.details.shoreType === filters.shoreType)
+      && (!filters.landAccess || place.details.landAccess === filters.landAccess);
+  });
+  const labels = [
+    filters.shoreType === "sandy" ? "Homokos" : filters.shoreType === "pebbly" ? "Kavicsos" : filters.shoreType === "rocky" ? "Sziklás" : undefined,
+    filters.landAccess === "easy" ? "könnyen megközelíthető" : filters.landAccess === "moderate" ? "közepes megközelítésű" : filters.landAccess === "hard" ? "nehezen megközelíthető" : undefined,
+  ].filter(Boolean);
+  if (!matches.length) {
+    return {
+      title: `Nincs ellenőrzötten ${labels.join(", ")} strand`,
+      body: "Csak azokból a strandokból szűrök, amelyeknél mindkét kért tulajdonság ellenőrzött Place-adatként szerepel.",
+      sources: ["Place"],
+    };
+  }
+  return {
+    title: `${labels.join(", ")} strandok`,
+    body: matches.map((place) => place.name).join("\n"),
+    sources: ["Place"],
+  };
+}
+
+function serviceFilterAnswer(question: string, context: QuestionContext): QuestionAnswer | null {
+  const need = requestedServiceNeed(normalized(question));
+  if (!need) return null;
+  const matches = context.knownPlaces.flatMap((place) =>
+    getPlaceQuestionFacts(place)
+      .filter((fact) => fact.key === "service" && need.test(normalized(fact.value)))
+      .map((fact) => ({ place, fact })),
+  );
+  if (!matches.length) {
+    return {
+      title: "Nincs ellenőrzött szolgáltatásadat",
+      body: "A kért szolgáltatásról jelenleg nincs ellenőrzött Place-adat. Nem következtetek a hely típusából.",
+      sources: ["Place"],
+    };
+  }
+  return {
+    title: "Ellenőrzött szolgáltatással rendelkező helyek",
+    body: matches.map(({ place, fact }) => `${place.name} · ${fact.value}`).join("\n"),
+    sources: ["Place"],
+  };
+}
+
 function structuredPlaceAnswer(question: string, context: QuestionContext): QuestionAnswer | null {
   const topic = requestedPlaceFactTopic(normalized(question));
   if (!topic) return null;
@@ -189,10 +267,16 @@ function structuredPlaceAnswer(question: string, context: QuestionContext): Ques
   const explicitlyNamed = placeCandidatesInQuestion(question, context);
   const linked = context.linkedPlaces.map((entry) => entry.place);
   const normalizedQuestion = normalized(question);
+  const beachFilters = requestedBeachFilters(normalizedQuestion);
+  const beachFilterResult = beachFilterAnswer(beachFilters, context);
+  if (beachFilterResult && !explicitlyNamed.length) return beachFilterResult;
+  const serviceResult = topic === "service" && !explicitlyNamed.length ? serviceFilterAnswer(question, context) : null;
+  if (serviceResult) return serviceResult;
   const lengthThreshold = topic === "length" ? requestedLengthThreshold(normalizedQuestion) : undefined;
-  const asksBeachComparison = topic === "length" && (/mely|leghosszabb|ossz.*strand/.test(normalizedQuestion) || lengthThreshold !== undefined);
+  const asksNamedLengthComparison = topic === "length" && explicitlyNamed.length >= 2 && /hosszabb|hossz.*mint/.test(normalizedQuestion);
+  const asksBeachComparison = topic === "length" && (/mely|leghosszabb|ossz.*strand/.test(normalizedQuestion) || lengthThreshold !== undefined || asksNamedLengthComparison);
   const candidates = asksBeachComparison
-    ? context.knownPlaces.filter((place) => place.details.kind === "beach")
+    ? asksNamedLengthComparison ? explicitlyNamed : context.knownPlaces.filter((place) => place.details.kind === "beach")
     : explicitlyNamed.length ? explicitlyNamed : questionPlaceTokens(question).length ? [] : linked;
   const places = uniquePlaces(candidates);
 
@@ -211,6 +295,24 @@ function structuredPlaceAnswer(question: string, context: QuestionContext): Ques
         : [],
     );
     if (!measured.length) return { title: "Nincs összehasonlítható strandhossz", body: "A kanonikus Place-adatokban nincs pontos, ellenőrzött strandhossz ehhez az összehasonlításhoz.", sources: ["Place"] };
+    if (asksNamedLengthComparison) {
+      const missing = places.filter((place) => !measured.some((candidate) => candidate.place.slug === place.slug));
+      if (missing.length) {
+        return {
+          title: "Hiányzó ellenőrzött strandhossz",
+          body: `${measured.map((candidate) => `${candidate.place.name} · ${Math.round(candidate.lengthM)} m`).join("\n")}\n${missing.map((place) => `${place.name} · nincs ellenőrzött hosszadat`).join("\n")}`,
+          sources: ["Place"],
+        };
+      }
+      const [first, second] = measured;
+      const longer = first.lengthM >= second.lengthM ? first : second;
+      const shorter = longer === first ? second : first;
+      return {
+        title: `${longer.place.name} a hosszabb`,
+        body: `${longer.place.name} · ${Math.round(longer.lengthM)} m\n${shorter.place.name} · ${Math.round(shorter.lengthM)} m`,
+        sources: ["Place"],
+      };
+    }
     if (lengthThreshold !== undefined) {
       const matches = measured.filter((candidate) => candidate.lengthM > lengthThreshold);
       const thresholdLabel = lengthThreshold >= 1_000 ? `${lengthThreshold / 1_000} km` : `${lengthThreshold} m`;

@@ -455,6 +455,37 @@ test("beach threshold comparison uses only exact numeric lengths", () => {
   assert.doesNotMatch(answer.body, /Rövid strand/);
 });
 
+test("a named two-beach question compares only the two requested verified lengths", () => {
+  const calaPisanu = { sourceId: "pisanu", slug: "cala-pisanu", name: "Cala Pisanu", type: "beach" as const, details: { kind: "beach" as const, lengthM: 420 } };
+  const solanas = { sourceId: "solanas", slug: "solanas", name: "Solanas", type: "beach" as const, details: { kind: "beach" as const, lengthM: 1200 } };
+  const context = buildQuestionContext(futureBeachDay, weather, [], { places: [calaPisanu, solanas] });
+  const answer = answerQuestionWithContext("Cala Pisanu vagy Solanas a hosszabb?", context, null);
+  assert.equal(answer.title, "Solanas a hosszabb");
+  assert.match(answer.body, /1200 m/);
+  assert.match(answer.body, /420 m/);
+});
+
+test("a structured beach filter combines shore and access without inferred matches", () => {
+  const matching = { sourceId: "matching", slug: "matching", name: "Homokos könnyű strand", type: "beach" as const, details: { kind: "beach" as const, shoreType: "sandy" as const, landAccess: "easy" as const } };
+  const hard = { sourceId: "hard", slug: "hard", name: "Homokos nehéz strand", type: "beach" as const, details: { kind: "beach" as const, shoreType: "sandy" as const, landAccess: "hard" as const } };
+  const missing = { sourceId: "missing", slug: "missing", name: "Hiányos strand", type: "beach" as const, details: { kind: "beach" as const, shoreType: "sandy" as const } };
+  const context = buildQuestionContext(futureBeachDay, weather, [], { places: [matching, hard, missing] });
+  const answer = answerQuestionWithContext("Melyik homokos és könnyen megközelíthető?", context, null);
+  assert.equal(answer.title, "Homokos, könnyen megközelíthető strandok");
+  assert.match(answer.body, /Homokos könnyű strand/);
+  assert.doesNotMatch(answer.body, /Homokos nehéz strand|Hiányos strand/);
+});
+
+test("a generic WC question lists only confirmed service facts", () => {
+  const wcBeach = { sourceId: "wc", slug: "wc", name: "Mosdós strand", type: "beach" as const, details: { kind: "beach" as const, confirmedServices: ["WC"] } };
+  const noService = { sourceId: "none", slug: "none", name: "Nincs adat strand", type: "beach" as const, details: { kind: "beach" as const } };
+  const context = buildQuestionContext(futureBeachDay, weather, [], { places: [wcBeach, noService] });
+  const answer = answerQuestionWithContext("Hol van WC?", context, null);
+  assert.equal(answer.title, "Ellenőrzött szolgáltatással rendelkező helyek");
+  assert.match(answer.body, /Mosdós strand · WC/);
+  assert.doesNotMatch(answer.body, /Nincs adat strand/);
+});
+
 test("a watch change appears only on the Timeline day that accepted its event", () => {
   const change = {
     eventTitle: "Invasio Fesztivál",
