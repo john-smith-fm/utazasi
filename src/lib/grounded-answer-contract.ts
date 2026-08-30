@@ -7,6 +7,10 @@ export type GroundedQuestionContext = {
     slug: string; name: string; type: string; locality: string | null; verifiedNote: string | null;
     facts?: Array<{ id: string; key: string; label: string; value: string }>;
   }>;
+  /** A client may suggest only compact fact-gap labels. They never contain
+   * private addresses or raw Timeline prose, and are used solely to focus the
+   * server-side web-research prompt. */
+  researchRequirements?: Array<{ factType: string; description: string; scope: "selected_day" | "trip" | "global" }>;
 };
 
 export type GroundedQuestionAnswer = { title: string; body: string; factIds: string[] };

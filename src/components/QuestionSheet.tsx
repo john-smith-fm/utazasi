@@ -7,7 +7,8 @@ import type { WeatherSnapshot } from "@/types";
 import type { TripEvent } from "@/lib/event-types";
 import { getShoppingAnswer } from "@/lib/shopping-intelligence";
 import { buildQuestionContext, questionPromptsForContext } from "@/lib/question-context";
-import { answerQuestionWithContext, isAccommodationQuestion } from "@/lib/questioning-answer";
+import { isAccommodationQuestion, resolveQuestionWithContext } from "@/lib/questioning-answer";
+import { canResearch } from "@/lib/question-evidence";
 import { getPlaceBySlug, getPlaces } from "@/lib/places";
 import { Icon } from "./Icon";
 import { FORM_CONTROL } from "@/components/formStyles";
@@ -24,7 +25,8 @@ export function QuestionSheet({ day, weather, events = [], tripDays = [], tripSt
   const [tripBaseError, setTripBaseError] = useState<string | null>(null);
   const [isAsking, setIsAsking] = useState(false);
   const context = useMemo(() => buildQuestionContext(day, weather, events, { getPlaceBySlug, places: getPlaces() }), [day, events, weather]);
-  const answer = useMemo(() => question ? answerQuestionWithContext(question, context, getShoppingAnswer(question), tripDays) : null, [context, question, tripDays]);
+  const resolution = useMemo(() => question ? resolveQuestionWithContext(question, context, getShoppingAnswer(question), tripDays) : null, [context, question, tripDays]);
+  const answer = resolution?.answer ?? null;
   const prompts = useMemo(() => questionPromptsForContext(context), [context]);
 
   async function ask(value: string) {
@@ -33,7 +35,7 @@ export function QuestionSheet({ day, weather, events = [], tripDays = [], tripSt
     setAiError(null);
     setTripBase(null);
     setTripBaseError(null);
-    const localAnswer = answerQuestionWithContext(value, context, getShoppingAnswer(value), tripDays);
+    const localResolution = resolveQuestionWithContext(value, context, getShoppingAnswer(value), tripDays);
     if (isAccommodationQuestion(value)) {
       setIsAsking(true);
       try {
@@ -47,16 +49,25 @@ export function QuestionSheet({ day, weather, events = [], tripDays = [], tripSt
       finally { setIsAsking(false); }
       return;
     }
-    // Verified local answers are the source of truth. Do not let a generative
-    // summary replace an explicit Timeline, Place, Weather or Shopping answer.
-    if (localAnswer.title !== "Erre még nincs biztos válasz") return;
+    // Completeness is resolver data, never a display-title convention. A
+    // partial deterministic answer remains visible while research fills only
+    // its explicit, externally checkable fact gap.
+    if (!canResearch(localResolution.assessment)) return;
     // Do not send a potentially cross-day factual question to AI while the
     // read-only canonical trip context is still arriving. The deterministic
     // resolver will answer once it is ready; AI never guesses missing plans.
     if (tripStatus === "loading") return;
     setIsAsking(true);
     try {
-      const response = await fetch("/api/question", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: value, date: day.date }) });
+      const response = await fetch("/api/question", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          question: value,
+          date: day.date,
+          researchRequirements: localResolution.assessment.researchableRequirements,
+        }),
+      });
       const payload = await response.json().catch(() => null) as { answer?: { title?: string; body?: string; sources?: ResearchSource[] } | null; error?: unknown } | null;
       if (response.ok && payload?.answer?.title && payload.answer.body) setAiAnswer({ title: payload.answer.title, body: payload.answer.body, sources: Array.isArray(payload.answer.sources) ? payload.answer.sources : undefined });
       // An AI `insufficient_context` response is not an application error.
@@ -87,8 +98,14 @@ export function QuestionSheet({ day, weather, events = [], tripDays = [], tripSt
       <button type="submit" disabled={!customQuestion.trim()} aria-label="Kérdés elküldése" className="absolute bottom-0.5 right-0.5 grid h-11 w-11 place-items-center rounded-full bg-turquoise/15 text-turquoise-dark transition-colors disabled:bg-transparent disabled:text-deep-sea/25"><Icon name="arrow-up" size={17} strokeWidth={2} /></button>
     </form>
     {answer && <section className="mt-5 border-t border-deep-sea/10 pt-5" aria-live="polite">
-      <h3 className="text-[17px] font-bold leading-[23px] text-deep-sea">{aiAnswer?.title ?? answer.title}</h3>
-      <p className="mt-2 whitespace-pre-line text-sm leading-[21px] text-deep-sea/70">{isAsking ? "Ellenőrzött utazási kontextusból összefoglalom…" : aiAnswer?.body ?? answer.body}</p>
+      <h3 className="text-[17px] font-bold leading-[23px] text-deep-sea">{answer.title}</h3>
+      <p className="mt-2 whitespace-pre-line text-sm leading-[21px] text-deep-sea/70">{answer.body}</p>
+      {isAsking ? <p className="mt-3 text-[13px] leading-[19px] text-deep-sea/55">A hiányzó, ellenőrizhető információt kutatom…</p> : null}
+      {aiAnswer ? <div className="mt-4 border-t border-deep-sea/10 pt-4">
+        <p className="text-[11px] font-semibold tracking-[.04em] text-deep-sea/45">KUTATÁSI KIEGÉSZÍTÉS</p>
+        <h4 className="mt-1 text-[16px] font-bold leading-[22px] text-deep-sea">{aiAnswer.title}</h4>
+        <p className="mt-2 whitespace-pre-line text-sm leading-[21px] text-deep-sea/70">{aiAnswer.body}</p>
+      </div> : null}
       {answer.openDayDate && answer.openDayDate !== day.date && onOpenDay ? <button type="button" onClick={() => onOpenDay(answer.openDayDate!)} className="mt-3 inline-flex min-h-11 items-center rounded-ui-s border border-turquoise bg-turquoise/10 px-3 text-sm font-semibold text-deep-sea">{new Intl.DateTimeFormat("hu-HU", { month: "short", day: "numeric", timeZone: "Europe/Rome" }).format(new Date(`${answer.openDayDate}T12:00:00Z`)).replace(".", ".")} megnyitása</button> : null}
       {aiError ? <div className="mt-4 flex items-center justify-between gap-3 rounded-ui-s border border-coral/25 bg-coral/5 p-3.5" role="status">
         <p className="text-[13px] leading-[19px] text-deep-sea/70">{aiError}</p>

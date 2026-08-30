@@ -7,7 +7,7 @@ import { timelineQuestionPrompts } from "../../src/lib/timeline-questioning.ts";
 import { getTripTimelineQuestionAnswer } from "../../src/lib/timeline-questioning.ts";
 import { buildQuestionContext, questionPromptsForContext } from "../../src/lib/question-context.ts";
 import { detectShoppingIntent } from "../../src/lib/shopping-intent.ts";
-import { answerQuestionWithContext } from "../../src/lib/questioning-answer.ts";
+import { answerQuestionWithContext, resolveQuestionWithContext } from "../../src/lib/questioning-answer.ts";
 import { validPlaceBrowseCategoryForType } from "../../src/lib/place-categories.ts";
 import { GroundedAnswerContractError, parseGroundedAnswer } from "../../src/lib/grounded-answer-contract.ts";
 import { ResearchedQuestionContractError, parseResearchedQuestionAnswer } from "../../src/lib/researched-question-contract.ts";
@@ -484,6 +484,36 @@ test("a generic WC question lists only confirmed service facts", () => {
   assert.equal(answer.title, "Ellenőrzött szolgáltatással rendelkező helyek");
   assert.match(answer.body, /Mosdós strand · WC/);
   assert.doesNotMatch(answer.body, /Nincs adat strand/);
+});
+
+test("global Place service evidence is not hidden by a day without a beach programme", () => {
+  const serviceBeach = {
+    sourceId: "refreshment", slug: "refreshment", name: "Szolgáltatásos strand", type: "beach" as const,
+    details: { kind: "beach" as const, confirmedServices: ["Büfé"] },
+  };
+  const noBeachDay = { ...futureBeachDay, activities: [{ time: "10:00", title: "Séta", place: "Villasimius", placeSlug: null }] };
+  const context = buildQuestionContext(noBeachDay, weather, [], { places: [serviceBeach] });
+  const resolution = resolveQuestionWithContext("Melyik strandon van kávézó?", context, null);
+  assert.equal(resolution.answer.title, "Ellenőrzött szolgáltatással rendelkező helyek");
+  assert.match(resolution.answer.body, /Szolgáltatásos strand · Büfé/);
+  assert.equal(resolution.assessment.sufficiency, "complete");
+});
+
+test("a missing verified Place property is partial with a targeted research requirement", () => {
+  const unknownBeach = {
+    sourceId: "unknown-service", slug: "unknown-service", name: "Hiányos strand", type: "beach" as const,
+    details: { kind: "beach" as const },
+  };
+  const context = buildQuestionContext(futureBeachDay, weather, [], { places: [unknownBeach] });
+  const resolution = resolveQuestionWithContext("Van mosdó a Hiányos strandon?", context, null);
+  assert.equal(resolution.assessment.sufficiency, "partial");
+  assert.equal(resolution.assessment.researchableRequirements[0]?.factType, "place_fact");
+});
+
+test("an unknown travel question is insufficient rather than a display-title research trigger", () => {
+  const resolution = resolveQuestionWithContext("Hol lehet ma helyi terméket venni?", buildQuestionContext(futureBeachDay, weather, []), null);
+  assert.equal(resolution.assessment.sufficiency, "insufficient");
+  assert.equal(resolution.assessment.researchableRequirements[0]?.factType, "travel_fact");
 });
 
 test("a watch change appears only on the Timeline day that accepted its event", () => {

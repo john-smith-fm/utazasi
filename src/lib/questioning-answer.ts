@@ -6,6 +6,12 @@ import { TRIP_BASE_NAME } from "./trip-base.ts";
 import { buildQuestionContext, type QuestionContext } from "./question-context.ts";
 import type { Place } from "@/types/places";
 import { getPlaceQuestionFacts } from "./place-question-facts.ts";
+import {
+  completeAssessment,
+  incompleteAssessment,
+  type AnswerRequirement,
+  type QuestionAssessment,
+} from "./question-evidence.ts";
 
 export type QuestionRecommendation = {
   placeSlug: string;
@@ -23,6 +29,11 @@ export type QuestionAnswer = {
   recommendations?: QuestionRecommendation[];
   /** A cross-day Timeline answer may offer this explicit navigation action. */
   openDayDate?: string;
+};
+
+export type QuestionResolution = {
+  answer: QuestionAnswer;
+  assessment: QuestionAssessment;
 };
 
 type ShoppingAnswer = QuestionAnswer | null;
@@ -166,7 +177,10 @@ function requestedPlaceFactTopic(value: string): PlaceFactTopic | null {
   if (/homok|kavics|szikla|parttip|milyen.*part/.test(value)) return "shore";
   if (/megkozel|babakocsi|akadalyment|lepcso|foldut|szerpentin/.test(value)) return "access";
   if (/vizbelep|sekely|szel|viz/.test(value)) return "water";
-  if (/wc|mosdo|zuhany|bufe|aranyek|vizisport|kano|vizibicikli|szolgaltatas/.test(value)) return "service";
+  // These describe a service-property family, not a routing decision. The
+  // same Place retrieval still runs for every question; this only lets a
+  // verified service fact be compared with the user's requested property.
+  if (/wc|mosdo|zuhany|bufe|kave|kavezo|bar|ital|sor|aranyek|vizisport|kano|vizibicikli|szolgaltatas/.test(value)) return "service";
   if (/gyerek|kisgyerek|csalad/.test(value)) return "family";
   if (/konyha|reggeli|ebed|vacsora|aperitivo|elvitel|foglalas|vegan|gluten/.test(value)) return "food";
   if (/piac|vasar/.test(value)) return "market";
@@ -208,6 +222,7 @@ function requestedServiceNeed(value: string) {
   if (/napernyo/.test(value)) return /napernyo/;
   if (/zuhany/.test(value)) return /zuhany/;
   if (/bufe/.test(value)) return /bufe/;
+  if (/kave|kavezo|bar|ital|sor/.test(value)) return /bufe|bar|kave|ital|sor/;
   if (/kano/.test(value)) return /kano/;
   if (/vizibicikli/.test(value)) return /vizibicikli/;
   return null;
@@ -241,7 +256,9 @@ function beachFilterAnswer(filters: BeachFilters, context: QuestionContext): Que
 function serviceFilterAnswer(question: string, context: QuestionContext): QuestionAnswer | null {
   const need = requestedServiceNeed(normalized(question));
   if (!need) return null;
+  const asksBeach = /strand|beach|spiaggia/.test(normalized(question));
   const matches = context.knownPlaces.flatMap((place) =>
+    asksBeach && place.details.kind !== "beach" ? [] :
     getPlaceQuestionFacts(place)
       .filter((fact) => fact.key === "service" && need.test(normalized(fact.value)))
       .map((fact) => ({ place, fact })),
@@ -414,60 +431,94 @@ export function answerQuestionWithContext(
   shoppingAnswer: ShoppingAnswer,
   tripDays: readonly HomeDay[] = [],
 ): QuestionAnswer {
+  return resolveQuestionWithContext(question, context, shoppingAnswer, tripDays).answer;
+}
+
+function requirement(factType: string, description: string, scope: AnswerRequirement["scope"]): AnswerRequirement {
+  return { factType, description, scope };
+}
+
+function resolved(answer: QuestionAnswer, assessment: QuestionAssessment): QuestionResolution {
+  return { answer, assessment };
+}
+
+/**
+ * Collect the inexpensive Timeline and global Place candidates before picking
+ * a displayed answer. The resolver deliberately carries an assessment beside
+ * the prose: UI and research policy must never infer completeness from a
+ * translated title string.
+ */
+export function resolveQuestionWithContext(
+  question: string,
+  context: QuestionContext,
+  shoppingAnswer: ShoppingAnswer,
+  tripDays: readonly HomeDay[] = [],
+): QuestionResolution {
   const { day, weather, events } = context;
   const value = normalized(question);
   const afternoon = day.activities.filter((activity) => /^1[2-9]:|^2[0-3]:/.test(activity.time));
   const eventResult = eventAnswer(question, events);
   const timelineAnswer = getTimelineQuestionAnswer(question, day);
   const placeResult = placeAnswer(question, context);
-  if (eventResult) return eventResult;
-  if (shoppingAnswer) return shoppingAnswer;
+  const structuredPlaceResult = structuredPlaceAnswer(question, context);
+  const foodResult = foodAnswer(question, context);
+
+  if (eventResult) return resolved(eventResult, completeAssessment(requirement("event", "ellenőrzött eseményadat", "selected_day")));
+  if (shoppingAnswer) return resolved(shoppingAnswer, completeAssessment(requirement("shopping", "ellenőrzött bevásárlási ajánlás", "selected_day")));
   if (isAccommodationQuestion(question)) {
-    return {
+    return resolved({
       title: TRIP_BASE_NAME,
       body: "Ez az utazás szállása Villasimiusban. A pontos cím és a navigáció a belépett családi nézetben jelenik meg.",
       sources: ["Trip", "Timeline"],
-    };
+    }, completeAssessment(requirement("accommodation", "privát szálláshely", "trip")));
   }
-  if (timelineAnswer) return timelineAnswer;
-  // A named Place fact is global canonical knowledge. It must win over a
-  // cross-day program lookup for the same words (for example parking at a
-  // beach), while the visible day remains unchanged.
-  if (placeResult) return placeResult;
-  const structuredPlaceResult = structuredPlaceAnswer(question, context);
-  if (structuredPlaceResult) return structuredPlaceResult;
+
+  // Named Place facts are global canonical knowledge. They are collected in
+  // parallel with the day's Timeline evidence and win only when they answer
+  // the question's direct property (parking, services, beach facts, etc.).
+  if (placeResult) return resolved(placeResult, placeResult.title.includes("nincs")
+    ? incompleteAssessment("partial", [requirement("parking", "ellenőrzött parkolási adat", "global")])
+    : completeAssessment(requirement("parking", "ellenőrzött parkolási adat", "global")));
+  if (structuredPlaceResult) return resolved(structuredPlaceResult, /nincs|hiányzó/i.test(structuredPlaceResult.title)
+    ? incompleteAssessment("partial", [requirement("place_fact", "ellenőrzött Place-tulajdonság", "global")])
+    : completeAssessment(requirement("place_fact", "ellenőrzött Place-tulajdonság", "global")));
+
+  if (timelineAnswer) return resolved(timelineAnswer, completeAssessment(requirement("timeline", "kiválasztott napi programpont", "selected_day")));
   // A concrete program/travel lookup can cross the trip only after the
   // selected day's deterministic resolver had no explicit answer. Relative
   // daily questions are rejected by this helper and remain local by design.
   const tripTimelineAnswer = getTripTimelineQuestionAnswer(question, day, tripDays);
-  if (tripTimelineAnswer) return tripTimelineAnswer;
+  if (tripTimelineAnswer) return resolved(tripTimelineAnswer, completeAssessment(requirement("timeline", "utazás programpontja", "trip")));
   if (/mikor.*(indul|induljunk)|mikor.*kell.*indul|mennyi.*ido.*(oda|eljut)/.test(value)) {
-    return {
+    return resolved({
       title: "Az indulás ideje még nincs kiszámítható",
       body: "A kiválasztott naphoz nincs ellenőrzött Mobility-route, ezért nem mondok indulási időt vagy menetidőt. A program helyét a Timeline-ból Mapsben megnyithatod.",
       sources: ["Timeline", "Mobility"],
-    };
+    }, incompleteAssessment("partial", [requirement("travel_time", "ellenőrzött útvonal és menetidő", "selected_day")]));
   }
-  const foodResult = foodAnswer(question, context);
-  if (foodResult) return foodResult;
+  if (foodResult) return resolved(foodResult, /még nincs/i.test(foodResult.title)
+    ? incompleteAssessment("partial", [requirement("food", "ellenőrzött étkezési hely", "global")])
+    : completeAssessment(requirement("food", "kiválasztott étkezési programpont", "selected_day")));
 
-  if (value.includes("strand")) {
+  // A generic mention of a beach must not suppress a global Place fact query.
+  // Keep this narrow planning fallback only for an actual beach-plan question.
+  if (/van.*ertelme.*strandol|strandol.*van.*ertelme|melyik.*strand.*valassz/.test(value)) {
     const plannedBeach = day.activities.find((activity) => /strand/i.test(`${activity.title} ${activity.place}`));
     if (plannedBeach) {
       const weatherNote = weather?.precipitationState === "rain"
         ? "Eső várható, ezért indulás előtt érdemes újra ellenőrizni a körülményeket."
         : weather ? `${weather.temp}° és ${weather.wind} km/h szél várható.` : "Az időjárási adat most nem elérhető.";
-      return { title: plannedBeach.place || plannedBeach.title, body: `A mai tervben ez szerepel ${plannedBeach.time}-kor. ${weatherNote}`, sources: ["Timeline", "Weather"] };
+      return resolved({ title: plannedBeach.place || plannedBeach.title, body: `A mai tervben ez szerepel ${plannedBeach.time}-kor. ${weatherNote}`, sources: ["Timeline", "Weather"] }, completeAssessment(requirement("beach_plan", "kiválasztott napi strandprogram", "selected_day")));
     }
-    return { title: "Még nincs kiválasztott strand", body: "A mai napi tervben nincs strandszakasz. A helyekhez még nem áll rendelkezésre összehasonlítható, ellenőrzött menetidő- és körülményadat, ezért nem ajánlok találomra helyet.", sources: ["Timeline", "Place"] };
+    return resolved({ title: "Még nincs kiválasztott strand", body: "A mai napi tervben nincs strandszakasz. A helyekhez még nem áll rendelkezésre összehasonlítható, ellenőrzött menetidő- és körülményadat, ezért nem ajánlok találomra helyet.", sources: ["Timeline", "Place"] }, incompleteAssessment("partial", [requirement("beach_plan", "napi strandszakasz vagy ellenőrzött körülményadat", "selected_day")]));
   }
 
   if (value.includes("délután") || value.includes("bele")) {
-    if (afternoon.length === 0) return { title: "Szabad délután", body: "A kiválasztott naphoz még nincs délutáni program rögzítve.", sources: ["Timeline"] };
+    if (afternoon.length === 0) return resolved({ title: "Szabad délután", body: "A kiválasztott naphoz még nincs délutáni program rögzítve.", sources: ["Timeline"] }, completeAssessment(requirement("timeline", "délutáni Timeline", "selected_day")));
     const next = afternoon[0];
-    return { title: `${next.time} · ${next.title}`, body: `Ez a következő délutáni programpont${next.place ? `: ${next.place}` : ""}. A többi lehetőséget a Timeline-ban, időrendben látod.`, sources: ["Timeline"] };
+    return resolved({ title: `${next.time} · ${next.title}`, body: `Ez a következő délutáni programpont${next.place ? `: ${next.place}` : ""}. A többi lehetőséget a Timeline-ban, időrendben látod.`, sources: ["Timeline"] }, completeAssessment(requirement("timeline", "délutáni Timeline", "selected_day")));
   }
 
-  if (value.includes("gyerek")) return { title: "Még nem elég biztos az ajánláshoz", body: "A jelenlegi Place-adatok nem tartalmaznak minden helyhez ellenőrzött gyerekes alkalmassági információt. Ezt a rendszer nem találgatja meg; a következő kutatási kör ezt fogja bővíteni.", sources: ["Place"] };
-  return { title: "Erre még nincs biztos válasz", body: "A Kérdezési jelenlegi verziója a napi tervhez, a helyekhez és az időjáráshoz kapcsolódó, ellenőrzött kérdésekre tud válaszolni. Külső információt csak ellenőrzött kutatási forrásból fog használni.", sources: ["Timeline", "Place", "Weather"] };
+  if (value.includes("gyerek")) return resolved({ title: "Még nem elég biztos az ajánláshoz", body: "A jelenlegi Place-adatok nem tartalmaznak minden helyhez ellenőrzött gyerekes alkalmassági információt. Ezt a rendszer nem találgatja meg; a kutatás csak konkrét, ellenőrizhető hiányt próbál feloldani.", sources: ["Place"] }, incompleteAssessment("partial", [requirement("family_suitability", "ellenőrzött családi alkalmasság", "global")]));
+  return resolved({ title: "Erre még nincs biztos válasz", body: "A helyi Timeline- és Place-adatokból ehhez még nincs elég ellenőrzött válasz. A Kérdezési csak ellenőrzött kérdésekre ad tényt; ha a hiány külső forrásból ellenőrizhető, célzottan utánanéz.", sources: ["Timeline", "Place", "Weather"] }, incompleteAssessment("insufficient", [requirement("travel_fact", "a kérdéshez szükséges ellenőrzött utazási tény", "global")]));
 }

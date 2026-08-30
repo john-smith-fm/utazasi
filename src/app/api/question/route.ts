@@ -12,6 +12,18 @@ export const maxDuration = 60;
 
 function isDate(value: unknown): value is string { return typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value); }
 
+function researchRequirements(value: unknown): GroundedQuestionContext["researchRequirements"] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((item) => {
+    if (!item || typeof item !== "object" || Array.isArray(item)) return [];
+    const candidate = item as Record<string, unknown>;
+    const factType = typeof candidate.factType === "string" ? candidate.factType.trim().slice(0, 60) : "";
+    const description = typeof candidate.description === "string" ? candidate.description.trim().slice(0, 160) : "";
+    const scope: "selected_day" | "trip" | "global" | null = candidate.scope === "selected_day" || candidate.scope === "trip" || candidate.scope === "global" ? candidate.scope : null;
+    return factType && description && scope ? [{ factType, description, scope }] : [];
+  }).slice(0, 3);
+}
+
 function dayBounds(date: string) {
   const start = new Date(`${date}T00:00:00+02:00`);
   return { start: start.toISOString(), end: new Date(start.getTime() + 24 * 60 * 60 * 1000).toISOString() };
@@ -20,7 +32,7 @@ function dayBounds(date: string) {
 export async function POST(request: NextRequest) {
   const accessSession = request.cookies.get(ACCESS_COOKIE_NAME)?.value;
   if (!hasValidAccessSession(accessSession)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const body = await request.json().catch(() => null) as { question?: unknown; date?: unknown } | null;
+  const body = await request.json().catch(() => null) as { question?: unknown; date?: unknown; researchRequirements?: unknown } | null;
   const question = typeof body?.question === "string" ? body.question.trim() : "";
   if (!question || question.length > 500 || !isDate(body?.date)) return NextResponse.json({ error: "Érvénytelen kérdés vagy nap." }, { status: 400 });
   const rateLimit = checkQuestionResearchRateLimit(accessSession!);
@@ -56,6 +68,7 @@ export async function POST(request: NextRequest) {
         const note = place.provenance?.uncertaintyNote ?? place.provenance?.reviewStatus ?? null;
         return [{ slug: place.slug, name: place.name, type: place.type, locality: place.location?.locality ?? null, verifiedNote: note, facts: getPlaceQuestionFacts(place) }];
       }),
+      researchRequirements: researchRequirements(body?.researchRequirements),
     };
     const answer = await answerResearchedQuestion(question, context);
     return NextResponse.json({ answer }, { headers: { "Cache-Control": "no-store" } });
