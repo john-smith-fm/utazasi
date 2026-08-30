@@ -7,7 +7,7 @@ const root = new URL("../../", import.meta.url);
 test("an uncached offline day never falls back to prototype Timeline activities", async () => {
   const hook = await readFile(new URL("src/hooks/useTimelineDay.ts", root), "utf8");
 
-  assert.match(hook, /const knownDay = cached \? toHomeDay\(cached, fallback\) : emptyDay\(fallback\);/);
+  assert.match(hook, /const knownDay = cached \? timelineDayToHomeDay\(cached, fallback\) : emptyDay\(fallback\);/);
   assert.doesNotMatch(hook, /offline \? fallback/);
 });
 

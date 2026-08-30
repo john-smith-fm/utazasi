@@ -10,6 +10,7 @@ import { SunCard } from "@/components/SunCard";
 import { TimelineCard } from "@/components/TimelineCard";
 import { NotificationPreference } from "@/components/NotificationPreference";
 import { EventSuggestions } from "@/components/EventSuggestions";
+import { useUndoToast } from "@/components/UndoProvider";
 import { type HomeActivity } from "@/data/home-days";
 import { TRIP_CORE_DAYS } from "@/data/trip-core";
 import { useTimelineDay, useTripTimeline } from "@/hooks/useTimelineDay";
@@ -22,8 +23,7 @@ import type { TimelineActivityInput, TimelineActivityRecord } from "@/lib/timeli
 import { smartStatusSummary } from "@/lib/smart-status";
 
 type EditorState = { activity?: HomeActivity; draft?: TimelineActivityInput; draftId?: string } | null;
-type ToastState = { message: string; undo?: boolean } | null;
-type UndoRecord = { activity: HomeActivity; date: string };
+type ToastState = { message: string } | null;
 
 function toInput(activity: HomeActivity): TimelineActivityInput {
   return {
@@ -68,12 +68,11 @@ function draftFromSession(id: string): TimelineActivityInput | null {
 }
 
 export default function HomePage() {
+  const { scheduleUndo } = useUndoToast();
   const [selectedDate, setSelectedDate] = useState(TRIP_CORE_DAYS[1].date);
   const [editor, setEditor] = useState<EditorState>(null);
   const [pendingEditorId, setPendingEditorId] = useState<string | null>(null);
   const [toast, setToast] = useState<ToastState>(null);
-  const undoActivity = useRef<UndoRecord | null>(null);
-  const undoTimer = useRef<number | null>(null);
   const feedbackTimer = useRef<number | null>(null);
   // The canonical Timeline lives in Supabase. Trip-core can provide a safe
   // offline day shell, but legacy prototype activities must never reappear.
@@ -118,29 +117,16 @@ export default function HomePage() {
   }, [day.activities, hasRemoteDay, pendingEditorId]);
 
   useEffect(() => () => {
-    if (undoTimer.current) window.clearTimeout(undoTimer.current);
     if (feedbackTimer.current) window.clearTimeout(feedbackTimer.current);
   }, []);
 
-  function showToast(message: string, undo = false) {
+  function showToast(message: string) {
     if (feedbackTimer.current) window.clearTimeout(feedbackTimer.current);
-    setToast({ message, undo });
-    if (!undo) feedbackTimer.current = window.setTimeout(() => {
+    setToast({ message });
+    feedbackTimer.current = window.setTimeout(() => {
       setToast(null);
       feedbackTimer.current = null;
     }, 3500);
-  }
-
-  function startUndo(activity: HomeActivity) {
-    if (undoTimer.current) window.clearTimeout(undoTimer.current);
-    if (feedbackTimer.current) window.clearTimeout(feedbackTimer.current);
-    undoActivity.current = { activity, date: selectedDate };
-    setToast({ message: "Esemény törölve", undo: true });
-    undoTimer.current = window.setTimeout(() => {
-      undoActivity.current = null;
-      setToast(null);
-      undoTimer.current = null;
-    }, 5000);
   }
 
   async function save(input: TimelineActivityInput, requestId?: string) {
@@ -158,7 +144,14 @@ export default function HomePage() {
     setEditor(null);
     retry();
     tripTimeline.retry();
-    startUndo(toHomeActivity(deleted));
+    const deletedActivity = toHomeActivity(deleted);
+    const deletedDate = selectedDate;
+    scheduleUndo({ message: "Program törölve.", onUndo: async () => {
+      await createTimelineActivity(deletedDate, toInput(deletedActivity), deletedActivity.id);
+      retry();
+      tripTimeline.retry();
+      showToast("Program visszaállítva");
+    }, onError: (caught) => showToast(caught instanceof Error ? caught.message : "A visszaállítás nem sikerült.") });
   }
 
   async function changeStartTime(activity: HomeActivity, startTime: string) {
@@ -167,23 +160,6 @@ export default function HomePage() {
     retry();
     tripTimeline.retry();
     showToast("Időpont módosítva");
-  }
-
-  async function undo() {
-    const record = undoActivity.current;
-    if (!record) return;
-    if (undoTimer.current) window.clearTimeout(undoTimer.current);
-    undoTimer.current = null;
-    undoActivity.current = null;
-    setToast(null);
-    try {
-      await createTimelineActivity(record.date, toInput(record.activity), record.activity.id);
-      retry();
-      tripTimeline.retry();
-      showToast("Esemény visszaállítva");
-    } catch (caught) {
-      showToast(caught instanceof Error ? caught.message : "A visszaállítás nem sikerült.");
-    }
   }
 
   return <>
@@ -201,6 +177,6 @@ export default function HomePage() {
     </main>
     <button type="button" disabled={!canMutate} onClick={() => setEditor({})} aria-label="Új program hozzáadása" className="fixed bottom-[calc(88px+env(safe-area-inset-bottom))] right-5 z-40 grid h-[54px] w-[54px] place-items-center rounded-full bg-turquoise text-white transition-transform active:scale-95 disabled:opacity-50"><Icon name="plus" size={24} strokeWidth={2} /></button>
     {editor && <ActivityEditor key={editor.activity?.id ?? editor.draftId ?? "new"} activity={editor.activity} draft={editor.draft} draftId={editor.draftId} returnBaseHref={`/?day=${selectedDate}`} onClose={() => setEditor(null)} onSave={save} onDelete={editor.activity ? () => remove(editor.activity!) : undefined} />}
-    {toast && <div className="fixed bottom-[calc(88px+env(safe-area-inset-bottom))] left-5 right-[86px] z-50 flex min-h-11 items-center justify-between gap-3 rounded-ui-s bg-deep-sea px-3 py-2 text-[13px] font-medium text-white shadow-[0_6px_20px_rgba(24,50,59,.18)]" role="status"><span>{toast.message}</span>{toast.undo && <button type="button" onClick={() => void undo()} className="min-h-11 shrink-0 px-1 font-semibold text-turquoise">Visszavonás</button>}</div>}
+    {toast && <div className="fixed bottom-[calc(88px+env(safe-area-inset-bottom))] left-5 right-[86px] z-50 flex min-h-11 items-center justify-between gap-3 rounded-full bg-deep-sea px-3 py-2 text-[13px] font-medium text-white shadow-[0_6px_20px_rgba(24,50,59,.18)]" role="status"><span>{toast.message}</span></div>}
   </>;
 }

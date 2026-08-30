@@ -4,9 +4,8 @@ import { useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import type { HomeActivity } from "@/data/home-days";
 import type { TimelineLoadState } from "@/hooks/useTimelineDay";
 import { getPlaceBySlug } from "@/lib/places";
+import { completesSwipeDelete, swipeDeleteOffset } from "@/lib/swipe-delete";
 
-const DELETE_THRESHOLD = 72;
-const MAX_SWIPE = 92;
 const DRAG_SNAP_MINUTES = 15;
 const PIXELS_PER_SNAP = 36;
 
@@ -154,14 +153,14 @@ function EditableTimelineItem({ activity, conflict, onSelect, onDelete, onPrevie
     if (deltaX >= 0 && !horizontal.current) return;
     horizontal.current = true;
     event.currentTarget.setPointerCapture(event.pointerId);
-    const nextOffset = Math.max(-MAX_SWIPE, Math.min(0, deltaX));
+    const nextOffset = swipeDeleteOffset(deltaX, event.currentTarget.clientWidth);
     offsetRef.current = nextOffset;
     setOffset(nextOffset);
   }
 
   function pointerEnd() {
     if (!start.current) return;
-    const shouldDelete = offsetRef.current <= -DELETE_THRESHOLD;
+    const shouldDelete = completesSwipeDelete(offsetRef.current);
     suppressClick.current = horizontal.current;
     start.current = null;
     horizontal.current = false;
@@ -178,7 +177,7 @@ function EditableTimelineItem({ activity, conflict, onSelect, onDelete, onPrevie
   }
 
   return <div className="relative overflow-hidden">
-    <button type="button" onClick={() => onDelete(activity)} className="absolute inset-y-0 right-0 grid w-[84px] place-items-center bg-error text-[13px] font-semibold text-white" aria-label={`${activity.title} törlése`}>Törlés</button>
+    <button type="button" onClick={() => onDelete(activity)} className="absolute inset-0 flex items-center justify-end bg-error pr-4 text-[13px] font-semibold text-white" aria-label={`${activity.title} törlése`}>Törlés</button>
     <div role="button" tabIndex={0} aria-label={`${activity.title} szerkesztése`} onKeyDown={keyDown} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd} onClick={() => { if (suppressClick.current) { suppressClick.current = false; return; } onSelect(activity); }} className="relative cursor-pointer touch-pan-y bg-quartz outline-none transition-transform duration-200 focus-visible:ring-2 focus-visible:ring-turquoise-dark" style={{ transform: `translateX(${offset}px)`, transitionDuration: start.current ? "0ms" : undefined }}>
       <div className="relative pr-11">
         <TimelineContent activity={activity} conflict={conflict} />

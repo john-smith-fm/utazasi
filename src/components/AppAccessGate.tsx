@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { TabBar } from "@/components/TabBar";
+import { UndoProvider } from "@/components/UndoProvider";
 
 const OFFLINE_ACCESS_KEY = "utazasi-pin-access";
 type AccessState = "loading" | "locked" | "unlocked" | "configuration-error";
@@ -30,7 +31,7 @@ export function AppAccessGate({ children, initialAuthenticated = false }: { chil
   }, []);
 
   if (state === "loading") return <AccessLoadingScreen />;
-  if (state === "unlocked") return <>{children}<TabBar /></>;
+  if (state === "unlocked") return <UndoProvider>{children}<TabBar /></UndoProvider>;
   return <PinAccessScreen configurationError={state === "configuration-error"} onUnlocked={() => setState("unlocked")} />;
 }
 

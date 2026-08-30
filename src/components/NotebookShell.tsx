@@ -3,9 +3,11 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent, type PointerEvent, type ReactNode } from "react";
 import { FORM_CONTROL } from "@/components/formStyles";
 import { FolderTabs } from "@/components/FolderTabs";
+import { useUndoToast } from "@/components/UndoProvider";
 import { migrateLegacyNotebookOnce } from "@/lib/notebook-legacy-migration";
 import type { NotebookEntryKind, NotebookEntryRecord, PackingItemRecord } from "@/lib/notebook-types";
 import { storageGet, storageSet } from "@/lib/storage";
+import { completesSwipeDelete, swipeDeleteOffset } from "@/lib/swipe-delete";
 
 type NotebookData = { packing: PackingItemRecord[]; entries: NotebookEntryRecord[] };
 type Tab = "money" | "packing" | "notes" | "journal";
@@ -17,12 +19,6 @@ type Tab = "money" | "packing" | "notes" | "journal";
 const CACHE_KEY = "utazasi-notebook-v3";
 const TAB_KEY = "utazasi-notebook-tab-v1";
 const TABS: Array<{ id: Tab; label: string }> = [{ id: "money", label: "Pénz" }, { id: "packing", label: "Pakolás" }, { id: "notes", label: "Jegyzetek" }, { id: "journal", label: "Napló" }];
-const DELETE_THRESHOLD = 72;
-const MAX_SWIPE = 92;
-
-type NotebookUndo =
-  | { resource: "entry"; value: NotebookEntryRecord }
-  | { resource: "packing"; value: PackingItemRecord };
 
 function romeDate() {
   const parts = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Rome", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
@@ -115,13 +111,13 @@ function SwipeRow({ label, onSelect, onDelete, disabled = false, children }: { l
     if (!horizontalRef.current && Math.abs(deltaX) <= Math.abs(deltaY)) return;
     horizontalRef.current = true;
     event.currentTarget.setPointerCapture(event.pointerId);
-    const next = Math.max(-MAX_SWIPE, Math.min(0, deltaX));
+    const next = swipeDeleteOffset(deltaX, event.currentTarget.clientWidth);
     offsetRef.current = next;
     setOffset(next);
   }
   function pointerEnd() {
     if (!startRef.current) return;
-    const shouldDelete = !disabled && offsetRef.current <= -DELETE_THRESHOLD;
+    const shouldDelete = !disabled && completesSwipeDelete(offsetRef.current);
     suppressClickRef.current = horizontalRef.current;
     startRef.current = null;
     horizontalRef.current = false;
@@ -135,7 +131,7 @@ function SwipeRow({ label, onSelect, onDelete, disabled = false, children }: { l
   }
 
   return <div className="relative overflow-hidden">
-    <button type="button" disabled={disabled} onClick={onDelete} aria-label={`${label} törlése`} className="absolute inset-y-0 right-0 grid w-[92px] place-items-center bg-error text-xs font-semibold text-white disabled:opacity-50">Törlés</button>
+    <button type="button" disabled={disabled} onClick={onDelete} aria-label={`${label} törlése`} className="absolute inset-0 flex items-center justify-end bg-error pr-4 text-xs font-semibold text-white disabled:opacity-50">Törlés</button>
     <div role="button" tabIndex={disabled ? -1 : 0} aria-label={`${label} szerkesztése`} onKeyDown={keyDown} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd} onClick={() => { if (suppressClickRef.current) { suppressClickRef.current = false; return; } if (!disabled) onSelect(); }} className="relative cursor-pointer touch-pan-y bg-quartz outline-none transition-transform duration-200 focus-visible:ring-2 focus-visible:ring-turquoise-dark disabled:cursor-default" style={{ transform: `translateX(${offset}px)` }}>{children}</div>
   </div>;
 }
@@ -166,6 +162,7 @@ function PackingList({ items, onToggle, onUpdate, onDelete, disabled = false }: 
 
 /** The runtime Notebook reads/writes only through the PIN-protected server API. */
 export function NotebookShell() {
+  const { scheduleUndo } = useUndoToast();
   const [tab, setTab] = useState<Tab>(() => storageGet<Tab>(TAB_KEY, "money"));
   const [transition, setTransition] = useState<"forward" | "backward">("forward");
   const [data, setData] = useState<NotebookData>(() => storageGet<NotebookData>(CACHE_KEY, { packing: [], entries: [] }));
@@ -173,11 +170,10 @@ export function NotebookShell() {
   const [message, setMessage] = useState<string | null>(null);
   const [packingTitle, setPackingTitle] = useState("");
   const [isMutating, setIsMutating] = useState(false);
-  const [undoRecord, setUndoRecord] = useState<NotebookUndo | null>(null);
   const mutationLock = useRef(false);
-  const undoTimer = useRef<number | null>(null);
+  const dataRef = useRef(data);
 
-  function setNotebook(next: NotebookData) { storageSet(CACHE_KEY, next); setData(next); }
+  function setNotebook(next: NotebookData) { dataRef.current = next; storageSet(CACHE_KEY, next); setData(next); }
   async function load() {
     let migrationMessage: string | null = null;
     try {
@@ -200,19 +196,6 @@ export function NotebookShell() {
   }
   useEffect(() => { void load(); }, []);
   useEffect(() => { storageSet(TAB_KEY, tab); }, [tab]);
-  useEffect(() => () => { if (undoTimer.current !== null) window.clearTimeout(undoTimer.current); }, []);
-
-  function clearUndo() {
-    if (undoTimer.current !== null) window.clearTimeout(undoTimer.current);
-    undoTimer.current = null;
-    setUndoRecord(null);
-  }
-  function scheduleUndo(record: NotebookUndo) {
-    if (undoTimer.current !== null) window.clearTimeout(undoTimer.current);
-    setUndoRecord(record);
-    undoTimer.current = window.setTimeout(() => { undoTimer.current = null; setUndoRecord(null); }, 5000);
-  }
-
   function changeTab(next: Tab) {
     if (next === tab) return;
     setTransition(TABS.findIndex((item) => item.id === next) > TABS.findIndex((item) => item.id === tab) ? "forward" : "backward");
@@ -246,28 +229,11 @@ export function NotebookShell() {
       throw error;
     }
   }
-  async function deleteEntry(entry: NotebookEntryRecord) { try { await request("DELETE", { resource: "entry", id: entry.id }); setNotebook({ ...data, entries: data.entries.filter((current) => current.id !== entry.id) }); scheduleUndo({ resource: "entry", value: entry }); setMessage(null); } catch (error) { setMessage(error instanceof Error ? error.message : "A törlés nem sikerült."); } }
+  async function deleteEntry(entry: NotebookEntryRecord) { try { await request("DELETE", { resource: "entry", id: entry.id }); const current = dataRef.current; setNotebook({ ...current, entries: current.entries.filter((item) => item.id !== entry.id) }); scheduleUndo({ message: "Bejegyzés törölve.", onUndo: async () => { const restored = await request("POST", { resource: "entry", data: { kind: entry.kind, content: entry.content, amountEur: entry.amountEur, occurredOn: entry.occurredOn, rating: entry.rating } }) as unknown as NotebookEntryRecord; const latest = dataRef.current; setNotebook({ ...latest, entries: [restored, ...latest.entries] }); setMessage(null); }, onError: (error) => setMessage(error instanceof Error ? error.message : "A visszaállítás nem sikerült.") }); setMessage(null); } catch (error) { setMessage(error instanceof Error ? error.message : "A törlés nem sikerült."); } }
   async function addPacking(event: FormEvent<HTMLFormElement>) { event.preventDefault(); if (!packingTitle.trim()) return; try { const item = await request("POST", { resource: "packing", data: { title: packingTitle.trim(), isPacked: false, position: data.packing.length } }) as unknown as PackingItemRecord; setNotebook({ ...data, packing: [...data.packing, item] }); setPackingTitle(""); setMessage(null); } catch (error) { setMessage(error instanceof Error ? error.message : "A mentés nem sikerült."); } }
   async function togglePacking(item: PackingItemRecord) { try { const updated = await request("PATCH", { resource: "packing", id: item.id, data: { title: item.title, isPacked: !item.isPacked, position: item.position } }) as unknown as PackingItemRecord; setNotebook({ ...data, packing: data.packing.map((entry) => entry.id === item.id ? updated : entry) }); setMessage(null); } catch (error) { setMessage(error instanceof Error ? error.message : "A mentés nem sikerült."); } }
   async function updatePacking(item: PackingItemRecord, title: string) { try { const updated = await request("PATCH", { resource: "packing", id: item.id, data: { title, isPacked: item.isPacked, position: item.position } }) as unknown as PackingItemRecord; setNotebook({ ...data, packing: data.packing.map((current) => current.id === item.id ? updated : current) }); setMessage(null); } catch (error) { setMessage(error instanceof Error ? error.message : "A mentés nem sikerült."); throw error; } }
-  async function deletePacking(item: PackingItemRecord) { try { await request("DELETE", { resource: "packing", id: item.id }); setNotebook({ ...data, packing: data.packing.filter((current) => current.id !== item.id) }); scheduleUndo({ resource: "packing", value: item }); setMessage(null); } catch (error) { setMessage(error instanceof Error ? error.message : "A törlés nem sikerült."); } }
-  async function restoreUndo() {
-    const record = undoRecord;
-    if (!record) return;
-    clearUndo();
-    try {
-      if (record.resource === "entry") {
-        const { value } = record;
-        const entry = await request("POST", { resource: "entry", data: { kind: value.kind, content: value.content, amountEur: value.amountEur, occurredOn: value.occurredOn, rating: value.rating } }) as unknown as NotebookEntryRecord;
-        setNotebook({ ...data, entries: [entry, ...data.entries] });
-      } else {
-        const { value } = record;
-        const item = await request("POST", { resource: "packing", data: { title: value.title, isPacked: value.isPacked, position: value.position } }) as unknown as PackingItemRecord;
-        setNotebook({ ...data, packing: [item, ...data.packing] });
-      }
-      setMessage(null);
-    } catch (error) { setMessage(error instanceof Error ? error.message : "A visszaállítás nem sikerült."); }
-  }
+  async function deletePacking(item: PackingItemRecord) { try { await request("DELETE", { resource: "packing", id: item.id }); const current = dataRef.current; setNotebook({ ...current, packing: current.packing.filter((entry) => entry.id !== item.id) }); scheduleUndo({ message: "Pakolási tétel törölve.", onUndo: async () => { const restored = await request("POST", { resource: "packing", data: { title: item.title, isPacked: item.isPacked, position: item.position } }) as unknown as PackingItemRecord; const latest = dataRef.current; setNotebook({ ...latest, packing: [restored, ...latest.packing] }); setMessage(null); }, onError: (error) => setMessage(error instanceof Error ? error.message : "A visszaállítás nem sikerült.") }); setMessage(null); } catch (error) { setMessage(error instanceof Error ? error.message : "A törlés nem sikerült."); } }
 
   const expenses = data.entries.filter((entry) => entry.kind === "expense");
   const total = useMemo(() => expenses.reduce((sum, entry) => sum + (entry.amountEur ?? 0), 0), [expenses]);
@@ -283,6 +249,5 @@ export function NotebookShell() {
       {tab === "notes" ? <section className="pt-5"><EntryForm kind="note" onCreate={createEntry} disabled={status !== "ready" || isMutating} /><EntryList entries={data.entries} kind="note" onDelete={deleteEntry} onUpdate={updateEntry} disabled={status !== "ready" || isMutating} /></section> : null}
       {tab === "journal" ? <section className="pt-5"><EntryForm kind="journal" onCreate={createEntry} disabled={status !== "ready" || isMutating} /><EntryList entries={data.entries} kind="journal" onDelete={deleteEntry} onUpdate={updateEntry} disabled={status !== "ready" || isMutating} /></section> : null}
     </div>
-    {undoRecord ? <div role="status" className="fixed bottom-[calc(80px+env(safe-area-inset-bottom))] left-4 right-4 z-40 flex min-h-12 items-center justify-between gap-3 rounded-ui-s bg-deep-sea px-4 py-2 text-sm text-white shadow-lg"><span>{undoRecord.resource === "entry" ? "Bejegyzés törölve." : "Pakolási tétel törölve."}</span><button type="button" disabled={isMutating} onClick={() => void restoreUndo()} className="min-h-10 shrink-0 rounded-full bg-white/15 px-3 text-sm font-semibold text-white disabled:opacity-50">Visszaállítás</button></div> : null}
   </section>;
 }
