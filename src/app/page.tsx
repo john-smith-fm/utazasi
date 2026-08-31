@@ -12,7 +12,7 @@ import { NotificationPreference } from "@/components/NotificationPreference";
 import { EventSuggestions } from "@/components/EventSuggestions";
 import { useUndoToast } from "@/components/UndoProvider";
 import { type HomeActivity } from "@/data/home-days";
-import { TRIP_CORE_DAYS } from "@/data/trip-core";
+import { TRIP_CORE_DAYS, TRIP_RUNTIME } from "@/data/trip-core";
 import { useTimelineDay, useTripTimeline } from "@/hooks/useTimelineDay";
 import { useLiveData } from "@/hooks/useLiveData";
 import { useCurrentLocationContext } from "@/hooks/useCurrentLocationContext";
@@ -21,6 +21,7 @@ import { useTripEvents } from "@/hooks/useTripEvents";
 import { createTimelineActivity, deleteTimelineActivity, updateTimelineActivity } from "@/lib/timeline-client";
 import type { TimelineActivityInput, TimelineActivityRecord } from "@/lib/timeline-types";
 import { smartStatusSummary } from "@/lib/smart-status";
+import { initialTripDate } from "@/lib/initial-trip-date";
 
 type EditorState = { activity?: HomeActivity; draft?: TimelineActivityInput; draftId?: string } | null;
 type ToastState = { message: string } | null;
@@ -69,7 +70,9 @@ function draftFromSession(id: string): TimelineActivityInput | null {
 
 export default function HomePage() {
   const { scheduleUndo } = useUndoToast();
-  const [selectedDate, setSelectedDate] = useState(TRIP_CORE_DAYS[1].date);
+  // Initial selection only. Later clicks own this same state and must never
+  // be pulled back to today's date during the session.
+  const [selectedDate, setSelectedDate] = useState(() => initialTripDate(TRIP_RUNTIME));
   const [editor, setEditor] = useState<EditorState>(null);
   const [pendingEditorId, setPendingEditorId] = useState<string | null>(null);
   const [toast, setToast] = useState<ToastState>(null);

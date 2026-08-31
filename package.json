@@ -29,7 +29,7 @@
     "test:research": "node --test scripts/research/*.test.mjs",
     "test:gate0": "node --test scripts/gate0/*.test.mjs",
     "test:notebook": "node --test scripts/notebook/*.test.mjs",
-    "test:timeline": "node --test scripts/timeline/*.test.mjs",
+    "test:timeline": "node --no-warnings --experimental-strip-types --test scripts/timeline/*.test.mjs scripts/timeline/*.test.ts",
     "test:access": "node --no-warnings --experimental-strip-types --test scripts/access/*.test.mjs",
     "test:trip-base": "node --no-warnings --experimental-strip-types --test scripts/trip-base/*.test.mjs",
     "test:place-experience": "node --test scripts/place-experience/*.test.mjs",
