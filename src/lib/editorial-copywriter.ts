@@ -19,6 +19,7 @@ Grounding rules:
 - Use only the supplied brief. You do not have web, database, calendar, weather or route access.
 - Never invent an opening hour, route, travel time, price, availability, weather detail, beach fact, event detail or program that is not in the brief.
 - Mention a concrete place or event only if it appears in mainActivity, verifiedEvent or placeFacts.
+- Place facilities and infrastructure are not an itinerary. Never turn a station, parking, accessibility feature, shop, restaurant or any other venue attribute into a planned transport mode, visit, stop or daily activity unless the brief explicitly identifies it as the main activity or verified event.
 - If you make a concrete factual claim, copy its supporting item verbatim into grounding. Grounding may contain only strings supplied in the allowedGrounding array.
 - The brief deliberately contains no sensory or qualitative travel facts unless stated explicitly. Do not add sunshine, waves, sea conditions, sand, scenery, distance, crowds, availability, "korai"/"késői" timing, or similar colour just to make the prose livelier.
 - When the brief has no stated detail beyond the programme shape, keep the subtitle neutral and schedule-level: name the supported focus, then describe only its rhythm (for example, that the day is organised around it and remains flexible). This is preferable to an attractive but unsupported detail.

@@ -48,7 +48,7 @@ const theme = (activity) => {
   return "general";
 };
 const priority = ["travel", "event", "beach", "explore", "family", "shopping", "food", "rest", "general"];
-const copyPrompt = `You are the editorial copywriter for Utazási, a private Hungarian family travel companion. Return exactly JSON with title, subtitle and grounding. Use only the supplied brief. Internally, first find ONE detail that makes the day distinct from the rest of the trip using tripEditorialSummary, then write about that difference; do not output reasoning. Title: Hungarian, 2–6 words, one line, no final punctuation, specific and memorable; it is an editorial hook, not an activity label. Do not use “nap”, “pihenőnap” or “napritmus” merely as labels. Subtitle: one natural grounded sentence that explains why the title fits; never a Timeline list. Beach alone is usually not a difference: prefer first/return/consecutive appearance, contrast, trip arc, event, or another supplied distinction. For repeated places, never present them as new. Vary the 12-day series; do not make every title start with a place or every subtitle share a sentence frame. Use a consistent second-person plural voice if personal wording is needed. Do not use emoji, bullets, headings, date labels, "ma", "mai terv", "napi program", program counts, generic travel-ad copy, or filler. Never invent opening hours, routes, prices, availability, weather, facts, programme details, sensory details, sand, waves, scenery, crowds, or early/late timing. Mention a concrete place/event only from the brief. grounding must contain one or more exact strings from allowedGrounding.`;
+const copyPrompt = `You are the editorial copywriter for Utazási, a private Hungarian family travel companion. Return exactly JSON with title, subtitle and grounding. Use only the supplied brief. Internally, first find ONE detail that makes the day distinct from the rest of the trip using tripEditorialSummary, then write about that difference; do not output reasoning. Title: Hungarian, 2–6 words, one line, no final punctuation, specific and memorable; it is an editorial hook, not an activity label. Do not use “nap”, “pihenőnap” or “napritmus” merely as labels. Subtitle: one natural grounded sentence that explains why the title fits; never a Timeline list. Beach alone is usually not a difference: prefer first/return/consecutive appearance, contrast, trip arc, event, or another supplied distinction. For repeated places, never present them as new. Vary the 12-day series; do not make every title start with a place or every subtitle share a sentence frame. Place facilities and infrastructure are not an itinerary: never turn a station, parking, accessibility feature, shop, restaurant or venue attribute into a planned transport mode, visit, stop or activity unless it is explicitly the main activity or verified event. Use a consistent second-person plural voice if personal wording is needed. Do not use emoji, bullets, headings, date labels, "ma", "mai terv", "napi program", program counts, generic travel-ad copy, or filler. Never invent opening hours, routes, prices, availability, weather, facts, programme details, sensory details, sand, waves, scenery, crowds, or early/late timing. Mention a concrete place/event only from the brief. grounding must contain one or more exact strings from allowedGrounding.`;
 
 function phaseFor(date) {
   if (date === trip.start_date) return "arrival";
@@ -99,8 +99,6 @@ for (let index = startAt; index < endAt; index += 1) {
   const dominant = priority.map((value) => timeline.find((item) => theme(item) === value)).find(Boolean) ?? null;
   const canonicalSlug = dominant?.place_slug ? (aliases[dominant.place_slug] ?? dominant.place_slug) : null;
   const canonicalPlace = canonicalSlug && canonicalSlug !== TRIP_BASE_SLUG ? places.get(canonicalSlug) : null;
-  const linked = [...new Set(timeline.map((item) => item.place_slug ? (aliases[item.place_slug] ?? item.place_slug) : null).filter(Boolean))]
-    .filter((slug) => slug !== TRIP_BASE_SLUG).map((slug) => places.get(slug)).filter(Boolean).slice(0, 2);
   const signals = signalsFor(day, index, timeline, themes);
   if (themes.includes("event")) signals.push("special_event");
   const event = timeline.find((item) => item.source_event_id) ?? null;
@@ -112,7 +110,7 @@ for (let index = startAt; index < endAt; index += 1) {
     mainActivity: dominant ? { type: theme(dominant), placeName: canonicalPlace?.name ?? null } : null,
     secondaryShape: signals.includes("evening_event") ? "event_evening" : signals.includes("relaxed_day") ? "relaxed" : signals.includes("busy_day") ? "busy" : signals.includes("empty_day") ? "open" : "simple",
     verifiedEvent: event ? { title: event.title, time: event.start_time || null } : null,
-    placeFacts: linked.map((place) => ({ name: place.name, type: place.type, facts: [] })),
+    placeFacts: [],
     recentEditorialCopy: priorCopies.slice(-4),
     tripEditorialSummary,
   };

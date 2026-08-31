@@ -1,7 +1,6 @@
 import type { HomeDay } from "../data/home-days.ts";
 import { buildDayEditorialContext, dayDisplayContext, type DayEditorialTrip } from "./day-display-context.ts";
 import { getPlaceBySlug } from "./places.ts";
-import { getPlaceQuestionFacts } from "./place-question-facts.ts";
 import type { EditorialCopyInput, TripEditorialBeat } from "./editorial-copy-contract.ts";
 
 function secondaryShape(context: ReturnType<typeof buildDayEditorialContext>): EditorialCopyInput["secondaryShape"] {
@@ -21,15 +20,6 @@ function publicMainPlace(context: ReturnType<typeof buildDayEditorialContext>) {
 export function buildEditorialCopyInput(day: HomeDay, trip: DayEditorialTrip, tripDays: readonly HomeDay[]): EditorialCopyInput {
   const context = buildDayEditorialContext(day, trip, tripDays);
   const event = context.timeline.find((activity) => activity.localEvent || activity.sourceEventId);
-  const placeFacts = context.linkedPlaceSlugs.slice(0, 2).flatMap((slug) => {
-    const place = getPlaceBySlug(slug);
-    if (!place) return [];
-    return [{
-      name: place.name,
-      type: place.type,
-      facts: getPlaceQuestionFacts(place).slice(0, 4).map((fact) => `${fact.label}: ${fact.value}`),
-    }];
-  });
   const previousDays = tripDays.filter((item) => item.date < day.date).sort((left, right) => left.date.localeCompare(right.date)).slice(-4);
   // A Timeline activity may contain a free-text location (including the private
   // accommodation). Only surface a canonical public Place name to the model.
@@ -60,7 +50,10 @@ export function buildEditorialCopyInput(day: HomeDay, trip: DayEditorialTrip, tr
       : null,
     secondaryShape: secondaryShape(context),
     verifiedEvent: event ? { title: event.title, time: event.time || null } : null,
-    placeFacts,
+    // A Place adatlap felszereltsége nem napi programtény. A szerkesztői
+    // fejléc csak a nap ívéről szólhat, ezért nem kap például parkolás-,
+    // vasútállomás- vagy akadálymentességi háttéradatokat.
+    placeFacts: [],
     // Stable deterministic previous copy is deliberately used as style context.
     // Previously generated LLM copy is not fed back in: opening days in a
     // different order must not create a new fingerprint or rewrite a day.
