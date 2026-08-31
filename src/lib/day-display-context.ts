@@ -13,7 +13,7 @@ export type DayEditorialTrip = {
 
 export type TripPhase = "arrival" | "early" | "middle" | "late" | "last_full_day" | "departure";
 export type DaySignal = "empty_day" | "arrival_day" | "departure_day" | "beach_day" | "excursion_day" | "relaxed_day" | "busy_day" | "special_event" | "evening_event" | "new_place" | "returning_place" | "shopping_day" | "mostly_local" | "trip_midpoint" | "last_full_day";
-type DayTheme = "travel" | "beach" | "family" | "explore" | "shopping" | "food" | "rest" | "event" | "general";
+export type DayTheme = "travel" | "beach" | "family" | "explore" | "shopping" | "food" | "rest" | "event" | "general";
 
 export type DayEditorialContext = {
   date: string;
@@ -22,6 +22,7 @@ export type DayEditorialContext = {
   tripPhase: TripPhase;
   timeline: readonly HomeActivity[];
   dominantActivity?: HomeActivity;
+  dominantActivityType?: DayTheme;
   linkedPlaceSlugs: readonly string[];
   signals: readonly DaySignal[];
   /** Reserved for a future evidence-backed recommendation. Never invented here. */
@@ -107,7 +108,17 @@ export function buildDayEditorialContext(day: HomeDay, trip: DayEditorialTrip, t
   }
   if (timeline.length && timeline.every((activity) => !activity.placeSlug || activity.placeSlug.includes("villasimius"))) signals.add("mostly_local");
 
-  return { date: day.date, tripDayNumber, tripDayCount, tripPhase, timeline, dominantActivity, linkedPlaceSlugs, signals: [...signals] };
+  return {
+    date: day.date,
+    tripDayNumber,
+    tripDayCount,
+    tripPhase,
+    timeline,
+    dominantActivity,
+    dominantActivityType: dominantActivity ? themeFor(dominantActivity) : undefined,
+    linkedPlaceSlugs,
+    signals: [...signals],
+  };
 }
 
 function has(context: DayEditorialContext, signal: DaySignal) {

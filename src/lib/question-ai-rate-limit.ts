@@ -15,6 +15,11 @@ function configuredResearchLimit() {
   return Number.isFinite(value) ? Math.min(Math.max(value, 1), 30) : 8;
 }
 
+function configuredEditorialLimit() {
+  const value = Number.parseInt(process.env.EDITORIAL_COPY_RATE_LIMIT_PER_HOUR ?? "16", 10);
+  return Number.isFinite(value) ? Math.min(Math.max(value, 1), 30) : 16;
+}
+
 function checkRateLimit(bucket: string, limit: number, now = Date.now()): RateLimitResult {
   const earliest = now - WINDOW_MS;
   const recent = (requestsBySession.get(bucket) ?? []).filter((timestamp) => timestamp > earliest);
@@ -40,6 +45,12 @@ export function checkQuestionAIRateLimit(sessionId: string, now = Date.now()): R
  * deliberately smaller per-session budget. */
 export function checkQuestionResearchRateLimit(sessionId: string, now = Date.now()): RateLimitResult {
   return checkRateLimit(`research:${sessionId}`, configuredResearchLimit(), now);
+}
+
+/** Daily header copy is useful but never essential. Keep a smaller, separate
+ * best-effort budget so it cannot consume the question/research allowance. */
+export function checkEditorialCopyRateLimit(sessionId: string, now = Date.now()): RateLimitResult {
+  return checkRateLimit(`editorial:${sessionId}`, configuredEditorialLimit(), now);
 }
 
 export function resetQuestionAIRateLimitForTests() {

@@ -21,6 +21,8 @@ import { createTimelineActivity, deleteTimelineActivity, updateTimelineActivity 
 import type { TimelineActivityInput, TimelineActivityRecord } from "@/lib/timeline-types";
 import { initialTripDate } from "@/lib/initial-trip-date";
 import { dayDisplayContext } from "@/lib/day-display-context";
+import { buildEditorialCopyInput } from "@/lib/editorial-copy-context";
+import { useEditorialCopy } from "@/hooks/useEditorialCopy";
 
 type EditorState = { activity?: HomeActivity; draft?: TimelineActivityInput; draftId?: string } | null;
 type ToastState = { message: string } | null;
@@ -86,6 +88,9 @@ export default function HomePage() {
   const events = useTripEvents(selectedDate);
   const canMutate = canWrite;
   const displayContext = useMemo(() => dayDisplayContext(day, TRIP_RUNTIME, tripTimeline.days), [day, tripTimeline.days]);
+  const editorialInput = useMemo(() => buildEditorialCopyInput(day, TRIP_RUNTIME, tripTimeline.days), [day, tripTimeline.days]);
+  const editorialFallback = useMemo(() => ({ title: displayContext.title, subtitle: displayContext.summary }), [displayContext]);
+  const editorialCopy = useEditorialCopy(editorialInput, editorialFallback);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -170,7 +175,7 @@ export default function HomePage() {
       <SunCard weather={weather} locationLabel={currentLocation.context.label} deviceState={currentLocation.deviceState} onRequestDeviceLocation={currentLocation.requestDeviceLocation} />
       <div className="px-5">
         <NotificationPreference />
-        <TimelineCard day={day} days={TRIP_CORE_DAYS} context={displayContext} onSelect={setSelectedDate} />
+        <TimelineCard day={day} days={TRIP_CORE_DAYS} context={{ ...displayContext, title: editorialCopy.title, summary: editorialCopy.subtitle }} onSelect={setSelectedDate} />
         <EventSuggestions date={selectedDate} events={events} onAccepted={() => { retry(); tripTimeline.retry(); showToast("Esemény hozzáadva a napi tervhez"); }} />
         <section className="mt-8"><PlanList activities={day.activities} status={status} hasCachedDay={hasRemoteDay} canEdit={canMutate} onRetry={retry} onSelect={(activity) => setEditor({ activity })} onDelete={(activity) => { void remove(activity).catch((caught) => showToast(caught instanceof Error ? caught.message : "A törlés nem sikerült.")); }} onTimeChange={changeStartTime} onError={showToast} /></section>
         <div aria-hidden="true" className="h-12" />
