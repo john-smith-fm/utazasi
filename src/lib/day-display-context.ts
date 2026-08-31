@@ -6,7 +6,27 @@ export type DayDisplayContext = {
   isFallback: boolean;
 };
 
+export type DayEditorialTrip = {
+  startDate: string;
+  endDate: string;
+};
+
+export type TripPhase = "arrival" | "early" | "middle" | "late" | "last_full_day" | "departure";
+export type DaySignal = "empty_day" | "arrival_day" | "departure_day" | "beach_day" | "excursion_day" | "relaxed_day" | "busy_day" | "special_event" | "evening_event" | "new_place" | "returning_place" | "shopping_day" | "mostly_local" | "trip_midpoint" | "last_full_day";
 type DayTheme = "travel" | "beach" | "family" | "explore" | "shopping" | "food" | "rest" | "event" | "general";
+
+export type DayEditorialContext = {
+  date: string;
+  tripDayNumber: number;
+  tripDayCount: number;
+  tripPhase: TripPhase;
+  timeline: readonly HomeActivity[];
+  dominantActivity?: HomeActivity;
+  linkedPlaceSlugs: readonly string[];
+  signals: readonly DaySignal[];
+  /** Reserved for a future evidence-backed recommendation. Never invented here. */
+  recommendation?: never;
+};
 
 function normalized(value: string): string {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -29,72 +49,123 @@ function themeFor(activity: HomeActivity): DayTheme {
   return "general";
 }
 
-function shortPlaceName(place: string): string {
-  return place.replace(/^Spiaggia di\s+/i, "").replace(/^Area Marina Protetta\s+/i, "").trim();
+function calendarDistance(startDate: string, endDate: string): number {
+  return Math.round((Date.parse(`${endDate}T00:00:00Z`) - Date.parse(`${startDate}T00:00:00Z`)) / 86_400_000);
 }
 
-function mainActivity(activities: HomeActivity[]): HomeActivity {
-  const priority: DayTheme[] = ["travel", "beach", "explore", "family", "shopping", "event", "food", "rest", "general"];
-  return priority
-    .map((theme) => activities.find((activity) => themeFor(activity) === theme))
-    .find((activity): activity is HomeActivity => Boolean(activity)) ?? activities[0]!;
+function phaseFor(date: string, trip: DayEditorialTrip): TripPhase {
+  const dayNumber = calendarDistance(trip.startDate, date) + 1;
+  const dayCount = calendarDistance(trip.startDate, trip.endDate) + 1;
+  if (date === trip.startDate) return "arrival";
+  if (date === trip.endDate) return "departure";
+  if (dayNumber === dayCount - 1) return "last_full_day";
+  if (dayNumber <= 3) return "early";
+  if (dayNumber >= dayCount - 2) return "late";
+  return "middle";
 }
 
-function companionClause(activities: HomeActivity[], primary: HomeActivity): string | null {
-  const companion = activities.find((activity) => activity !== primary && themeFor(activity) === "rest")
-    ?? activities.find((activity) => activity !== primary && themeFor(activity) === "food")
-    ?? activities.find((activity) => activity !== primary && themeFor(activity) === "family")
-    ?? activities.find((activity) => activity !== primary && themeFor(activity) === "event");
-  if (!companion) return null;
-  const theme = themeFor(companion);
-  if (theme === "rest") return "marad idő pihenésre is";
-  if (theme === "food") return normalized(companion.title).includes("vacsora") ? "este egy nyugodt vacsorával" : "egy nyugodt étkezéssel";
-  if (theme === "family") return "könnyű gyerekprogrammal";
-  return `este ${companion.title.trim()} programjával`;
+function mainActivity(activities: readonly HomeActivity[]): HomeActivity | undefined {
+  const priority: DayTheme[] = ["travel", "event", "beach", "explore", "family", "shopping", "food", "rest", "general"];
+  return priority.map((theme) => activities.find((activity) => themeFor(activity) === theme)).find(Boolean);
 }
 
-function titleFor(primary: HomeActivity, activities: HomeActivity[]): string {
-  const theme = themeFor(primary);
-  const text = activities.map(activityText).join(" ");
-  const place = shortPlaceName(primary.place);
-  if (theme === "travel") return /haza|budapest|autoleadas|repulo indulas|check.?out/.test(text) ? "Hazautazás" : "Első nap a szigeten";
-  if (theme === "beach") return place ? `${place} felé` : "Tengerparti nap";
-  if (theme === "explore") return place ? `${place} felé` : "Felfedezés a szigeten";
-  if (theme === "family") return "Könnyű nap együtt";
-  if (theme === "shopping") return "Ráhangolódás Villasimiusban";
-  if (theme === "event") return `${primary.title.trim()} estéje`;
-  if (theme === "food" || theme === "rest") return "Lassú nap Villasimiusban";
-  return "Közös nap Villasimiusban";
+function effectiveTripDays(day: HomeDay, tripDays: readonly HomeDay[]): readonly HomeDay[] {
+  const otherDays = tripDays.filter((item) => item.date !== day.date);
+  return [...otherDays, day];
 }
 
-function summaryFor(primary: HomeActivity, activities: HomeActivity[]): string {
-  const theme = themeFor(primary);
-  const place = primary.place.trim();
-  const companion = companionClause(activities, primary);
-  const ending = companion ? `, ${companion}.` : ".";
-  if (theme === "travel") {
-    const returning = /haza|budapest|autoleadas|repulo indulas|check.?out/.test(activities.map(activityText).join(" "));
-    return returning
-      ? `A nap az indulás és az utazás köré szerveződik${companion ? `; ${companion}` : ""}.`
-      : `Megérkezés után ${companion ?? "kényelmesen lehet ráhangolódni a következő napokra"}.`;
+/** Builds only facts and deterministic signals; it never writes runtime data. */
+export function buildDayEditorialContext(day: HomeDay, trip: DayEditorialTrip, tripDays: readonly HomeDay[] = []): DayEditorialContext {
+  const timeline = day.activities.filter((activity) => activity.title.trim());
+  const tripDayNumber = calendarDistance(trip.startDate, day.date) + 1;
+  const tripDayCount = calendarDistance(trip.startDate, trip.endDate) + 1;
+  const tripPhase = phaseFor(day.date, trip);
+  const dominantActivity = mainActivity(timeline);
+  const signals = new Set<DaySignal>();
+  const days = effectiveTripDays(day, tripDays);
+  const previousActivities = days.filter((item) => item.date < day.date).flatMap((item) => item.activities);
+  const linkedPlaceSlugs = [...new Set(timeline.flatMap((activity) => activity.placeSlug ? [activity.placeSlug] : []))];
+
+  if (!timeline.length) signals.add("empty_day");
+  if (tripPhase === "arrival") signals.add("arrival_day");
+  if (tripPhase === "departure") signals.add("departure_day");
+  if (tripPhase === "last_full_day") signals.add("last_full_day");
+  if (tripDayNumber === Math.ceil(tripDayCount / 2)) signals.add("trip_midpoint");
+  if (timeline.length >= 4) signals.add("busy_day");
+  if (timeline.some((activity) => themeFor(activity) === "beach")) signals.add("beach_day");
+  if (timeline.some((activity) => themeFor(activity) === "explore")) signals.add("excursion_day");
+  if (timeline.some((activity) => themeFor(activity) === "shopping")) signals.add("shopping_day");
+  if (timeline.some((activity) => themeFor(activity) === "rest")) signals.add("relaxed_day");
+  const event = timeline.find((activity) => themeFor(activity) === "event");
+  if (event) {
+    signals.add("special_event");
+    if (/este/.test(normalized(event.time)) || /^([12]\d):/.test(event.time)) signals.add("evening_event");
   }
-  if (theme === "beach") return `${place || "A kiválasztott strand"} adja a nap fő ritmusát${ending}`;
-  if (theme === "explore") return `${place || "A kirándulás"} a nap fő célpontja${ending}`;
-  if (theme === "family") return `${place ? `${place} köré szerveződik a délelőtt` : "A nap gyerekprogrammal indul"}${ending}`;
-  if (theme === "shopping") return `${place || "A bevásárlás"} az első fontos megálló, utána rugalmasan alakulhat a nap${companion ? `, ${companion}` : ""}.`;
-  if (theme === "event") return `Napközben rugalmasan alakulhat a program, este pedig ${primary.title.trim()} adja a nap keretét${place ? ` ${place} helyszínen` : ""}.`;
-  if (theme === "food" || theme === "rest") return `Lazább nap, amelyben ${companion ?? "marad idő pihenésre és közös programra"}.`;
-  return `A nap a közös programok köré szerveződik${companion ? `, ${companion}` : ""}.`;
+  if (dominantActivity?.placeSlug) {
+    const seenEarlier = previousActivities.some((activity) => activity.placeSlug === dominantActivity.placeSlug);
+    signals.add(seenEarlier ? "returning_place" : "new_place");
+  }
+  if (timeline.length && timeline.every((activity) => !activity.placeSlug || activity.placeSlug.includes("villasimius"))) signals.add("mostly_local");
+
+  return { date: day.date, tripDayNumber, tripDayCount, tripPhase, timeline, dominantActivity, linkedPlaceSlugs, signals: [...signals] };
+}
+
+function has(context: DayEditorialContext, signal: DaySignal) {
+  return context.signals.includes(signal);
+}
+
+function titleFor(context: DayEditorialContext): string {
+  const primary = context.dominantActivity;
+  const primaryTheme = primary ? themeFor(primary) : "general";
+  if (has(context, "empty_day")) return "A nap még előttetek van";
+  if (has(context, "departure_day")) return "Még egy utolsó délelőtt";
+  if (has(context, "arrival_day")) return "Első nap a szigeten";
+  if (has(context, "special_event") && primaryTheme === "event") return `Este ${primary?.title.trim()}`;
+  if (has(context, "last_full_day") && has(context, "beach_day")) return "Még egyszer a víz mellett";
+  if (has(context, "trip_midpoint") && has(context, "beach_day")) return "Félidő, mezítláb";
+  if (has(context, "returning_place") && has(context, "beach_day")) return "Vissza a vízhez";
+  if (has(context, "new_place") && has(context, "beach_day")) return "Ma valami új";
+  if (has(context, "beach_day")) return "Vízparti ritmus";
+  if (has(context, "excursion_day")) return "Egy kicsit messzebb";
+  if (primaryTheme === "family") return "Könnyű nap együtt";
+  if (has(context, "shopping_day")) return "Kényelmes indulás";
+  if (has(context, "relaxed_day")) return "Ma nem sietünk sehova";
+  return "Közös nap együtt";
+}
+
+function companionClause(context: DayEditorialContext): string {
+  const rest = context.timeline.find((activity) => activity !== context.dominantActivity && themeFor(activity) === "rest");
+  const food = context.timeline.find((activity) => activity !== context.dominantActivity && themeFor(activity) === "food");
+  const family = context.timeline.find((activity) => activity !== context.dominantActivity && themeFor(activity) === "family");
+  if (rest) return "utána pihenősebb ritmus következik";
+  if (food) return normalized(food.title).includes("vacsora") ? "este egy nyugodt vacsorával zárul" : "mellette jut idő egy nyugodt étkezésre";
+  if (family) return "mellette könnyű gyerekprogram is belefér";
+  return "utána szabadabban alakulhat a nap";
+}
+
+function subtitleFor(context: DayEditorialContext): string {
+  const primary = context.dominantActivity;
+  if (has(context, "empty_day")) return "Egyelőre nincs tervetek erre a napra. Jó alkalom lehet egy új közös programhoz.";
+  if (has(context, "departure_day")) return "A napi terv az induláshoz igazodik, így marad idő mindenre a hazautazás előtt.";
+  if (has(context, "arrival_day")) return "Megérkezés után kényelmesen lehet ráhangolódni a közös napokra.";
+  if (has(context, "special_event") && primary && themeFor(primary) === "event") return `Napközben rugalmasan alakulhat a program, este pedig ${primary.title.trim()} adja a nap keretét.`;
+  if (has(context, "beach_day") && primary) {
+    const isReturn = has(context, "returning_place");
+    const history = isReturn ? "Már korábban is szerepelt ezen az utazáson; " : "";
+    return `${history}${primary.place || "A strand"} köré épül a nap, ${companionClause(context)}.`;
+  }
+  if (has(context, "excursion_day") && primary) return `${primary.place || "A kirándulás"} a nap fő célpontja, ${companionClause(context)}.`;
+  if (primary && themeFor(primary) === "family") return `${primary.place || "A gyerekprogram"} köré szerveződik a délelőtt, ${companionClause(context)}.`;
+  if (has(context, "shopping_day")) return "A szükséges beszerzések után rugalmasan alakulhat a nap többi része.";
+  if (has(context, "relaxed_day")) return "Lazább ritmusú nap, amelyben a közös programok mellett pihenésre is marad idő.";
+  return "A napi terv a közös programok köré szerveződik, kényelmesen alakítható ritmusban.";
 }
 
 /**
- * Read-only editorial layer above the factual Timeline: title tells what kind
- * of day it is; subtitle gives its rhythm. Neither writes nor duplicates the
- * detailed programme list shown below it.
+ * Stable, deterministic editorial copy from grounded DayEditorialContext.
+ * It is deliberately not an AI call and does not mutate Timeline or Notebook.
  */
-export function dayDisplayContext(day: HomeDay): DayDisplayContext {
-  const activities = day.activities.filter((activity) => activity.title.trim());
-  if (!activities.length) return { title: day.title, summary: day.summary, isFallback: true };
-  const primary = mainActivity(activities);
-  return { title: titleFor(primary, activities), summary: summaryFor(primary, activities), isFallback: false };
+export function dayDisplayContext(day: HomeDay, trip: DayEditorialTrip, tripDays: readonly HomeDay[] = []): DayDisplayContext {
+  const context = buildDayEditorialContext(day, trip, tripDays);
+  return { title: titleFor(context), summary: subtitleFor(context), isFallback: has(context, "empty_day") };
 }

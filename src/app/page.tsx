@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ActivityEditor } from "@/components/ActivityEditor";
 import { Hero } from "@/components/Hero";
 import { Icon } from "@/components/Icon";
@@ -85,7 +85,7 @@ export default function HomePage() {
   const { weather, sea } = useLiveData(currentLocation.context);
   const events = useTripEvents(selectedDate);
   const canMutate = canWrite;
-  const displayContext = dayDisplayContext(day);
+  const displayContext = useMemo(() => dayDisplayContext(day, TRIP_RUNTIME, tripTimeline.days), [day, tripTimeline.days]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
