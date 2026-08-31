@@ -31,8 +31,8 @@ test("a populated Timeline day receives a live, activity-derived context", () =>
     ],
   });
 
-  assert.equal(context.title, "Gyerekprogram és könnyű délután");
-  assert.equal(context.summary, "Délelőtt gyerekprogram: Parco Bussi. Délután ebéd és könyvtári program. Este vacsora.");
+  assert.equal(context.title, "Könnyű nap együtt");
+  assert.equal(context.summary, "Parco Bussi köré szerveződik a délelőtt, egy nyugodt étkezéssel.");
   assert.equal(context.isFallback, false);
 });
 
@@ -43,8 +43,8 @@ test("a program character change updates the textual title and subtitle without 
   };
 
   assert.deepEqual(dayDisplayContext(populated), {
-    title: "Strand és családi pihenés",
-    summary: "Délelőtt strandolás: Spiaggia di Porto Sa Ruxi.",
+    title: "Porto Sa Ruxi felé",
+    summary: "Spiaggia di Porto Sa Ruxi adja a nap fő ritmusát.",
     isFallback: false,
   });
   assert.deepEqual(dayDisplayContext({ ...populated, activities: [] }), dayDisplayContext(emptyDay));

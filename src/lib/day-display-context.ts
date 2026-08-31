@@ -6,8 +6,7 @@ export type DayDisplayContext = {
   isFallback: boolean;
 };
 
-type DayTheme = "travel" | "beach" | "family" | "explore" | "shopping" | "food" | "rest" | "general";
-type DayPeriod = "morning" | "afternoon" | "evening";
+type DayTheme = "travel" | "beach" | "family" | "explore" | "shopping" | "food" | "rest" | "event" | "general";
 
 function normalized(value: string): string {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -19,7 +18,8 @@ function activityText(activity: HomeActivity): string {
 
 function themeFor(activity: HomeActivity): DayTheme {
   const text = activityText(activity);
-  if (/repul|airport|rept[ée]r|erkezes|indulas|check.?out|autofelvetel|autoleadas/.test(text)) return "travel";
+  if (activity.localEvent || activity.sourceEventId) return "event";
+  if (/repul|airport|repter|erkezes|indulas|check.?out|autofelvetel|autoleadas/.test(text)) return "travel";
   if (/strand|spiaggia|beach|tengerpart/.test(text)) return "beach";
   if (/gyerek|jatszo|konyvtar|fagyi/.test(text)) return "family";
   if (/kirand|nuragh|hajo|marina|latnivalo|muzeum/.test(text)) return "explore";
@@ -29,64 +29,72 @@ function themeFor(activity: HomeActivity): DayTheme {
   return "general";
 }
 
-function titleFor(activities: HomeActivity[]): string {
-  const themes = new Set(activities.map(themeFor));
+function shortPlaceName(place: string): string {
+  return place.replace(/^Spiaggia di\s+/i, "").replace(/^Area Marina Protetta\s+/i, "").trim();
+}
+
+function mainActivity(activities: HomeActivity[]): HomeActivity {
+  const priority: DayTheme[] = ["travel", "beach", "explore", "family", "shopping", "event", "food", "rest", "general"];
+  return priority
+    .map((theme) => activities.find((activity) => themeFor(activity) === theme))
+    .find((activity): activity is HomeActivity => Boolean(activity)) ?? activities[0]!;
+}
+
+function companionClause(activities: HomeActivity[], primary: HomeActivity): string | null {
+  const companion = activities.find((activity) => activity !== primary && themeFor(activity) === "rest")
+    ?? activities.find((activity) => activity !== primary && themeFor(activity) === "food")
+    ?? activities.find((activity) => activity !== primary && themeFor(activity) === "family")
+    ?? activities.find((activity) => activity !== primary && themeFor(activity) === "event");
+  if (!companion) return null;
+  const theme = themeFor(companion);
+  if (theme === "rest") return "marad idő pihenésre is";
+  if (theme === "food") return normalized(companion.title).includes("vacsora") ? "este egy nyugodt vacsorával" : "egy nyugodt étkezéssel";
+  if (theme === "family") return "könnyű gyerekprogrammal";
+  return `este ${companion.title.trim()} programjával`;
+}
+
+function titleFor(primary: HomeActivity, activities: HomeActivity[]): string {
+  const theme = themeFor(primary);
   const text = activities.map(activityText).join(" ");
-  if (themes.has("travel")) return /haza|budapest|autoleadas|repulo indulas|check.?out/.test(text) ? "Hazautazás" : "Érkezés és ráhangolódás";
-  if (themes.has("beach") && themes.has("family")) return "Strand és gyerekprogram";
-  if (themes.has("beach")) return "Strand és családi pihenés";
-  if (themes.has("family")) return "Gyerekprogram és könnyű délután";
-  if (themes.has("explore")) return "Kirándulás és felfedezés";
-  if (themes.has("shopping")) return "Bevásárlás és rugalmas program";
-  if (themes.has("food") && themes.has("rest")) return "Lassú, családi nap";
-  if (themes.has("rest")) return "Pihenés és szabad program";
-  return "Közös programok";
+  const place = shortPlaceName(primary.place);
+  if (theme === "travel") return /haza|budapest|autoleadas|repulo indulas|check.?out/.test(text) ? "Hazautazás" : "Első nap a szigeten";
+  if (theme === "beach") return place ? `${place} felé` : "Tengerparti nap";
+  if (theme === "explore") return place ? `${place} felé` : "Felfedezés a szigeten";
+  if (theme === "family") return "Könnyű nap együtt";
+  if (theme === "shopping") return "Ráhangolódás Villasimiusban";
+  if (theme === "event") return `${primary.title.trim()} estéje`;
+  if (theme === "food" || theme === "rest") return "Lassú nap Villasimiusban";
+  return "Közös nap Villasimiusban";
 }
 
-function periodFor(activity: HomeActivity): DayPeriod {
-  const match = activity.time.match(/^(\d{2}):(\d{2})$/);
-  if (!match) return /este/.test(normalized(`${activity.time} ${activity.title}`)) ? "evening" : "afternoon";
-  const hour = Number(match[1]);
-  return hour < 12 ? "morning" : hour < 18 ? "afternoon" : "evening";
-}
-
-function phraseFor(activity: HomeActivity): string {
-  const theme = themeFor(activity);
-  const place = activity.place.trim();
-  if (theme === "beach") return place ? `strandolás: ${place}` : "strandolás";
-  if (theme === "family") {
-    if (/konyvtar/.test(activityText(activity))) return place ? `könyvtári program: ${place}` : "könyvtári program";
-    return place ? `gyerekprogram: ${place}` : "gyerekprogram";
+function summaryFor(primary: HomeActivity, activities: HomeActivity[]): string {
+  const theme = themeFor(primary);
+  const place = primary.place.trim();
+  const companion = companionClause(activities, primary);
+  const ending = companion ? `, ${companion}.` : ".";
+  if (theme === "travel") {
+    const returning = /haza|budapest|autoleadas|repulo indulas|check.?out/.test(activities.map(activityText).join(" "));
+    return returning
+      ? `A nap az indulás és az utazás köré szerveződik${companion ? `; ${companion}` : ""}.`
+      : `Megérkezés után ${companion ?? "kényelmesen lehet ráhangolódni a következő napokra"}.`;
   }
-  if (theme === "food") return normalized(activity.title).includes("ebed") ? "ebéd" : normalized(activity.title).includes("vacsora") ? "vacsora" : activity.title.toLowerCase();
-  if (theme === "rest") return normalized(activity.title).includes("alszik") ? "pihenő a szálláson" : activity.title.toLowerCase();
-  const title = activity.title.trim();
-  return place ? `${title} a ${place} helyszínen` : title.toLowerCase();
-}
-
-function naturalList(items: string[]): string {
-  if (items.length <= 1) return items[0] ?? "";
-  if (items.length === 2) return `${items[0]} és ${items[1]}`;
-  return `${items.slice(0, -1).join(", ")} és ${items.at(-1)}`;
-}
-
-function summaryFor(activities: HomeActivity[]): string {
-  const groups: Record<DayPeriod, HomeActivity[]> = { morning: [], afternoon: [], evening: [] };
-  activities.forEach((activity) => groups[periodFor(activity)].push(activity));
-  const labels: Record<DayPeriod, string> = { morning: "Délelőtt", afternoon: "Délután", evening: "Este" };
-  return (Object.entries(groups) as Array<[DayPeriod, HomeActivity[]]>)
-    .filter(([, entries]) => entries.length)
-    .map(([period, entries]) => `${labels[period]} ${naturalList(entries.slice(0, 3).map(phraseFor))}.`)
-    .join(" ");
+  if (theme === "beach") return `${place || "A kiválasztott strand"} adja a nap fő ritmusát${ending}`;
+  if (theme === "explore") return `${place || "A kirándulás"} a nap fő célpontja${ending}`;
+  if (theme === "family") return `${place ? `${place} köré szerveződik a délelőtt` : "A nap gyerekprogrammal indul"}${ending}`;
+  if (theme === "shopping") return `${place || "A bevásárlás"} az első fontos megálló, utána rugalmasan alakulhat a nap${companion ? `, ${companion}` : ""}.`;
+  if (theme === "event") return `Napközben rugalmasan alakulhat a program, este pedig ${primary.title.trim()} adja a nap keretét${place ? ` ${place} helyszínen` : ""}.`;
+  if (theme === "food" || theme === "rest") return `Lazább nap, amelyben ${companion ?? "marad idő pihenésre és közös programra"}.`;
+  return `A nap a közös programok köré szerveződik${companion ? `, ${companion}` : ""}.`;
 }
 
 /**
- * A read-only prose narrative from the real daily Timeline.  It deliberately
- * has no programme counts or time-list output: meaningful programme changes
- * alter the theme or the natural-language daily summary instead.
+ * Read-only editorial layer above the factual Timeline: title tells what kind
+ * of day it is; subtitle gives its rhythm. Neither writes nor duplicates the
+ * detailed programme list shown below it.
  */
 export function dayDisplayContext(day: HomeDay): DayDisplayContext {
   const activities = day.activities.filter((activity) => activity.title.trim());
   if (!activities.length) return { title: day.title, summary: day.summary, isFallback: true };
-  return { title: titleFor(activities), summary: summaryFor(activities), isFallback: false };
+  const primary = mainActivity(activities);
+  return { title: titleFor(primary, activities), summary: summaryFor(primary, activities), isFallback: false };
 }
