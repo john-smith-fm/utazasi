@@ -24,24 +24,28 @@ test("a populated Timeline day receives a live, activity-derived context", () =>
   const context = dayDisplayContext({
     ...emptyDay,
     activities: [
-      { time: "09:00", title: "Gyerekprogram", place: "Parco Bussi", placeSlug: "parco-bussi" },
+      { time: "09:00", title: "Gyerekprogram", place: "Parco Bussi", placeSlug: "parco-bussi", description: "játszótér" },
       { time: "12:30", title: "Ebéd", place: "", placeSlug: null },
-      { time: "15:00", title: "Könnyű délután", place: "Villasimius", placeSlug: null },
+      { time: "15:00", title: "Könyvtár", place: "", placeSlug: null },
       { time: "19:00", title: "Vacsora", place: "", placeSlug: null },
     ],
   });
 
-  assert.equal(context.title, "Napi terv · 4 program");
-  assert.equal(context.summary, "09:00 · Gyerekprogram · Parco Bussi · 12:30 · Ebéd · 15:00 · Könnyű délután · Villasimius · +1 további");
+  assert.equal(context.title, "Gyerekprogram és könnyű délután");
+  assert.equal(context.summary, "Délelőtt gyerekprogram: Parco Bussi. Délután ebéd és könyvtári program. Este vacsora.");
   assert.equal(context.isFallback, false);
 });
 
-test("editing or deleting activities changes the derived context without touching fallback metadata", () => {
+test("a program character change updates the textual title and subtitle without touching fallback metadata", () => {
   const populated: HomeDay = {
     ...emptyDay,
     activities: [{ time: "09:00", title: "Strand", place: "Spiaggia di Porto Sa Ruxi", placeSlug: "porto-sa-ruxi" }],
   };
 
-  assert.equal(dayDisplayContext(populated).summary, "09:00 · Strand · Spiaggia di Porto Sa Ruxi");
+  assert.deepEqual(dayDisplayContext(populated), {
+    title: "Strand és családi pihenés",
+    summary: "Délelőtt strandolás: Spiaggia di Porto Sa Ruxi.",
+    isFallback: false,
+  });
   assert.deepEqual(dayDisplayContext({ ...populated, activities: [] }), dayDisplayContext(emptyDay));
 });

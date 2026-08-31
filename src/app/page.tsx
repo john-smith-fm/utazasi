@@ -16,11 +16,9 @@ import { TRIP_CORE_DAYS, TRIP_RUNTIME } from "@/data/trip-core";
 import { useTimelineDay, useTripTimeline } from "@/hooks/useTimelineDay";
 import { useLiveData } from "@/hooks/useLiveData";
 import { useCurrentLocationContext } from "@/hooks/useCurrentLocationContext";
-import { useEventWatch } from "@/hooks/useEventWatch";
 import { useTripEvents } from "@/hooks/useTripEvents";
 import { createTimelineActivity, deleteTimelineActivity, updateTimelineActivity } from "@/lib/timeline-client";
 import type { TimelineActivityInput, TimelineActivityRecord } from "@/lib/timeline-types";
-import { smartStatusSummary } from "@/lib/smart-status";
 import { initialTripDate } from "@/lib/initial-trip-date";
 import { dayDisplayContext } from "@/lib/day-display-context";
 
@@ -85,14 +83,9 @@ export default function HomePage() {
   const tripTimeline = useTripTimeline(TRIP_CORE_DAYS);
   const currentLocation = useCurrentLocationContext();
   const { weather, sea } = useLiveData(currentLocation.context);
-  const watchChange = useEventWatch(selectedDate);
   const events = useTripEvents(selectedDate);
   const canMutate = canWrite;
-  const statusSummary = smartStatusSummary(day, weather, watchChange);
   const displayContext = dayDisplayContext(day);
-  // A neutral fallback is daily copy, not a status update. It is already
-  // displayed above, so only render an actual Smart Status separately.
-  const visibleStatusSummary = statusSummary === day.summary ? undefined : statusSummary;
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -177,7 +170,7 @@ export default function HomePage() {
       <SunCard weather={weather} locationLabel={currentLocation.context.label} deviceState={currentLocation.deviceState} onRequestDeviceLocation={currentLocation.requestDeviceLocation} />
       <div className="px-5">
         <NotificationPreference />
-        <TimelineCard day={day} days={TRIP_CORE_DAYS} context={displayContext} statusSummary={visibleStatusSummary} onSelect={setSelectedDate} />
+        <TimelineCard day={day} days={TRIP_CORE_DAYS} context={displayContext} onSelect={setSelectedDate} />
         <EventSuggestions date={selectedDate} events={events} onAccepted={() => { retry(); tripTimeline.retry(); showToast("Esemény hozzáadva a napi tervhez"); }} />
         <section className="mt-8"><PlanList activities={day.activities} status={status} hasCachedDay={hasRemoteDay} canEdit={canMutate} onRetry={retry} onSelect={(activity) => setEditor({ activity })} onDelete={(activity) => { void remove(activity).catch((caught) => showToast(caught instanceof Error ? caught.message : "A törlés nem sikerült.")); }} onTimeChange={changeStartTime} onError={showToast} /></section>
         <div aria-hidden="true" className="h-12" />
