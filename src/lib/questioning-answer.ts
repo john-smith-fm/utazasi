@@ -107,7 +107,9 @@ const PLACE_QUERY_STOP_WORDS = new Set([
 function placeNameTokens(place: Place) {
   return normalized(place.name)
     .split(/[^a-z0-9]+/)
-    .filter((word) => word.length >= 3 && !["spiaggia", "beach"].includes(word));
+    // Keep short meaningful name parts such as "Sa" in Porto Sa Ruxi, but
+    // discard generic Italian glue words that would make matching noisy.
+    .filter((word) => word.length >= 2 && !["spiaggia", "beach", "di"].includes(word));
 }
 
 function questionPlaceTokens(question: string) {
@@ -159,6 +161,56 @@ function placeCandidatesInQuestion(question: string, context: QuestionContext) {
     const nameTokens = placeNameTokens(place);
     return questionTokens.every((questionToken) => nameTokens.some((nameToken) => sameOrHungarianSuffix(questionToken, nameToken)));
   });
+}
+
+/**
+ * A comparison must resolve every named side independently. The normal Place
+ * resolver intentionally stays strict, but here a one-character typo in a
+ * multi-word canonical name ("Raxi" → "Ruxi") must not silently turn a
+ * two-Place comparison into a global ranking.
+ */
+function editDistanceAtMostOne(left: string, right: string) {
+  if (left === right) return true;
+  if (Math.abs(left.length - right.length) > 1) return false;
+  let leftIndex = 0;
+  let rightIndex = 0;
+  let edits = 0;
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] === right[rightIndex]) {
+      leftIndex += 1;
+      rightIndex += 1;
+      continue;
+    }
+    edits += 1;
+    if (edits > 1) return false;
+    if (left.length > right.length) leftIndex += 1;
+    else if (right.length > left.length) rightIndex += 1;
+    else {
+      leftIndex += 1;
+      rightIndex += 1;
+    }
+  }
+  return true;
+}
+
+function matchesComparisonName(questionTokens: readonly string[], place: Place) {
+  const nameTokens = placeNameTokens(place);
+  // Do not fuzzy-resolve one-word names: they are too easy to confuse with
+  // ordinary Hungarian sentence words. Two canonical Place terms are enough
+  // to make the correction bounded and auditable.
+  if (nameTokens.length < 2 || nameTokens.length > questionTokens.length) return false;
+  return questionTokens.some((_, start) => nameTokens.every((nameToken, offset) => {
+    const questionToken = questionTokens[start + offset] ?? "";
+    return sameOrHungarianSuffix(questionToken, nameToken)
+      || (questionToken.length >= 4 && nameToken.length >= 4 && editDistanceAtMostOne(questionToken, nameToken));
+  }));
+}
+
+function comparisonPlaceCandidates(question: string, context: QuestionContext) {
+  const exact = placeCandidatesInQuestion(question, context);
+  const questionTokens = normalized(question).split(/[^a-z0-9]+/).filter(Boolean);
+  const fuzzyMultiWord = context.knownPlaces.filter((place) => matchesComparisonName(questionTokens, place));
+  return uniquePlaces([...exact, ...fuzzyMultiWord]);
 }
 
 function uniquePlaces(places: readonly Place[]) {
@@ -290,10 +342,15 @@ function structuredPlaceAnswer(question: string, context: QuestionContext): Ques
   const serviceResult = topic === "service" && !explicitlyNamed.length ? serviceFilterAnswer(question, context) : null;
   if (serviceResult) return serviceResult;
   const lengthThreshold = topic === "length" ? requestedLengthThreshold(normalizedQuestion) : undefined;
-  const asksNamedLengthComparison = topic === "length" && explicitlyNamed.length >= 2 && /hosszabb|hossz.*mint/.test(normalizedQuestion);
+  const hasLengthComparisonWording = topic === "length" && /hosszabb|hossz.*mint/.test(normalizedQuestion);
+  const comparisonPlaces = hasLengthComparisonWording ? comparisonPlaceCandidates(question, context) : explicitlyNamed;
+  // A typed named comparison is never allowed to degrade into a global
+  // "longest beach" answer. If either side cannot be resolved, say so.
+  const asksNamedLengthComparison = hasLengthComparisonWording
+    && (comparisonPlaces.length > 0 || /\bvagy\b|\bvs\.?\b/.test(normalizedQuestion));
   const asksBeachComparison = topic === "length" && (/mely|leghosszabb|ossz.*strand/.test(normalizedQuestion) || lengthThreshold !== undefined || asksNamedLengthComparison);
   const candidates = asksBeachComparison
-    ? asksNamedLengthComparison ? explicitlyNamed : context.knownPlaces.filter((place) => place.details.kind === "beach")
+    ? asksNamedLengthComparison ? comparisonPlaces : context.knownPlaces.filter((place) => place.details.kind === "beach")
     : explicitlyNamed.length ? explicitlyNamed : questionPlaceTokens(question).length ? [] : linked;
   const places = uniquePlaces(candidates);
 
@@ -306,6 +363,13 @@ function structuredPlaceAnswer(question: string, context: QuestionContext): Ques
   }
 
   if (asksBeachComparison) {
+    if (asksNamedLengthComparison && places.length < 2) {
+      return {
+        title: "Nem sikerült két strandot egyértelműen felismerni",
+        body: "Két megnevezett strand összehasonlításához mindkét kanonikus Place-re szükség van. Nem váltok át ilyenkor a teljes strandlistára; írd be a másik hely teljes nevét.",
+        sources: ["Place"],
+      };
+    }
     const measured = places.flatMap((place) =>
       place.details.kind === "beach" && typeof place.details.lengthM === "number"
         ? [{ place, lengthM: place.details.lengthM }]

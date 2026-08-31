@@ -465,6 +465,18 @@ test("a named two-beach question compares only the two requested verified length
   assert.match(answer.body, /420 m/);
 });
 
+test("a named beach comparison with one bounded typo never falls back to the global longest beach", () => {
+  const portoSaRuxi = { sourceId: "ruxi", slug: "porto-sa-ruxi", name: "Spiaggia di Porto Sa Ruxi", type: "beach" as const, details: { kind: "beach" as const, lengthM: 650 } };
+  const calaPira = { sourceId: "pira", slug: "cala-pira", name: "Cala Pira", type: "beach" as const, details: { kind: "beach" as const, lengthM: 410 } };
+  const unrelatedLongest = { sourceId: "longest", slug: "longest", name: "Másik leghosszabb strand", type: "beach" as const, details: { kind: "beach" as const, lengthM: 5_978 } };
+  const context = buildQuestionContext(futureBeachDay, weather, [], { places: [portoSaRuxi, calaPira, unrelatedLongest] });
+  const answer = answerQuestionWithContext("Melyik a hosszabb strand: Porto Sa Raxi vagy Cala Pira?", context, null);
+  assert.equal(answer.title, "Spiaggia di Porto Sa Ruxi a hosszabb");
+  assert.match(answer.body, /650 m/);
+  assert.match(answer.body, /410 m/);
+  assert.doesNotMatch(answer.body, /Másik leghosszabb/);
+});
+
 test("a structured beach filter combines shore and access without inferred matches", () => {
   const matching = { sourceId: "matching", slug: "matching", name: "Homokos könnyű strand", type: "beach" as const, details: { kind: "beach" as const, shoreType: "sandy" as const, landAccess: "easy" as const } };
   const hard = { sourceId: "hard", slug: "hard", name: "Homokos nehéz strand", type: "beach" as const, details: { kind: "beach" as const, shoreType: "sandy" as const, landAccess: "hard" as const } };
