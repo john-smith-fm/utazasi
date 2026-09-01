@@ -125,18 +125,26 @@ function has(context: DayEditorialContext, signal: DaySignal) {
   return context.signals.includes(signal);
 }
 
+/**
+ * The deterministic fallback must never try to inflect an Italian name or
+ * invent a narrative around it. A linked Timeline Place is already displayed
+ * as a public location in the Timeline, so its unmodified label is safe here.
+ */
+function publicDominantPlace(context: DayEditorialContext): string | null {
+  const activity = context.dominantActivity;
+  return activity?.placeSlug && activity.place.trim() ? activity.place.trim() : null;
+}
+
 function titleFor(context: DayEditorialContext): string {
   const primary = context.dominantActivity;
   const primaryTheme = primary ? themeFor(primary) : "general";
+  const placeName = publicDominantPlace(context);
   if (has(context, "empty_day")) return "A nap még előttetek van";
   if (has(context, "departure_day")) return "Még egy utolsó délelőtt";
   if (has(context, "arrival_day")) return "Első nap a szigeten";
   if (has(context, "special_event") && primaryTheme === "event") return `Este ${primary?.title.trim()}`;
-  if (has(context, "last_full_day") && has(context, "beach_day")) return "Még egyszer a víz mellett";
-  if (has(context, "trip_midpoint") && has(context, "beach_day")) return "Félidő, mezítláb";
-  if (has(context, "returning_place") && has(context, "beach_day")) return "Vissza a vízhez";
-  if (has(context, "new_place") && has(context, "beach_day")) return "Ma valami új";
-  if (has(context, "beach_day")) return "Vízparti ritmus";
+  if (has(context, "beach_day") && placeName) return `Irány ${placeName}`;
+  if (has(context, "beach_day")) return "Irány a strand";
   if (has(context, "excursion_day")) return "Egy kicsit messzebb";
   if (primaryTheme === "family") return "Könnyű nap együtt";
   if (has(context, "shopping_day")) return "Kényelmes indulás";
@@ -156,15 +164,12 @@ function companionClause(context: DayEditorialContext): string {
 
 function subtitleFor(context: DayEditorialContext): string {
   const primary = context.dominantActivity;
+  const placeName = publicDominantPlace(context);
   if (has(context, "empty_day")) return "Egyelőre nincs tervetek erre a napra. Jó alkalom lehet egy új közös programhoz.";
   if (has(context, "departure_day")) return "A napi terv az induláshoz igazodik, így marad idő mindenre a hazautazás előtt.";
   if (has(context, "arrival_day")) return "Megérkezés után kényelmesen lehet ráhangolódni a közös napokra.";
   if (has(context, "special_event") && primary && themeFor(primary) === "event") return `Napközben rugalmasan alakulhat a program, este pedig ${primary.title.trim()} adja a nap keretét.`;
-  if (has(context, "beach_day") && primary) {
-    const isReturn = has(context, "returning_place");
-    const history = isReturn ? "Már korábban is szerepelt ezen az utazáson; " : "";
-    return `${history}${primary.place || "A strand"} köré épül a nap, ${companionClause(context)}.`;
-  }
+  if (has(context, "beach_day") && primary) return placeName ? `A fő program: ${placeName}.` : "A fő program a strandolás.";
   if (has(context, "excursion_day") && primary) return `${primary.place || "A kirándulás"} a nap fő célpontja, ${companionClause(context)}.`;
   if (primary && themeFor(primary) === "family") return `${primary.place || "A gyerekprogram"} köré szerveződik a délelőtt, ${companionClause(context)}.`;
   if (has(context, "shopping_day")) return "A szükséges beszerzések után rugalmasan alakulhat a nap többi része.";

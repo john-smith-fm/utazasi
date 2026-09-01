@@ -45,8 +45,8 @@ test("a program character change updates the textual title and subtitle without 
   };
 
   assert.deepEqual(dayDisplayContext(populated, trip), {
-    title: "Ma valami új",
-    summary: "Spiaggia di Porto Sa Ruxi köré épül a nap, utána szabadabban alakulhat a nap.",
+    title: "Irány Spiaggia di Porto Sa Ruxi",
+    summary: "A fő program: Spiaggia di Porto Sa Ruxi.",
     isFallback: false,
   });
   assert.deepEqual(dayDisplayContext({ ...populated, activities: [] }, trip), dayDisplayContext(emptyDay, trip));
@@ -59,7 +59,7 @@ test("trip phase, midpoint and returning-place signals use only the current trip
   assert.ok(context.signals.includes("returning_place"));
   assert.ok(context.signals.includes("trip_midpoint"));
   assert.equal(context.tripPhase, "middle");
-  assert.equal(dayDisplayContext(returning, trip, [earlier, returning]).title, "Félidő, mezítláb");
+  assert.equal(dayDisplayContext(returning, trip, [earlier, returning]).title, "Irány Spiaggia di Porto Sa Ruxi");
 });
 
 test("arrival, departure and a verified event have deterministic editorial copy", () => {

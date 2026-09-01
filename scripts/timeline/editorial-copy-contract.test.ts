@@ -5,6 +5,7 @@ import { editorialFingerprint, parseEditorialCopy, sanitizeEditorialCopyInput, t
 const beachDay: EditorialCopyInput = {
   date: "2026-09-04",
   day: { number: 3, total: 12, phase: "early" },
+  dayFacts: ["Strandolás: Spiaggia di Campus", "Étkezés"],
   signals: ["beach_day", "new_place"],
   mainActivity: { type: "beach", placeName: "Spiaggia di Campus" },
   secondaryShape: "relaxed",

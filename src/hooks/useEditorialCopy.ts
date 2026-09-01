@@ -14,7 +14,7 @@ function isCachedCopy(value: CachedEditorialCopy | null, fingerprint: string): v
  * only when it validates against the same compact fact fingerprint. */
 export function useEditorialCopy(input: EditorialCopyInput, fallback: EditorialCopy) {
   const fingerprint = useMemo(() => editorialFingerprint(input), [input]);
-  const cacheKey = `utazasi:editorial-copy:v1:${input.date}:${fingerprint}`;
+  const cacheKey = `utazasi:editorial-copy:v2:${input.date}:${fingerprint}`;
   const [result, setResult] = useState<{ fingerprint: string; copy: EditorialCopy }>({ fingerprint, copy: fallback });
 
   useEffect(() => {

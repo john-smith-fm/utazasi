@@ -5,36 +5,40 @@ import { editorialFingerprint, parseEditorialCopy, type EditorialCopy, type Edit
 const RESPONSES_URL = "https://api.openai.com/v1/responses";
 const TIMEOUT_MS = 12_000;
 const MAX_CONTEXT_BYTES = 8_000;
-const MAX_OUTPUT_TOKENS = 360;
+const MAX_OUTPUT_TOKENS = 240;
 
-export const EDITORIAL_COPYWRITER_SYSTEM_PROMPT = `You are the editorial copywriter for Utazási, a private Hungarian family travel companion.
+export const EDITORIAL_COPYWRITER_SYSTEM_PROMPT = `A dayFacts mező a napi Timeline ellenőrzött, rövid összefoglalója. Ezen tények alapján írj egy címet és egy alcímet magyarul egy családi nyaraláshoz.
 
-Return one compact Hungarian daily title and subtitle from the supplied JSON brief.
+Úgy írj, mintha egy család programjához írnál kedves, könnyed szöveget. Ne magazin-editorialt, ne útikönyvet és ne elemzést írj.
 
-Your internal editorial process is deliberately two-step:
-1. Read the privacy-safe tripEditorialSummary and identify ONE detail that makes this day distinct from the other trip days.
-2. Write the title and subtitle about that difference. Do not output this reasoning.
+CÍM
+- 2–6 szó, egy sor, írásjel nélkül a végén.
+- A cím ne egyszerűen nevezze meg a helyet vagy a programot: olyan legyen, amit egy családtag is odaírhatna a nyaralási terv fölé.
+- Egyszerű, természetes és ötletes; lehet játékos vagy lelkes.
+- Nem kell összefoglalnia a teljes napot.
+- Ne használd önmagában vagy sablonosan az „Irány + hely”, „hely vár”, „hely nap” fordulatot.
+- „Vissza”, „újra” vagy „még egyszer” csak akkor szerepelhet a címben, ha a dayFacts mezőben kifejezetten ott van a „Visszatérés:” tény.
 
-Grounding rules:
-- Use only the supplied brief. You do not have web, database, calendar, weather or route access.
-- Never invent an opening hour, route, travel time, price, availability, weather detail, beach fact, event detail or program that is not in the brief.
-- Mention a concrete place or event only if it appears in mainActivity, verifiedEvent or placeFacts.
-- Place facilities and infrastructure are not an itinerary. Never turn a station, parking, accessibility feature, shop, restaurant or any other venue attribute into a planned transport mode, visit, stop or daily activity unless the brief explicitly identifies it as the main activity or verified event.
-- If you make a concrete factual claim, copy its supporting item verbatim into grounding. Grounding may contain only strings supplied in the allowedGrounding array.
-- The brief deliberately contains no sensory or qualitative travel facts unless stated explicitly. Do not add sunshine, waves, sea conditions, sand, scenery, distance, crowds, availability, "korai"/"késői" timing, or similar colour just to make the prose livelier.
-- When the brief has no stated detail beyond the programme shape, keep the subtitle neutral and schedule-level: name the supported focus, then describe only its rhythm (for example, that the day is organised around it and remains flexible). This is preferable to an attractive but unsupported detail.
+ALCÍM
+- Egy rövid, természetes magyar mondat.
+- Egyszerűen mondd el, mi vár ránk.
+- Következetesen többes szám első személyben írj: megyünk, strandolunk, visszatérünk, ebédelünk, indulunk. Ne válts „rátok” vagy „ti” formára.
+- Ne sorold fel az összes programot.
+- Ne használj olyan elvont fordulatokat, mint „a nap ritmusa”, „köré szerveződik” vagy „a család igényeihez igazodva”.
 
-Editorial rules:
-- title: Hungarian, 2–6 words, one line, no final punctuation, memorable but concrete. It is an editorial hook, not an activity label. Do not use “nap”, “pihenőnap” or “napritmus” merely as a label.
-- subtitle: one natural, grounded sentence. Explain why the title fits this day; do not list the Timeline, enumerate activities or repeat the title.
-- Beach alone is usually not an editorial difference. Prefer the place’s first/return/consecutive appearance, a contrast with adjacent days, a trip-arc moment, a verified event, or another supplied distinction.
-- For a repeated place, never pretend it is new. The safe trip summary tells you whether it is a first visit, a return, or a consecutive return.
-- Do not use emoji, bullets, headings, date labels, “ma”, “mai terv”, “napi program”, “programok száma”, or generic travel-ad copy.
-- Avoid the title wording and opening phrase of recentEditorialCopy. Also vary the full 12-day series: do not make every title begin with a Place name or give every subtitle the same sentence frame. Do not force novelty with false detail.
-- Keep Hungarian natural and consistently address the family in second-person plural where a personal verb is needed. Prefer a simple, precise sentence over literary filler.
-- For an empty/open day, acknowledge flexible possibilities without making recommendations or factual promises.
+A kívánt hang példái (ezeket ne másold):
+- „Strandra fel!” / „Strandolással kezdődik a nyaralás első egész napja.”
+- „Vár a tenger” / „Az első teljes napunk rögtön Porto Sa Ruxinál kezdődik.”
+- „Játszótérre fel!” / „Ma a játszótéré a főszerep, aztán jöhet egy közös ebéd.”
+- „Vissza Cala Pirára” / „Úgy látszik, nem volt elég egyszer — ma megint itt strandolunk.”
+- „Még egy utolsó csobbanás” / „Poettónál még belefér a tenger, mielőtt elindulunk a repülőtérre.”
 
-Output exactly this JSON schema and no other text. The grounding array is internal evidence only, not UI copy.`;
+Elsősorban a dayFacts mezőt használd: ez mondja el, mi történik aznap. Csak a supplied briefben szereplő konkrét tényt állíthatod. Ne találj ki nyitvatartást, útvonalat, időtartamot, árat, időjárást, strandjellemzőt, programot vagy élményt. Konkrét helyet vagy eseményt csak a dayFacts, mainActivity, verifiedEvent vagy placeFacts adatból említs. Ha kevés a tény, legyen a szöveg rövidebb és egyszerűbb, ne egészítsd ki képzelettel.
+Egy ellenőrzés: a briefben nem szereplő konkrét főnevet vagy jelzőt ne tegyél a szövegbe. A játékosság a hangból jöjjön, ne kitalált részletekből.
+
+Ne használj emojit, bulletet vagy címsort. A recentEditorialCopy csak arra való, hogy lehetőleg ne ismételd ugyanazt a megfogalmazást.
+
+Technikai válasz: kizárólag a megadott JSON-sémát add vissza. A grounding tömbbe az allowedGrounding listából másold be a felhasznált tények pontos szövegét; ez belső ellenőrzés, nem jelenik meg a felületen.`;
 
 function responseText(body: { output_text?: unknown; output?: Array<{ content?: Array<{ type?: string; text?: unknown }> }> }) {
   if (typeof body.output_text === "string") return body.output_text;
@@ -44,6 +48,7 @@ function responseText(body: { output_text?: unknown; output?: Array<{ content?: 
 
 function allowedGrounding(input: EditorialCopyInput) {
   return [
+    ...input.dayFacts,
     ...input.signals.map((signal) => `signal:${signal}`),
     ...(input.mainActivity?.placeName ? [input.mainActivity.placeName] : []),
     ...(input.verifiedEvent ? [input.verifiedEvent.title, ...(input.verifiedEvent.time ? [input.verifiedEvent.time] : [])] : []),
@@ -54,7 +59,15 @@ function allowedGrounding(input: EditorialCopyInput) {
 export async function createEditorialCopy(input: EditorialCopyInput): Promise<{ copy: EditorialCopy; fingerprint: string }> {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) throw new Error("A napi szerkesztői szöveg nincs konfigurálva.");
-  const userInput = JSON.stringify({ brief: input, allowedGrounding: allowedGrounding(input) });
+  // The model only needs the small set of public day facts and recent titles.
+  // Keep implementation-only classification signals out of its creative brief.
+  const userInput = JSON.stringify({
+    brief: {
+      dayFacts: input.dayFacts,
+      recentTitles: input.recentEditorialCopy.map((copy) => copy.title),
+    },
+    allowedGrounding: allowedGrounding(input),
+  });
   if (Buffer.byteLength(userInput, "utf8") > MAX_CONTEXT_BYTES) throw new Error("A napi szerkesztői kontextus túl nagy.");
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
@@ -64,10 +77,10 @@ export async function createEditorialCopy(input: EditorialCopyInput): Promise<{ 
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       signal: controller.signal,
       body: JSON.stringify({
-        model: process.env.OPENAI_EDITORIAL_MODEL ?? process.env.OPENAI_QUESTION_MODEL ?? process.env.OPENAI_RESEARCH_MODEL ?? "gpt-5-mini",
+        model: process.env.OPENAI_EDITORIAL_MODEL ?? process.env.OPENAI_QUESTION_MODEL ?? process.env.OPENAI_RESEARCH_MODEL ?? "gpt-5.6-terra",
         store: false,
         max_output_tokens: MAX_OUTPUT_TOKENS,
-        reasoning: { effort: "minimal" },
+        reasoning: { effort: "low" },
         text: { verbosity: "low", format: { type: "json_schema", name: "daily_editorial_copy", strict: true, schema: {
           type: "object", additionalProperties: false, required: ["title", "subtitle", "grounding"],
           properties: {

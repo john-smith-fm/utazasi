@@ -48,7 +48,38 @@ const theme = (activity) => {
   return "general";
 };
 const priority = ["travel", "event", "beach", "explore", "family", "shopping", "food", "rest", "general"];
-const copyPrompt = `You are the editorial copywriter for Utazási, a private Hungarian family travel companion. Return exactly JSON with title, subtitle and grounding. Use only the supplied brief. Internally, first find ONE detail that makes the day distinct from the rest of the trip using tripEditorialSummary, then write about that difference; do not output reasoning. Title: Hungarian, 2–6 words, one line, no final punctuation, specific and memorable; it is an editorial hook, not an activity label. Do not use “nap”, “pihenőnap” or “napritmus” merely as labels. Subtitle: one natural grounded sentence that explains why the title fits; never a Timeline list. Beach alone is usually not a difference: prefer first/return/consecutive appearance, contrast, trip arc, event, or another supplied distinction. For repeated places, never present them as new. Vary the 12-day series; do not make every title start with a place or every subtitle share a sentence frame. Place facilities and infrastructure are not an itinerary: never turn a station, parking, accessibility feature, shop, restaurant or venue attribute into a planned transport mode, visit, stop or activity unless it is explicitly the main activity or verified event. Use a consistent second-person plural voice if personal wording is needed. Do not use emoji, bullets, headings, date labels, "ma", "mai terv", "napi program", program counts, generic travel-ad copy, or filler. Never invent opening hours, routes, prices, availability, weather, facts, programme details, sensory details, sand, waves, scenery, crowds, or early/late timing. Mention a concrete place/event only from the brief. grounding must contain one or more exact strings from allowedGrounding.`;
+const copyPrompt = `A dayFacts mező a napi Timeline ellenőrzött, rövid összefoglalója. Ezen tények alapján írj egy címet és egy alcímet magyarul egy családi nyaraláshoz.
+
+Úgy írj, mintha egy család programjához írnál kedves, könnyed szöveget. Ne magazin-editorialt, ne útikönyvet és ne elemzést írj.
+
+CÍM
+- 2–6 szó, egy sor, írásjel nélkül a végén.
+- A cím ne egyszerűen nevezze meg a helyet vagy a programot: olyan legyen, amit egy családtag is odaírhatna a nyaralási terv fölé.
+- Egyszerű, természetes és ötletes; lehet játékos vagy lelkes.
+- Nem kell összefoglalnia a teljes napot.
+- Ne használd önmagában vagy sablonosan az „Irány + hely”, „hely vár”, „hely nap” fordulatot.
+- „Vissza”, „újra” vagy „még egyszer” csak akkor szerepelhet a címben, ha a dayFacts mezőben kifejezetten ott van a „Visszatérés:” tény.
+
+ALCÍM
+- Egy rövid, természetes magyar mondat.
+- Egyszerűen mondd el, mi vár ránk.
+- Következetesen többes szám első személyben írj: megyünk, strandolunk, visszatérünk, ebédelünk, indulunk. Ne válts „rátok” vagy „ti” formára.
+- Ne sorold fel az összes programot.
+- Ne használj olyan elvont fordulatokat, mint „a nap ritmusa”, „köré szerveződik” vagy „a család igényeihez igazodva”.
+
+A kívánt hang példái (ezeket ne másold):
+- „Strandra fel!” / „Strandolással kezdődik a nyaralás első egész napja.”
+- „Vár a tenger” / „Az első teljes napunk rögtön Porto Sa Ruxinál kezdődik.”
+- „Játszótérre fel!” / „Ma a játszótéré a főszerep, aztán jöhet egy közös ebéd.”
+- „Vissza Cala Pirára” / „Úgy látszik, nem volt elég egyszer — ma megint itt strandolunk.”
+- „Még egy utolsó csobbanás” / „Poettónál még belefér a tenger, mielőtt elindulunk a repülőtérre.”
+
+Elsősorban a dayFacts mezőt használd: ez mondja el, mi történik aznap. Csak a supplied briefben szereplő konkrét tényt állíthatod. Ne találj ki nyitvatartást, útvonalat, időtartamot, árat, időjárást, strandjellemzőt, programot vagy élményt. Konkrét helyet vagy eseményt csak a dayFacts, mainActivity, verifiedEvent vagy placeFacts adatból említs. Ha kevés a tény, legyen a szöveg rövidebb és egyszerűbb, ne egészítsd ki képzelettel.
+Egy ellenőrzés: a briefben nem szereplő konkrét főnevet vagy jelzőt ne tegyél a szövegbe. A játékosság a hangból jöjjön, ne kitalált részletekből.
+
+Ne használj emojit, bulletet vagy címsort. A recentEditorialCopy csak arra való, hogy lehetőleg ne ismételd ugyanazt a megfogalmazást.
+
+Technikai válasz: kizárólag a megadott JSON-sémát add vissza. A grounding tömbbe az allowedGrounding listából másold be a felhasznált tények pontos szövegét; ez belső ellenőrzés, nem jelenik meg a felületen.`;
 
 function phaseFor(date) {
   if (date === trip.start_date) return "arrival";
@@ -103,9 +134,22 @@ for (let index = startAt; index < endAt; index += 1) {
   if (themes.includes("event")) signals.push("special_event");
   const event = timeline.find((item) => item.source_event_id) ?? null;
   if (event && /^([12]\d):/.test(event.start_time)) signals.push("evening_event");
+  const factLabel = { travel: "Utazás", beach: "Strandolás", family: "Gyerekprogram", explore: "Kirándulás", shopping: "Bevásárlás", food: "Étkezés", rest: "Pihenés", event: "Hivatalos esemény", general: "Közös program" };
+  const dayFacts = [...new Set(timeline.slice(0, 5).map((item) => {
+    const itemSlug = item.place_slug ? (aliases[item.place_slug] ?? item.place_slug) : null;
+    const itemPlace = itemSlug && itemSlug !== TRIP_BASE_SLUG ? places.get(itemSlug) : null;
+    const label = factLabel[theme(item)];
+    if (item.source_event_id) return `Hivatalos esemény: ${item.title.trim()}`;
+    return itemPlace ? `${label}: ${itemPlace.name}` : label;
+  }))];
+  const previouslyVisited = canonicalPlace && dayRows.slice(0, index).some((priorDay) =>
+    (byDay.get(priorDay.id) ?? []).some((item) => (aliases[item.place_slug] ?? item.place_slug) === canonicalPlace.slug),
+  );
+  if (previouslyVisited) dayFacts.push(`Visszatérés: ${canonicalPlace.name}`);
   const brief = {
     date: day.date,
     day: { number: index + 1, total: dayRows.length, phase: phaseFor(day.date) },
+    dayFacts,
     signals,
     mainActivity: dominant ? { type: theme(dominant), placeName: canonicalPlace?.name ?? null } : null,
     secondaryShape: signals.includes("evening_event") ? "event_evening" : signals.includes("relaxed_day") ? "relaxed" : signals.includes("busy_day") ? "busy" : signals.includes("empty_day") ? "open" : "simple",
@@ -114,11 +158,11 @@ for (let index = startAt; index < endAt; index += 1) {
     recentEditorialCopy: priorCopies.slice(-4),
     tripEditorialSummary,
   };
-  const allowedGrounding = [...signals.map((signal) => `signal:${signal}`), ...(brief.mainActivity?.placeName ? [brief.mainActivity.placeName] : []), ...(brief.verifiedEvent ? [brief.verifiedEvent.title, ...(brief.verifiedEvent.time ? [brief.verifiedEvent.time] : [])] : []), ...brief.placeFacts.map((place) => place.name)];
+  const allowedGrounding = [...brief.dayFacts, ...signals.map((signal) => `signal:${signal}`), ...(brief.mainActivity?.placeName ? [brief.mainActivity.placeName] : []), ...(brief.verifiedEvent ? [brief.verifiedEvent.title, ...(brief.verifiedEvent.time ? [brief.verifiedEvent.time] : [])] : []), ...brief.placeFacts.map((place) => place.name)];
   const response = await fetch("https://api.openai.com/v1/responses", {
     method: "POST",
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: process.env.OPENAI_EDITORIAL_MODEL ?? process.env.OPENAI_QUESTION_MODEL ?? process.env.OPENAI_RESEARCH_MODEL ?? "gpt-5-mini", store: false, max_output_tokens: 360, reasoning: { effort: "minimal" }, text: { format: { type: "json_schema", name: "editorial_preview", strict: true, schema: { type: "object", additionalProperties: false, required: ["title", "subtitle", "grounding"], properties: { title: { type: "string" }, subtitle: { type: "string" }, grounding: { type: "array", items: { type: "string" } } } } } }, input: [{ role: "system", content: copyPrompt }, { role: "user", content: JSON.stringify({ brief, allowedGrounding }) }] }),
+    body: JSON.stringify({ model: process.env.OPENAI_EDITORIAL_MODEL ?? process.env.OPENAI_QUESTION_MODEL ?? process.env.OPENAI_RESEARCH_MODEL ?? "gpt-5.6-terra", store: false, max_output_tokens: 240, reasoning: { effort: "low" }, text: { format: { type: "json_schema", name: "editorial_preview", strict: true, schema: { type: "object", additionalProperties: false, required: ["title", "subtitle", "grounding"], properties: { title: { type: "string" }, subtitle: { type: "string" }, grounding: { type: "array", items: { type: "string" } } } } } }, input: [{ role: "system", content: copyPrompt }, { role: "user", content: JSON.stringify({ brief: { dayFacts: brief.dayFacts, recentTitles: brief.recentEditorialCopy.map((copy) => copy.title) }, allowedGrounding }) }] }),
   });
   const body = await response.json();
   if (!response.ok) throw new Error(`Editorial preview unavailable (${response.status}).`);

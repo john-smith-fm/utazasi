@@ -27,6 +27,8 @@ export type TripEditorialBeat = {
 export type EditorialCopyInput = {
   date: string;
   day: { number: number; total: number; phase: TripPhase };
+  /** Short, privacy-safe programme facts for natural copy; never raw notes. */
+  dayFacts: readonly string[];
   signals: readonly DaySignal[];
   mainActivity: { type: DayTheme; placeName: string | null } | null;
   secondaryShape: "relaxed" | "event_evening" | "busy" | "open" | "simple";
@@ -65,6 +67,7 @@ function saneText(value: unknown, maxLength: number) {
 
 function knownGrounding(input: EditorialCopyInput) {
   return new Set([
+    ...input.dayFacts,
     ...input.signals.map((signal) => `signal:${signal}`),
     ...(input.mainActivity?.placeName ? [input.mainActivity.placeName] : []),
     ...(input.verifiedEvent ? [input.verifiedEvent.title, ...(input.verifiedEvent.time ? [input.verifiedEvent.time] : [])] : []),
@@ -84,6 +87,7 @@ export function sanitizeEditorialCopyInput(value: unknown): EditorialCopyInput |
   if (typeof candidate.date !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(candidate.date)
     || !day || !Number.isInteger(day.number) || !Number.isInteger(day.total) || day.number! < 1 || day.total! < day.number!
     || !["arrival", "early", "middle", "late", "last_full_day", "departure"].includes(day.phase as string)
+    || !Array.isArray(candidate.dayFacts) || !candidate.dayFacts.every((fact) => saneText(fact, 160)) || candidate.dayFacts.length > 5
     || !Array.isArray(candidate.signals) || !candidate.signals.every(isSignal)
     || !["relaxed", "event_evening", "busy", "open", "simple"].includes(candidate.secondaryShape as string)
     || !Array.isArray(candidate.placeFacts) || !Array.isArray(candidate.recentEditorialCopy) || !Array.isArray(candidate.tripEditorialSummary)) return null;
@@ -126,7 +130,7 @@ export function sanitizeEditorialCopyInput(value: unknown): EditorialCopyInput |
   }).slice(0, 16);
   if (tripEditorialSummary.length !== candidate.tripEditorialSummary.length) return null;
   return {
-    date: candidate.date, day: { number: day.number!, total: day.total!, phase: day.phase as TripPhase }, signals: [...new Set(candidate.signals)],
+    date: candidate.date, day: { number: day.number!, total: day.total!, phase: day.phase as TripPhase }, dayFacts: [...new Set(candidate.dayFacts.map((fact) => fact.trim()))], signals: [...new Set(candidate.signals)],
     mainActivity: mainActivity ? { type: mainActivity.type, placeName: mainActivity.placeName } : null,
     secondaryShape: candidate.secondaryShape as EditorialCopyInput["secondaryShape"], verifiedEvent: verifiedEvent ? { title: verifiedEvent.title.trim(), time: verifiedEvent.time } : null,
     placeFacts, recentEditorialCopy, tripEditorialSummary,
@@ -136,8 +140,10 @@ export function sanitizeEditorialCopyInput(value: unknown): EditorialCopyInput |
 /** A deterministic compact key. It is a cache identity, never a security hash. */
 export function editorialFingerprint(input: EditorialCopyInput): string {
   const stable = JSON.stringify({
+    copywriterPromptVersion: 2,
     date: input.date,
     day: input.day,
+    dayFacts: [...input.dayFacts],
     signals: [...input.signals].sort(),
     mainActivity: input.mainActivity,
     secondaryShape: input.secondaryShape,
@@ -151,7 +157,7 @@ export function editorialFingerprint(input: EditorialCopyInput): string {
     hash ^= stable.charCodeAt(index);
     hash = Math.imul(hash, 16_777_619);
   }
-  return `v1-${(hash >>> 0).toString(36)}`;
+  return `v2-${(hash >>> 0).toString(36)}`;
 }
 
 export function parseEditorialCopy(value: string, input: EditorialCopyInput): EditorialCopy {
