@@ -1,6 +1,7 @@
 import "server-only";
 
-import { TIMELINE_TRIP_SLUG, timelineServerClient } from "@/lib/timeline-service";
+import { timelineServerClient } from "@/lib/timeline-service";
+import { DEFAULT_TRIP_SLUG } from "@/lib/trip-service";
 import { watchIsDue } from "@/lib/event-watch-schedule";
 
 export type WatchChange = {
@@ -30,7 +31,7 @@ type EligibleWatch = {
 export type ObservedEventState = Pick<EligibleWatch, "status" | "startsAt" | "placeSlug">;
 
 async function currentTripId(): Promise<string | null> {
-  const { data, error } = await timelineServerClient().from("trips").select("id").eq("slug", TIMELINE_TRIP_SLUG).maybeSingle();
+  const { data, error } = await timelineServerClient().from("trips").select("id").eq("slug", DEFAULT_TRIP_SLUG).maybeSingle();
   if (error) throw error;
   return data?.id ?? null;
 }

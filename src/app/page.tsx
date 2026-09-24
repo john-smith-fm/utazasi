@@ -11,18 +11,22 @@ import { TimelineCard } from "@/components/TimelineCard";
 import { NotificationPreference } from "@/components/NotificationPreference";
 import { EventSuggestions } from "@/components/EventSuggestions";
 import { useUndoToast } from "@/components/UndoProvider";
+import { useActiveTrip } from "@/components/TripProvider";
 import { type HomeActivity } from "@/data/home-days";
-import { TRIP_CORE_DAYS, TRIP_RUNTIME } from "@/data/trip-core";
+import { TRIP_CORE } from "@/data/trip-core";
+import type { TripSummary } from "@/domain/trip";
 import { useTimelineDay, useTripTimeline } from "@/hooks/useTimelineDay";
 import { useLiveData } from "@/hooks/useLiveData";
 import { useCurrentLocationContext } from "@/hooks/useCurrentLocationContext";
 import { useTripEvents } from "@/hooks/useTripEvents";
-import { createTimelineActivity, deleteTimelineActivity, updateTimelineActivity } from "@/lib/timeline-client";
+import { applyTimelineProposalAtomically, createTimelineActivity, deleteTimelineActivity, undoTimelineProposal, updateTimelineActivity } from "@/lib/timeline-client";
 import type { TimelineActivityInput, TimelineActivityRecord } from "@/lib/timeline-types";
 import { initialTripDate } from "@/lib/initial-trip-date";
 import { dayDisplayContext } from "@/lib/day-display-context";
 import { buildEditorialCopyInput } from "@/lib/editorial-copy-context";
 import { useEditorialCopy } from "@/hooks/useEditorialCopy";
+import { tripDayShells } from "@/lib/trip-days";
+import type { TimelineProposal } from "@/lib/timeline-proposal";
 
 type EditorState = { activity?: HomeActivity; draft?: TimelineActivityInput; draftId?: string } | null;
 type ToastState = { message: string } | null;
@@ -70,32 +74,49 @@ function draftFromSession(id: string): TimelineActivityInput | null {
 }
 
 export default function HomePage() {
+  const { activeTrip, trips, status, selectTrip, retry } = useActiveTrip();
+  if (!activeTrip) {
+    return <main className="mx-auto flex min-h-dvh max-w-[430px] flex-col items-center justify-center px-6 text-center">
+      <p className="text-[12px] font-bold uppercase tracking-[.16em] text-turquoise">Utazási</p>
+      <h1 className="mt-3 text-2xl font-bold tracking-[-.035em]">{status === "loading" ? "Utazások betöltése…" : "Nincs megnyitható utazás"}</h1>
+      {status !== "loading" ? <button type="button" onClick={retry} className="mt-5 min-h-11 rounded-full bg-deep-sea px-5 text-sm font-semibold text-white">Újrapróbálom</button> : null}
+    </main>;
+  }
+  return <ActiveTripHome key={activeTrip.slug} trip={activeTrip} trips={trips} onSelectTrip={selectTrip} />;
+}
+
+function ActiveTripHome({ trip, trips, onSelectTrip }: { trip: TripSummary; trips: TripSummary[]; onSelectTrip: (slug: string) => void }) {
   const { scheduleUndo } = useUndoToast();
+  const days = useMemo(() => tripDayShells(trip), [trip]);
+  const startDate = trip.startDate ?? days[0]?.date ?? "1970-01-01";
+  const endDate = trip.endDate ?? days.at(-1)?.date ?? startDate;
+  const tripRuntime = useMemo(() => ({ startDate, endDate, timezone: trip.timezone }), [endDate, startDate, trip.timezone]);
   // Initial selection only. Later clicks own this same state and must never
   // be pulled back to today's date during the session.
-  const [selectedDate, setSelectedDate] = useState(() => initialTripDate(TRIP_RUNTIME));
+  const [selectedDate, setSelectedDate] = useState(() => initialTripDate(tripRuntime));
   const [editor, setEditor] = useState<EditorState>(null);
   const [pendingEditorId, setPendingEditorId] = useState<string | null>(null);
   const [toast, setToast] = useState<ToastState>(null);
   const feedbackTimer = useRef<number | null>(null);
-  // The canonical Timeline lives in Supabase. Trip-core can provide a safe
-  // offline day shell, but legacy prototype activities must never reappear.
-  const fallbackDay = TRIP_CORE_DAYS.find((item) => item.date === selectedDate) ?? TRIP_CORE_DAYS[0];
-  const { day, status, hasRemoteDay, canWrite, retry } = useTimelineDay(selectedDate, fallbackDay);
-  const tripTimeline = useTripTimeline(TRIP_CORE_DAYS);
+  // The API-provided Trip days are safe shells only. Runtime activities still
+  // come exclusively from the selected Trip's Timeline endpoint or its cache.
+  const fallbackDay = days.find((item) => item.date === selectedDate) ?? days[0] ?? { date: startDate, day: Number(startDate.slice(-2)), weekday: "Hét" as const, title: "Új nap", summary: "", activities: [] };
+  const { day, status, hasRemoteDay, canWrite, retry } = useTimelineDay(trip.slug, selectedDate, fallbackDay);
+  const tripTimeline = useTripTimeline(trip.slug, days);
   const currentLocation = useCurrentLocationContext();
-  const { weather, sea } = useLiveData(currentLocation.context);
-  const events = useTripEvents(selectedDate);
+  const hasLegacyDestinationData = trip.slug === TRIP_CORE.slug;
+  const { weather, sea } = useLiveData(currentLocation.context, undefined, hasLegacyDestinationData);
+  const events = useTripEvents(trip.slug, selectedDate);
   const canMutate = canWrite;
-  const displayContext = useMemo(() => dayDisplayContext(day, TRIP_RUNTIME, tripTimeline.days), [day, tripTimeline.days]);
-  const editorialInput = useMemo(() => buildEditorialCopyInput(day, TRIP_RUNTIME, tripTimeline.days), [day, tripTimeline.days]);
+  const displayContext = useMemo(() => dayDisplayContext(day, tripRuntime, tripTimeline.days), [day, tripRuntime, tripTimeline.days]);
+  const editorialInput = useMemo(() => buildEditorialCopyInput(day, tripRuntime, tripTimeline.days), [day, tripRuntime, tripTimeline.days]);
   const editorialFallback = useMemo(() => ({ title: displayContext.title, subtitle: displayContext.summary }), [displayContext]);
   const editorialCopy = useEditorialCopy(editorialInput, editorialFallback);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const requestedDate = params.get("day");
-    if (requestedDate && TRIP_CORE_DAYS.some((item) => item.date === requestedDate)) {
+    if (requestedDate && days.some((item) => item.date === requestedDate)) {
       setSelectedDate(requestedDate);
     }
     const requestedEditorId = params.get("edit");
@@ -136,8 +157,8 @@ export default function HomePage() {
   }
 
   async function save(input: TimelineActivityInput, requestId?: string) {
-    if (editor?.activity?.id) await updateTimelineActivity(editor.activity.id, input);
-    else await createTimelineActivity(selectedDate, input, requestId);
+    if (editor?.activity?.id) await updateTimelineActivity(trip.slug, editor.activity.id, input);
+    else await createTimelineActivity(trip.slug, selectedDate, input, requestId);
     setEditor(null);
     retry();
     tripTimeline.retry();
@@ -146,14 +167,14 @@ export default function HomePage() {
 
   async function remove(activity: HomeActivity) {
     if (!activity.id) return;
-    const deleted = await deleteTimelineActivity(activity.id);
+    const deleted = await deleteTimelineActivity(trip.slug, activity.id);
     setEditor(null);
     retry();
     tripTimeline.retry();
     const deletedActivity = toHomeActivity(deleted);
     const deletedDate = selectedDate;
     scheduleUndo({ message: "Program törölve.", onUndo: async () => {
-      await createTimelineActivity(deletedDate, toInput(deletedActivity), deletedActivity.id);
+      await createTimelineActivity(trip.slug, deletedDate, toInput(deletedActivity), deletedActivity.id);
       retry();
       tripTimeline.retry();
       showToast("Program visszaállítva");
@@ -162,21 +183,39 @@ export default function HomePage() {
 
   async function changeStartTime(activity: HomeActivity, startTime: string) {
     if (!activity.id) return;
-    await updateTimelineActivity(activity.id, { ...toInput(activity), startTime });
+    await updateTimelineActivity(trip.slug, activity.id, { ...toInput(activity), startTime });
     retry();
     tripTimeline.retry();
     showToast("Időpont módosítva");
   }
 
+  async function applyTimelineProposal(proposal: TimelineProposal) {
+    if (typeof navigator !== "undefined" && !navigator.onLine) throw new Error("A Timeline módosításához hálózati kapcsolat szükséges.");
+    const applied = await applyTimelineProposalAtomically(trip.slug, proposal);
+    setSelectedDate(proposal.targetDate);
+    retry();
+    tripTimeline.retry();
+    scheduleUndo({
+      message: `${applied.activityIds.length} AI-javaslat alkalmazva.`,
+      onUndo: async () => {
+        await undoTimelineProposal(trip.slug, applied.proposalId);
+        retry();
+        tripTimeline.retry();
+        showToast("AI-javaslat visszavonva");
+      },
+      onError: (caught) => showToast(caught instanceof Error ? caught.message : "A visszavonás nem sikerült."),
+    });
+  }
+
   return <>
-    <Hero />
+    <Hero trip={trip} trips={trips} onSelectTrip={onSelectTrip} />
     <main className="relative z-10 mx-auto -mt-7 max-w-[430px]">
-      <div className="px-5"><StatRow weather={weather} sea={sea} day={day} events={events} tripDays={tripTimeline.days} tripStatus={tripTimeline.status} onOpenDay={setSelectedDate} /></div>
-      <SunCard weather={weather} locationLabel={currentLocation.context.label} deviceState={currentLocation.deviceState} onRequestDeviceLocation={currentLocation.requestDeviceLocation} />
+      <div className="px-5"><StatRow tripSlug={trip.slug} hasLegacyKnowledge={hasLegacyDestinationData} hasPrivateTripBase={hasLegacyDestinationData} weather={weather} sea={sea} day={day} events={events} tripDays={tripTimeline.days} tripStatus={tripTimeline.status} onOpenDay={setSelectedDate} onApplyTimelineProposal={applyTimelineProposal} /></div>
+      {hasLegacyDestinationData ? <SunCard weather={weather} locationLabel={currentLocation.context.label} deviceState={currentLocation.deviceState} onRequestDeviceLocation={currentLocation.requestDeviceLocation} /> : <p className="mx-5 border-b border-deep-sea/10 py-3 text-center text-[11px] font-medium text-deep-sea/50">Az élő hely- és időjárásadatok ehhez a POC úthoz még nincsenek bekötve.</p>}
       <div className="px-5">
-        <NotificationPreference />
-        <TimelineCard day={day} days={TRIP_CORE_DAYS} context={{ ...displayContext, title: editorialCopy.title, summary: editorialCopy.subtitle }} onSelect={setSelectedDate} />
-        <EventSuggestions date={selectedDate} events={events} onAccepted={() => { retry(); tripTimeline.retry(); showToast("Esemény hozzáadva a napi tervhez"); }} />
+        {hasLegacyDestinationData ? <NotificationPreference /> : null}
+        <TimelineCard day={day} days={days} context={{ ...displayContext, title: editorialCopy.title, summary: editorialCopy.subtitle }} onSelect={setSelectedDate} />
+        <EventSuggestions tripSlug={trip.slug} date={selectedDate} events={events} onAccepted={() => { retry(); tripTimeline.retry(); showToast("Esemény hozzáadva a napi tervhez"); }} />
         <section className="mt-8"><PlanList activities={day.activities} status={status} hasCachedDay={hasRemoteDay} canEdit={canMutate} onRetry={retry} onSelect={(activity) => setEditor({ activity })} onDelete={(activity) => { void remove(activity).catch((caught) => showToast(caught instanceof Error ? caught.message : "A törlés nem sikerült.")); }} onTimeChange={changeStartTime} onError={showToast} /></section>
         <div aria-hidden="true" className="h-12" />
       </div>

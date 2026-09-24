@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { PlaceBackButton } from "@/components/PlaceBackButton";
 import { PlaceDetail } from "@/components/PlaceDetail";
+import { TripFeatureGate } from "@/components/TripFeatureGate";
 import { PLACE_BROWSE_CATEGORIES, placeBrowseHref, validPlaceBrowseCategoryForType } from "@/lib/place-categories";
 import { getPlaceBySlug } from "@/lib/places";
 
@@ -17,7 +18,9 @@ export default function PlaceDetailPage({ params, searchParams }: { params: { sl
   const returnTo = safeReturnTo(searchParams?.returnTo);
 
   return <main className="mx-auto max-w-[430px] px-5 pb-[calc(112px+env(safe-area-inset-bottom))] pt-[calc(env(safe-area-inset-top)+12px)]">
-    <PlaceBackButton fallbackHref={destination.href} returnTo={returnTo} label={returnTo ? "Vissza az eseményre" : destination.label} />
-    <div className="mt-5"><PlaceDetail place={place} /></div>
+    <TripFeatureGate featureName="Helyek">
+      <PlaceBackButton fallbackHref={destination.href} returnTo={returnTo} label={returnTo ? "Vissza az eseményre" : destination.label} />
+      <div className="mt-5"><PlaceDetail place={place} /></div>
+    </TripFeatureGate>
   </main>;
 }

@@ -1,21 +1,17 @@
 import "server-only";
 
-import { createClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database";
 import type { TimelineActivityInput, TimelineActivityRecord } from "@/lib/timeline-types";
 import { getPlaceBySlug } from "@/lib/places";
 import { isTripBaseSlug } from "@/lib/trip-base";
+import { serverDatabaseClient } from "@/lib/server-database";
+import { resolveTripRef } from "@/lib/trip-service";
 
-export const TIMELINE_TRIP_SLUG = "sardinia-family-2026";
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const TIME_PATTERN = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
 type ServiceResult<T> = { data: T } | { error: string; status: number };
 
 export function timelineServerClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SECRET_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) throw new Error("Timeline data is not configured.");
-  return createClient<Database>(url, key, { auth: { autoRefreshToken: false, persistSession: false } });
+  return serverDatabaseClient();
 }
 
 /** A research suggestion is watched only after the family accepts it into the Timeline. */
@@ -72,14 +68,12 @@ function normalizeInput(value: unknown): ServiceResult<TimelineActivityInput> {
   };
 }
 
-async function dayForDate(date: string): Promise<ServiceResult<{ id: string }>> {
+async function dayForDate(tripSlug: string, date: string): Promise<ServiceResult<{ id: string }>> {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return { error: "Érvénytelen nap.", status: 400 };
+  const trip = await resolveTripRef(tripSlug);
+  if ("error" in trip) return trip;
   const supabase = timelineServerClient();
-  const { data: trip, error: tripError } = await supabase.from("trips").select("id").eq("slug", TIMELINE_TRIP_SLUG).maybeSingle();
-  if (tripError) throw tripError;
-  if (!trip) return { error: "Az utazás nem található.", status: 404 };
-
-  const { data: day, error: dayError } = await supabase.from("days").select("id").eq("trip_id", trip.id).eq("date", date).maybeSingle();
+  const { data: day, error: dayError } = await supabase.from("days").select("id").eq("trip_id", trip.data.id).eq("date", date).maybeSingle();
   if (dayError) throw dayError;
   return day ? { data: day } : { error: "Ehhez a naphoz még nincs napi terv.", status: 404 };
 }
@@ -98,14 +92,16 @@ function localDateTimeParts(value: string) {
   return { date: `${part("year")}-${part("month")}-${part("day")}`, time: `${part("hour")}:${part("minute")}` };
 }
 
-async function editableActivity(id: string): Promise<ServiceResult<TimelineActivityRecord>> {
+async function editableActivity(tripSlug: string, id: string): Promise<ServiceResult<TimelineActivityRecord>> {
   if (!UUID_PATTERN.test(id)) return { error: "Érvénytelen programpont.", status: 400 };
+  const trip = await resolveTripRef(tripSlug);
+  if ("error" in trip) return trip;
   const supabase = timelineServerClient();
   const { data, error } = await supabase
     .from("timeline_activities")
     .select("id, day_id, start_time, start_time_precision, time_label, duration_minutes, title, description, location_name, place_slug, source_event_id, kind, is_system_generated, created_at, updated_at, days!inner(trip_id, trips!inner(slug))")
     .eq("id", id)
-    .eq("days.trips.slug", TIMELINE_TRIP_SLUG)
+    .eq("days.trip_id", trip.data.id)
     .maybeSingle();
 
   if (error) throw error;
@@ -116,14 +112,16 @@ async function editableActivity(id: string): Promise<ServiceResult<TimelineActiv
   return { data: activity };
 }
 
-async function activityForTrip(id: string): Promise<ServiceResult<TimelineActivityRecord>> {
+async function activityForTrip(tripSlug: string, id: string): Promise<ServiceResult<TimelineActivityRecord>> {
   if (!UUID_PATTERN.test(id)) return { error: "Érvénytelen programpont.", status: 400 };
+  const trip = await resolveTripRef(tripSlug);
+  if ("error" in trip) return trip;
   const supabase = timelineServerClient();
   const { data, error } = await supabase
     .from("timeline_activities")
     .select("id, day_id, start_time, start_time_precision, time_label, duration_minutes, title, description, location_name, place_slug, source_event_id, kind, is_system_generated, created_at, updated_at, days!inner(trip_id, trips!inner(slug))")
     .eq("id", id)
-    .eq("days.trips.slug", TIMELINE_TRIP_SLUG)
+    .eq("days.trip_id", trip.data.id)
     .maybeSingle();
   if (error) throw error;
   if (!data) return { error: "A programpont nem található.", status: 404 };
@@ -131,10 +129,10 @@ async function activityForTrip(id: string): Promise<ServiceResult<TimelineActivi
   return { data: activity };
 }
 
-export async function createTimelineActivity(date: string, rawInput: unknown, rawRequestId?: unknown): Promise<ServiceResult<TimelineActivityRecord>> {
+export async function createTimelineActivity(tripSlug: string, date: string, rawInput: unknown, rawRequestId?: unknown): Promise<ServiceResult<TimelineActivityRecord>> {
   const input = normalizeInput(rawInput);
   if ("error" in input) return input;
-  const day = await dayForDate(date);
+  const day = await dayForDate(tripSlug, date);
   if ("error" in day) return day;
   const requestId = rawRequestId === undefined ? undefined : typeof rawRequestId === "string" && UUID_PATTERN.test(rawRequestId) ? rawRequestId : null;
   if (requestId === null) return { error: "Érvénytelen mentési azonosító.", status: 400 };
@@ -159,7 +157,7 @@ export async function createTimelineActivity(date: string, rawInput: unknown, ra
     .single();
   if (error) {
     if (requestId && error.code === "23505") {
-      const existing = await activityForTrip(requestId);
+      const existing = await activityForTrip(tripSlug, requestId);
       if ("data" in existing && existing.data.day_id === day.data.id) return existing;
     }
     throw error;
@@ -169,10 +167,13 @@ export async function createTimelineActivity(date: string, rawInput: unknown, ra
 
 /** Accepts a verified, concrete daily Event into the family's editable plan.
  * Event series intentionally never reach this function. */
-export async function acceptEventIntoTimeline(eventId: string, date: string): Promise<ServiceResult<TimelineActivityRecord>> {
+export async function acceptEventIntoTimeline(tripSlug: string, eventId: string, date: string): Promise<ServiceResult<TimelineActivityRecord>> {
   if (!UUID_PATTERN.test(eventId)) return { error: "Érvénytelen esemény.", status: 400 };
-  const day = await dayForDate(date);
+  const day = await dayForDate(tripSlug, date);
   if ("error" in day) return day;
+
+  const trip = await resolveTripRef(tripSlug);
+  if ("error" in trip) return trip;
 
   const supabase = timelineServerClient();
   const { data: ownedEvent, error: ownedEventError } = await supabase
@@ -182,9 +183,7 @@ export async function acceptEventIntoTimeline(eventId: string, date: string): Pr
     .maybeSingle();
   if (ownedEventError) throw ownedEventError;
   if (!ownedEvent) return { error: "Az esemény nem található.", status: 404 };
-  const { data: trip, error: tripError } = await supabase.from("trips").select("id").eq("slug", TIMELINE_TRIP_SLUG).maybeSingle();
-  if (tripError) throw tripError;
-  if (!trip || ownedEvent.trip_id !== trip.id) return { error: "Az esemény nem ehhez az utazáshoz tartozik.", status: 403 };
+  if (ownedEvent.trip_id !== trip.data.id) return { error: "Az esemény nem ehhez az utazáshoz tartozik.", status: 403 };
   if (ownedEvent.status === "cancelled") return { error: "Törölt esemény nem adható a napi tervhez.", status: 409 };
   if (!ownedEvent.ends_at) return { error: "Az esemény végideje még nincs ellenőrzött adatként rögzítve.", status: 409 };
 
@@ -230,10 +229,10 @@ export async function acceptEventIntoTimeline(eventId: string, date: string): Pr
   return { data };
 }
 
-export async function updateTimelineActivity(id: string, rawInput: unknown): Promise<ServiceResult<TimelineActivityRecord>> {
+export async function updateTimelineActivity(tripSlug: string, id: string, rawInput: unknown): Promise<ServiceResult<TimelineActivityRecord>> {
   const input = normalizeInput(rawInput);
   if ("error" in input) return input;
-  const current = await editableActivity(id);
+  const current = await editableActivity(tripSlug, id);
   if ("error" in current) return current;
   const supabase = timelineServerClient();
   const { data, error } = await supabase
@@ -255,8 +254,8 @@ export async function updateTimelineActivity(id: string, rawInput: unknown): Pro
   return { data };
 }
 
-export async function deleteTimelineActivity(id: string): Promise<ServiceResult<TimelineActivityRecord>> {
-  const current = await editableActivity(id);
+export async function deleteTimelineActivity(tripSlug: string, id: string): Promise<ServiceResult<TimelineActivityRecord>> {
+  const current = await editableActivity(tripSlug, id);
   if ("error" in current) return current;
   const supabase = timelineServerClient();
   const { error } = await supabase.from("timeline_activities").delete().eq("id", current.data.id);

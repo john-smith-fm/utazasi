@@ -1,6 +1,7 @@
 import "server-only";
 
-import { TIMELINE_TRIP_SLUG, timelineServerClient } from "@/lib/timeline-service";
+import { timelineServerClient } from "@/lib/timeline-service";
+import { DEFAULT_TRIP_SLUG } from "@/lib/trip-service";
 import { hasForeignNotebookRuntimeData } from "@/lib/notebook-legacy-safety";
 import type { LegacyNotebookSnapshot, NotebookEntryKind, NotebookEntryRecord, PackingItemRecord } from "@/lib/notebook-types";
 import {
@@ -27,7 +28,7 @@ function entryRecord(row: DbEntry): NotebookEntryRecord {
 }
 
 async function tripId(): Promise<ServiceResult<string>> {
-  const { data, error } = await timelineServerClient().from("trips").select("id").eq("slug", TIMELINE_TRIP_SLUG).maybeSingle();
+  const { data, error } = await timelineServerClient().from("trips").select("id").eq("slug", DEFAULT_TRIP_SLUG).maybeSingle();
   if (error) throw error;
   return data ? { data: data.id } : { error: "Az utazás nem található.", status: 404 };
 }

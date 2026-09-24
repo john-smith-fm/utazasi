@@ -19,11 +19,16 @@ function localToday() {
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 }
 
-export function useLiveData(location?: CurrentLocationContext, refreshMs = 15 * 60 * 1000): LiveData {
+export function useLiveData(location?: CurrentLocationContext, refreshMs = 15 * 60 * 1000, enabled = true): LiveData {
   const [state, setState] = useState<LiveData>({ weather: null, sea: null, fx: null, loading: true });
 
   useEffect(() => {
     let cancelled = false;
+
+    if (!enabled) {
+      setState({ weather: null, sea: null, fx: null, loading: false });
+      return () => { cancelled = true; };
+    }
 
     async function load() {
       const [weather, fx] = await Promise.allSettled([
@@ -45,7 +50,7 @@ export function useLiveData(location?: CurrentLocationContext, refreshMs = 15 * 
       cancelled = true;
       clearInterval(id);
     };
-  }, [location?.latitude, location?.longitude, location?.seaRelevant, refreshMs]);
+  }, [enabled, location?.latitude, location?.longitude, location?.seaRelevant, refreshMs]);
 
   return state;
 }

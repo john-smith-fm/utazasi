@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { TabBar } from "@/components/TabBar";
 import { UndoProvider } from "@/components/UndoProvider";
+import { TripProvider } from "@/components/TripProvider";
 
 const OFFLINE_ACCESS_KEY = "utazasi-pin-access";
 type AccessState = "loading" | "locked" | "unlocked" | "configuration-error";
@@ -31,7 +32,7 @@ export function AppAccessGate({ children, initialAuthenticated = false }: { chil
   }, []);
 
   if (state === "loading") return <AccessLoadingScreen />;
-  if (state === "unlocked") return <UndoProvider>{children}<TabBar /></UndoProvider>;
+  if (state === "unlocked") return <TripProvider><UndoProvider>{children}<TabBar /></UndoProvider></TripProvider>;
   return <PinAccessScreen configurationError={state === "configuration-error"} onUnlocked={() => setState("unlocked")} />;
 }
 
@@ -95,8 +96,8 @@ function PinAccessScreen({ configurationError, onUnlocked }: { configurationErro
     <div className="relative flex flex-1 flex-col justify-end pb-[max(26px,7dvh)]">
       <div className="mx-auto w-full max-w-[365px] pb-9 text-center">
         <p className="text-[12px] font-bold uppercase tracking-[.18em] text-turquoise">Utazási</p>
-        <h1 className="mt-3 text-[31px] font-bold tracking-[-.045em] text-deep-sea">Villasimius</h1>
-        <p className="mt-1 text-[15px] text-deep-sea/55">2026. szeptember 2–13.</p>
+        <h1 className="mt-3 text-[31px] font-bold tracking-[-.045em] text-deep-sea">Családi útitárs</h1>
+        <p className="mt-1 text-[15px] text-deep-sea/55">Az utazásaid egy helyen.</p>
       </div>
       <div className={`mx-auto flex w-full max-w-[365px] justify-center gap-4 ${status === "error" ? "motion-safe:animate-[pin-shake_.3s_ease-in-out]" : ""}`} aria-label="Négyjegyű PIN-kód">
         {[0, 1, 2, 3].map((index) => <span key={index} aria-hidden="true" className={`h-3 w-3 rounded-full border border-deep-sea/25 transition-colors ${typedPin[index] ? "bg-deep-sea" : "bg-white/55"}`} />)}

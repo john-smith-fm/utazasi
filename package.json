@@ -2,7 +2,7 @@
   "name": "utazasi",
   "version": "0.3.0",
   "private": true,
-  "description": "Utazási — személyre szabott digitális útitárs (Villasimius, 2026.09.02–13.)",
+  "description": "Utazási — Timeline-központú személyes családi útitárs",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -32,6 +32,12 @@
     "test:timeline": "node --no-warnings --experimental-strip-types --test scripts/timeline/*.test.mjs scripts/timeline/*.test.ts",
     "test:access": "node --no-warnings --experimental-strip-types --test scripts/access/*.test.mjs",
     "test:trip-base": "node --no-warnings --experimental-strip-types --test scripts/trip-base/*.test.mjs",
+    "test:trip-v2": "node --no-warnings --experimental-strip-types --test scripts/trip-v2/*.test.ts",
+    "supabase:migrations": "supabase migration list",
+    "supabase:dry-run": "supabase db push --dry-run",
+    "supabase:push": "supabase db push",
+    "supabase:seed:v2": "supabase db query --linked --file supabase/seeds/v2-poc-trip.sql",
+    "supabase:verify:v2": "supabase db query --linked --file supabase/queries/verify-v2-foundation.sql",
     "test:place-experience": "node --test scripts/place-experience/*.test.mjs",
     "test:place-facts": "node --no-warnings --experimental-strip-types --test scripts/place-facts/*.test.ts",
     "test:grounding": "node --no-warnings --experimental-strip-types --test scripts/grounding/*.test.ts"
@@ -51,6 +57,7 @@
     "@types/web-push": "^3.6.4",
     "autoprefixer": "10.4.19",
     "postcss": "8.4.39",
+    "supabase": "2.117.0",
     "tailwindcss": "3.4.6",
     "typescript": "5.5.4"
   }

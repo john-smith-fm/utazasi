@@ -6,8 +6,8 @@ import { ACCESS_COOKIE_NAME, hasValidAccessSession } from "@/lib/access";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Utazási — Villasimius Guide",
-  description: "Személyre szabott digitális útikalauz a villasimiusi családi nyaraláshoz.",
+  title: "Utazási — családi útitárs",
+  description: "Timeline-központú személyes családi utazási asszisztens.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,

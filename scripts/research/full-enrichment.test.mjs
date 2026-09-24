@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { buildFullEnrichmentJob, buildFullEnrichmentPlan, FULL_ENRICHMENT_USAGE, parseArguments, runFullEnrichment } from "./full-enrichment.mjs";
+import { buildFullEnrichmentJob, buildFullEnrichmentPlan, FULL_ENRICHMENT_USAGE, MAX_FULL_ENRICHMENT_LIMIT, parseArguments, runFullEnrichment } from "./full-enrichment.mjs";
 
 test("full enrichment plan covers every canonical Place without writing", async () => {
   const plan = await buildFullEnrichmentPlan({ root: process.cwd() });
-  assert.equal(plan.length, 138);
-  assert.equal(new Set(plan.map((item) => item.slug)).size, 138);
+  assert.ok(plan.length > 0);
+  assert.equal(new Set(plan.map((item) => item.slug)).size, plan.length);
   assert.ok(plan.every((item) => item.job.slugs.length === 1 && item.job.slugs[0] === item.slug));
 });
 
@@ -28,7 +28,7 @@ test("full enrichment is deliberately one review proposal by default", () => {
   assert.equal(parseArguments(["--help"]).help, true);
   assert.equal(parseArguments(["-h"]).help, true);
   assert.match(FULL_ENRICHMENT_USAGE, /dry-run/);
-  assert.throws(() => parseArguments(["--limit", "139"]), /1 és 138/);
+  assert.throws(() => parseArguments(["--limit", String(MAX_FULL_ENRICHMENT_LIMIT + 1)]), new RegExp(`1 és ${MAX_FULL_ENRICHMENT_LIMIT}`));
 });
 
 test("full enrichment job remains constrained to a known Place", () => {

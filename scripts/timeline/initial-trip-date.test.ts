@@ -38,6 +38,6 @@ test("Europe/Rome date boundaries never use the adjacent UTC date", () => {
 
 test("Home uses the resolver only as the initial selected-day state", async () => {
   const page = await readFile(new URL("../../src/app/page.tsx", import.meta.url), "utf8");
-  assert.match(page, /useState\(\(\) => initialTripDate\(TRIP_RUNTIME\)\)/);
+  assert.match(page, /useState\(\(\) => initialTripDate\(tripRuntime\)\)/);
   assert.doesNotMatch(page, /setSelectedDate\(initialTripDate\(/);
 });

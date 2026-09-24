@@ -4,9 +4,10 @@ import { loadCanonicalPlaces, validateResearchJob } from "./core.mjs";
 import { createLiveResearchProposal, saveResearchProposal } from "./provider-openai.mjs";
 
 const RESEARCHABLE_AREAS = new Set(["basic", "evidence", "services", "family"]);
+export const MAX_FULL_ENRICHMENT_LIMIT = 500;
 export const FULL_ENRICHMENT_USAGE = `Használat:
-  npm run research:full -- --dry-run [--limit 1..138]
-  npm run research:full -- --resume [--limit 1..138]
+  npm run research:full -- --dry-run [--limit 1..${MAX_FULL_ENRICHMENT_LIMIT}]
+  npm run research:full -- --resume [--limit 1..${MAX_FULL_ENRICHMENT_LIMIT}]
 
 Alapértelmezés: pontosan egy, Timeline-hoz kötött Place review-javaslata.
 A futás csak javaslatot ír a research/proposals könyvtárba; kanonikus adatot nem módosít.`;
@@ -103,7 +104,7 @@ function blocksEntireProvider(error) {
   // A connection outage, invalid credentials, unavailable model access or
   // inactive billing cannot succeed for the next Place either. Stop the
   // batch after the first such response instead of needlessly issuing up to
-  // 138 identical failing provider calls.
+  // hundreds of identical failing provider calls.
   return /OpenAI research kapcsolat nem érhető el: (ENOTFOUND|EAI_AGAIN|időtúllépés)/.test(message)
     || /OpenAI research hiba \((401|403|429)\):/.test(message);
 }
@@ -120,8 +121,8 @@ export function parseArguments(args) {
   // A larger batch is possible, but must be requested explicitly with --limit.
   const limitValue = argumentValue(args, "--limit") ?? "1";
   const limit = Number(limitValue);
-  if (!Number.isInteger(limit) || limit < 1 || limit > 138) {
-    throw new Error("A --limit 1 és 138 közötti egész szám lehet.");
+  if (!Number.isInteger(limit) || limit < 1 || limit > MAX_FULL_ENRICHMENT_LIMIT) {
+    throw new Error(`A --limit 1 és ${MAX_FULL_ENRICHMENT_LIMIT} közötti egész szám lehet.`);
   }
   return {
     limit,
@@ -149,7 +150,7 @@ export async function runFullEnrichment({
   log = console.log,
 } = {}) {
   const plan = await buildFullEnrichmentPlan({ root });
-  const selected = plan.slice(0, options.limit ?? 138);
+  const selected = plan.slice(0, options.limit ?? plan.length);
   const report = {
     reportVersion: "1.0",
     startedAt: new Date().toISOString(),

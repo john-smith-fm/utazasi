@@ -11,17 +11,17 @@ function timeRange(event: TripEvent) {
   return event.endsAt ? `${format(event.startsAt)}–${format(event.endsAt)}` : format(event.startsAt);
 }
 
-export function EventSuggestions({ date, events, onAccepted }: { date: string; events: TripEvent[]; onAccepted: () => void }) {
+export function EventSuggestions({ tripSlug, date, events, onAccepted }: { tripSlug: string; date: string; events: TripEvent[]; onAccepted: () => void }) {
   if (events.length === 0) return null;
   return <section className="mt-6" aria-label="Programjavaslatok">
     <p className="mb-2 text-[11px] font-semibold uppercase tracking-[.06em] text-deep-sea/45">Programjavaslat</p>
     <div className="space-y-2.5">
-      {events.map((event) => <EventSuggestion key={event.id} date={date} event={event} onAccepted={onAccepted} />)}
+      {events.map((event) => <EventSuggestion key={event.id} tripSlug={tripSlug} date={date} event={event} onAccepted={onAccepted} />)}
     </div>
   </section>;
 }
 
-function EventSuggestion({ date, event, onAccepted }: { date: string; event: TripEvent; onAccepted: () => void }) {
+function EventSuggestion({ tripSlug, date, event, onAccepted }: { tripSlug: string; date: string; event: TripEvent; onAccepted: () => void }) {
   const [expanded, setExpanded] = useState(false);
   const [accepting, setAccepting] = useState(false);
   const [accepted, setAccepted] = useState(Boolean(event.accepted));
@@ -47,7 +47,7 @@ function EventSuggestion({ date, event, onAccepted }: { date: string; event: Tri
       const response = await fetch(`/api/events/${event.id}/accept`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ date }),
+        body: JSON.stringify({ tripSlug, date }),
       });
       const result = await response.json() as { error?: string };
       if (!response.ok) throw new Error(result.error ?? "Az esemény hozzáadása nem sikerült.");

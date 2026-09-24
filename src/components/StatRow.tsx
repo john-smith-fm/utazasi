@@ -6,11 +6,12 @@ import type { WeatherSnapshot } from "@/types";
 import type { TripEvent } from "@/lib/event-types";
 import { Icon } from "./Icon";
 import { QuestionSheet } from "./QuestionSheet";
+import type { TimelineProposal } from "@/lib/timeline-proposal";
 
 const glass = { background: "rgba(255,255,255,.78)", borderColor: "rgba(255,255,255,.82)", boxShadow: "0 18px 44px rgba(43,41,38,.12),0 2px 8px rgba(43,41,38,.05)", backdropFilter: "blur(20px) saturate(1.08)", WebkitBackdropFilter: "blur(20px) saturate(1.08)" };
 function Metric({ icon, value, bordered = false }: { icon: string; value: string; bordered?: boolean }) { return <span className={`flex min-w-0 items-center justify-center gap-1.5 py-2 ${bordered ? "border-l border-deep-sea/10" : ""}`}><Icon name={icon} size={18} strokeWidth={1.8} className="shrink-0 text-turquoise-dark" /><strong className="whitespace-nowrap text-sm tracking-[-.02em]">{value}</strong></span>; }
 
-export function StatRow({ weather, sea, day, events = [], tripDays = [], tripStatus = "success", onOpenDay }: { weather: WeatherSnapshot | null; sea: number | null; day: HomeDay; events?: TripEvent[]; tripDays?: readonly HomeDay[]; tripStatus?: "loading" | "success" | "empty" | "offline" | "error"; onOpenDay?: (date: string) => void }) {
+export function StatRow({ tripSlug, hasLegacyKnowledge = false, hasPrivateTripBase = false, weather, sea, day, events = [], tripDays = [], tripStatus = "success", onOpenDay, onApplyTimelineProposal }: { tripSlug: string; hasLegacyKnowledge?: boolean; hasPrivateTripBase?: boolean; weather: WeatherSnapshot | null; sea: number | null; day: HomeDay; events?: TripEvent[]; tripDays?: readonly HomeDay[]; tripStatus?: "loading" | "success" | "empty" | "offline" | "error"; onOpenDay?: (date: string) => void; onApplyTimelineProposal?: (proposal: TimelineProposal) => Promise<void> }) {
   const [mode, setMode] = useState<"weather" | "questions">("weather");
   const questionPanelRef = useRef<HTMLElement>(null);
   const weatherIcon = weather?.condition === "clear" ? "sun"
@@ -45,7 +46,7 @@ export function StatRow({ weather, sea, day, events = [], tripDays = [], tripSta
         <button type="button" aria-label="Kérdezési bezárása" onClick={() => setMode("weather")} className="absolute right-3 grid h-9 w-9 place-items-center rounded-full border border-deep-sea/15 bg-white/60 text-deep-sea transition-colors hover:bg-white focus-visible:ring-2 focus-visible:ring-turquoise-dark"><Icon name="x" size={17} aria-hidden="true" /></button>
         <strong className="text-sm tracking-[-.02em] text-deep-sea">Kérdezési</strong>
       </div>
-      <QuestionSheet day={day} weather={weather} events={events} tripDays={tripDays} tripStatus={tripStatus} onOpenDay={onOpenDay} />
+      <QuestionSheet tripSlug={tripSlug} hasLegacyKnowledge={hasLegacyKnowledge} hasPrivateTripBase={hasPrivateTripBase} day={day} weather={weather} events={events} tripDays={tripDays} tripStatus={tripStatus} onOpenDay={onOpenDay} onApplyTimelineProposal={onApplyTimelineProposal} />
     </section> : <button type="button" aria-label="Kérdezési megnyitása" aria-expanded="false" onClick={() => setMode("questions")} className="group relative z-[2] flex w-full items-stretch rounded-[22px] border py-2 pl-1.5 text-left focus-visible:ring-2 focus-visible:ring-turquoise-dark" style={glass}>
       <span className={`grid min-w-0 flex-1 pr-12 ${sea !== null ? "grid-cols-3" : "grid-cols-2"}`}>
         <Metric icon={weatherIcon} value={weather ? `${weather.temp}°` : "—"} />

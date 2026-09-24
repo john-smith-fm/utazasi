@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { HomeActivity, HomeDay } from "@/data/home-days";
 import { storageGet, storageSet } from "@/lib/storage";
+import { timelineDayCacheKey, tripTimelineCacheKey } from "@/lib/trip-cache";
 
 export type TimelineLoadState = "loading" | "success" | "empty" | "offline" | "error";
 
@@ -63,21 +64,21 @@ function emptyDay(fallback: HomeDay): HomeDay {
  * response is cached per date so an installed PWA can show its last known
  * schedule while offline. There is deliberately no mutation path in v1A.
  */
-export function useTimelineDay(selectedDate: string, fallback: HomeDay) {
+export function useTimelineDay(tripSlug: string, selectedDate: string, fallback: HomeDay) {
   const [state, setState] = useState<TimelineDayState>({ day: emptyDay(fallback), status: "loading", hasRemoteDay: false });
   const [attempt, setAttempt] = useState(0);
   const retry = useCallback(() => setAttempt((value) => value + 1), []);
 
   useEffect(() => {
     let active = true;
-    const cacheKey = `utazasi-timeline-v1:${selectedDate}`;
+    const cacheKey = timelineDayCacheKey(tripSlug, selectedDate);
     const cached = storageGet<TimelineDayResult | null>(cacheKey, null);
 
     setState({ day: cached ? timelineDayToHomeDay(cached, fallback) : emptyDay(fallback), status: "loading", hasRemoteDay: Boolean(cached) });
 
     async function load() {
       try {
-        const response = await fetch(`/api/timeline?date=${encodeURIComponent(selectedDate)}`, { cache: "no-store" });
+        const response = await fetch(`/api/timeline?trip=${encodeURIComponent(tripSlug)}&date=${encodeURIComponent(selectedDate)}`, { cache: "no-store" });
         if (!response.ok) throw new Error(`Timeline request failed: ${response.status}`);
         const { day } = await response.json() as { day: TimelineDayResult | null };
         if (!active) return;
@@ -103,7 +104,7 @@ export function useTimelineDay(selectedDate: string, fallback: HomeDay) {
 
     void load();
     return () => { active = false; };
-  }, [attempt, fallback, selectedDate]);
+  }, [attempt, fallback, selectedDate, tripSlug]);
 
   return { ...state, canWrite: state.hasRemoteDay && state.status !== "offline" && state.status !== "error", retry };
 }
@@ -113,7 +114,7 @@ export function useTimelineDay(selectedDate: string, fallback: HomeDay) {
  * remains a single day, while a concrete program or travel question can look
  * up a scheduled fact elsewhere in the canonical family plan.
  */
-export function useTripTimeline(fallbackDays: readonly HomeDay[]) {
+export function useTripTimeline(tripSlug: string, fallbackDays: readonly HomeDay[]) {
   const [days, setDays] = useState<readonly HomeDay[]>([]);
   const [status, setStatus] = useState<TimelineLoadState>("loading");
   const [attempt, setAttempt] = useState(0);
@@ -121,7 +122,7 @@ export function useTripTimeline(fallbackDays: readonly HomeDay[]) {
 
   useEffect(() => {
     let active = true;
-    const cacheKey = "utazasi-timeline-v1:trip";
+    const cacheKey = tripTimelineCacheKey(tripSlug);
     const cached = storageGet<TimelineDayResult[] | null>(cacheKey, null);
     const project = (remoteDays: readonly TimelineDayResult[]) => remoteDays.map((remote) => {
       const fallback = fallbackDays.find((day) => day.date === remote.date);
@@ -138,7 +139,7 @@ export function useTripTimeline(fallbackDays: readonly HomeDay[]) {
 
     async function load() {
       try {
-        const response = await fetch("/api/timeline?scope=trip", { cache: "no-store" });
+        const response = await fetch(`/api/timeline?trip=${encodeURIComponent(tripSlug)}&scope=trip`, { cache: "no-store" });
         if (!response.ok) throw new Error(`Trip Timeline request failed: ${response.status}`);
         const payload = await response.json() as { days?: TimelineDayResult[] };
         const remoteDays = payload.days ?? [];
@@ -155,7 +156,7 @@ export function useTripTimeline(fallbackDays: readonly HomeDay[]) {
 
     void load();
     return () => { active = false; };
-  }, [attempt, fallbackDays]);
+  }, [attempt, fallbackDays, tripSlug]);
 
   return { days, status, retry };
 }

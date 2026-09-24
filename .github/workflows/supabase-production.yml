@@ -1,0 +1,64 @@
+name: Supabase production migration
+
+on:
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: Apply pending migrations after the dry run
+        required: true
+        type: boolean
+        default: false
+      seed_v2_poc:
+        description: Upsert the isolated two-day V2 POC Trip after migration
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: supabase-production-migration
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.117.0
+
+      - name: Check required secrets
+        shell: bash
+        run: |
+          test -n "$SUPABASE_ACCESS_TOKEN"
+          test -n "$SUPABASE_DB_PASSWORD"
+          test -n "$SUPABASE_PROJECT_ID"
+
+      - name: Link production project
+        run: supabase link --project-ref "$SUPABASE_PROJECT_ID"
+
+      - name: Compare migration history
+        run: supabase migration list
+
+      - name: Preview pending migrations
+        run: supabase db push --dry-run
+
+      - name: Apply pending migrations
+        if: ${{ inputs.apply }}
+        run: supabase db push
+
+      - name: Seed isolated V2 POC Trip
+        if: ${{ inputs.apply && inputs.seed_v2_poc }}
+        run: supabase db query --linked --file supabase/seeds/v2-poc-trip.sql
+
+      - name: Verify V2 foundation and POC
+        if: ${{ inputs.apply && inputs.seed_v2_poc }}
+        run: supabase db query --linked --file supabase/queries/verify-v2-foundation.sql

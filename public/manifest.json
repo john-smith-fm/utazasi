@@ -1,7 +1,7 @@
 {
-  "name": "Utazási — Villasimius Guide",
+  "name": "Utazási — családi útitárs",
   "short_name": "Utazási",
-  "description": "Személyre szabott digitális útikalauz a villasimiusi családi nyaraláshoz.",
+  "description": "Timeline-központú személyes családi utazási asszisztens.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

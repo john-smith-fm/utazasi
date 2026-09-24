@@ -1,6 +1,7 @@
 "use client";
 
 import type { TimelineActivityInput, TimelineActivityRecord, TimelineMutationResponse } from "@/lib/timeline-types";
+import type { TimelineProposal } from "@/lib/timeline-proposal";
 
 async function request(url: string, init: RequestInit): Promise<TimelineActivityRecord> {
   if (typeof navigator !== "undefined" && !navigator.onLine) throw new Error("Offline módban a módosítás nem menthető.");
@@ -14,14 +15,30 @@ async function request(url: string, init: RequestInit): Promise<TimelineActivity
   return result.activity;
 }
 
-export function createTimelineActivity(date: string, activity: TimelineActivityInput, requestId?: string) {
-  return request("/api/timeline", { method: "POST", body: JSON.stringify({ date, activity, requestId }) });
+export function createTimelineActivity(tripSlug: string, date: string, activity: TimelineActivityInput, requestId?: string) {
+  return request("/api/timeline", { method: "POST", body: JSON.stringify({ tripSlug, date, activity, requestId }) });
 }
 
-export function updateTimelineActivity(id: string, activity: TimelineActivityInput) {
-  return request(`/api/timeline/${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify({ activity }) });
+export function updateTimelineActivity(tripSlug: string, id: string, activity: TimelineActivityInput) {
+  return request(`/api/timeline/${encodeURIComponent(id)}?trip=${encodeURIComponent(tripSlug)}`, { method: "PATCH", body: JSON.stringify({ activity }) });
 }
 
-export function deleteTimelineActivity(id: string) {
-  return request(`/api/timeline/${encodeURIComponent(id)}`, { method: "DELETE" });
+export function deleteTimelineActivity(tripSlug: string, id: string) {
+  return request(`/api/timeline/${encodeURIComponent(id)}?trip=${encodeURIComponent(tripSlug)}`, { method: "DELETE" });
+}
+
+async function proposalRequest<T>(url: string, body: unknown): Promise<T> {
+  if (typeof navigator !== "undefined" && !navigator.onLine) throw new Error("Offline módban a Timeline nem módosítható.");
+  const response = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, cache: "no-store", body: JSON.stringify(body) });
+  const payload = await response.json().catch(() => null) as ({ error?: unknown } & T) | null;
+  if (!response.ok || !payload) throw new Error(typeof payload?.error === "string" ? payload.error : "A Timeline-művelet nem sikerült.");
+  return payload;
+}
+
+export function applyTimelineProposalAtomically(tripSlug: string, proposal: TimelineProposal) {
+  return proposalRequest<{ proposalId: string; activityIds: string[]; dayVersion: number }>("/api/timeline/proposals/apply", { tripSlug, proposal });
+}
+
+export function undoTimelineProposal(tripSlug: string, proposalId: string) {
+  return proposalRequest<{ deletedCount: number }>("/api/timeline/proposals/undo", { tripSlug, proposalId });
 }
