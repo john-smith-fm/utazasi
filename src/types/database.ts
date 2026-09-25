@@ -27,6 +27,18 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["timeline_activities"]["Insert"]>;
         Relationships: [{ foreignKeyName: "timeline_activities_day_id_fkey"; columns: ["day_id"]; referencedRelation: "days"; referencedColumns: ["id"] }, { foreignKeyName: "timeline_activities_source_event_id_fkey"; columns: ["source_event_id"]; referencedRelation: "events"; referencedColumns: ["id"] }];
       };
+      timeline_proposal_operations: {
+        Row: { id: string; trip_id: string; applied_at: string; undone_at: string | null };
+        Insert: { id: string; trip_id: string; applied_at?: string; undone_at?: string | null };
+        Update: { undone_at?: string | null };
+        Relationships: [{ foreignKeyName: "timeline_proposal_operations_trip_id_fkey"; columns: ["trip_id"]; referencedRelation: "trips"; referencedColumns: ["id"] }];
+      };
+      timeline_proposal_undo_snapshots: {
+        Row: { proposal_id: string; activity_id: string; day_id: string; activity_snapshot: Record<string, unknown> };
+        Insert: { proposal_id: string; activity_id: string; day_id: string; activity_snapshot: Record<string, unknown> };
+        Update: never;
+        Relationships: [];
+      };
       events: {
         Row: { id: string; trip_id: string; canonical_key: string; series_id: string | null; title: string; starts_at: string; ends_at: string | null; organizer: string | null; source_url: string; status: EventStatus; place_slug: string | null; last_verified_at: string | null; created_at: string; updated_at: string };
         Insert: { id?: string; trip_id: string; canonical_key: string; series_id?: string | null; title: string; starts_at: string; ends_at?: string | null; organizer?: string | null; source_url: string; status?: EventStatus; place_slug?: string | null; last_verified_at?: string | null; created_at?: string; updated_at?: string };
@@ -86,6 +98,8 @@ export interface Database {
     Functions: {
       apply_timeline_proposal: { Args: { p_trip_slug: string; p_day_date: string; p_expected_version: number; p_proposal_id: string; p_items: Array<Record<string, unknown>> }; Returns: Array<{ activity_id: string; day_version: number }> };
       undo_timeline_proposal: { Args: { p_trip_slug: string; p_proposal_id: string }; Returns: number };
+      apply_timeline_proposal_changes: { Args: { p_trip_slug: string; p_proposal_id: string; p_days: Array<Record<string, unknown>> }; Returns: Array<{ day_date: string; activity_id: string | null; day_version: number }> };
+      undo_timeline_proposal_changes: { Args: { p_trip_slug: string; p_proposal_id: string }; Returns: { deletedCount: number; restoredCount: number } | null };
     };
     Enums: { timeline_activity_kind: TimelineActivityKind; timeline_time_precision: TimelineTimePrecision; trip_member_role: TripMemberRole; event_status: EventStatus; event_change_kind: EventChangeKind };
     CompositeTypes: Record<string, never>;

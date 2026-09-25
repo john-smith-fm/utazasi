@@ -14,8 +14,8 @@ export async function POST(request: NextRequest) {
   if ("error" in trip) return NextResponse.json({ error: trip.error }, { status: trip.status });
   const proposalId = typeof body?.proposalId === "string" && UUID_PATTERN.test(body.proposalId) ? body.proposalId : null;
   if (!proposalId) return NextResponse.json({ error: "Érvénytelen AI-javaslat." }, { status: 400 });
-  const { data, error } = await serverDatabaseClient().rpc("undo_timeline_proposal", { p_trip_slug: trip.data, p_proposal_id: proposalId });
+  const { data, error } = await serverDatabaseClient().rpc("undo_timeline_proposal_changes", { p_trip_slug: trip.data, p_proposal_id: proposalId });
   if (error) return NextResponse.json({ error: "Az AI-javaslat visszavonása nem sikerült." }, { status: 503 });
   if (!data) return NextResponse.json({ error: "A visszavonható AI-javaslat nem található." }, { status: 404 });
-  return NextResponse.json({ deletedCount: data }, { headers: { "Cache-Control": "no-store" } });
+  return NextResponse.json(data, { headers: { "Cache-Control": "no-store" } });
 }

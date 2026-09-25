@@ -91,15 +91,15 @@ test("search-first Timeline planning requires explicit consent and preserves pro
 });
 
 test("accepted AI proposals use one version-checked atomic operation and grouped Undo", async () => {
-  const migration = await readFile(new URL("supabase/migrations/014_add_atomic_timeline_proposals.sql", root), "utf8");
+  const migration = await readFile(new URL("supabase/migrations/015_add_multiday_timeline_change_sets.sql", root), "utf8");
   const applyRoute = await readFile(new URL("src/app/api/timeline/proposals/apply/route.ts", root), "utf8");
   const page = await readFile(new URL("src/app/page.tsx", root), "utf8");
-  assert.match(migration, /add column if not exists version integer not null default 1/);
+  assert.match(migration, /timeline_proposal_undo_snapshots/);
   assert.match(migration, /for update of d/);
   assert.match(migration, /timeline_version_conflict/);
-  assert.match(migration, /proposal_id uuid/);
-  assert.match(migration, /undo_timeline_proposal/);
-  assert.match(applyRoute, /rpc\("apply_timeline_proposal"/);
+  assert.match(migration, /activity_snapshot/);
+  assert.match(migration, /undo_timeline_proposal_changes/);
+  assert.match(applyRoute, /rpc\("apply_timeline_proposal_changes"/);
   assert.match(page, /applyTimelineProposalAtomically/);
   assert.match(page, /undoTimelineProposal/);
   assert.doesNotMatch(page, /for \(const item of proposal\.items\)/);

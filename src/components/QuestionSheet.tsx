@@ -170,11 +170,18 @@ export function QuestionSheet({ tripSlug, hasLegacyKnowledge = false, hasPrivate
       </div>
     </section> : null}
     {proposal ? <section className="mt-4 rounded-ui-s border border-deep-sea/10 bg-white/55 p-4" aria-live="polite">
-      <p className="text-[11px] font-semibold tracking-[.04em] text-deep-sea/45">TIMELINE-JAVASLAT · {proposal.targetTitle.toUpperCase()}</p>
-      <h3 className="mt-1 text-[17px] font-bold leading-[23px] text-deep-sea">{proposal.items.length} hozzáadás</h3>
+      <p className="text-[11px] font-semibold tracking-[.04em] text-deep-sea/45">TIMELINE-JAVASLAT · {proposal.days.length} NAP</p>
+      <h3 className="mt-1 text-[17px] font-bold leading-[23px] text-deep-sea">{proposal.days.reduce((sum, change) => sum + change.remove.length + change.add.length, 0)} változtatás</h3>
       <p className="mt-1 text-[13px] leading-[19px] text-deep-sea/65">{proposal.summary}</p>
-      <ol className="mt-4 space-y-3">
-        {proposal.items.map((item) => <li key={item.id} className="flex gap-3 border-t border-deep-sea/10 pt-3 first:border-t-0 first:pt-0">
+      <div className="mt-4 space-y-5">
+      {proposal.days.map((change) => <section key={change.date} className="border-t border-deep-sea/10 pt-3 first:border-t-0 first:pt-0">
+        <h4 className="text-sm font-bold text-deep-sea">{change.title} · {change.date}</h4>
+        <ol className="mt-3 space-y-3">
+        {change.remove.map((item) => <li key={`remove-${item.id}`} className="flex gap-3">
+          <strong className="w-11 shrink-0 text-sm text-deep-sea/55">{item.startTime}</strong>
+          <div className="min-w-0"><p className="text-sm font-semibold text-coral line-through">− {item.title}</p>{item.locationName ? <p className="mt-0.5 text-[13px] text-deep-sea/50">{item.locationName}</p> : null}</div>
+        </li>)}
+        {change.add.map((item) => <li key={item.id} className="flex gap-3">
           <strong className="w-11 shrink-0 text-sm text-deep-sea">{item.activity.startTime}</strong>
           <div className="min-w-0">
             <p className="text-sm font-semibold text-deep-sea">+ {item.activity.title}</p>
@@ -184,7 +191,9 @@ export function QuestionSheet({ tripSlug, hasLegacyKnowledge = false, hasPrivate
             {item.sources.length ? <ul className="mt-1.5 space-y-1">{item.sources.map((source) => <li key={source.url}><a href={source.url} target="_blank" rel="noreferrer" className="text-[12px] font-semibold leading-[18px] text-turquoise-dark underline decoration-turquoise/35 underline-offset-4">{source.title}</a></li>)}</ul> : null}
           </div>
         </li>)}
-      </ol>
+        </ol>
+      </section>)}
+      </div>
       {proposal.limitations.map((limitation) => <p key={limitation} className="mt-3 rounded-ui-s bg-sand/45 px-3 py-2 text-[12px] leading-[18px] text-deep-sea/65">Nem ellenőrzött · {limitation}</p>)}
       {proposal.blockingReason ? <p className="mt-3 rounded-ui-s border border-coral/25 bg-coral/5 px-3 py-2 text-[13px] leading-[19px] text-deep-sea/70">{proposal.blockingReason}</p> : null}
       <div className="mt-4 flex flex-wrap gap-2">

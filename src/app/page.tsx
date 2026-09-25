@@ -192,11 +192,11 @@ function ActiveTripHome({ trip, trips, onSelectTrip }: { trip: TripSummary; trip
   async function applyTimelineProposal(proposal: TimelineProposal) {
     if (typeof navigator !== "undefined" && !navigator.onLine) throw new Error("A Timeline módosításához hálózati kapcsolat szükséges.");
     const applied = await applyTimelineProposalAtomically(trip.slug, proposal);
-    setSelectedDate(proposal.targetDate);
+    if (proposal.days[0]) setSelectedDate(proposal.days[0].date);
     retry();
     tripTimeline.retry();
     scheduleUndo({
-      message: `${applied.activityIds.length} AI-javaslat alkalmazva.`,
+      message: `${proposal.days.length} nap AI-javaslata alkalmazva.`,
       onUndo: async () => {
         await undoTimelineProposal(trip.slug, applied.proposalId);
         retry();

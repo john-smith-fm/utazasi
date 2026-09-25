@@ -36,9 +36,9 @@ async function proposalRequest<T>(url: string, body: unknown): Promise<T> {
 }
 
 export function applyTimelineProposalAtomically(tripSlug: string, proposal: TimelineProposal) {
-  return proposalRequest<{ proposalId: string; activityIds: string[]; dayVersion: number }>("/api/timeline/proposals/apply", { tripSlug, proposal });
+  return proposalRequest<{ proposalId: string; activityIds: string[]; dayVersions: Record<string, number> }>("/api/timeline/proposals/apply", { tripSlug, proposal });
 }
 
 export function undoTimelineProposal(tripSlug: string, proposalId: string) {
-  return proposalRequest<{ deletedCount: number }>("/api/timeline/proposals/undo", { tripSlug, proposalId });
+  return proposalRequest<{ deletedCount: number; restoredCount: number }>("/api/timeline/proposals/undo", { tripSlug, proposalId });
 }

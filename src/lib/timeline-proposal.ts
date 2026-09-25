@@ -12,14 +12,28 @@ export type TimelineProposalItem = {
   sources: TimelineProposalSource[];
 };
 
+export type TimelineProposalExistingActivity = {
+  id: string;
+  startTime: string;
+  durationMinutes: number;
+  title: string;
+  locationName: string;
+  description: string;
+};
+
+export type TimelineProposalDayChange = {
+  date: string;
+  title: string;
+  expectedVersion: number;
+  remove: TimelineProposalExistingActivity[];
+  add: TimelineProposalItem[];
+};
+
 export type TimelineProposal = {
   request: string;
   sourceDate: string;
-  targetDate: string;
-  targetTitle: string;
-  targetVersion: number;
   summary: string;
-  items: TimelineProposalItem[];
+  days: TimelineProposalDayChange[];
   limitations: string[];
   blockingReason: string | null;
 };
@@ -57,6 +71,25 @@ function nextDay(sourceDate: string, tripDays: readonly HomeDay[]) {
   const ordered = [...tripDays].sort((left, right) => left.date.localeCompare(right.date));
   const index = ordered.findIndex((day) => day.date === sourceDate);
   return index >= 0 ? ordered[index + 1] ?? null : ordered.find((day) => day.date > sourceDate) ?? null;
+}
+
+const HUNGARIAN_NUMBERS: Record<string, number> = { egy: 1, ket: 2, ketto: 2, harom: 3, negy: 4, ot: 5, hat: 6, het: 7 };
+
+/** Resolves the requested mutation scope. The route still caps the result to the Trip's real days. */
+export function timelineProposalTargetDates(request: string, sourceDate: string, tripDays: readonly Pick<HomeDay, "date">[]) {
+  const ordered = [...tripDays].sort((left, right) => left.date.localeCompare(right.date));
+  const sourceIndex = ordered.findIndex((day) => day.date === sourceDate);
+  if (sourceIndex < 0) return [];
+  const text = request.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  if (/\b(hatralevo|maradek|tovabbi)\b/.test(text) || /\b(egesz|teljes)\s+utazas(?:t)?\b/.test(text)) return ordered.slice(sourceIndex).map((day) => day.date);
+  if (/\b(egesz|teljes)\s+het(?:et)?\b/.test(text)) return ordered.slice(sourceIndex, sourceIndex + 7).map((day) => day.date);
+  if (/\bholnap\b/.test(text)) return ordered[sourceIndex + 1] ? [ordered[sourceIndex + 1].date] : [];
+  const countMatch = text.match(/\bkovetkezo\s+(\d+|egy|ket|ketto|harom|negy|ot|hat|het)\s+nap/);
+  if (countMatch) {
+    const count = Number(countMatch[1]) || HUNGARIAN_NUMBERS[countMatch[1]] || 1;
+    return ordered.slice(sourceIndex, sourceIndex + Math.min(count, 14)).map((day) => day.date);
+  }
+  return [sourceDate];
 }
 
 function timeToMinutes(value: string) {
@@ -127,16 +160,11 @@ export function buildTimelineProposal(input: {
   return {
     request,
     sourceDate: input.sourceDay.date,
-    targetDate: targetDay.date,
-    targetTitle: targetDay.title,
-    targetVersion: 0,
     summary: wantsSimilar
       ? `A mai nap ${items.length - (wantsShopping ? 1 : 0)} ritmuseleméből készített holnapi vázlat${wantsShopping ? ", délutáni bevásárlással" : ""}.`
       : `${items.length} új programpont javasolt.`,
-    items,
+    days: [{ date: targetDay.date, title: targetDay.title, expectedVersion: 0, remove: [], add: items }],
     limitations: ["A konkrét új helyek keresése és forrásellenőrzése még nincs bekötve ebbe a POC-lépésbe."],
-    blockingReason: targetDay.activities.length
-      ? "A célnapon már vannak programok. A biztonságos csere-diff még készül; ezt a javaslatot ezért nem lehet automatikusan alkalmazni."
-      : null,
+    blockingReason: null,
   };
 }

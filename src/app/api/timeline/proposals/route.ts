@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ACCESS_COOKIE_NAME, hasValidAccessSession } from "@/lib/access";
 import { checkQuestionResearchRateLimit } from "@/lib/question-ai-rate-limit";
-import { isTimelineActionRequest, type TimelineProposal } from "@/lib/timeline-proposal";
+import { isTimelineActionRequest, timelineProposalTargetDates, type TimelineProposal } from "@/lib/timeline-proposal";
 import { researchTimelineProposal } from "@/lib/timeline-proposal-research";
 import { serverDatabaseClient } from "@/lib/server-database";
 import { requestedTripSlug } from "@/lib/trip-service";
@@ -42,39 +42,34 @@ export async function POST(request: NextRequest) {
     if (daysError) throw daysError;
     const sourceIndex = (days ?? []).findIndex((day) => day.date === body.sourceDate);
     if (sourceIndex < 0) return NextResponse.json({ error: "A kiinduló nap nem található." }, { status: 404 });
-    const wantsTomorrow = /\bholnap\b/.test(normalized(instruction));
-    const wantsStructuralPlan = /\b(hasonlo|ilyen|ugyanilyen|tervezz|tervezd|alakitsd|modositsd|csereld|legyen)\b/.test(normalized(instruction));
     const sourceDay = days![sourceIndex];
-    const targetDay = wantsTomorrow ? days![sourceIndex + 1] : sourceDay;
-    if (!targetDay) return NextResponse.json({ error: "Az utazásban nincs következő nap." }, { status: 409 });
+    const targetDates = timelineProposalTargetDates(instruction, sourceDay.date, days!);
+    const targetDays = days!.filter((day) => targetDates.includes(day.date));
+    if (!targetDays.length) return NextResponse.json({ error: "A kéréshez nem található érintett nap az utazásban." }, { status: 409 });
+    if (targetDays.length > 14) return NextResponse.json({ error: "Egyszerre legfeljebb 14 nap tervezhető újra." }, { status: 400 });
     const { data: activities, error: activitiesError } = await database.from("timeline_activities")
-      .select("day_id, start_time, duration_minutes, title, location_name, description")
-      .in("day_id", [...new Set([sourceDay.id, targetDay.id])])
+      .select("id, day_id, start_time, duration_minutes, title, location_name, description")
+      .in("day_id", [...new Set([sourceDay.id, ...targetDays.map((day) => day.id)])])
       .order("start_time", { ascending: true });
     if (activitiesError) throw activitiesError;
     const sourceActivities = (activities ?? []).filter((item) => item.day_id === sourceDay.id);
-    const targetActivities = (activities ?? []).filter((item) => item.day_id === targetDay.id);
     if (!sourceActivities.length && /\b(hasonlo|ilyen|ugyanilyen)\b/.test(normalized(instruction))) {
       return NextResponse.json({ error: "A kiinduló nap üres, ezért nincs felismerhető napi ritmus." }, { status: 409 });
     }
-    if (targetDay.id !== sourceDay.id && targetActivities.length && wantsStructuralPlan) {
-      return NextResponse.json({ error: "A célnapon már vannak programok. A biztonságos csere-diff még készül, ezért ezt a napot most nem írom felül." }, { status: 409 });
-    }
+    const activity = (item: typeof sourceActivities[number]) => ({ id: item.id, startTime: item.start_time.slice(0, 5), durationMinutes: item.duration_minutes, title: item.title, locationName: item.location_name ?? "", description: item.description ?? "" });
+    const researchTargetDays = targetDays.map((day) => ({ date: day.date, title: day.title, version: day.version, activities: (activities ?? []).filter((item) => item.day_id === day.id).map(activity) }));
     const researched = await researchTimelineProposal({
       request: instruction,
       trip: { destination: trip.destination, timezone: trip.timezone },
-      sourceDay: { date: sourceDay.date, title: sourceDay.title, activities: sourceActivities.map((item) => ({ startTime: item.start_time.slice(0, 5), durationMinutes: item.duration_minutes, title: item.title, locationName: item.location_name, description: item.description })) },
-      targetDay: { date: targetDay.date, title: targetDay.title, activities: targetActivities.map((item) => ({ startTime: item.start_time.slice(0, 5), durationMinutes: item.duration_minutes, title: item.title, locationName: item.location_name })) },
+      sourceDay: { date: sourceDay.date, title: sourceDay.title, activities: sourceActivities.map(activity) },
+      targetDays: researchTargetDays,
     });
     if (!researched) return NextResponse.json({ error: "Nem találtam elég megbízható adatot egy alkalmazható tervhez." }, { status: 422 });
     const proposal: TimelineProposal = {
       request: instruction,
       sourceDate: sourceDay.date,
-      targetDate: targetDay.date,
-      targetTitle: targetDay.title,
-      targetVersion: targetDay.version,
       summary: researched.summary,
-      items: researched.items,
+      days: researched.days,
       limitations: researched.limitations,
       blockingReason: null,
     };

@@ -49,16 +49,34 @@ begin
     raise exception 'v2_schema_verification_failed: undo_timeline_proposal is missing';
   end if;
 
+  if to_regprocedure('public.apply_timeline_proposal_changes(text,uuid,jsonb)') is null
+    or to_regprocedure('public.undo_timeline_proposal_changes(text,uuid)') is null
+  then
+    raise exception 'v2_schema_verification_failed: multi-day Timeline change RPC is missing';
+  end if;
+
+  if to_regclass('public.timeline_proposal_operations') is null
+    or to_regclass('public.timeline_proposal_undo_snapshots') is null
+  then
+    raise exception 'v2_schema_verification_failed: Timeline Undo snapshot storage is missing';
+  end if;
+
   if has_function_privilege('anon', 'public.apply_timeline_proposal(text,date,integer,uuid,jsonb)', 'EXECUTE')
     or has_function_privilege('authenticated', 'public.apply_timeline_proposal(text,date,integer,uuid,jsonb)', 'EXECUTE')
     or has_function_privilege('anon', 'public.undo_timeline_proposal(text,uuid)', 'EXECUTE')
     or has_function_privilege('authenticated', 'public.undo_timeline_proposal(text,uuid)', 'EXECUTE')
+    or has_function_privilege('anon', 'public.apply_timeline_proposal_changes(text,uuid,jsonb)', 'EXECUTE')
+    or has_function_privilege('authenticated', 'public.apply_timeline_proposal_changes(text,uuid,jsonb)', 'EXECUTE')
+    or has_function_privilege('anon', 'public.undo_timeline_proposal_changes(text,uuid)', 'EXECUTE')
+    or has_function_privilege('authenticated', 'public.undo_timeline_proposal_changes(text,uuid)', 'EXECUTE')
   then
     raise exception 'v2_schema_verification_failed: Timeline proposal RPC is browser-executable';
   end if;
 
   if not has_function_privilege('service_role', 'public.apply_timeline_proposal(text,date,integer,uuid,jsonb)', 'EXECUTE')
     or not has_function_privilege('service_role', 'public.undo_timeline_proposal(text,uuid)', 'EXECUTE')
+    or not has_function_privilege('service_role', 'public.apply_timeline_proposal_changes(text,uuid,jsonb)', 'EXECUTE')
+    or not has_function_privilege('service_role', 'public.undo_timeline_proposal_changes(text,uuid)', 'EXECUTE')
   then
     raise exception 'v2_schema_verification_failed: service_role cannot execute Timeline proposal RPC';
   end if;
