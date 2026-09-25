@@ -1,6 +1,12 @@
 name: Supabase production migration
 
 on:
+  push:
+    branches:
+      - feature/utazasi-v2-foundation
+    paths:
+      - .github/workflows/supabase-production.yml
+      - supabase/**
   workflow_dispatch:
     inputs:
       apply:
@@ -48,17 +54,20 @@ jobs:
       - name: Compare migration history
         run: supabase migration list
 
+      - name: Audit legacy production baseline
+        run: supabase db query --linked --file supabase/queries/audit-legacy-baseline.sql
+
       - name: Preview pending migrations
         run: supabase db push --dry-run
 
       - name: Apply pending migrations
-        if: ${{ inputs.apply }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.apply }}
         run: supabase db push
 
       - name: Seed isolated V2 POC Trip
-        if: ${{ inputs.apply && inputs.seed_v2_poc }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.apply && inputs.seed_v2_poc }}
         run: supabase db query --linked --file supabase/seeds/v2-poc-trip.sql
 
       - name: Verify V2 foundation and POC
-        if: ${{ inputs.apply && inputs.seed_v2_poc }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.apply && inputs.seed_v2_poc }}
         run: supabase db query --linked --file supabase/queries/verify-v2-foundation.sql
