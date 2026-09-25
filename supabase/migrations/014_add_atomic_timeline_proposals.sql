@@ -131,5 +131,12 @@ begin
 end;
 $$;
 
+revoke all on function public.bump_timeline_day_version() from public, anon, authenticated;
+revoke all on function public.apply_timeline_proposal(text, date, integer, uuid, jsonb) from public, anon, authenticated;
+revoke all on function public.undo_timeline_proposal(text, uuid) from public, anon, authenticated;
+grant execute on function public.bump_timeline_day_version() to service_role;
+grant execute on function public.apply_timeline_proposal(text, date, integer, uuid, jsonb) to service_role;
+grant execute on function public.undo_timeline_proposal(text, uuid) to service_role;
+
 comment on column public.days.version is 'Optimistic concurrency version incremented after every Timeline activity mutation.';
 comment on column public.timeline_activities.proposal_id is 'Groups activities created by one accepted AI proposal for atomic Undo.';

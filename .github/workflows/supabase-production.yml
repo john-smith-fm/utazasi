@@ -60,16 +60,16 @@ jobs:
       - name: Audit legacy production data invariants
         run: supabase db query --linked --file supabase/queries/audit-legacy-data.sql
 
-      - name: Repair verified legacy migration history
-        if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[repair-legacy-history]') }}
-        run: supabase migration repair --linked --status applied 001 002 003 004 005 006 007 008 009 010 011 012
-
-      - name: Compare repaired migration history
-        if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[repair-legacy-history]') }}
-        run: supabase migration list
-
       - name: Preview pending migrations
         run: supabase db push --dry-run
+
+      - name: Apply verified V2 migrations
+        if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[apply-v2-migrations]') }}
+        run: supabase db push
+
+      - name: Verify applied V2 schema
+        if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[apply-v2-migrations]') }}
+        run: supabase db query --linked --file supabase/queries/verify-v2-schema.sql
 
       - name: Apply pending migrations
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.apply }}
