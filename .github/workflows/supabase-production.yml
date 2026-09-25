@@ -1,4 +1,3 @@
-name: Supabase production migration
 
 on:
   push:
@@ -64,11 +63,11 @@ jobs:
         run: supabase db push --dry-run
 
       - name: Apply pending migrations
-        if: ${{ (github.event_name == 'workflow_dispatch' && inputs.apply) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[apply-v2-015]')) }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.apply }}
         run: supabase db push
 
       - name: Verify manually applied V2 schema
-        if: ${{ (github.event_name == 'workflow_dispatch' && inputs.apply) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[apply-v2-015]')) }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.apply }}
         run: supabase db query --linked --file supabase/queries/verify-v2-schema.sql
 
       - name: Seed isolated V2 POC Trip
