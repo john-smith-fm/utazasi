@@ -71,14 +71,6 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.apply }}
         run: supabase db query --linked --file supabase/queries/verify-v2-schema.sql
 
-      - name: Seed isolated V2 POC Trip from verified push
-        if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[seed-v2-poc]') }}
-        run: supabase db query --linked --file supabase/seeds/v2-poc-trip.sql
-
-      - name: Verify V2 foundation and POC from verified push
-        if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[seed-v2-poc]') }}
-        run: supabase db query --linked --file supabase/queries/verify-v2-foundation.sql
-
       - name: Seed isolated V2 POC Trip
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.apply && inputs.seed_v2_poc }}
         run: supabase db query --linked --file supabase/seeds/v2-poc-trip.sql
