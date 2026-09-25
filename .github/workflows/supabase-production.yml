@@ -57,6 +57,9 @@ jobs:
       - name: Audit legacy production baseline
         run: supabase db query --linked --file supabase/queries/audit-legacy-baseline.sql
 
+      - name: Audit legacy production data invariants
+        run: supabase db query --linked --file supabase/queries/audit-legacy-data.sql
+
       - name: Preview pending migrations
         run: supabase db push --dry-run
 
